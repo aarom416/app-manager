@@ -150,7 +150,7 @@ class _ReceiptCard extends StatelessWidget {
                         color: SGColors.primary.withOpacity(0.1),
                         padding: EdgeInsets.all(SGSpacing.p1),
                         borderRadius: BorderRadius.circular(SGSpacing.p2 + SGSpacing.p05),
-                        child: SGTypography.body("포장 128", weight: FontWeight.w500, color: SGColors.primary)),
+                        child: SGTypography.body("포장 XSZ1", weight: FontWeight.w500, color: SGColors.primary)),
                 ],
               ),
               // 제목
@@ -321,7 +321,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                       SizedBox(height: SGSpacing.p4),
                       DataTableRow(left: "배달 주소", right: "강남구 역삼1동"),
                       SizedBox(height: SGSpacing.p4),
-                      DataTableRow(left: "연락처", right: "010-0000-1111"),
+                      DataTableRow(left: "연락처", right: "010-****-****"),
                     ])
                   ],
                   SizedBox(height: SGSpacing.p4),
@@ -342,16 +342,18 @@ class _ReceiptDetailScreen extends StatelessWidget {
                     SizedBox(height: SGSpacing.p4),
                     DataTableRow(left: "주문 번호", right: "ABCDEFGHIJ"),
                   ]),
-                  if (order.orderType == '배달') ...[
-                    SizedBox(height: SGSpacing.p4),
-                    MultipleInformationBox(children: [
-                      SGTypography.body("주문자 정보", size: FontSize.normal, weight: FontWeight.w600),
-                      SizedBox(height: SGSpacing.p4),
-                      DataTableRow(left: "연락처", right: "010-0000-1111"),
-                    ]),
-                  ]
                 ]),
-                SizedBox(height: SGSpacing.p10),
+                SizedBox(height: SGSpacing.p4),
+                if (order.orderType == "포장") ...[
+                  MultipleInformationBox(children: [
+                    SGTypography.body("주문자 정보", size: FontSize.normal, weight: FontWeight.w600),
+                    SizedBox(height: SGSpacing.p4),
+                    DataTableRow(left: "연락처", right: "050-****-****"),
+                  ]),
+                ],
+                SizedBox(height: SGSpacing.p4),
+                SGActionButton(onPressed: () {}, label: "고객 센터"),
+                SizedBox(height: SGSpacing.p14),
               ],
             )));
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/container.dart';
+import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
@@ -96,6 +97,12 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           SizedBox(height: SGSpacing.p5),
           SGActionButton(onPressed: () {
+            showFailDialogWithImageNoSecondTitle("5분만 로그인이 제한됩니다.");
+            showFailDialogWithImage("회원 탈퇴가 완료된 계정입니다.", "회원 탈퇴 후 21일 이내에는 로그인할 수 없습니다.");
+            showFailDialogWithImage("해당 계정이 3일간 정지되었습니다.", "비정상적인 행동이 감지되었습니다.\n자세한 사항은 고객센터로 문의하시길 바랍니다.");
+            showFailDialogWithImage("해당 계정이 7일간 정지되었습니다.", "비정상적인 행동이 감지되었습니다.\n자세한 사항은 고객센터로 문의하시길 바랍니다.");
+            showFailDialogWithImage("비정상적인 행동이 감지되었습니다.", "고객센터(1600-7723)로 문의하시길 바랍니다.");
+
 
           }, label: "로그인"),
           SizedBox(height: SGSpacing.p8),
@@ -138,5 +145,65 @@ class _LoginScreenState extends State<LoginScreen> {
         ]),
       ),
     );
+  }
+
+  void showFailDialogWithImageNoSecondTitle(String mainTitle) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          Center(
+              child: SGTypography.body(mainTitle,
+                  size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+          ),
+          SizedBox(height: SGSpacing.p6),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(ctx);
+            },
+            child: SGContainer(
+              color: SGColors.primary,
+              width: double.infinity,
+              borderColor: SGColors.primary,
+              padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Center(
+                  child: SGTypography.body("확인",
+                      color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
+            ),
+          )
+        ]);
+  }
+
+  void showFailDialogWithImage(String mainTitle, String subTitle) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          Center(
+              child: SGTypography.body(mainTitle,
+                  size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+          ),
+          SizedBox(height: SGSpacing.p4),
+          Center(
+              child: SGTypography.body(subTitle,
+                  color: SGColors.gray4,
+                  size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+          ),
+          SizedBox(height: SGSpacing.p6),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(ctx);
+            },
+            child: SGContainer(
+              color: SGColors.primary,
+              width: double.infinity,
+              borderColor: SGColors.primary,
+              padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Center(
+                  child: SGTypography.body("확인",
+                      color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
+            ),
+          )
+        ]);
   }
 }

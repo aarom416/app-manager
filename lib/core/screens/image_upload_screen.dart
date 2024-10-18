@@ -99,7 +99,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                 children: [],
               ),
               SizedBox(height: SGSpacing.p3),
-              SGTypography.body("15MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.", color: SGColors.gray4, weight: FontWeight.w500),
+              SGTypography.body("10MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.", color: SGColors.gray4, weight: FontWeight.w500),
             ])));
   }
 }

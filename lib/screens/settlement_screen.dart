@@ -303,7 +303,7 @@ class SettlementDetailScreen extends StatelessWidget {
               ]),
               SizedBox(height: SGSpacing.p4),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                SGTypography.body("3. 결제 수수료", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
+                SGTypography.body("3. 중개 이용료", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
                 SGTypography.body("${(-settlement.settlementFee).toKoreanCurrency}원",
                     color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
               ]),
@@ -315,7 +315,7 @@ class SettlementDetailScreen extends StatelessWidget {
               ]),
               SizedBox(height: SGSpacing.p4),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                SGTypography.body("5. 부가세", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
+                SGTypography.body("5. 가게 할인 쿠폰", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
                 SGTypography.body("${(-settlement.tax).toKoreanCurrency}원",
                     color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
               ]),

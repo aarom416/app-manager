@@ -29,6 +29,7 @@ class _FindAccountScreenState extends State<FindAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
         body: PageView(controller: pageController, physics: NeverScrollableScrollPhysics(), children: [
       _LookUpUsernameScreen(onPrev: () {
         FocusScope.of(context).unfocus();

@@ -39,7 +39,7 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                                 tabs: [
                                   Tab(text: "가게 정보"),
                                   Tab(text: "영업"),
-                                  Tab(text: "배달"),
+                                  Tab(text: "배달/포장"),
                                   Tab(text: "메뉴/옵션"),
                                 ],
                                 labelStyle: TextStyle(

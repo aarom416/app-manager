@@ -59,6 +59,17 @@ class _NewCuisineCategoryScreenState extends State<NewCuisineCategoryScreen> {
 
   bool get isCuisineSelected => category.cuisines.isNotEmpty;
 
+  TextEditingController controller = TextEditingController();
+  String value = '';
+
+  TextStyle baseStyle = TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
+  int maxLength = 100;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,23 +108,54 @@ class _NewCuisineCategoryScreenState extends State<NewCuisineCategoryScreen> {
             SizedBox(height: SGSpacing.p3),
             SGTextFieldWrapper(
                 child: SGContainer(
-              padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p2),
-              child: TextField(
-                maxLines: 5,
-                style: TextStyle(
-                  color: SGColors.black,
-                  fontSize: FontSize.small,
-                ),
-                decoration: InputDecoration(
-                  hintText: "카테고리 설명을 입력해주세요.",
-                  hintStyle: TextStyle(
-                    color: SGColors.gray3,
-                    fontSize: FontSize.small,
-                  ),
-                  border: InputBorder.none,
-                ),
-              ),
-            )),
+                  color: Colors.white,
+                  borderColor: SGColors.line3,
+                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                  child: Stack(alignment: Alignment.bottomRight, children: [
+                    TextField(
+                        controller: controller,
+                        maxLines: 5,
+                        style: baseStyle.copyWith(color: SGColors.black),
+                        onChanged: (value) {
+                          setState(() {
+                            if (maxLength != null && value.length > maxLength!) {
+                              controller.text = value.substring(0, maxLength!);
+                              controller.selection = TextSelection.fromPosition(TextPosition(offset: maxLength!));
+                              return;
+                            }
+                            this.value = value;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          // vertically stretched suffix Icon
+                          // suffixIcon: SGContainer(
+                          //     width: SGSpacing.p16,
+                          //     height: SGSpacing.p28 - SGSpacing.p2,
+                          //     color: SGColors.success,
+                          //     child: Column(children: [Icon(Icons.visibility)])),
+                          //
+                          // suffixIconConstraints: BoxConstraints(minHeight: 0),
+                          isDense: true,
+                          contentPadding: EdgeInsets.all(SGSpacing.p4),
+                          isCollapsed: true,
+                          hintText: "카테고리 설명을 입력해주세요.",
+                          hintStyle: baseStyle.copyWith(color: SGColors.gray3),
+                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                        )),
+                    if (maxLength != null)
+                      SGContainer(
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                            SGTypography.body(
+                              "${value.length}",
+                            ),
+                            SGTypography.body(
+                              "/100",
+                              color: SGColors.gray3,
+                            ),
+                          ]))
+                  ]),
+                )),
             // TODO 입력
             SizedBox(height: SGSpacing.p6),
             Row(

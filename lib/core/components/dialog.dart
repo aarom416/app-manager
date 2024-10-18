@@ -43,6 +43,84 @@ void showSGDialogWithCloseButton({
   );
 }
 
+
+
+void showSGDialogWithImage({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: SGContainer(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4 - SGSpacing.p05).copyWith(bottom: 0),
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            SGContainer(
+              padding:
+              EdgeInsets.symmetric(horizontal: SGSpacing.p05).copyWith(bottom: SGSpacing.p5, top: SGSpacing.p3),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                      height: SGSpacing.p2
+                  ),
+                  Image.asset("assets/images/warning.png", width: SGSpacing.p12),
+                  SizedBox(
+                    height: SGSpacing.p3
+                  ),
+                  ...childrenBuilder(ctx),
+                ],
+              ),
+            )
+          ]),
+        ),
+      );
+    },
+  );
+}
+
+void showSGDialogWithImageBoth({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: SGContainer(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4 - SGSpacing.p05).copyWith(bottom: 0),
+          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+            SGContainer(
+              padding:
+              EdgeInsets.symmetric(horizontal: SGSpacing.p05).copyWith(bottom: SGSpacing.p5, top: SGSpacing.p3),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                      height: SGSpacing.p2
+                  ),
+                  Image.asset("assets/images/warning.png", width: SGSpacing.p12),
+                  SizedBox(
+                      height: SGSpacing.p3
+                  ),
+                  ...childrenBuilder(ctx),
+                ],
+              ),
+            )
+          ]),
+        ),
+      );
+    },
+  );
+}
+
 void showSGDialog({
   required BuildContext context,
   required List<Widget> Function(BuildContext) childrenBuilder,
@@ -72,3 +150,4 @@ void showSGDialog({
     },
   );
 }
+

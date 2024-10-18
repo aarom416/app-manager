@@ -186,6 +186,7 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
   String email = "singleeat@singleat.com";
   String phoneNumber = "010-1234-5678";
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -239,29 +240,6 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
                     )),
                   ),
                 ],
-              ),
-              SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => ChangePasswordScreen(
-                            title: "비밀번호 변경",
-                            onPrev: () {
-                              Navigator.of(ctx).pop();
-                            },
-                            onNext: () {
-                              Navigator.of(ctx).pop();
-                            },
-                          )));
-                },
-                child: SGContainer(
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p4 + SGSpacing.p05),
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(
-                        child: SGTypography.body("비밀번호 변경",
-                            color: SGColors.primary, weight: FontWeight.w500, size: FontSize.small))),
               ),
             ],
             ...[
@@ -319,6 +297,7 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
                         children: [
                           Expanded(
                             child: TextField(
+                                enabled: false,
                                 controller: emailController,
                                 onChanged: (value) {
                                   setState(() {
@@ -340,21 +319,6 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
                       ),
                     )),
                   ),
-                  SizedBox(width: SGSpacing.p2),
-                  GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          emailAuthRequested = true;
-                        });
-                      },
-                      child: SGContainer(
-                          padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p5),
-                          borderColor: SGColors.primary,
-                          borderWidth: 1,
-                          borderRadius: BorderRadius.circular(SGSpacing.p3),
-                          child: Center(
-                              child: SGTypography.body("인증하기",
-                                  color: SGColors.primary, size: FontSize.small, weight: FontWeight.w500))))
                 ],
               ),
             ],
@@ -398,7 +362,7 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
               GestureDetector(
                 onTap: () {
                   setState(() {
-                    emailAuthConfirmed = true;
+                    emailAuthConfirmed = false;
                   });
                 },
                 child: SGContainer(
@@ -451,19 +415,6 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
                 ],
               ),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-              SGContainer(
-                  padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(SGSpacing.p3),
-                  borderColor: SGColors.primary,
-                  boxShadow: SGBoxShadow.large,
-                  child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                    SGTypography.body("휴대폰 번호 변경하기",
-                        size: FontSize.normal, weight: FontWeight.w700, color: SGColors.primary),
-                    Spacer(),
-                    Icon(Icons.arrow_forward_ios, size: FontSize.small, color: SGColors.gray3),
-                  ])),
-              SizedBox(height: SGSpacing.p32),
             ],
           ]),
         ));
@@ -526,7 +477,7 @@ class _GreetingScreen extends StatelessWidget {
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Image.asset("assets/images/home-icon.png", width: SGSpacing.p20),
         SizedBox(height: SGSpacing.p10),
-        SGTypography.body("싱그릿 입점을 신청해주셔서\n감사합니다!",
+        SGTypography.body("사장님, 입점을 심사하고 있어요!",
             size: FontSize.xlarge,
             weight: FontWeight.w700,
             color: SGColors.black,
@@ -563,6 +514,26 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
   String storeAddress = '';
   String storeAddress2 = '';
   String storeDetailAddress = '';
+  String category = "";
+  List<String> selectedCategories = [];
+  String businessType = '';
+
+  List<SelectionOption<String>> categoryOptions = [
+    SelectionOption(label: "샐러드", value: "샐러드"),
+    SelectionOption(label: "포케", value: "포케"),
+    SelectionOption(label: "샌드위치", value: "샌드위치"),
+    SelectionOption(label: "카페", value: "카페"),
+    SelectionOption(label: "베이커리", value: "베이커리"),
+    SelectionOption(label: "버거", value: "버거"),
+  ];
+
+  List<SelectionOption<String>> businessTypeOptions = [
+    SelectionOption(label: "일반 과세자", value: "일반 과세자"),
+    SelectionOption(label: "간이 과세자", value: "간이 과세자"),
+    SelectionOption(label: "법인 과세자", value: "법인 과세자"),
+    SelectionOption(label: "부가가치세 면세 사업자", value: "부가가치세 면세 사업자"),
+    SelectionOption(label: "면세 법인 사업자", value: "면세 법인 사업자"),
+  ];
 
   bool essentialTermChecked = false;
 
@@ -578,12 +549,15 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
           child: ListView(children: [
             SGTypography.body("식단 연구소 입점 신청서", size: FontSize.xlarge, weight: FontWeight.w700, color: SGColors.black),
             SizedBox(height: SGSpacing.p5),
-            SGTypography.body("식단 연구소 입점에 필요한 기본 정보를 입력해주세요.\n싱그릿 연구소 연구원이 확인하고,\n대표님 가게 등록을 도와드릴게요 :)",
+            SGTypography.body("안녕하세요 싱그릿입니다.\n가게 입점을 위해 다음의 정보를 입력해 주세요.",
                 size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray5, lineHeight: 1.15),
             SizedBox(height: SGSpacing.p4),
-            SGTypography.body("작성 중 어려움이 있으시면 식단 연구실(000-000)\n으로 연락 주세요",
+            SGTypography.body("가게 입점 신청서 작성 후, 싱그릿 담당자가\n가게 입점 절차 진행을 위해 연락 드립니다.",
                 size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray5, lineHeight: 1.15),
-            SizedBox(height: SGSpacing.p14),
+            SizedBox(height: SGSpacing.p4),
+            SGTypography.body("작성 중 어려움이 있으시면 고객센터(1600-7723)로\n연락 주시면 친절하게 도와드리겠습니다.",
+                size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray5, lineHeight: 1.15),
+            SizedBox(height: SGSpacing.p6),
             SGTypography.body("연구소 입점 절차", size: FontSize.large, weight: FontWeight.w700, color: SGColors.black),
             SizedBox(height: SGSpacing.p7),
             Image.asset("assets/images/onboarding.png", width: double.infinity),
@@ -613,7 +587,7 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                                   isCollapsed: true,
                                   hintStyle: TextStyle(
                                       color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                                  hintText: "사업자 등록번호를 입력해주세요.",
+                                  hintText: "'-'없이 입력해주세요.",
                                   border: const OutlineInputBorder(
                                       borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
                                 )),
@@ -623,14 +597,22 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                     )),
                   ),
                   SizedBox(width: SGSpacing.p2),
-                  SGContainer(
-                      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p5),
-                      borderColor: SGColors.primary,
-                      borderWidth: 1,
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("번호조회",
-                              color: SGColors.primary, size: FontSize.small, weight: FontWeight.w500)))
+                  InkWell(
+                    onTap: () {
+                      if (businessRegistrationNumber.isNotEmpty) {
+                        showDialog("조회에 성공하였습니다.");
+                        showFailDialogWithImage("입력하신 정보를\n다시 한번 조회해주세요.","");
+                      }
+                    },
+                    child: SGContainer(
+                        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p5),
+                        borderColor: SGColors.primary,
+                        borderWidth: 1,
+                        borderRadius: BorderRadius.circular(SGSpacing.p3),
+                        child: Center(
+                            child: SGTypography.body("번호조회",
+                                color: SGColors.primary, size: FontSize.small, weight: FontWeight.w500))),
+                  )
                 ],
               ),
             ],
@@ -661,44 +643,6 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                                   hintStyle: TextStyle(
                                       color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
                                   hintText: "대표자명을 입력해주세요.",
-                                  border: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                                )),
-                          ),
-                        ],
-                      ),
-                    )),
-                  ),
-                ],
-              ),
-            ],
-            ...[
-              SizedBox(height: SGSpacing.p8),
-              SGTypography.body("대표자 휴대폰 번호", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
-              SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-              Row(
-                children: [
-                  Expanded(
-                    child: SGTextFieldWrapper(
-                        child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                                onChanged: (value) {
-                                  setState(() {
-                                    representativePhoneNumber = value;
-                                  });
-                                },
-                                style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  isCollapsed: true,
-                                  hintStyle: TextStyle(
-                                      color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                                  hintText: "대표자님의 휴대폰 번호를 입력해주세요.",
                                   border: const OutlineInputBorder(
                                       borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
                                 )),
@@ -750,118 +694,185 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
             ],
             ...[
               SizedBox(height: SGSpacing.p8),
-              SGTypography.body("가게", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
+              SGTypography.body("가게 주소", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               Row(
                 children: [
                   Expanded(
                     child: SGTextFieldWrapper(
                         child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                                onChanged: (value) {
-                                  setState(() {
-                                    storeAddress = value;
-                                  });
-                                },
-                                style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  isCollapsed: true,
-                                  hintStyle: TextStyle(
-                                      color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                                  hintText: "가게 주소를 입력해주세요.",
-                                  border: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                                )),
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          width: double.infinity,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                    onChanged: (value) {
+                                      setState(() {
+                                        representativePhoneNumber = value;
+                                      });
+                                    },
+                                    style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      isCollapsed: true,
+                                      hintStyle: TextStyle(
+                                          color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                                      hintText: "가게의 상세 주소도 같이 입력해주세요.",
+                                      border: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                                    )),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
+                        )),
                   ),
-                  SizedBox(width: SGSpacing.p2),
-                  SGContainer(
-                      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p5),
-                      borderColor: SGColors.primary,
-                      borderWidth: 1,
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("주소조회",
-                              color: SGColors.primary, size: FontSize.small, weight: FontWeight.w500)))
                 ],
               ),
+            ],
+            ...[
+              SizedBox(height: SGSpacing.p8),
+              SGTypography.body("가게 번호", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               Row(
                 children: [
                   Expanded(
                     child: SGTextFieldWrapper(
                         child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                                onChanged: (value) {
-                                  setState(() {
-                                    storeAddress2 = value;
-                                  });
-                                },
-                                style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  isCollapsed: true,
-                                  hintStyle: TextStyle(
-                                      color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                                  hintText: "가게 주소를 입력해주세요.",
-                                  border: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                                )),
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          width: double.infinity,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                    onChanged: (value) {
+                                      setState(() {
+                                        representativePhoneNumber = value;
+                                      });
+                                    },
+                                    style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      isCollapsed: true,
+                                      hintStyle: TextStyle(
+                                          color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                                      hintText: "연락이 가능한 가게 번호를 입력해주세요.",
+                                      border: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                                    )),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
+                        )),
                   ),
                 ],
               ),
+            ],
+            SizedBox(height: SGSpacing.p8),
+            SGTypography.body("가게 카테고리", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
+            SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+            GestureDetector(
+              onTap: () {
+                showSelectionBottomSheetWithSecondTitle<String>(
+                  context: context,
+                  title: "가게 카테고리",
+                  secondTitle: "중복 선택이 가능하며 어떤 카테고리에 속하는지 골라주세요.",
+                  options: categoryOptions,
+                  onSelect: (List<String> selectedValues) {
+                    setState(() {
+                      // selectedValues를 selectedCategories와 동일하게 설정
+                      selectedCategories.clear();
+                      selectedCategories.addAll(selectedValues);
+
+                      print("최종 선택된 카테고리: $selectedCategories");
+                    });
+                  },
+                  selected: List.from(selectedCategories),  // 선택된 카테고리 전달
+                );
+              },
+              child: SGTextFieldWrapper(
+                child: SGContainer(
+                  padding: EdgeInsets.all(SGSpacing.p4),
+                  child: Row(
+                    children: [
+                      SGTypography.body(
+                        selectedCategories.isNotEmpty
+                            ? selectedCategories.join(', ')
+                            : '가게가 어떤 카테고리에 속하는지 골라주세요.',
+                        color: selectedCategories.isNotEmpty ? SGColors.black : SGColors.gray3,
+                        size: FontSize.small,
+                        weight: FontWeight.w400,
+                      ),
+                      Spacer(),
+                      Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: SGSpacing.p8),
+            SGTypography.body("사업자 구분", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
+            SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+            GestureDetector(
+              onTap: () {
+                showSelectionBottomSheet<String>(
+                  context: context,
+                  title: "사업자 구분",
+                  options: businessTypeOptions,
+                  onSelect: (String selectedValues) {
+                    setState(() {
+                      businessType = selectedValues;
+                    });
+                  },
+                  selected: businessType,
+                );
+              },
+              child: SGTextFieldWrapper(
+                child: SGContainer(
+                  padding: EdgeInsets.all(SGSpacing.p4),
+                  child: Row(
+                    children: [
+                      SGTypography.body(
+                        businessType == '' ? "사업자를 구분해주세요." : businessType,
+                        color: businessType == '' ? SGColors.gray3 : SGColors.black,
+                        size: FontSize.small,
+                        weight: FontWeight.w400,
+                      ),
+                      Spacer(),
+                      Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            ...[
+              SizedBox(height: SGSpacing.p8),
+              Row(children: [
+                SGTypography.body("통장 사본", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
+                SizedBox(width: SGSpacing.p1),
+                SGTypography.body("(필수)", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary),
+              ]),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-              Row(
-                children: [
-                  Expanded(
-                    child: SGTextFieldWrapper(
-                        child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                                onChanged: (value) {
-                                  setState(() {
-                                    storeDetailAddress = value;
-                                  });
-                                },
-                                style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  isCollapsed: true,
-                                  hintStyle: TextStyle(
-                                      color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                                  hintText: "가게 상세 주소를 입력해주세요. (필수)",
-                                  border: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                                )),
-                          ),
-                        ],
-                      ),
-                    )),
-                  ),
-                ],
-              ),
+              SGContainer(
+                  borderColor: SGColors.primary,
+                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                  padding: EdgeInsets.all(SGSpacing.p4),
+                  child: Row(
+                    children: [
+                      SGTypography.body("파일 업로드",
+                          color: SGColors.primary, size: FontSize.small, weight: FontWeight.w400),
+                      Spacer(),
+                      Image.asset("assets/images/upload.png", width: SGSpacing.p4, height: SGSpacing.p4),
+                    ],
+                  )),
+              SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+              SGContainer(
+                  child: Row(
+                    children: [
+                      SGTypography.body("10MB 이하, jpg, png, pdf 형식의 파일을 등록해주세요.",
+                          color: SGColors.gray4, size: FontSize.tiny, weight: FontWeight.w400),
+                    ],
+                  ))
             ],
             ...[
               SizedBox(height: SGSpacing.p8),
@@ -877,10 +888,18 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                   padding: EdgeInsets.all(SGSpacing.p4),
                   child: Row(
                     children: [
-                      SGTypography.body("파일 업로드",
+                      SGTypography.body("반드시 금년도에 발급한 사본을 보내주세요.",
                           color: SGColors.primary, size: FontSize.small, weight: FontWeight.w400),
                       Spacer(),
                       Image.asset("assets/images/upload.png", width: SGSpacing.p4, height: SGSpacing.p4),
+                    ],
+                  )),
+              SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+              SGContainer(
+                  child: Row(
+                    children: [
+                      SGTypography.body("10MB 이하, jpg, png, pdf 형식의 파일을 등록해주세요.",
+                          color: SGColors.gray4, size: FontSize.tiny, weight: FontWeight.w400),
                     ],
                   ))
             ],
@@ -898,37 +917,22 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                   padding: EdgeInsets.all(SGSpacing.p4),
                   child: Row(
                     children: [
-                      SGTypography.body("파일 업로드",
+                      SGTypography.body("반드시 금년도에 발급한 사본을 보내주세요.",
                           color: SGColors.primary, size: FontSize.small, weight: FontWeight.w400),
                       Spacer(),
                       Image.asset("assets/images/upload.png", width: SGSpacing.p4, height: SGSpacing.p4),
                     ],
+                  )),
+              SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+              SGContainer(
+                  child: Row(
+                    children: [
+                      SGTypography.body("10MB 이하, jpg, png, pdf 형식의 파일을 등록해주세요.",
+                          color: SGColors.gray4, size: FontSize.tiny, weight: FontWeight.w400),
+                    ],
                   ))
             ],
-            SizedBox(height: SGSpacing.p10),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  essentialTermChecked = !essentialTermChecked;
-                });
-              },
-              child: SGContainer(
-                  padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                  child: Row(children: [
-                    Image.asset(
-                        essentialTermChecked ? "assets/images/checkbox-on.png" : "assets/images/checkbox-off.png",
-                        width: SGSpacing.p6,
-                        height: SGSpacing.p6),
-                    SizedBox(width: SGSpacing.p2),
-                    SGTypography.body("개인정보 수집 및 이용 동의",
-                        size: FontSize.normal, weight: FontWeight.w600, color: SGColors.gray5),
-                    SizedBox(width: SGSpacing.p1),
-                    SGTypography.body("(필수)", size: FontSize.normal, color: SGColors.primary, weight: FontWeight.w400),
-                    Spacer(),
-                    Icon(Icons.arrow_forward_ios, size: FontSize.small, color: SGColors.gray3),
-                  ])),
-            ),
-            SizedBox(height: SGSpacing.p4),
+            SizedBox(height: SGSpacing.p14),
             SGActionButton(
                 onPressed: () {
                   if (!isFormValid) return;
@@ -938,6 +942,64 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                 disabled: !isFormValid),
           ]),
         ));
+  }
+
+  void showDialog(String message) {
+    showSGDialog(
+        context: context,
+        childrenBuilder: (ctx) => [
+          Center(
+              child: SGTypography.body(message,
+                  size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
+          SizedBox(height: SGSpacing.p8),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(ctx);
+            },
+            child: SGContainer(
+              color: SGColors.primary,
+              width: double.infinity,
+              borderColor: SGColors.primary,
+              padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Center(
+                  child: SGTypography.body("확인",
+                      color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
+            ),
+          )
+        ]);
+  }
+
+  void showFailDialogWithImage(String mainTitle, String subTitle) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          Center(
+              child: SGTypography.body(mainTitle,
+                  size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+          ),
+          Center(
+              child: SGTypography.body(subTitle,
+                  color: SGColors.gray4,
+                  size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+          ),
+          SizedBox(height: SGSpacing.p6),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(ctx);
+            },
+            child: SGContainer(
+              color: SGColors.primary,
+              width: double.infinity,
+              borderColor: SGColors.primary,
+              padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Center(
+                  child: SGTypography.body("확인",
+                      color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
+            ),
+          )
+        ]);
   }
 }
 
@@ -1400,6 +1462,7 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                   setState(() {
                     emailAuthConfirmed = true;
                   });
+                  showDialog("이메일 인증이 완료되었습니다.");
                 },
                 child: SGContainer(
                     padding: EdgeInsets.symmetric(vertical: SGSpacing.p4 + SGSpacing.p05),
@@ -1417,7 +1480,8 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                     emailSent = true;
                   });
 
-                  showDialog();
+                  showDialog("사장님 이메일로 인증메일을\n보내드렸습니다.");
+                  showFailDialogWithImage("인증에 실패하였습니다.\n잠시 후 다시 시도해주세요.", "");
                 },
                 child: SGContainer(
                     padding: EdgeInsets.symmetric(vertical: SGSpacing.p4 + SGSpacing.p05),
@@ -1441,12 +1505,12 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
         ));
   }
 
-  void showDialog() {
+  void showDialog(String message) {
     showSGDialog(
         context: context,
         childrenBuilder: (ctx) => [
               Center(
-                  child: SGTypography.body("사장님 이메일로 인증메일을\n보내드렸습니다.",
+                  child: SGTypography.body(message,
                       size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
               SizedBox(height: SGSpacing.p8),
               GestureDetector(
@@ -1466,4 +1530,37 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
               )
             ]);
   }
+
+  void showFailDialogWithImage(String mainTitle, String subTitle) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          Center(
+              child: SGTypography.body(mainTitle,
+                  size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+          ),
+          Center(
+              child: SGTypography.body(subTitle,
+                  color: SGColors.gray4,
+                  size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+          ),
+          SizedBox(height: SGSpacing.p6),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(ctx);
+            },
+            child: SGContainer(
+              color: SGColors.primary,
+              width: double.infinity,
+              borderColor: SGColors.primary,
+              padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Center(
+                  child: SGTypography.body("확인",
+                      color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
+            ),
+          )
+        ]);
+  }
+
 }

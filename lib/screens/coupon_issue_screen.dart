@@ -223,7 +223,7 @@ class _CouponIssueScreenState extends State<CouponIssueScreen> {
               if (discountType != null) ...[
                 SizedBox(height: SGSpacing.p8),
                 SGTypography.label(
-                    discountType == CouponDiscountType.percentage ? "발행하실 쿠폰의 할인율을 설정해주세요." : "발행하실 쿠폰의 금액을 설정해주세요."),
+                    discountType == CouponDiscountType.percentage ? "발행하실 쿠폰의 실할인율을 설정해주세요." : "발행하실 쿠폰의 금액을 설정해주세요."),
                 SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
                 GestureDetector(
                   onTap: () {

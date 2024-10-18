@@ -209,28 +209,28 @@ class _EditBusinessProfileScreenState extends State<_EditBusinessProfileScreen> 
               ),
               // TODO:
               SizedBox(height: SGSpacing.p8),
-              SGTypography.label("업태 변경"),
+              SGTypography.label("업태"),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               SGTextFieldWrapper(
                   child: SGContainer(
                 padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4 + SGSpacing.p05),
                 child: Row(children: [
-                  SGTypography.body("음식점업", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w500),
+                  SGTypography.body("음식점업", size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray3),
                 ]),
               )),
               SizedBox(height: SGSpacing.p8),
-              SGTypography.label("종목 변경"),
+              SGTypography.label("종목"),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               SGTextFieldWrapper(
                   child: SGContainer(
                 padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4 + SGSpacing.p05),
                 child: Row(children: [
-                  SGTypography.body("한식", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w500),
+                  SGTypography.body("한식", size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray3),
                 ]),
               )),
               // TODO:
               SizedBox(height: SGSpacing.p8),
-              SGTypography.label("소재지 변경"),
+              SGTypography.label("소재지"),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               MultipleInformationBox(children: [
                 DataTableRow(left: "우편번호", right: "566892"),
