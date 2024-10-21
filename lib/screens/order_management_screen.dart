@@ -145,7 +145,7 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
                           context: context,
                           childrenBuilder: (ctx) => [
                                 Center(
-                                    child: SGTypography.body("대표님 신규 주문이 도착했습니다.",
+                                    child: SGTypography.body("사장님 신규 주문이 도착했습니다.",
                                         size: FontSize.medium, weight: FontWeight.w700)),
                                 SizedBox(height: SGSpacing.p4),
                                 SGContainer(
@@ -237,7 +237,7 @@ class _NewOrderListView extends StatelessWidget {
   });
 
   void showRejectDialog({required BuildContext context, required OrderModel order}) {
-    showSGDialog(
+    showSGDialogWithCloseButton(
         context: context,
         childrenBuilder: (ctx) => [
               _RejectDialogBody(
@@ -724,11 +724,22 @@ class _OrderCard extends StatelessWidget {
                     child: SGTypography.body("포장 ${order.id}", weight: FontWeight.w500, color: SGColors.primary),
                   ),
                 if (order.status == OrderStatus.inProgress)
-                  SGContainer(
-                    color: SGColors.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
-                    child: SGTypography.body("조리중", weight: FontWeight.w500, color: SGColors.primary),
+                  Row(
+                    children: [
+                      SGContainer(
+                        color: SGColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
+                        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
+                        child: SGTypography.body("조리중", weight: FontWeight.w500, color: SGColors.primary),
+                      ),
+                      SizedBox(width: SGSpacing.p2),
+                      SGContainer(
+                        color: SGColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
+                        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
+                        child: SGTypography.body("포장 CYZ1", weight: FontWeight.w500, color: SGColors.primary),
+                      ),
+                    ],
                   )
               ],
             ),

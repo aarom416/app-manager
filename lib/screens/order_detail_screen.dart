@@ -129,7 +129,7 @@ class NewOrderDetailScreen extends StatelessWidget {
                       padding: EdgeInsets.all(SGSpacing.p1),
                       borderRadius: BorderRadius.circular(SGSpacing.p1),
                       child: SGTypography.body(
-                        order.status != OrderStatus.cancelled ? "${order.orderType} 접수" : "주문 취소",
+                        order.status != OrderStatus.cancelled ? "신규 접수" : "주문 취소",
                         color: order.status != OrderStatus.cancelled ? SGColors.primary : SGColors.warningRed,
                       )),
                   Spacer(),
@@ -255,7 +255,7 @@ class InProgressOrderDetailScreen extends StatelessWidget {
   const InProgressOrderDetailScreen({super.key, required this.order});
 
   void showCancelDialog({required BuildContext context}) {
-    showSGDialog(
+    showSGDialogWithCloseButton(
         context: context,
         childrenBuilder: (ctx) => [
               _CancelDialogBody(
@@ -421,6 +421,68 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                     label: "준비 완료 알림 보내기"),
                 SizedBox(height: SGSpacing.p5),
               ],
+              if (order.orderType == "배달") ...[
+                SGActionButton(
+                    onPressed: () {
+                      showSGDialog(
+                          context: context,
+                          childrenBuilder: (ctx) => [
+                            SGTypography.body("식단 배달 완료", size: FontSize.medium, weight: FontWeight.w700),
+                            SizedBox(height: SGSpacing.p4),
+                            SGTypography.body("고객님께 배달 완료 알림을 보내시겠습니까?",
+                                size: FontSize.small,
+                                weight: FontWeight.w700,
+                                color: SGColors.gray4,
+                                lineHeight: 1.25),
+                            SGTypography.body("'확인' 클릭 시 고객님께 푸시알림이 전송됩니다. ",
+                                size: FontSize.small, weight: FontWeight.w700, color: SGColors.gray4),
+                            SizedBox(height: SGSpacing.p5),
+                            Row(
+                              children: [
+                                SGFlexible(
+                                  flex: 1,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(ctx).pop();
+                                    },
+                                    child: SGContainer(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                                      borderRadius: BorderRadius.circular(SGSpacing.p3),
+                                      color: SGColors.gray3,
+                                      child: Center(
+                                        child: SGTypography.body("취소",
+                                            size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: SGSpacing.p2),
+                                SGFlexible(
+                                  flex: 2,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(ctx).pop();
+                                    },
+                                    child: SGContainer(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                                      borderRadius: BorderRadius.circular(SGSpacing.p3),
+                                      color: SGColors.primary,
+                                      child: Center(
+                                        child: SGTypography.body("확인",
+                                            size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ]);
+                    },
+                    label: "배달 완료 처리하기"),
+                SizedBox(height: SGSpacing.p5),
+              ],
               GestureDetector(
                 onTap: () {
                   showCancelDialog(context: context);
@@ -556,12 +618,14 @@ class _OrderInformation extends StatelessWidget {
           SGTypography.body("배달 정보", size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
           SizedBox(height: SGSpacing.p4),
           _DataTableRow(left: "배달 주소", right: "강남구 역삼 1동"),
-          SizedBox(height: SGSpacing.p4),
-          _DataTableRow(
-              left: "연락처",
-              right: [OrderStatus.newOrder, OrderStatus.inProgress].contains(order.status)
-                  ? "010-0000-1111"
-                  : "010-****-****"),
+          if (order.orderType == "배달" && order.status == OrderStatus.inProgress || order.status == OrderStatus.completed || order.status == OrderStatus.cancelled) ...[
+            SizedBox(height: SGSpacing.p3),
+            _DataTableRow(
+                left: "연락처",
+                right: [OrderStatus.newOrder, OrderStatus.inProgress].contains(order.status)
+                    ? "010-0000-1111"
+                    : "010-****-****"),
+          ],
         ]),
       ],
       SizedBox(height: SGSpacing.p3),
@@ -586,7 +650,7 @@ class _OrderInformation extends StatelessWidget {
         SizedBox(height: SGSpacing.p4),
         _DataTableRow(left: "주문번호", right: "ABCDEFGH"),
       ]),
-      if (order.orderType == '배달') ...[
+      if (order.orderType == '포장' && order.status == OrderStatus.inProgress || order.status == OrderStatus.completed || order.status == OrderStatus.cancelled) ...[
         SizedBox(height: SGSpacing.p3),
         _DataTable(children: [
           SGTypography.body("주문자 정보", size: FontSize.normal, color: SGColors.white, weight: FontWeight.w600),

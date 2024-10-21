@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
+import 'package:singleeat/core/constants/colors.dart';
 
 class AppBarWithLeftArrow extends StatelessWidget implements PreferredSizeWidget {
   AppBarWithLeftArrow({
@@ -29,6 +31,19 @@ class AppBarWithLeftArrow extends StatelessWidget implements PreferredSizeWidget
         surfaceTintColor: Colors.transparent,
         title: SGTypography.body(title, size: FontSize.medium, weight: FontWeight.w800),
         elevation: 0.0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: SGSpacing.p1),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back_ios_new_rounded, color: SGColors.black),
+            onPressed: () {
+              if (onTap != null) {
+                onTap!();
+              } else {
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+        ),
       ),
     );
   }

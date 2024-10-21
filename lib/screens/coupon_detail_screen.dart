@@ -196,6 +196,7 @@ class _CouponDetailScreenState extends State<CouponDetailScreen> {
                                   child: GestureDetector(
                                       onTap: () {
                                         Navigator.of(ctx).pop();
+                                        showFailDialogWithImage("해당 쿠폰은 삭제할 수 없습니다.\n고객센터로 문의해주세요", "");
                                       },
                                       child: SGContainer(
                                         padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
@@ -234,6 +235,38 @@ class _CouponDetailScreenState extends State<CouponDetailScreen> {
             ],
           ),
         ));
+  }
+
+  void showFailDialogWithImage(String mainTitle, String subTitle) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          Center(
+              child: SGTypography.body(mainTitle,
+                  size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+          ),
+          Center(
+              child: SGTypography.body(subTitle,
+                  color: SGColors.gray4,
+                  size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+          ),
+          SizedBox(height: SGSpacing.p6),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(ctx);
+            },
+            child: SGContainer(
+              color: SGColors.primary,
+              width: double.infinity,
+              borderColor: SGColors.primary,
+              padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Center(
+                  child: SGTypography.body("확인",
+                      color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
+            ),
+          )
+        ]);
   }
 }
 

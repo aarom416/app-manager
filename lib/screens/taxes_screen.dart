@@ -53,9 +53,9 @@ class _TaxesScreenState extends State<TaxesScreen> {
   ];
 
   List<PurchaseHistoryModel> purchaseHistories = [
-    PurchaseHistoryModel(code: "132GTQ", serviceType: "광고", price: 100000, tax: 50000),
-    PurchaseHistoryModel(code: "132GTQ", serviceType: "광고", price: 100000, tax: 50000),
-    PurchaseHistoryModel(code: "132GTQ", serviceType: "광고", price: 100000, tax: 50000),
+    PurchaseHistoryModel(code: "싱그릿", serviceType: "싱그릿 포장 주문 중개 수수료", price: 100000, tax: 50000),
+    PurchaseHistoryModel(code: "싱그릿", serviceType: "싱그릿 배달 주문 중개 수수료", price: 100000, tax: 50000),
+    PurchaseHistoryModel(code: "싱그릿", serviceType: "결제 수수료", price: 100000, tax: 50000),
   ];
 
   @override
@@ -258,7 +258,7 @@ class PurchaseHistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultipleInformationBox(
       children: [
-        DataTableRow(left: "서비스", right: purchaseHistory.serviceType),
+        DataTableRow(left: "서비스", right: "싱그릿"),
         SizedBox(height: SGSpacing.p4),
         DataTableRow(left: "발급구분코드", right: purchaseHistory.code),
         SizedBox(height: SGSpacing.p4),
