@@ -733,12 +733,13 @@ class _OrderCard extends StatelessWidget {
                         child: SGTypography.body("조리중", weight: FontWeight.w500, color: SGColors.primary),
                       ),
                       SizedBox(width: SGSpacing.p2),
+                      order.orderType == "포장" ?
                       SGContainer(
                         color: SGColors.primary.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
                         padding: EdgeInsets.symmetric(horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
                         child: SGTypography.body("포장 CYZ1", weight: FontWeight.w500, color: SGColors.primary),
-                      ),
+                      ) : Container(),
                     ],
                   )
               ],

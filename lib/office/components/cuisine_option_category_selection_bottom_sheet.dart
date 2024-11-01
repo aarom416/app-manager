@@ -7,6 +7,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/office/models/cuisine_model.dart';
+import 'package:singleeat/screens/new_cuisine_option_category_screen.dart';
 import 'package:singleeat/screens/new_cuisine_screen.dart';
 
 void showCuisineOptionCategorySelectionBottomSheet({
@@ -172,19 +173,24 @@ class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOpti
         ),
       ),
       SizedBox(height: SGSpacing.p2),
-      SGContainer(
-        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
+      InkWell(
+        onTap: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NewCuisineOptionCategoryScreen()));
+        },
         child: SGContainer(
-            color: SGColors.white,
-            borderColor: SGColors.primary,
-            borderRadius: BorderRadius.circular(SGSpacing.p2),
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-            child: Center(
-                child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Image.asset("assets/images/plus.png", width: 12, height: 12),
-              SizedBox(width: SGSpacing.p2),
-              SGTypography.body("옵션 카테고리 추가", size: FontSize.small, color: SGColors.primary),
-            ]))),
+          padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
+          child: SGContainer(
+              color: SGColors.white,
+              borderColor: SGColors.primary,
+              borderRadius: BorderRadius.circular(SGSpacing.p2),
+              padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+              child: Center(
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Image.asset("assets/images/plus.png", width: 12, height: 12),
+                SizedBox(width: SGSpacing.p2),
+                SGTypography.body("옵션 카테고리 추가", size: FontSize.small, color: SGColors.primary),
+              ]))),
+        ),
       ),
       SizedBox(height: SGSpacing.p4),
       SGContainer(

@@ -23,6 +23,50 @@ class CouponDetailScreen extends StatefulWidget {
   State<CouponDetailScreen> createState() => _CouponDetailScreenState();
 }
 
+void showSnackBar(BuildContext context, String text) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      margin: EdgeInsets.only(left: SGSpacing.p20, right: SGSpacing.p20, bottom: SGSpacing.p12),
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      duration: const Duration(milliseconds: 3000),
+      content: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(99),
+          color: SGColors.secondary.withOpacity(0.12),
+        ),
+        child: ShaderMask(
+          shaderCallback: (Rect bounds) {
+            return LinearGradient(
+              colors: [SGColors.primary, SGColors.secondary],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ).createShader(bounds);
+          },
+          blendMode: BlendMode.srcATop,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(99),
+              border: Border.all(color: Colors.white, width: 2),
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  text,
+                  style: TextStyle(color: SGColors.primary, fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+
 class _CouponDetailScreenState extends State<CouponDetailScreen> {
   @override
   Widget build(BuildContext context) {
@@ -214,6 +258,7 @@ class _CouponDetailScreenState extends State<CouponDetailScreen> {
                                     onTap: () {
                                       Navigator.of(ctx).pop();
                                       context.read<CouponListBloc>().add(DeleteCoupon(widget.coupon.id));
+                                      showSnackBar(context, "쿠폰이 삭제되었습니다.");
                                       Navigator.of(context).pop();
                                     },
                                     child: SGContainer(

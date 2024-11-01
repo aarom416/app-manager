@@ -161,6 +161,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
             child: SGActionButton(
                 onPressed: () {
                   if (isPasswordValid) {
+                    showFailDialogWithImage("비밀번호 변경을 위해\n이전과 다른 비밀번호를 입력해주세요.", "");
                     widget.onNext!();
                   }
                 },
@@ -260,6 +261,78 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
               )),
             ])));
+  }
+
+  void showFailDialogWithImage(String mainTitle, String subTitle) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          Center(
+              child: SGTypography.body(mainTitle,
+                  size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+          ),
+          SizedBox(height: SGSpacing.p4),
+          Center(
+              child: SGTypography.body(subTitle,
+                  color: SGColors.gray4,
+                  size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+          ),
+          SizedBox(height: SGSpacing.p6),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(ctx);
+            },
+            child: SGContainer(
+              color: SGColors.primary,
+              width: double.infinity,
+              borderColor: SGColors.primary,
+              padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Center(
+                  child: SGTypography.body("확인",
+                      color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
+            ),
+          )
+        ]);
+  }
+
+
+  void showSGDialogWithImage({
+    required BuildContext context,
+    required List<Widget> Function(BuildContext) childrenBuilder,
+  }) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: SGContainer(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(SGSpacing.p3),
+            padding: EdgeInsets.all(SGSpacing.p4 - SGSpacing.p05).copyWith(bottom: 0),
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SGContainer(
+                padding:
+                EdgeInsets.symmetric(horizontal: SGSpacing.p05).copyWith(bottom: SGSpacing.p5, top: SGSpacing.p3),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                        height: SGSpacing.p2
+                    ),
+                    Image.asset("assets/images/warning.png", width: SGSpacing.p12),
+                    SizedBox(
+                        height: SGSpacing.p3
+                    ),
+                    ...childrenBuilder(ctx),
+                  ],
+                ),
+              )
+            ]),
+          ),
+        );
+      },
+    );
   }
 }
 

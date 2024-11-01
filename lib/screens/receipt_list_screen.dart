@@ -22,10 +22,12 @@ class ReceiptListScreen extends StatefulWidget {
   State<ReceiptListScreen> createState() => _ReceiptListScreenState();
 }
 
-class _ReceiptListScreenState extends State<ReceiptListScreen> {
+class _ReceiptListScreenState extends State<ReceiptListScreen> with SingleTickerProviderStateMixin{
   DateRange dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
+
   ScrollController scrollController = ScrollController();
 
+  String tab = "오늘";
   List<OrderModel> orders = [
     OrderModel(
         orderName: "연어 샐러드 외 1건",
@@ -43,8 +45,67 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
         orderType: "배달"),
   ];
 
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        setState(() {
+          switch (_tabController.index) {
+            case 0:
+              tab = "오늘";
+              break;
+            case 1:
+              tab = "어제";
+              break;
+            case 2:
+              tab = "일주일";
+              break;
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    final DateTime startDate = DateTime.now();
+    final DateTime yesterdayOfOne = dateRange.start.subtract(const Duration(days: 1));
+    final DateTime yesterdayOfTwo = dateRange.start.subtract(const Duration(days: 2));
+    final DateTime week = dateRange.start.subtract(const Duration(days: 7));
+
+    String tab = "오늘";
+
+    DateTime start;
+    DateTime end = startDate;
+
+    // 탭에 따른 날짜 설정
+    switch (tab) {
+      case "오늘":
+        start = yesterdayOfOne;
+        break;
+      case "어제":
+        start = yesterdayOfTwo;
+        end = yesterdayOfOne;
+        break;
+      case "일주일":
+        start = week;
+        break;
+      default:
+        start = startDate;
+    }
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -52,49 +113,117 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> {
           floatingActionButton: Container(
               constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
               child: SGActionButton(onPressed: () {}, label: "조회")),
-          body: NestedScrollView(
-              controller: scrollController,
-              headerSliverBuilder: (ctx, _) => [
-                    SliverOverlapAbsorber(
-                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(ctx),
-                        sliver: SliverPersistentHeader(
-                            pinned: true,
-                            delegate: CustomTabBar(
-                                tabBar: TabBar(
-                              indicatorColor: SGColors.primary,
-                              tabs: [
-                                Tab(text: "오늘"),
-                                Tab(text: "어제"),
-                                Tab(text: "일주일"),
-                              ],
-                              labelStyle: TextStyle(
-                                fontSize: FontSize.normal,
-                                fontWeight: FontWeight.w600,
-                                color: SGColors.primary,
-                              ),
-                              unselectedLabelStyle: TextStyle(
-                                fontSize: FontSize.normal,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFFBEBEBE),
-                              ),
-                              indicatorSize: TabBarIndicatorSize.tab,
-                              indicatorPadding: EdgeInsets.symmetric(horizontal: SGSpacing.p6),
-                              indicatorWeight: 3.0,
-                              labelPadding: EdgeInsets.symmetric(horizontal: SGSpacing.p2),
-                            ))))
-                  ],
-              body: SGContainer(
-                  color: Color(0xFFFAFAFA),
-                  padding: EdgeInsets.only(top: SGSpacing.p18).copyWith(left: SGSpacing.p4, right: SGSpacing.p4),
+          body: Column(
+            children: [
+              SGContainer(
+                color: Colors.white,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                  SGContainer(
+                  borderColor: SGColors.line3,
+                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                  padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p4),
+                  color: Colors.white,
+                  child: SGTypography.body(
+                    _tabController.index == 0 ?
+                    "${yesterdayOfOne.year}년 ${yesterdayOfOne.month}월 ${yesterdayOfOne.day}일 (${yesterdayOfOne.weekDay.toString()})" :
+                    _tabController.index == 1 ? "${yesterdayOfTwo.year}년 ${yesterdayOfTwo.month}월 ${yesterdayOfTwo.day}일 (${yesterdayOfTwo.weekDay.toString()})" :
+                    "${week.year}년 ${week.month}월 ${week.day}일 (${week.weekDay.toString()})",
+                    size: FontSize.small,
+                    color: Colors.black,
+                    weight: FontWeight.w400,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                SGContainer(
                   borderWidth: 0,
-                  child: TabBarView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      renderOrderList(),
-                      renderOrderList(),
-                      renderOrderList(),
-                    ],
-                  )))),
+                  padding: EdgeInsets.symmetric(horizontal: SGSpacing.p2),
+                  child: SGTypography.body("~"),
+                ),
+                SGContainer(
+                  borderColor: SGColors.line3,
+                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                  padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p4),
+                  color: Colors.white,
+                  child: SGTypography.body(
+                    _tabController.index == 0 ?
+                    "${startDate.year}년 ${startDate.month}월 ${startDate.day}일 (${startDate.weekDay.toString()})" :
+                    _tabController.index == 1 ? "${yesterdayOfOne.year}년 ${yesterdayOfOne.month}월 ${yesterdayOfOne.day}일 (${yesterdayOfOne.weekDay.toString()})" :
+                    "${startDate.year}년 ${startDate.month}월 ${startDate.day}일 (${startDate.weekDay.toString()})",
+                    size: FontSize.small,
+                    color: Colors.black,
+                    weight: FontWeight.w400,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: NestedScrollView(
+                    controller: scrollController,
+                    headerSliverBuilder: (ctx, _) => [
+                          SliverOverlapAbsorber(
+                              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(ctx),
+                              sliver: SliverPersistentHeader(
+                                  pinned: true,
+                                  delegate: CustomTabBar(
+                                      tabBar: TabBar(
+                                        controller: _tabController,
+                                        indicatorColor: SGColors.primary,
+                                        onTap: (index) {
+                                          setState(() {
+                                            switch (index) {
+                                              case 0:
+                                                tab = "오늘";
+                                                break;
+                                              case 1:
+                                                tab = "어제";
+                                                break;
+                                              case 2:
+                                                tab = "일주일";
+                                                break;
+                                            }
+                                          });
+                                        },
+                                    tabs: [
+                                      Tab(text: "오늘"),
+                                      Tab(text: "어제"),
+                                      Tab(text: "일주일"),
+                                    ],
+                                    labelStyle: TextStyle(
+                                      fontSize: FontSize.normal,
+                                      fontWeight: FontWeight.w600,
+                                      color: SGColors.primary,
+                                    ),
+                                    unselectedLabelStyle: TextStyle(
+                                      fontSize: FontSize.normal,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFFBEBEBE),
+                                    ),
+                                    indicatorSize: TabBarIndicatorSize.tab,
+                                    indicatorPadding: EdgeInsets.symmetric(horizontal: SGSpacing.p6),
+                                    indicatorWeight: 3.0,
+                                    labelPadding: EdgeInsets.symmetric(horizontal: SGSpacing.p2),
+                                  ))))
+                        ],
+                    body: SGContainer(
+                        color: Color(0xFFFAFAFA),
+                        padding: EdgeInsets.only(top: SGSpacing.p18).copyWith(left: SGSpacing.p4, right: SGSpacing.p4),
+                        borderWidth: 0,
+                        child: TabBarView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: [
+                            renderOrderList(),
+                            renderOrderList(),
+                            renderOrderList(),
+                          ],
+                        ))),
+              ),
+            ],
+          )),
     );
   }
 
@@ -351,9 +480,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                     DataTableRow(left: "연락처", right: "050-****-****"),
                   ]),
                 ],
-                SizedBox(height: SGSpacing.p4),
-                SGActionButton(onPressed: () {}, label: "고객 센터"),
-                SizedBox(height: SGSpacing.p14),
+                SizedBox(height: SGSpacing.p12),
               ],
             )));
   }

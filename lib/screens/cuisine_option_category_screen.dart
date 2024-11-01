@@ -14,6 +14,7 @@ import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 import 'package:singleeat/office/components/nutrition_card.dart';
 import 'package:singleeat/office/models/cuisine_model.dart';
+import 'package:singleeat/screens/new_cuisine_option_screen.dart';
 import 'package:singleeat/screens/nutrition_form.dart';
 
 class CuisineOptionCategoryScreen extends StatefulWidget {
@@ -521,6 +522,7 @@ class _CuisineOptionCategoryEditScreenState extends State<CuisineOptionCategoryE
       Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
 
   late String categoryName = widget.category.name;
+  List<CuisineOption> options = [];
 
   @override
   Widget build(BuildContext context) {
@@ -576,7 +578,16 @@ class _CuisineOptionCategoryEditScreenState extends State<CuisineOptionCategoryE
                   .flattened,
               SizedBox(height: SGSpacing.p5),
               GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => NewCuisineOptionScreen(
+                          onSubmitCuisineOption: (option) {
+                            setState(() {
+                              options.add(option);
+                            });
+                          },
+                        )));
+                  },
                   child: SGContainer(
                       color: SGColors.white,
                       padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),

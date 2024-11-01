@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:singleeat/core/components/action_button.dart';
@@ -507,16 +509,26 @@ class _StoreRegistrationFormScreen extends StatefulWidget {
 }
 
 class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScreen> {
-  String businessRegistrationNumber = '';
+
+  TextEditingController businessRegistrationController = TextEditingController();
+  TextEditingController representativeNameController = TextEditingController();
+  TextEditingController storeNameController = TextEditingController();
+  TextEditingController storeAddressController = TextEditingController();
+  TextEditingController storeNumberController = TextEditingController();
+
+  File? _accountImage;
+  File? _businessRegistrationImage;
+  File? _operationImage;
+  bool checkRegistrationNumber = false;
+  
   String representativeName = '';
-  String representativePhoneNumber = '';
   String storeName = '';
   String storeAddress = '';
-  String storeAddress2 = '';
-  String storeDetailAddress = '';
+  String businessType = '';
+  String storeNumber = '';
   String category = "";
   List<String> selectedCategories = [];
-  String businessType = '';
+
 
   List<SelectionOption<String>> categoryOptions = [
     SelectionOption(label: "샐러드", value: "샐러드"),
@@ -576,12 +588,10 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                         children: [
                           Expanded(
                             child: TextField(
-                                onChanged: (value) {
-                                  setState(() {
-                                    businessRegistrationNumber = value;
-                                  });
-                                },
-                                style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
+                                controller: businessRegistrationController,
+                                enabled: checkRegistrationNumber ? false : true,
+                                style: checkRegistrationNumber ? TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400) :
+                                TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
                                 decoration: InputDecoration(
                                   isDense: true,
                                   isCollapsed: true,
@@ -599,9 +609,13 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                   SizedBox(width: SGSpacing.p2),
                   InkWell(
                     onTap: () {
-                      if (businessRegistrationNumber.isNotEmpty) {
+                      if (businessRegistrationController.text.isNotEmpty) {
                         showDialog("조회에 성공하였습니다.");
                         showFailDialogWithImage("입력하신 정보를\n다시 한번 조회해주세요.","");
+                        
+                        setState(() {
+                          checkRegistrationNumber = true;
+                        });
                       }
                     },
                     child: SGContainer(
@@ -631,11 +645,7 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                         children: [
                           Expanded(
                             child: TextField(
-                                onChanged: (value) {
-                                  setState(() {
-                                    representativeName = value;
-                                  });
-                                },
+                                controller: representativeNameController,
                                 style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
                                 decoration: InputDecoration(
                                   isDense: true,
@@ -669,11 +679,7 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                         children: [
                           Expanded(
                             child: TextField(
-                                onChanged: (value) {
-                                  setState(() {
-                                    storeName = value;
-                                  });
-                                },
+                                controller: storeNameController,
                                 style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
                                 decoration: InputDecoration(
                                   isDense: true,
@@ -707,11 +713,7 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                             children: [
                               Expanded(
                                 child: TextField(
-                                    onChanged: (value) {
-                                      setState(() {
-                                        representativePhoneNumber = value;
-                                      });
-                                    },
+                                    controller: storeAddressController,
                                     style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
                                     decoration: InputDecoration(
                                       isDense: true,
@@ -745,11 +747,7 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
                             children: [
                               Expanded(
                                 child: TextField(
-                                    onChanged: (value) {
-                                      setState(() {
-                                        representativePhoneNumber = value;
-                                      });
-                                    },
+                                    controller: storeNumberController,
                                     style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
                                     decoration: InputDecoration(
                                       isDense: true,
@@ -935,11 +933,33 @@ class _StoreRegistrationFormScreenState extends State<_StoreRegistrationFormScre
             SizedBox(height: SGSpacing.p14),
             SGActionButton(
                 onPressed: () {
-                  if (!isFormValid) return;
-                  widget.onNext();
+                  if (businessRegistrationController.text.isNotEmpty &&
+                      representativeNameController.text.isNotEmpty &&
+                      storeNumberController.text.isNotEmpty &&
+                      storeNameController.text.isNotEmpty &&
+                      storeAddressController.text.isNotEmpty &&
+                      category != null &&
+                      businessType != null
+                      // && _accountImage != null &&
+                      // _businessRegistrationImage != null &&
+                      // _operationImage != null
+                  ) {
+                    widget.onNext();
+                  }
                 },
                 label: "연구소 입점 신청하기",
-                disabled: !isFormValid),
+                disabled: !(businessRegistrationController.text.isNotEmpty &&
+                    representativeNameController.text.isNotEmpty &&
+                    storeNumberController.text.isNotEmpty &&
+                    storeNameController.text.isNotEmpty &&
+                    storeAddressController.text.isNotEmpty &&
+                    category != null &&
+                    businessType != null
+                    // && _accountImage != null &&
+                    // _businessRegistrationImage != null &&
+                    // _operationImage != null
+                )
+            ),
           ]),
         ));
   }

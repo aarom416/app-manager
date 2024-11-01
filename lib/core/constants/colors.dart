@@ -40,6 +40,9 @@ class SGColors {
   /// Equivalent to Color(0xFF2CB682)
   static Color get primary => const Color(0xFF2CB682);
 
+  /// Equivalent to Color(0xFF65DD7F)
+  static Color get secondary => const Color(0xFF65DD7F);
+
   /// Equivalent to Color(0xFF1A1A1A)
   static Color get black => const Color(0xFF1A1A1A);
 
