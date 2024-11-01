@@ -254,6 +254,33 @@ class InProgressOrderDetailScreen extends StatelessWidget {
   final OrderModel order;
   const InProgressOrderDetailScreen({super.key, required this.order});
 
+  void showSnackBar(BuildContext context, String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        margin: EdgeInsets.only(left: SGSpacing.p24, right: SGSpacing.p24, bottom: SGSpacing.p12),
+        behavior: SnackBarBehavior.floating,
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: SGColors.white, fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: SGColors.gray5,
+        duration: const Duration(milliseconds: 3000),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(99),
+        ),
+      ),
+    );
+  }
+
+
   void showCancelDialog({required BuildContext context}) {
     showSGDialogWithCloseButton(
         context: context,
@@ -295,6 +322,7 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                                     child: GestureDetector(
                                       onTap: () {
                                         Navigator.of(ctx).pop();
+                                        showSnackBar(context, "주문이 취소되었습니다.");
                                       },
                                       child: SGContainer(
                                         width: double.infinity,
@@ -401,6 +429,7 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                                       child: GestureDetector(
                                         onTap: () {
                                           Navigator.of(ctx).pop();
+                                          showSnackBar(context, "포장 완료 알림 전송 성공!");
                                         },
                                         child: SGContainer(
                                           width: double.infinity,
@@ -463,6 +492,7 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                                   child: GestureDetector(
                                     onTap: () {
                                       Navigator.of(ctx).pop();
+                                      showSnackBar(context, "배달 완료 알림 전송 성공!");
                                     },
                                     child: SGContainer(
                                       width: double.infinity,
@@ -650,7 +680,7 @@ class _OrderInformation extends StatelessWidget {
         SizedBox(height: SGSpacing.p4),
         _DataTableRow(left: "주문번호", right: "ABCDEFGH"),
       ]),
-      if (order.orderType == '포장' && order.status == OrderStatus.inProgress || order.status == OrderStatus.completed || order.status == OrderStatus.cancelled) ...[
+      if (order.orderType == '포장' && (order.status == OrderStatus.inProgress || order.status == OrderStatus.completed || order.status == OrderStatus.cancelled)) ...[
         SizedBox(height: SGSpacing.p3),
         _DataTable(children: [
           SGTypography.body("주문자 정보", size: FontSize.normal, color: SGColors.white, weight: FontWeight.w600),

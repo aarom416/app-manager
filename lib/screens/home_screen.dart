@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:singleeat/core/components/container.dart';
+import 'package:singleeat/core/components/dialog.dart';
+import 'package:singleeat/core/components/flex.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
@@ -121,6 +123,7 @@ class _MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<_MainScreen> {
   bool isActive = true;
+  bool _isClosed = false;
   final List<NoticeModel> notices = [
     NoticeModel(title: "[서비스안내] 6월24일(월)부터 정산 관리 시스템이 개편되었으니 참고하시길 바랍니다.", date: DateTime.now(), category: ""),
     NoticeModel(title: "[서비스안내] 부가세 관련 안내", date: DateTime.now(), category: ""),
@@ -151,6 +154,60 @@ class _MainScreenState extends State<_MainScreen> {
     );
   }
 
+  void showOperationStopDialog({required BuildContext context}) {
+    showSGDialog(
+        context: context,
+        childrenBuilder: (ctx) => [
+          SGTypography.body("영업 임시 중지 시", size: FontSize.medium, weight: FontWeight.w700),
+          SizedBox(height: SGSpacing.p1),
+          SGTypography.body("신규 주문 접수가 불가합니다.", size: FontSize.medium, weight: FontWeight.w700),
+          SizedBox(height: SGSpacing.p5),
+          Row(
+            children: [
+              SGFlexible(
+                flex: 2,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  child: SGContainer(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    color: SGColors.gray3,
+                    child: Center(
+                      child: SGTypography.body("취소",
+                          size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: SGSpacing.p2),
+              SGFlexible(
+                flex: 2,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                    setState(() {
+                      isActive = true;
+                    });
+                  },
+                  child: SGContainer(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    color: SGColors.primary,
+                    child: Center(
+                      child: SGTypography.body("확인",
+                          size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ]);
+  }
   @override
   Widget build(BuildContext context) {
     const toolbarHeight = 64.0;
@@ -210,7 +267,11 @@ class _MainScreenState extends State<_MainScreen> {
                                       value: isActive,
                                       onChanged: (toggled) {
                                         setState(() {
-                                          isActive = toggled;
+                                          if (isActive) {
+                                            isActive = !isActive;
+                                          } else {
+                                            showOperationStopDialog(context: context);
+                                          }
                                         });
                                       })),
                             ]),

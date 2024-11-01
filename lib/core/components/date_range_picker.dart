@@ -101,7 +101,7 @@ class _DateRangePickerState extends State<DateRangePicker> {
           child: Center(
             child: SGTypography.body(formatDate(datetime),
                 size: widget.variant == DateRangePickerVariant.normal ? FontSize.normal : FontSize.small,
-                color: Colors.black,
+                color: SGColors.gray4,
                 weight: FontWeight.w400,
                 letterSpacing: -0.5),
           ),

@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
+import 'package:singleeat/core/components/flex.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/selection_bottom_sheet.dart';
 import 'package:singleeat/core/components/sizing.dart';
@@ -13,14 +14,187 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/screens/store_management_holiday_management_screen.dart';
 
-class StoreManagementBusinessHourScreen extends StatelessWidget {
-  const StoreManagementBusinessHourScreen({
+class StoreManagementBusinessHourScreen extends StatefulWidget {
+
+  StoreManagementBusinessHourScreen({
     super.key,
   });
 
   @override
+  State<StoreManagementBusinessHourScreen> createState() => _StoreManagementBusinessHourScreenState();
+}
+
+class _StoreManagementBusinessHourScreenState extends State<StoreManagementBusinessHourScreen> {
+  bool deliveryOrderPossible = false;
+  bool pickUpOrderPossible = false;
+  bool deliveryStatus = false;
+  bool pickStatus = false;
+  void showSGDialogWithImageBoth({
+    required BuildContext context,
+    required List<Widget> Function(BuildContext) childrenBuilder,
+  }) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: SGContainer(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(SGSpacing.p3),
+            padding: EdgeInsets.all(SGSpacing.p4 - SGSpacing.p05).copyWith(bottom: 0),
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SGContainer(
+                padding:
+                EdgeInsets.symmetric(horizontal: SGSpacing.p05).copyWith(bottom: SGSpacing.p5, top: SGSpacing.p3),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                        height: SGSpacing.p2
+                    ),
+                    Image.asset("assets/images/warning.png", width: SGSpacing.p12),
+                    SizedBox(
+                        height: SGSpacing.p3
+                    ),
+                    ...childrenBuilder(ctx),
+                  ],
+                ),
+              )
+            ]),
+          ),
+        );
+      },
+    );
+  }
+
+
+  void showFailDialogWithImageBoth(int type, String mainTitle, String subTitle) {
+    showSGDialogWithImageBoth(
+        context: context,
+        childrenBuilder: (ctx) => [
+          Column(
+            children: [
+              Center(
+                  child: SGTypography.body(mainTitle,
+                      size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+              ),
+              SizedBox(height: SGSpacing.p2),
+              Center(
+                  child: SGTypography.body(subTitle,
+                      color: SGColors.gray4,
+                      size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+              ),
+              SizedBox(height: SGSpacing.p6),
+            ],
+          ),
+          Row(
+            children: [
+              SGFlexible(
+                flex: 2,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                  },
+                  child: SGContainer(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    color: SGColors.gray3,
+                    child: Center(
+                      child: SGTypography.body("취소",
+                          size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: SGSpacing.p2),
+              SGFlexible(
+                flex: 2,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                    setState(() {
+                      if (type == 0){
+                        if (deliveryOrderPossible) {
+                          deliveryOrderPossible = false;
+                        }
+                      } else {
+                        if (pickUpOrderPossible) {
+                          pickUpOrderPossible = false;
+                        }
+                      }
+                    });
+                  },
+                  child: SGContainer(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    color: SGColors.primary,
+                    child: Center(
+                      child: SGTypography.body("확인",
+                          size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ]);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListView(children: [
+      SGContainer(
+          padding: EdgeInsets.all(SGSpacing.p4),
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          color: SGColors.white,
+          borderColor: SGColors.line3,
+          boxShadow: SGBoxShadow.large,
+          width: double.infinity,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SGTypography.body("배달 주문 가능", size: FontSize.normal, weight: FontWeight.w500),
+              SGSwitch(
+                  value: deliveryOrderPossible,
+                  onChanged: (value) {
+                    setState(() {
+                      if (deliveryOrderPossible) {
+                        showFailDialogWithImageBoth(0, "배달 주문을 비활성화하시겠습니까?", "비활성화시 신규 배달 주문을 받을 수 없습니다.");
+                      } else {
+                        deliveryOrderPossible = !deliveryOrderPossible;
+                      }
+                    });
+                  })
+            ],
+          )),
+      SizedBox(height: SGSpacing.p3),
+      SGContainer(
+          padding: EdgeInsets.all(SGSpacing.p4),
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          color: SGColors.white,
+          borderColor: SGColors.line3,
+          boxShadow: SGBoxShadow.large,
+          width: double.infinity,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SGTypography.body("포장 주문 가능", size: FontSize.normal, weight: FontWeight.w500),
+              SGSwitch(
+                  value: pickUpOrderPossible,
+                  onChanged: (value) {
+                    setState(() {
+                      if (pickUpOrderPossible) {
+                        showFailDialogWithImageBoth(1, "포장 주문을 비활성화하시겠습니까?", "비활성화시 신규 포장 주문을 받을 수 없습니다.");
+                      } else {
+                        pickUpOrderPossible = !pickUpOrderPossible;
+                      }
+                    });
+                  })
+            ],
+          )),
+      SizedBox(height: SGSpacing.p3),
       MultipleInformationBox(children: [
         Row(children: [
           SGTypography.body("영업시간", size: FontSize.normal, weight: FontWeight.w700),
@@ -82,82 +256,7 @@ class StoreManagementBusinessHourScreen extends StatelessWidget {
         DataTableRow(left: "공휴일", right: "설날, 설날 다음날"),
       ]),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      MultipleInformationBox(children: [
-        Row(children: [
-          SGTypography.body("휴무일 안내", size: FontSize.normal, weight: FontWeight.w700),
-          SizedBox(width: SGSpacing.p1),
-          GestureDetector(
-              child: const Icon(Icons.edit, size: FontSize.small),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const _HolidayAnnouncementScreen()));
-              }),
-        ]),
-        SizedBox(height: SGSpacing.p5),
-        SGTypography.body("ex) 가게 리모델링으로 1월 5일~8일 쉬어요", size: FontSize.small, color: SGColors.gray3),
-      ]),
-      SizedBox(
-        height: SGSpacing.p32,
-      ),
     ]);
-  }
-}
-
-class _HolidayAnnouncementScreen extends StatefulWidget {
-  const _HolidayAnnouncementScreen({super.key});
-
-  @override
-  State<_HolidayAnnouncementScreen> createState() => __HolidayAnnouncementScreenState();
-}
-
-class __HolidayAnnouncementScreenState extends State<_HolidayAnnouncementScreen> {
-  TextEditingController textEditingController = TextEditingController();
-
-  String text = "";
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarWithLeftArrow(title: "휴무일 안내"),
-        body: SGContainer(
-          color: Color(0xFFFAFAFA),
-          padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
-          child: Column(
-            children: [
-              SGTextFieldWrapper(
-                  child: SGContainer(
-                padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p2),
-                child: TextField(
-                  controller: textEditingController,
-                  onChanged: (value) {
-                    setState(() {
-                      text = value;
-                    });
-                  },
-                  maxLines: 5,
-                  style: TextStyle(
-                    color: SGColors.black,
-                    fontSize: FontSize.small,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: "ex) 이번 주는 가게 리모델링으로 인해 1~2주 동안은 영업이 어려울 것 같습니다.",
-                    hintStyle: TextStyle(
-                      color: SGColors.gray3,
-                      fontSize: FontSize.small,
-                    ),
-                    border: InputBorder.none,
-                  ),
-                ),
-              )),
-              Spacer(),
-              SGActionButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  label: "변경하기",
-                  disabled: text.isEmpty)
-            ],
-          ),
-        ));
   }
 }
 

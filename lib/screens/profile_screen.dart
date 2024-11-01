@@ -1228,7 +1228,7 @@ class _SuccessChangePasswordScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen(title: "")),
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
                         (Route<dynamic> route) => false,
                   );
                 },

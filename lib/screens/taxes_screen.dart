@@ -260,7 +260,7 @@ class PurchaseHistoryCard extends StatelessWidget {
       children: [
         DataTableRow(left: "서비스", right: "싱그릿"),
         SizedBox(height: SGSpacing.p4),
-        DataTableRow(left: "발급구분코드", right: purchaseHistory.code),
+        DataTableRow(left: "발급구분코드", right: purchaseHistory.serviceType),
         SizedBox(height: SGSpacing.p4),
         DataTableRow(left: "수수료(공급가액)", right: purchaseHistory.price.toKoreanCurrency),
         SizedBox(height: SGSpacing.p4),

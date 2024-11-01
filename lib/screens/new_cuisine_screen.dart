@@ -91,6 +91,7 @@ class _NewCuisineNameStepScreenState extends State<_NewCuisineNameStepScreen> {
                 disabled: menuName.isEmpty,
                 onPressed: () {
                   widget.onNext();
+                  FocusScope.of(context).unfocus();
                 },
                 label: "추가하기")),
         body: SGContainer(
@@ -446,6 +447,7 @@ class _NewCuisinePriceStepScreenState extends State<_NewCuisinePriceStepScreen> 
                     child: GestureDetector(
                   onTap: () {
                     widget.onNext();
+                    FocusScope.of(context).unfocus();
                   },
                   child: SGContainer(
                       color: SGColors.primary,
@@ -645,7 +647,7 @@ class _NewCuisineRegistrationStepScreenState extends State<_NewCuisineRegistrati
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
                       child: Center(
-                          child: SGTypography.body("다음",
+                          child: SGTypography.body("등록",
                               size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
               ],
@@ -689,7 +691,7 @@ class _NewCuisineRegistrationStepScreenState extends State<_NewCuisineRegistrati
                   ),
                 ),
                 SizedBox(height: SGSpacing.p3),
-                SGTypography.body("15MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.", color: SGColors.gray4, weight: FontWeight.w500),
+                SGTypography.body("10MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.", color: SGColors.gray4, weight: FontWeight.w500),
                 SizedBox(height: SGSpacing.p8),
                 SGTypography.body("메뉴 구성 및 설명을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
                 SizedBox(height: SGSpacing.p3),
