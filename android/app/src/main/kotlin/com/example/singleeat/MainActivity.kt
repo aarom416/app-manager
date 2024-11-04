@@ -1,4 +1,4 @@
-package com.example.singleeat
+package com.golgoru.singleat_owner
 
 import io.flutter.embedding.android.FlutterActivity
 

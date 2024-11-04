@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "790805366545",
+    "project_id": "singleat-e0985",
+    "storage_bucket": "singleat-e0985.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790805366545:android:a09b862a6f0e21ddc6eeb0",
+        "android_client_info": {
+          "package_name": "com.golgoru.singleat_owner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZnwVR5Z0DX6CAIWSWiXVl8o4vokIZC1E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
