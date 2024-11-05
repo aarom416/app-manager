@@ -4,7 +4,7 @@ import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
 import 'package:singleeat/screens/find_by_password_screen.dart';
 import 'package:singleeat/screens/home_screen.dart';
-import 'package:singleeat/screens/webview_screen.dart';
+import 'package:singleeat/screens/login_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
 
@@ -16,15 +16,12 @@ class AppRouter {
     routes: <RouteBase>[
       GoRoute(
           path: AppRoutes.root,
-          pageBuilder: (context, state) => const NoTransitionPage(
-                child: HomeScreen(
-                  title: '',
-                ),
-              )),
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: HomeScreen(title: ''))),
       GoRoute(
           path: AppRoutes.login,
           pageBuilder: (context, state) =>
-              const NoTransitionPage(child: WebViewScreen())),
+              const NoTransitionPage(child: LoginScreen())),
       GoRoute(
           path: AppRoutes.authenticateWithPhoneNumber,
           pageBuilder: (context, state) => NoTransitionPage(
