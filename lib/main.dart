@@ -1,18 +1,25 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:singleeat/fcm_test.dart';
-import 'package:singleeat/screens/home_screen.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:logger/logger.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/office/bloc/coupon_list_bloc.dart';
 import 'package:singleeat/office/bloc/manager_bloc.dart';
 import 'package:singleeat/office/bloc/store_bloc.dart';
 import 'package:singleeat/office/bloc/store_list_bloc.dart';
+import 'package:singleeat/screens/home_screen.dart';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'firebase_options.dart';
+
+final logger = Logger(
+  printer: PrettyPrinter(),
+);
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -25,7 +32,8 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   importance: Importance.high,
 );
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,11 +54,30 @@ void main() async {
   );
   if (Platform.isAndroid) {
     await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
   }
 
-  runApp(const MyApp());
+  await Hive.initFlutter();
+  await Hive.openBox('user');
+
+  // runApp(const MyApp());
+  runApp(const ProviderScope(observers: [], child: RunApp()));
+}
+
+class RunApp extends StatelessWidget {
+  const RunApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: 'singleat',
+      routerConfig: AppRouter().router,
+      theme: ThemeData(fontFamily: 'PRETENDARD'),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -64,9 +91,12 @@ class MyApp extends StatelessWidget {
           BlocProvider<ManagerBloc>(
             create: (BuildContext context) => ManagerBloc(),
           ),
-          BlocProvider<StoreListBloc>(create: (BuildContext context) => StoreListBloc()),
-          BlocProvider<StoreBloc>(create: (BuildContext context) => StoreBloc()),
-          BlocProvider<CouponListBloc>(create: (BuildContext context) => CouponListBloc()),
+          BlocProvider<StoreListBloc>(
+              create: (BuildContext context) => StoreListBloc()),
+          BlocProvider<StoreBloc>(
+              create: (BuildContext context) => StoreBloc()),
+          BlocProvider<CouponListBloc>(
+              create: (BuildContext context) => CouponListBloc()),
         ],
         child: MaterialApp(
             title: 'Flutter Demo',
@@ -93,8 +123,6 @@ class MyApp extends StatelessWidget {
               ),
               useMaterial3: true,
             ),
-            home: HomeScreen(title: 'Flutter Demo Home Page')
-        )
-    );
+            home: HomeScreen(title: 'Flutter Demo Home Page')));
   }
 }
