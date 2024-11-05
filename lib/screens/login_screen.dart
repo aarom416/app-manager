@@ -34,8 +34,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     ref.listen(loginNotifierProvider, (previous, next) {
-      if (next.status == LoginStatus.success) {
-        context.push(AppRoutes.authenticateWithPhoneNumber);
+      switch (next.status) {
+        case LoginStatus.success:
+          context.push(AppRoutes.authenticateWithPhoneNumber);
+          ref
+              .read(loginNotifierProvider.notifier)
+              .onChangeStatus(LoginStatus.init);
+          break;
+        case LoginStatus.password:
+          context.push(AppRoutes.findByPassword);
+          ref
+              .read(loginNotifierProvider.notifier)
+              .onChangeStatus(LoginStatus.init);
+        default:
+          break;
+      }
+
+      // show models
+      if (next.showTitleMessage.isNotEmpty) {
+        showFailDialogWithImage(
+            mainTitle: next.showTitleMessage, subTitle: next.showSubMessage);
       }
     });
 
@@ -141,7 +159,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ],
             ),
           ),
-          if (!state.error.success) ...[
+          if (!state.error.success && state.showTitleMessage.isEmpty) ...[
             const SizedBox(height: 10),
             Container(
               alignment: Alignment.topLeft,
@@ -223,6 +241,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
+  /*
   void showFailDialogWithImageNoSecondTitle(String mainTitle) {
     showSGDialogWithImage(
         context: context,
@@ -253,43 +272,74 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               )
             ]);
   }
+   */
 
-  void showFailDialogWithImage(String mainTitle, String subTitle) {
+  void showFailDialogWithImage({
+    required String mainTitle,
+    required String subTitle,
+  }) {
     showSGDialogWithImage(
         context: context,
         childrenBuilder: (ctx) => [
-              Center(
-                  child: SGTypography.body(mainTitle,
-                      size: FontSize.medium,
-                      weight: FontWeight.w700,
-                      lineHeight: 1.25,
-                      align: TextAlign.center)),
-              SizedBox(height: SGSpacing.p4),
-              Center(
-                  child: SGTypography.body(subTitle,
-                      color: SGColors.gray4,
-                      size: FontSize.small,
-                      weight: FontWeight.w700,
-                      lineHeight: 1.25,
-                      align: TextAlign.center)),
-              SizedBox(height: SGSpacing.p6),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(ctx);
-                },
-                child: SGContainer(
-                  color: SGColors.primary,
-                  width: double.infinity,
-                  borderColor: SGColors.primary,
-                  padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                  borderRadius: BorderRadius.circular(SGSpacing.p3),
-                  child: Center(
-                      child: SGTypography.body("확인",
-                          color: SGColors.white,
-                          weight: FontWeight.w700,
-                          size: FontSize.normal)),
-                ),
-              )
+              if (subTitle.isEmpty) ...[
+                Center(
+                    child: SGTypography.body(mainTitle,
+                        size: FontSize.medium,
+                        weight: FontWeight.w700,
+                        lineHeight: 1.25,
+                        align: TextAlign.center)),
+                SizedBox(height: SGSpacing.p6),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(ctx);
+                  },
+                  child: SGContainer(
+                    color: SGColors.primary,
+                    width: double.infinity,
+                    borderColor: SGColors.primary,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    child: Center(
+                        child: SGTypography.body("확인",
+                            color: SGColors.white,
+                            weight: FontWeight.w700,
+                            size: FontSize.normal)),
+                  ),
+                )
+              ] else ...[
+                Center(
+                    child: SGTypography.body(mainTitle,
+                        size: FontSize.medium,
+                        weight: FontWeight.w700,
+                        lineHeight: 1.25,
+                        align: TextAlign.center)),
+                SizedBox(height: SGSpacing.p4),
+                Center(
+                    child: SGTypography.body(subTitle,
+                        color: SGColors.gray4,
+                        size: FontSize.small,
+                        weight: FontWeight.w700,
+                        lineHeight: 1.25,
+                        align: TextAlign.center)),
+                SizedBox(height: SGSpacing.p6),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(ctx);
+                  },
+                  child: SGContainer(
+                    color: SGColors.primary,
+                    width: double.infinity,
+                    borderColor: SGColors.primary,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    child: Center(
+                        child: SGTypography.body("확인",
+                            color: SGColors.white,
+                            weight: FontWeight.w700,
+                            size: FontSize.normal)),
+                  ),
+                )
+              ]
             ]);
   }
 }
