@@ -1483,6 +1483,33 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
         (state.emailStatus == SignupEmailStatus.success);
   }
 
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  String? _idErrorText;
+  String? _passwordErrorText;
+
+  void _validateId(String value) {
+    final idRegex = RegExp(r'^[a-zA-Z0-9]{6,12}$');
+    setState(() {
+      if (idRegex.hasMatch(value)) {
+        _idErrorText = null; // Valid ID
+      } else {
+        _idErrorText = "아이디는 6~12자 이내, 영문, 숫자만 사용 가능합니다.";
+      }
+    });
+  }
+
+  void _validatePassword(String value) {
+    final passwordRegex = RegExp(r'^[a-zA-Z0-9!@#$%^&*()_+]{8,16}$');
+    setState(() {
+      if (passwordRegex.hasMatch(value)) {
+        _passwordErrorText = null; // Valid password
+      } else {
+        _passwordErrorText = "비밀번호는 8~16자 이내, 영문, 숫자, 특수문자만 사용 가능합니다.";
+      }
+    });
+  }
+
   @override
   void initState() {
     passwordFocusNode.addListener(() {
@@ -1546,7 +1573,9 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                       children: [
                         Expanded(
                           child: TextField(
+                              controller: _idController,
                               onChanged: (value) {
+                                _validateId(value);
                                 provider.onChangeLoginId(value);
                               },
                               style: TextStyle(
@@ -1593,6 +1622,17 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 )
               ],
             ),
+            if (_idErrorText != null)
+              Padding(
+                padding: EdgeInsets.only(top: SGSpacing.p2),
+                child: Text(
+                  _idErrorText!,
+                  style: TextStyle(
+                    fontSize: FontSize.tiny,
+                    color: SGColors.warningRed,
+                  ),
+                ),
+              ),
             SizedBox(height: SGSpacing.p8),
             SGTypography.body("비밀번호",
                 size: FontSize.small,
@@ -1603,57 +1643,66 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 child: SGContainer(
               padding: EdgeInsets.all(SGSpacing.p4),
               width: double.infinity,
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: TextField(
-                        focusNode: passwordFocusNode,
-                        onChanged: (value) {
-                          provider.onChangePassword(value);
-                        },
-                        style: TextStyle(
-                            fontSize: FontSize.small, color: SGColors.gray5),
-                        obscureText: !passwordVisible,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          isCollapsed: true,
-                          hintStyle: TextStyle(
-                              color: SGColors.gray3,
-                              fontSize: FontSize.small,
-                              fontWeight: FontWeight.w400),
-                          hintText: "8~16자의 영문, 숫자, 특수문자를 입력해주세요.",
-                          border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.zero,
-                              borderSide: BorderSide.none),
-                        )),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                            controller: _passwordController,
+                            focusNode: passwordFocusNode,
+                            onChanged: (value) {
+                              _validatePassword(value);
+                              provider.onChangePassword(value);
+                            },
+                            style: TextStyle(
+                                fontSize: FontSize.small, color: SGColors.gray5),
+                            obscureText: !passwordVisible,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              isCollapsed: true,
+                              hintStyle: TextStyle(
+                                  color: SGColors.gray3,
+                                  fontSize: FontSize.small,
+                                  fontWeight: FontWeight.w400),
+                              hintText: "8~16자의 영문, 숫자, 특수문자를 입력해주세요.",
+                              border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.zero,
+                                  borderSide: BorderSide.none),
+                            )),
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              passwordVisible = !passwordVisible;
+                            });
+                          },
+                          child: Icon(
+                              passwordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: SGColors.gray3)),
+                    ],
                   ),
-                  GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          passwordVisible = !passwordVisible;
-                        });
-                      },
-                      child: Icon(
-                          passwordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: SGColors.gray3)),
                 ],
               ),
             )),
+            if (_passwordErrorText != null)
+              Padding(
+                padding: EdgeInsets.only(top: SGSpacing.p2),
+                child: Text(
+                  _passwordErrorText!,
+                  style: TextStyle(
+                    fontSize: FontSize.tiny,
+                    color: SGColors.warningRed,
+                  ),
+                ),
+              ),
             SizedBox(height: SGSpacing.p8),
-            if (state.password.isNotEmpty &&
-                state.passwordConfirm.isNotEmpty &&
-                state.password != state.passwordConfirm)
-              SGTypography.body("비밀번호가 다릅니다.",
-                  size: FontSize.small,
-                  weight: FontWeight.w500,
-                  color: SGColors.warningRed)
-            else
-              SGTypography.body("비밀번호 확인",
-                  size: FontSize.small,
-                  weight: FontWeight.w500,
-                  color: SGColors.gray4),
+            SGTypography.body("비밀번호 확인",
+                size: FontSize.small,
+                weight: FontWeight.w500,
+                color: SGColors.gray4),
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
             SGTextFieldWrapper(
                 child: SGContainer(
@@ -1697,6 +1746,14 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 ],
               ),
             )),
+            if (state.password.isNotEmpty &&
+                state.passwordConfirm.isNotEmpty &&
+                state.password != state.passwordConfirm) ... {
+              SizedBox(height: SGSpacing.p2),
+              SGTypography.body("비밀번호가 다릅니다.",
+                  size: FontSize.tiny,
+                  color: SGColors.warningRed),
+            },
             SizedBox(height: SGSpacing.p8),
             SGTypography.body("이메일",
                 size: FontSize.small,
