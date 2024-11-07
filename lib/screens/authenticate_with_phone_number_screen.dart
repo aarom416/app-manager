@@ -34,6 +34,10 @@ class _AuthenticateWithPhoneNumberScreenState
     ref.listen(authenticateWithPhoneNumberNotifierProvider, (previous, next) {
       if (next.status == AuthenticateWithPhoneNumberStatus.success) {
         context.push(AppRoutes.webView);
+        
+        ref
+            .read(authenticateWithPhoneNumberNotifierProvider.notifier)
+            .onChangeStatus(AuthenticateWithPhoneNumberStatus.init);
       }
     });
 
@@ -52,13 +56,7 @@ class _AuthenticateWithPhoneNumberScreenState
               ]),
               SizedBox(height: SGSpacing.p10),
               GestureDetector(
-                // onTap: onNext,
-                onTap: () {
-                  ref
-                      .read(
-                          authenticateWithPhoneNumberNotifierProvider.notifier)
-                      .identityVerification();
-                },
+                onTap: widget.onNext,
                 child: SGContainer(
                     padding: EdgeInsets.symmetric(
                         horizontal: SGSpacing.p4, vertical: SGSpacing.p6),

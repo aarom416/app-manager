@@ -13,7 +13,6 @@ import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
 import 'package:singleeat/screens/find_account_screen.dart';
 import 'package:singleeat/screens/find_by_password_screen.dart';
-import 'package:singleeat/screens/signup_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -193,10 +192,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Expanded(
                 child: GestureDetector(
                     onTap: () {
-                      FocusScope.of(context).unfocus();
-
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => SignupScreen()));
+                      context.push(AppRoutes.signup);
                     },
                     child: Center(
                         child: SGTypography.body("회원가입",

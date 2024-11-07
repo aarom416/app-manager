@@ -58,9 +58,17 @@ class _WebViewScreenState extends ConsumerState<WebViewScreen> {
             logger.i(request);
           },
           onNavigationRequest: (NavigationRequest request) {
-            if (request.url.contains("identity-verification-failed-redirect")) {
-              return NavigationDecision.prevent;
+            String url = request.url;
+            if (url.contains('identity-verification-failed-redirect')) {
+              ref
+                  .read(webViewNotifierProvider.notifier)
+                  .onChangeStatus(WebViewStatus.error);
+            } else if (url.contains("identity-verification-success-redirect")) {
+              ref
+                  .read(webViewNotifierProvider.notifier)
+                  .onChangeStatus(WebViewStatus.success);
             }
+
             return NavigationDecision.navigate;
           },
         ),
@@ -76,6 +84,13 @@ class _WebViewScreenState extends ConsumerState<WebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(webViewNotifierProvider, (previous, next) {
+      if (next.status == WebViewStatus.success ||
+          next.status == WebViewStatus.error) {
+        Navigator.of(context).pop();
+      }
+    });
+
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),

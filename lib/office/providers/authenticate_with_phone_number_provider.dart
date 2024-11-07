@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:singleeat/main.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
 import 'package:singleeat/office/providers/webview_provider.dart';
@@ -35,11 +34,11 @@ class AuthenticateWithPhoneNumberNotifier
         );
 
     if (response.statusCode == 200) {
-      ref.read(webViewNotifierProvider.notifier).onChangeHtml(response.data);
+      ref
+          .read(webViewNotifierProvider.notifier)
+          .onChangeHtml(html: response.data, method: state.method);
       state = state.copyWith(status: AuthenticateWithPhoneNumberStatus.success);
     }
-
-    logger.i(response);
   }
 }
 
