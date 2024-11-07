@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/core/hive/user_hive.dart';
@@ -43,6 +44,14 @@ class SignupNotifier extends _$SignupNotifier {
 
   void onChangeDomain(String domain) {
     state = state.copyWith(domain: domain);
+  }
+
+  void onChangeIsSingleeatAgree(bool isSingleeatAgree) {
+    state = state.copyWith(isSingleeatAgree: isSingleeatAgree);
+  }
+
+  void onChangeIsAdditionalAgree(bool isAdditionalAgree) {
+    state = state.copyWith(isAdditionalAgree: isAdditionalAgree);
   }
 
   void passwordValidation() {
@@ -142,6 +151,29 @@ class SignupNotifier extends _$SignupNotifier {
     }
   }
 
+  void changeStatus() async {
+    Response response = await ref
+        .read(signupServiceProvider)
+        .singleatResearchStatus({'status': (state.isSingleeatAgree) ? 1 : 0});
+
+    if (response.statusCode != 200) {
+      state = state.copyWith(
+          error: ResultFailResponseModel.fromJson(response.data));
+      return;
+    }
+
+    response = await ref
+        .read(signupServiceProvider)
+        .additionalServiceStatus({'status': (state.isAdditionalAgree) ? 1 : 0});
+
+    if (response.statusCode == 200) {
+      state = state.copyWith(status: SignupStatus.step4);
+    } else {
+      state = state.copyWith(
+          error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
+
   void reset() async {
     state = const SignupState();
   }
@@ -176,6 +208,8 @@ abstract class SignupState with _$SignupState {
     @Default('') String authCode,
     @Default(false) bool isSendCode,
     @Default(false) bool loginIdValid,
+    @Default(false) bool isSingleeatAgree,
+    @Default(false) bool isAdditionalAgree,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
   }) = _SignupState;
 

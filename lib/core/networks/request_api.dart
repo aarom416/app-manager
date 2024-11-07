@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:singleeat/core/hive/user_hive.dart';
 import 'package:singleeat/core/networks/dio_service.dart';
 import 'package:singleeat/core/networks/rest_api.dart';
 
 class RequestApi {
   static Map<String, Object> getHeader({String? contentType}) {
     Map<String, Object> header = {
-      // 'Authorization': UserHive.get().authorization
+      'Authorization': 'Bearer ${UserHive.get().accessToken}'
     };
 
     if (contentType == null) {

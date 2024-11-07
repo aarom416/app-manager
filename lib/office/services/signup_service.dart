@@ -75,6 +75,42 @@ class SignupService {
       return Future.error(e);
     }
   }
+
+  Future<Response<dynamic>> singleatResearchStatus(
+      Map<String, int> data) async {
+    try {
+      final response = await RequestApi.post(
+        RestApiUri.singleatResearchStatus,
+        queryParameters: data,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  Future<Response<dynamic>> additionalServiceStatus(
+      Map<String, int> data) async {
+    try {
+      final response = await RequestApi.post(
+        RestApiUri.additionalServiceStatus,
+        queryParameters: data,
+      );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final signupServiceProvider = Provider<SignupService>((ref) => SignupService());

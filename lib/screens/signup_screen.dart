@@ -1287,7 +1287,7 @@ class _StoreRegistrationFormScreenState
   }
 }
 
-class _TermCheckScreen extends StatefulWidget {
+class _TermCheckScreen extends ConsumerStatefulWidget {
   final VoidCallback onPrev;
   final VoidCallback onNext;
 
@@ -1295,7 +1295,7 @@ class _TermCheckScreen extends StatefulWidget {
       {super.key, required this.onPrev, required this.onNext});
 
   @override
-  State<_TermCheckScreen> createState() => _TermCheckScreenState();
+  ConsumerState<_TermCheckScreen> createState() => _TermCheckScreenState();
 }
 
 class _Term {
@@ -1313,7 +1313,7 @@ class _Term {
   }
 }
 
-class _TermCheckScreenState extends State<_TermCheckScreen> {
+class _TermCheckScreenState extends ConsumerState<_TermCheckScreen> {
   List<(String, bool)> _terms = [
     ("개인정보 수집 및 이용 동의", true),
     ("전자금융거래 이용약관 동의", true),
@@ -1335,6 +1335,7 @@ class _TermCheckScreenState extends State<_TermCheckScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = ref.read(signupNotifierProvider.notifier);
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "싱그릿 식단 연구소", onTap: widget.onPrev),
         body: SGContainer(
@@ -1422,8 +1423,17 @@ class _TermCheckScreenState extends State<_TermCheckScreen> {
               SizedBox(height: SGSpacing.p15),
               SGActionButton(
                 onPressed: () {
-                  if (!isAllRequiredChecked) return;
-                  widget.onNext();
+                  terms.map((e) {
+                    if (e.title == '싱그릿 식단 연구소 수신 동의') {
+                      provider.onChangeIsSingleeatAgree(e.checked);
+                    } else if (e.title == '부가 서비스 및 혜택 안내 동의') {
+                      provider.onChangeIsAdditionalAgree(e.checked);
+                    }
+                  });
+
+                  if (isAllRequiredChecked) {
+                    provider.changeStatus();
+                  }
                 },
                 label: "확인",
                 disabled: !isAllRequiredChecked,
