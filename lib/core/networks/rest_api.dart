@@ -12,6 +12,8 @@ class RestApiUri {
   static const String additionalServiceStatus =
       '/api/v1/owner/additional-service-status';
   static const String directLogin = '/api/v1/owner/auth/login/direct-login';
+  static const String checkBusinessNumber =
+      '/api/v1/owner/enroll/check-business-registration-number/{businessRegistrationNumber}';
   static const String checkLoginId =
       '/api/v1/owner/auth/sign-up/check-loginId/{loginId}';
   static const String findPassword = '/api/v1/owner/auth/sign-up/find-password';

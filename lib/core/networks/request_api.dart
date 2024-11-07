@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:singleeat/core/hive/user_hive.dart';
+import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/networks/dio_service.dart';
 import 'package:singleeat/core/networks/rest_api.dart';
 

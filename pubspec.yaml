@@ -78,6 +78,8 @@ dependencies:
   webview_flutter_wkwebview: ^3.16.1
   webview_flutter_android: ^4.0.1
   path_provider: ^2.1.5
+  image_picker: ^1.1.2
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:

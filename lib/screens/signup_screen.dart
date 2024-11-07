@@ -118,15 +118,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 Navigator.pop(context);
               },
               onNext: () {
-                /*
                 ref
                     .read(signupNotifierProvider.notifier)
-                    .onChangeStatus(SignupStatus.step3);
-                 */
+                    .onChangeStatus(SignupStatus.step4);
 
+                /*
                 ref
                     .read(authenticateWithPhoneNumberNotifierProvider.notifier)
                     .identityVerification();
+                    JSS
+                 */
               }),
           SignupFormScreen(onPrev: () {
             FocusScope.of(context).unfocus();
@@ -637,7 +638,7 @@ class _GreetingScreen extends StatelessWidget {
   }
 }
 
-class _StoreRegistrationFormScreen extends StatefulWidget {
+class _StoreRegistrationFormScreen extends ConsumerStatefulWidget {
   final VoidCallback onPrev;
   final VoidCallback onNext;
 
@@ -648,12 +649,12 @@ class _StoreRegistrationFormScreen extends StatefulWidget {
   });
 
   @override
-  State<_StoreRegistrationFormScreen> createState() =>
+  ConsumerState<_StoreRegistrationFormScreen> createState() =>
       _StoreRegistrationFormScreenState();
 }
 
 class _StoreRegistrationFormScreenState
-    extends State<_StoreRegistrationFormScreen> {
+    extends ConsumerState<_StoreRegistrationFormScreen> {
   TextEditingController businessRegistrationController =
       TextEditingController();
   TextEditingController representativeNameController = TextEditingController();
@@ -664,7 +665,6 @@ class _StoreRegistrationFormScreenState
   File? _accountImage;
   File? _businessRegistrationImage;
   File? _operationImage;
-  bool checkRegistrationNumber = false;
 
   String representativeName = '';
   String storeName = '';
@@ -697,6 +697,8 @@ class _StoreRegistrationFormScreenState
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(signupNotifierProvider);
+    final provider = ref.read(signupNotifierProvider.notifier);
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "싱그릿 식단 연구소"),
         body: SGContainer(
@@ -753,9 +755,12 @@ class _StoreRegistrationFormScreenState
                         children: [
                           Expanded(
                             child: TextField(
+                                onChanged: (value) {
+                                  provider.onChangeBusinessNumber(value);
+                                },
                                 controller: businessRegistrationController,
-                                enabled: checkRegistrationNumber ? false : true,
-                                style: checkRegistrationNumber
+                                enabled: state.isBusinessNumber ? false : true,
+                                style: state.isBusinessNumber
                                     ? TextStyle(
                                         color: SGColors.gray3,
                                         fontSize: FontSize.small,
@@ -783,14 +788,14 @@ class _StoreRegistrationFormScreenState
                   SizedBox(width: SGSpacing.p2),
                   InkWell(
                     onTap: () {
-                      if (businessRegistrationController.text.isNotEmpty) {
-                        showDialog("조회에 성공하였습니다.");
-                        showFailDialogWithImage("입력하신 정보를\n다시 한번 조회해주세요.", "");
-
-                        setState(() {
-                          checkRegistrationNumber = true;
-                        });
-                      }
+                      provider.checkBusinessNumber().then((value) {
+                        if (value) {
+                          showDialog("조회에 성공하였습니다.");
+                        } else {
+                          showFailDialogWithImage(
+                              "입력하신 정보를\n다시 한번 조회해주세요.", "");
+                        }
+                      });
                     },
                     child: SGContainer(
                         padding: EdgeInsets.symmetric(
@@ -825,6 +830,9 @@ class _StoreRegistrationFormScreenState
                         children: [
                           Expanded(
                             child: TextField(
+                                onChanged: (value) {
+                                  provider.onChangeCeoName(value);
+                                },
                                 controller: representativeNameController,
                                 style: TextStyle(
                                     fontSize: FontSize.small,
@@ -867,6 +875,9 @@ class _StoreRegistrationFormScreenState
                         children: [
                           Expanded(
                             child: TextField(
+                                onChanged: (value) {
+                                  provider.onChangeStoreName(value);
+                                },
                                 controller: storeNameController,
                                 style: TextStyle(
                                     fontSize: FontSize.small,
@@ -909,6 +920,9 @@ class _StoreRegistrationFormScreenState
                         children: [
                           Expanded(
                             child: TextField(
+                                onChanged: (value) {
+                                  provider.onChangeAddress(value);
+                                },
                                 controller: storeAddressController,
                                 style: TextStyle(
                                     fontSize: FontSize.small,
@@ -951,6 +965,9 @@ class _StoreRegistrationFormScreenState
                         children: [
                           Expanded(
                             child: TextField(
+                                onChanged: (value) {
+                                  provider.onChangePhone(value);
+                                },
                                 controller: storeNumberController,
                                 style: TextStyle(
                                     fontSize: FontSize.small,
@@ -996,6 +1013,7 @@ class _StoreRegistrationFormScreenState
 
                       print("최종 선택된 카테고리: $selectedCategories");
                     });
+                    provider.onChangeCategory(selectedValues);
                   },
                   selected: List.from(selectedCategories), // 선택된 카테고리 전달
                 );
@@ -1039,6 +1057,7 @@ class _StoreRegistrationFormScreenState
                     setState(() {
                       businessType = selectedValues;
                     });
+                    provider.onChangeBusinessType(selectedValues);
                   },
                   selected: businessType,
                 );
@@ -1078,21 +1097,26 @@ class _StoreRegistrationFormScreenState
                     color: SGColors.primary),
               ]),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-              SGContainer(
-                  borderColor: SGColors.primary,
-                  borderRadius: BorderRadius.circular(SGSpacing.p3),
-                  padding: EdgeInsets.all(SGSpacing.p4),
-                  child: Row(
-                    children: [
-                      SGTypography.body("파일 업로드",
-                          color: SGColors.primary,
-                          size: FontSize.small,
-                          weight: FontWeight.w400),
-                      Spacer(),
-                      Image.asset("assets/images/upload.png",
-                          width: SGSpacing.p4, height: SGSpacing.p4),
-                    ],
-                  )),
+              InkWell(
+                onTap: () {
+                  provider.onChangeBusinessRegistrationPicture();
+                },
+                child: SGContainer(
+                    borderColor: SGColors.primary,
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    padding: EdgeInsets.all(SGSpacing.p4),
+                    child: Row(
+                      children: [
+                        SGTypography.body("파일 업로드",
+                            color: SGColors.primary,
+                            size: FontSize.small,
+                            weight: FontWeight.w400),
+                        Spacer(),
+                        Image.asset("assets/images/upload.png",
+                            width: SGSpacing.p4, height: SGSpacing.p4),
+                      ],
+                    )),
+              ),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               SGContainer(
                   child: Row(

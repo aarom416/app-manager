@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:singleeat/core/hive/user_hive.dart';
+import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/office/models/user_model.dart';
@@ -52,6 +53,82 @@ class SignupNotifier extends _$SignupNotifier {
 
   void onChangeIsAdditionalAgree(bool isAdditionalAgree) {
     state = state.copyWith(isAdditionalAgree: isAdditionalAgree);
+  }
+
+  void onChangeBusinessNumber(String businessNumber) {
+    state = state.copyWith(businessNumber: businessNumber);
+  }
+
+  void onChangeCeoName(String ceoName) {
+    state = state.copyWith(ceoName: ceoName);
+  }
+
+  void onChangeStoreName(String storeName) {
+    state = state.copyWith(storeName: storeName);
+  }
+
+  void onChangeAddress(String address) {
+    state = state.copyWith(address: address);
+  }
+
+  void onChangePhone(String phone) {
+    state = state.copyWith(phone: phone);
+  }
+
+  void onChangeCategory(List<String> category) {
+    /*
+    브랜드 카테고리
+      0 : 샐러드
+      1 : 포케
+      2 : 샌드위치
+      3 : 카페
+      4 : 베이커리
+      5 : 버거
+      중복 가능합니다.
+      예를 들어 샌드위치, 카페, 베이커리 인 경우 '234' 입니다.
+     */
+    state = state.copyWith(category: category.join());
+  }
+
+  void onChangeBusinessType(String businessType) {
+    /*
+    사업자 구분
+      0 : 일반 과세자
+      1 : 간이 과세자
+      2 : 법인 과세자
+      3 : 부가가치세 면세 사업자
+      4 : 면세법인 사업자
+     */
+
+    switch (businessType) {
+      case '일반 과세자':
+        state = state.copyWith(businessType: 0);
+        break;
+      case '간이 과세자':
+        state = state.copyWith(businessType: 1);
+        break;
+      case '법인 과세자':
+        state = state.copyWith(businessType: 2);
+        break;
+      case '부가가치세 면세 사업자':
+        state = state.copyWith(businessType: 3);
+        break;
+      case '면세 법인 사업자':
+        state = state.copyWith(businessType: 4);
+        break;
+    }
+  }
+
+  void onChangeBusinessRegistrationPicture() {
+    final ImagePicker picker = ImagePicker();
+  }
+
+  void onChangeBusinessPermitPicture(String businessPermitPicture) {
+    state = state.copyWith(businessPermitPicture: businessPermitPicture);
+  }
+
+  void onChangeAccountPicture(String accountPicture) {
+    state = state.copyWith(accountPicture: accountPicture);
   }
 
   void passwordValidation() {
@@ -174,6 +251,22 @@ class SignupNotifier extends _$SignupNotifier {
     }
   }
 
+  Future<bool> checkBusinessNumber() async {
+    final response = await ref
+        .read(signupServiceProvider)
+        .checkBusinessNumber(state.businessNumber);
+
+    if (response.statusCode == 200) {
+      state = state.copyWith(isBusinessNumber: true);
+    } else {
+      state = state.copyWith(
+          isBusinessNumber: false,
+          error: ResultFailResponseModel.fromJson(response.data));
+    }
+
+    return false;
+  }
+
   void reset() async {
     state = const SignupState();
   }
@@ -206,10 +299,21 @@ abstract class SignupState with _$SignupState {
     @Default('') String email,
     @Default('') String domain,
     @Default('') String authCode,
+    @Default('') String businessNumber,
+    @Default('') String ceoName,
+    @Default('') String storeName,
+    @Default('') String address,
+    @Default('') String phone,
+    @Default('') String category,
+    @Default(0) int businessType,
+    @Default('') String businessRegistrationPicture, // string($binary)
+    @Default('') String businessPermitPicture, // string($binary)
+    @Default('') String accountPicture, // string($binary)
     @Default(false) bool isSendCode,
     @Default(false) bool loginIdValid,
     @Default(false) bool isSingleeatAgree,
     @Default(false) bool isAdditionalAgree,
+    @Default(false) bool isBusinessNumber,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
   }) = _SignupState;
 

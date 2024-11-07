@@ -9,7 +9,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/hive/user_hive.dart';
+import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
 import 'package:singleeat/screens/find_account_screen.dart';
