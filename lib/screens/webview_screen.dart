@@ -43,23 +43,17 @@ class _WebViewScreenState extends ConsumerState<WebViewScreen> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onHttpError: (error) => logger.e(error.request?.uri),
-          onPageStarted: (url) {
-            logger.i(url);
-          },
-          onPageFinished: (String url) async {
-            final outerHTML = await controller.runJavaScriptReturningResult(
-                "document.documentElement.outerHTML") as String;
-            logger.d("Page outerHTML: $outerHTML");
-          },
-          onUrlChange: (change) {
-            logger.i(change);
-          },
-          onHttpAuthRequest: (request) {
-            logger.i(request);
-          },
           onNavigationRequest: (NavigationRequest request) {
             String url = request.url;
-            if (url.contains('identity-verification-failed-redirect')) {
+            final uri = Uri.parse(url);
+            String identityVerificationId =
+                uri.queryParameters['identityVerificationId'] ?? '';
+
+            if (identityVerificationId.isNotEmpty) {
+              ref
+                  .read(webViewNotifierProvider.notifier)
+                  .onChangeIdentityVerificationId(identityVerificationId);
+            } else if (url.contains('identity-verification-failed-redirect')) {
               ref
                   .read(webViewNotifierProvider.notifier)
                   .onChangeStatus(WebViewStatus.error);
@@ -77,8 +71,6 @@ class _WebViewScreenState extends ConsumerState<WebViewScreen> {
     Future.microtask(() async {
       final state = ref.watch(webViewNotifierProvider);
       controller.loadFile(await saveHtmlFile(state.html));
-      // controller.loadFlutterAsset(htmlPath);
-      // controller.loadHtmlString(this.html);
     });
   }
 

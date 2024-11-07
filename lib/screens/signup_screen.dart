@@ -39,63 +39,69 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       ref
           .read(authenticateWithPhoneNumberNotifierProvider.notifier)
           .onChangeMethod(AuthenticateWithPhoneNumberMethod.SIGNUP);
+
+      ref
+          .read(signupNotifierProvider.notifier)
+          .onChangeStatus(SignupStatus.step1);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     ref.listen(signupNotifierProvider, (previous, next) {
-      switch (next.status) {
-        case SignupStatus.step1:
-          FocusScope.of(context).unfocus();
-          animateToPage(0);
-        case SignupStatus.step2:
-          FocusScope.of(context).unfocus();
-          animateToPage(1);
-        case SignupStatus.step3:
-          FocusScope.of(context).unfocus();
-          animateToPage(2);
-        case SignupStatus.step4:
-          FocusScope.of(context).unfocus();
-          animateToPage(3);
-        case SignupStatus.step5:
-          FocusScope.of(context).unfocus();
-          animateToPage(4);
-        case SignupStatus.error:
-          showSGDialog(
-              context: context,
-              childrenBuilder: (ctx) => [
-                    Center(
-                      child: SGTypography.body(
-                        '전화번호 인증을 실패하였습니다.',
-                        size: FontSize.medium,
-                        weight: FontWeight.normal,
-                        align: TextAlign.center,
+      if (previous?.status != next.status) {
+        switch (next.status) {
+          case SignupStatus.step1:
+            FocusScope.of(context).unfocus();
+            animateToPage(0);
+          case SignupStatus.step2:
+            FocusScope.of(context).unfocus();
+            animateToPage(1);
+          case SignupStatus.step3:
+            FocusScope.of(context).unfocus();
+            animateToPage(2);
+          case SignupStatus.step4:
+            FocusScope.of(context).unfocus();
+            animateToPage(3);
+          case SignupStatus.step5:
+            FocusScope.of(context).unfocus();
+            animateToPage(4);
+          case SignupStatus.error:
+            showSGDialog(
+                context: context,
+                childrenBuilder: (ctx) => [
+                      Center(
+                        child: SGTypography.body(
+                          '전화번호 인증을 실패하였습니다.',
+                          size: FontSize.medium,
+                          weight: FontWeight.normal,
+                          align: TextAlign.center,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: SGSpacing.p5),
-                    Row(children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.of(ctx).pop();
-                          },
-                          child: SGContainer(
-                            color: SGColors.primary,
-                            padding:
-                                EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                            borderRadius: BorderRadius.circular(SGSpacing.p3),
-                            child: Center(
-                              child: SGTypography.body("확인",
-                                  size: FontSize.normal,
-                                  weight: FontWeight.normal,
-                                  color: SGColors.white),
+                      SizedBox(height: SGSpacing.p5),
+                      Row(children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(ctx).pop();
+                            },
+                            child: SGContainer(
+                              color: SGColors.primary,
+                              padding:
+                                  EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                              borderRadius: BorderRadius.circular(SGSpacing.p3),
+                              child: Center(
+                                child: SGTypography.body("확인",
+                                    size: FontSize.normal,
+                                    weight: FontWeight.normal,
+                                    color: SGColors.white),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ]),
-                  ]);
+                      ]),
+                    ]);
+        }
       }
     });
 
@@ -112,6 +118,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 Navigator.pop(context);
               },
               onNext: () {
+                /*
+                ref
+                    .read(signupNotifierProvider.notifier)
+                    .onChangeStatus(SignupStatus.step3);
+                 */
+
                 ref
                     .read(authenticateWithPhoneNumberNotifierProvider.notifier)
                     .identityVerification();
@@ -267,7 +279,6 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
 
   String username = "singleat";
   String name = "싱그릿";
-  String authCode = "";
   bool emailAuthRequested = false;
   bool emailAuthConfirmed = false;
   String email = "singleeat@singleat.com";
@@ -450,9 +461,7 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
                             child: TextField(
                                 controller: authCodeController,
                                 onChanged: (value) {
-                                  setState(() {
-                                    authCode = value;
-                                  });
+                                  // 인증코드
                                 },
                                 style: TextStyle(
                                     fontSize: FontSize.small,
@@ -1424,22 +1433,19 @@ class _TermCheckScreenState extends State<_TermCheckScreen> {
   }
 }
 
-class SignupFormScreen extends StatefulWidget {
+class SignupFormScreen extends ConsumerStatefulWidget {
   VoidCallback onPrev;
   VoidCallback onNext;
 
   SignupFormScreen({super.key, required this.onPrev, required this.onNext});
 
   @override
-  State<SignupFormScreen> createState() => _SignupFormScreenState();
+  ConsumerState<SignupFormScreen> createState() => _SignupFormScreenState();
 }
 
-class _SignupFormScreenState extends State<SignupFormScreen> {
-  String username = '';
-  String password = '';
-  String passwordConfirm = '';
-  String emailHandle = '';
-  String emailDomain = '';
+class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
+  final passwordFocusNode = FocusNode();
+  final passwordConfirmFocusNode = FocusNode();
 
   late TextEditingController emailDomainController = TextEditingController();
 
@@ -1455,24 +1461,58 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
     SelectionOption<String>(label: "직접 입력", value: "직접 입력"),
   ];
 
-  String authCode = '';
-
   bool passwordVisible = false;
   bool passwordVisibleConfirm = false;
 
-  bool emailSent = false;
-  bool emailAuthConfirmed = false;
-  bool usernameValid = false;
+  bool get isFormValid {
+    SignupState state = ref.read(signupNotifierProvider);
+    return state.loginIdValid &&
+        state.password.isNotEmpty &&
+        state.passwordConfirm.isNotEmpty &&
+        state.password == state.passwordConfirm &&
+        (state.emailStatus == SignupEmailStatus.success);
+  }
 
-  bool get isFormValid =>
-      usernameValid &&
-      password.isNotEmpty &&
-      passwordConfirm.isNotEmpty &&
-      password == passwordConfirm &&
-      emailAuthConfirmed;
+  @override
+  void initState() {
+    passwordFocusNode.addListener(() {
+      if (!passwordFocusNode.hasFocus) {
+        ref.read(signupNotifierProvider.notifier).passwordValidation();
+      }
+    });
+
+    passwordConfirmFocusNode.addListener(() {
+      if (!passwordConfirmFocusNode.hasFocus) {
+        ref.read(signupNotifierProvider.notifier).passwordConfirmValidation();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    SignupState state = ref.watch(signupNotifierProvider);
+    SignupNotifier provider = ref.read(signupNotifierProvider.notifier);
+    ref.listen(signupNotifierProvider, (previous, next) {
+      if (previous?.emailStatus != next.emailStatus) {
+        switch (next.emailStatus) {
+          case SignupEmailStatus.push:
+            showDialog("사장님 이메일로 인증메일을\n보내드렸습니다.");
+            break;
+
+          case SignupEmailStatus.success:
+            showDialog("이메일 인증이 완료되었습니다.");
+            break;
+
+          case SignupEmailStatus.error:
+            showFailDialogWithImage("인증에 실패하였습니다.\n잠시 후 다시 시도해주세요.", "");
+            break;
+
+          default:
+            break;
+        }
+      }
+    });
+
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "회원가입"),
         body: SGContainer(
@@ -1497,9 +1537,7 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                         Expanded(
                           child: TextField(
                               onChanged: (value) {
-                                setState(() {
-                                  username = value;
-                                });
+                                provider.onChangeLoginId(value);
                               },
                               style: TextStyle(
                                   fontSize: FontSize.small,
@@ -1524,21 +1562,20 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                 SizedBox(width: SGSpacing.p2),
                 GestureDetector(
                   onTap: () {
-                    setState(() {
-                      usernameValid = !usernameValid;
-                    });
+                    provider.checkLoginId();
                   },
                   child: SGContainer(
                       padding: EdgeInsets.symmetric(
                           horizontal: SGSpacing.p3, vertical: SGSpacing.p5),
-                      borderColor:
-                          usernameValid ? SGColors.gray4 : SGColors.primary,
+                      borderColor: state.loginIdValid
+                          ? SGColors.gray4
+                          : SGColors.primary,
                       borderWidth: 1,
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
                       child: Center(
                           child: SGTypography.body(
-                              usernameValid ? "사용가능" : "중복확인",
-                              color: usernameValid
+                              state.loginIdValid ? "사용가능" : "중복확인",
+                              color: state.loginIdValid
                                   ? SGColors.gray4
                                   : SGColors.primary,
                               size: FontSize.small,
@@ -1560,10 +1597,9 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                 children: [
                   Expanded(
                     child: TextField(
+                        focusNode: passwordFocusNode,
                         onChanged: (value) {
-                          setState(() {
-                            password = value;
-                          });
+                          provider.onChangePassword(value);
                         },
                         style: TextStyle(
                             fontSize: FontSize.small, color: SGColors.gray5),
@@ -1596,9 +1632,9 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
               ),
             )),
             SizedBox(height: SGSpacing.p8),
-            if (password.isNotEmpty &&
-                passwordConfirm.isNotEmpty &&
-                password != passwordConfirm)
+            if (state.password.isNotEmpty &&
+                state.passwordConfirm.isNotEmpty &&
+                state.password != state.passwordConfirm)
               SGTypography.body("비밀번호가 다릅니다.",
                   size: FontSize.small,
                   weight: FontWeight.w500,
@@ -1617,10 +1653,9 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                 children: [
                   Expanded(
                     child: TextField(
+                        focusNode: passwordConfirmFocusNode,
                         onChanged: (value) {
-                          setState(() {
-                            passwordConfirm = value;
-                          });
+                          provider.onChangePasswordConfirm(value);
                         },
                         style: TextStyle(
                             fontSize: FontSize.small, color: SGColors.gray5),
@@ -1670,9 +1705,9 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                         Expanded(
                           child: TextField(
                               onChanged: (value) {
-                                setState(() {
-                                  emailHandle = value;
-                                });
+                                ref
+                                    .read(signupNotifierProvider.notifier)
+                                    .onChangeEmail(value);
                               },
                               style: TextStyle(
                                   fontSize: FontSize.small,
@@ -1712,9 +1747,9 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                               enabled: emailInputOption == "직접 입력",
                               controller: emailDomainController,
                               onChanged: (value) {
-                                setState(() {
-                                  emailDomain = value;
-                                });
+                                ref
+                                    .read(signupNotifierProvider.notifier)
+                                    .onChangeDomain(value);
                               },
                               style: TextStyle(
                                   fontSize: FontSize.small,
@@ -1750,10 +1785,14 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                         emailInputOption = value;
                         if (value == "직접 입력") {
                           emailDomainController.text = "";
-                          emailDomain = "";
+                          ref
+                              .read(signupNotifierProvider.notifier)
+                              .onChangeDomain(value);
                         } else {
                           emailDomainController.text = value;
-                          emailDomain = value;
+                          ref
+                              .read(signupNotifierProvider.notifier)
+                              .onChangeDomain(value);
                         }
                       });
                     },
@@ -1798,7 +1837,7 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
               ),
             ),
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-            if (emailSent) ...[
+            if (state.isSendCode) ...[
               SGTextFieldWrapper(
                   child: SGContainer(
                 padding: EdgeInsets.all(SGSpacing.p4),
@@ -1808,9 +1847,7 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                     Expanded(
                       child: TextField(
                           onChanged: (value) {
-                            setState(() {
-                              authCode = value;
-                            });
+                            provider.onChangeAuthCode(value);
                           },
                           style: TextStyle(
                               fontSize: FontSize.small, color: SGColors.gray5),
@@ -1833,10 +1870,7 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               GestureDetector(
                 onTap: () {
-                  setState(() {
-                    emailAuthConfirmed = true;
-                  });
-                  showDialog("이메일 인증이 완료되었습니다.");
+                  provider.verifyCode();
                 },
                 child: SGContainer(
                     padding: EdgeInsets.symmetric(
@@ -1853,12 +1887,9 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
             ] else ...[
               GestureDetector(
                 onTap: () {
-                  setState(() {
-                    emailSent = true;
-                  });
-
-                  showDialog("사장님 이메일로 인증메일을\n보내드렸습니다.");
-                  showFailDialogWithImage("인증에 실패하였습니다.\n잠시 후 다시 시도해주세요.", "");
+                  ref.read(signupNotifierProvider.notifier).sendCode();
+                  // showDialog("사장님 이메일로 인증메일을\n보내드렸습니다.");
+                  //
                 },
                 child: SGContainer(
                     padding: EdgeInsets.symmetric(
@@ -1877,7 +1908,8 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
             SGActionButton(
                 onPressed: () {
                   if (!isFormValid) return;
-                  widget.onNext();
+                  // widget.onNext();
+                  provider.signUp();
                 },
                 label: "가입 완료",
                 disabled: !isFormValid),

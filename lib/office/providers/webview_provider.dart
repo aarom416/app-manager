@@ -4,6 +4,7 @@ import 'package:singleeat/office/providers/authenticate_with_phone_number_provid
 import 'package:singleeat/office/providers/signup_provider.dart';
 
 part 'webview_provider.freezed.dart';
+
 part 'webview_provider.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -18,6 +19,10 @@ class WebViewNotifier extends _$WebViewNotifier {
     required AuthenticateWithPhoneNumberMethod method,
   }) {
     state = state.copyWith(html: html, method: method);
+  }
+
+  void onChangeIdentityVerificationId(String identityVerificationId) {
+    state = state.copyWith(identityVerificationId: identityVerificationId);
   }
 
   void onChangeStatus(WebViewStatus status) {
@@ -72,6 +77,7 @@ abstract class WebViewState with _$WebViewState {
     @Default('') String html,
     @Default(AuthenticateWithPhoneNumberMethod.SIGNUP)
     AuthenticateWithPhoneNumberMethod method,
+    @Default('') String identityVerificationId,
   }) = _WebViewState;
 
   factory WebViewState.fromJson(Map<String, dynamic> json) =>
