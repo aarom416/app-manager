@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 
 class AuthenticateWithPhoneNumberScreen extends ConsumerStatefulWidget {
@@ -29,6 +31,12 @@ class _AuthenticateWithPhoneNumberScreenState
     extends ConsumerState<AuthenticateWithPhoneNumberScreen> {
   @override
   Widget build(BuildContext context) {
+    ref.listen(authenticateWithPhoneNumberNotifierProvider, (previous, next) {
+      if (next.status == AuthenticateWithPhoneNumberStatus.success) {
+        context.push(AppRoutes.webView);
+      }
+    });
+
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: widget.title, onTap: widget.onPrev),
         body: SGContainer(

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Identity Verification</title>
+    <script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+</head>
+<body>
+<script>
+    var storeId = "store-b8b69df6-53b6-4ac8-88bd-f55638b5fd28";
+    var channelKey = "channel-key-3e98b4c8-3956-46c2-8435-316ce0280cde";
+    var method = "PASSWORD";
+    var ownerId = null;
+    var loginId = "api-test";
+</script>
+
+<script>
+    window.onload = async function() {
+        try {
+            const response = await PortOne.requestIdentityVerification({
+                storeId: storeId,
+                identityVerificationId: `identity-verification-${crypto.randomUUID()}`,
+                channelKey: channelKey,
+                // 결제 환경 별 제공되는 결제창 유형
+                windowType: {
+                    pc: "POPUP",
+                    mobile: "REDIRECTION"
+                },
+                // 본인인증 프로세스 완료 후 이동될 고객사 URL
+                redirectUrl: 'https://singleatapp.com:444/owner/pages/identity-verification-redirect',
+                // 모바일 본인인증 후 고객사 앱으로 복귀를 위한 App Scheme
+                customData: {
+                    method: method,
+                    ownerId: ownerId,
+                    loginId: loginId,
+                }
+            });
+
+            // 프로세스가 제대로 완료되지 않은 경우 에러 코드 존재
+            if (response.code != null) {
+                window.location.href = '/owner/pages/identity/identity-verification-failed-redirect';
+            }
+
+        } catch (error) {
+            window.location.href = '/owner/pages/identity/identity-verification-failed-redirect';
+        }
+    }
+</script>
+</body>
+</html>

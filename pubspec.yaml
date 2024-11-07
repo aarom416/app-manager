@@ -77,6 +77,7 @@ dependencies:
   webview_flutter: ^4.10.0
   webview_flutter_wkwebview: ^3.16.1
   webview_flutter_android: ^4.0.1
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
@@ -102,56 +103,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/radio-on.png
-    - assets/images/radio-off.png
-    - assets/images/checkbox-on.png
-    - assets/images/checkbox-off.png
-    - assets/images/check.png
-    - assets/images/download.png
-    - assets/images/alarm.png
-    - assets/images/minus.png
-    - assets/images/plus.png
-    - assets/images/plus-filled.png
-    - assets/images/emoticon-cry.png
-    - assets/images/main-on.png
-    - assets/images/main-off.png
-    - assets/images/orders-on.png
-    - assets/images/orders-off.png
-    - assets/images/profile-on.png
-    - assets/images/profile-off.png
-    - assets/images/menu-business-profile.png
-    - assets/images/menu-coupon.png
-    - assets/images/menu-histories.png
-    - assets/images/menu-orders.png
-    - assets/images/menu-settlements.png
-    - assets/images/menu-statistics.png
-    - assets/images/menu-store.png
-    - assets/images/menu-taxes.png
-    - assets/images/switch-on.png
-    - assets/images/switch-off.png
-    - assets/images/store.png
-    - assets/images/warning.png
-    - assets/images/accumulative.png
-    - assets/images/dropdown-arrow.png
-    - assets/images/minus-white.png
-    - assets/images/reload.png
-    - assets/images/search.png
-    - assets/images/circle-checkbox-on.png
-    - assets/images/circle-checkbox-off.png
-    - assets/images/accordion.png
-    - assets/images/order-progress-indicator-delivery.png
-    - assets/images/order-progress-indicator-takeout.png
-    - assets/images/no-order.png
-    - assets/images/alarm-dark.png
-    - assets/images/app-logo.png
-    - assets/images/large-checkbox.png
-    - assets/images/onboarding.png
-    - assets/images/upload.png
-    - assets/images/home-icon.png
-    - assets/images/link-icon.png
-    - assets/images/inactive-radio-off.png
-    - assets/images/inactive-radio-on.png
-    - assets/images/splash.png
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

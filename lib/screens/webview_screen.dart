@@ -1,5 +1,9 @@
-import 'package:flutter/cupertino.dart';
+// import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:singleeat/core/utils/file.dart';
+import 'package:singleeat/main.dart';
+import 'package:singleeat/office/providers/webview_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -36,12 +40,47 @@ class _WebViewScreenState extends ConsumerState<WebViewScreen> {
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadHtmlString(
-          '<html><body>테스트<br/>테스트<br/>테스트<br/>테스트<br/>테스트<br/>테스트<br/></body></html>');
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onHttpError: (error) => logger.e(error.request?.uri),
+          onPageStarted: (url) {
+            logger.i(url);
+          },
+          onPageFinished: (String url) async {
+            final outerHTML = await controller.runJavaScriptReturningResult(
+                "document.documentElement.outerHTML") as String;
+            logger.d("Page outerHTML: $outerHTML");
+          },
+          onUrlChange: (change) {
+            logger.i(change);
+          },
+          onHttpAuthRequest: (request) {
+            logger.i(request);
+          },
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.contains("identity-verification-failed-redirect")) {
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      );
+
+    Future.microtask(() async {
+      final state = ref.watch(webViewNotifierProvider);
+      controller.loadFile(await saveHtmlFile(state.html));
+      // controller.loadFlutterAsset(htmlPath);
+      // controller.loadHtmlString(this.html);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return WebViewWidget(controller: controller);
+    return Scaffold(
+      body: Padding(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        child: WebViewWidget(controller: controller),
+      ),
+    );
   }
 }

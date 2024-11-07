@@ -227,10 +227,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             Expanded(
                 child: GestureDetector(
                     onTap: () {
-                      FocusScope.of(context).unfocus();
-
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const FindByPasswordScreen()));
+                      context.push(AppRoutes.findByPassword);
                     },
                     child: Center(
                         child: SGTypography.body("비밀번호 찾기",

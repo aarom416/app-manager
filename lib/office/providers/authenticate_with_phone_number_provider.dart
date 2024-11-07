@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/main.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
+import 'package:singleeat/office/providers/webview_provider.dart';
 import 'package:singleeat/office/services/authenticate_with_phone_number_service.dart';
 
 part 'authenticate_with_phone_number_provider.freezed.dart';
@@ -16,6 +17,14 @@ class AuthenticateWithPhoneNumberNotifier
     return const AuthenticateWithPhoneNumberState();
   }
 
+  void onChangeStatus(AuthenticateWithPhoneNumberStatus status) {
+    state = state.copyWith(status: status);
+  }
+
+  void onChangeMethod(AuthenticateWithPhoneNumberMethod method) {
+    state = state.copyWith(method: method);
+  }
+
   void identityVerification() async {
     final login = ref.read(loginNotifierProvider);
     final response = await ref
@@ -24,6 +33,12 @@ class AuthenticateWithPhoneNumberNotifier
           loginId: login.loginId,
           method: state.method.name,
         );
+
+    if (response.statusCode == 200) {
+      ref.read(webViewNotifierProvider.notifier).onChangeHtml(response.data);
+      state = state.copyWith(status: AuthenticateWithPhoneNumberStatus.success);
+    }
+
     logger.i(response);
   }
 }
