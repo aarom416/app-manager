@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/office/services/login_service.dart';
@@ -11,7 +12,12 @@ part 'login_provider.g.dart';
 class LoginNotifier extends _$LoginNotifier {
   @override
   LoginState build() {
-    return const LoginState();
+    String loginId = UserHive.getLoginId();
+    if (loginId.isEmpty) {
+      return const LoginState();
+    } else {
+      return LoginState(isRememberLoginId: true, loginId: loginId);
+    }
   }
 
   void init() {
@@ -20,6 +26,10 @@ class LoginNotifier extends _$LoginNotifier {
 
   void onChangeStatus(LoginStatus status) {
     state = state.copyWith(status: status);
+  }
+
+  void onChangeRememberLoginId() {
+    state = state.copyWith(isRememberLoginId: !state.isRememberLoginId);
   }
 
   void onChangeLoginId(String loginId) {
@@ -34,6 +44,13 @@ class LoginNotifier extends _$LoginNotifier {
     final response = await ref
         .read(loginServiceProvider)
         .directLogin(loginId: state.loginId, password: state.password);
+
+    // 아이디 저장
+    if (state.isRememberLoginId) {
+      UserHive.setLoginId(loginId: state.loginId);
+    } else {
+      UserHive.setLoginId(loginId: '');
+    }
 
     switch (response.statusCode) {
       case 200:
@@ -135,9 +152,10 @@ enum LoginStatus {
 @freezed
 abstract class LoginState with _$LoginState {
   const factory LoginState({
+    @Default(LoginStatus.init) LoginStatus status,
+    @Default(false) bool isRememberLoginId,
     @Default('') String loginId,
     @Default('') String password,
-    @Default(LoginStatus.init) LoginStatus status,
     @Default('') String showTitleMessage,
     @Default('') String showSubMessage,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,

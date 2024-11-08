@@ -24,7 +24,6 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool passwordVisible = false;
-  bool rememberMe = false;
 
   final checkboxOn =
       Image.asset("assets/images/checkbox-on.png", width: SGSpacing.p6);
@@ -153,13 +152,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           SizedBox(height: SGSpacing.p4),
           GestureDetector(
             onTap: () {
-              setState(() {
-                rememberMe = !rememberMe;
-              });
+              ref
+                  .read(loginNotifierProvider.notifier)
+                  .onChangeRememberLoginId();
             },
             child: Row(
               children: [
-                (rememberMe) ? checkboxOn : checkboxOff,
+                (state.isRememberLoginId) ? checkboxOn : checkboxOff,
                 SizedBox(width: SGSpacing.p1),
                 SGTypography.body("아이디 저장",
                     size: FontSize.normal, color: SGColors.gray4),

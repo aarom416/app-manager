@@ -10,6 +10,13 @@ class UserHive {
     box.put('info', map);
   }
 
+  static void setLoginId({
+    required String loginId,
+  }) {
+    final box = Hive.box('user');
+    box.put('loginId', loginId);
+  }
+
   static UserModel get() {
     final box = Hive.box('user');
     final map = box.toMap();
@@ -24,6 +31,18 @@ class UserHive {
         ),
       );
       return UserModel.fromJson(convertedMap);
+    }
+  }
+
+  static String getLoginId() {
+    final box = Hive.box('user');
+    final map = box.toMap();
+    final String loginId = map['loginId'] ?? '';
+
+    if (loginId.isEmpty) {
+      return '';
+    } else {
+      return loginId;
     }
   }
 
