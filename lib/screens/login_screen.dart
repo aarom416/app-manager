@@ -9,11 +9,9 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
+import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
-import 'package:singleeat/screens/find_account_screen.dart';
-import 'package:singleeat/screens/find_by_password_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -23,6 +21,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _loginController = TextEditingController();
   bool passwordVisible = false;
 
   final checkboxOn =
@@ -33,7 +32,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   void initState() {
     Future.microtask(() {
-      UserHive.clear();
+      ref
+          .read(authenticateWithPhoneNumberNotifierProvider.notifier)
+          .onChangeMethod(AuthenticateWithPhoneNumberMethod.DIRECT);
     });
   }
 
@@ -41,17 +42,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     ref.listen(loginNotifierProvider, (previous, next) {
       switch (next.status) {
-        case LoginStatus.success:
-          context.push(AppRoutes.authenticateWithPhoneNumber);
+        case LoginStatus.direct:
+          context.push(
+            AppRoutes.authenticateWithPhoneNumber,
+            extra: {
+              'title': '로그인',
+            },
+          );
           ref
               .read(loginNotifierProvider.notifier)
               .onChangeStatus(LoginStatus.init);
           break;
+
         case LoginStatus.password:
           context.push(AppRoutes.findByPassword);
           ref
               .read(loginNotifierProvider.notifier)
               .onChangeStatus(LoginStatus.init);
+
+        case LoginStatus.success:
+          context.go(AppRoutes.signupComplete);
         default:
           break;
       }
@@ -64,6 +74,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     final state = ref.watch(loginNotifierProvider);
+    if (state.loginId.isNotEmpty) {
+      _loginController.text = state.loginId;
+    }
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -85,6 +98,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             padding: EdgeInsets.all(SGSpacing.p4),
             width: double.infinity,
             child: TextField(
+                controller: _loginController,
                 onChanged: (value) {
                   ref
                       .read(loginNotifierProvider.notifier)
@@ -211,16 +225,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     onTap: () {
                       FocusScope.of(context).unfocus();
 
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => FindAccountScreen(
-                                onPressFindPassword: () {
-                                  FocusScope.of(context).unfocus();
-
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          const FindByPasswordScreen()));
-                                },
-                              )));
+                      context.push(AppRoutes.findByAccount);
                     },
                     child: Center(
                         child: SGTypography.body("아이디 찾기",

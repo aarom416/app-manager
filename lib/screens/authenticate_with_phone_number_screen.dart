@@ -12,13 +12,11 @@ import 'package:singleeat/office/providers/authenticate_with_phone_number_provid
 
 class AuthenticateWithPhoneNumberScreen extends ConsumerStatefulWidget {
   VoidCallback? onPrev;
-  VoidCallback? onNext;
   final String title;
 
   AuthenticateWithPhoneNumberScreen({
     super.key,
     this.onPrev,
-    this.onNext,
     required this.title,
   });
 
@@ -32,9 +30,10 @@ class _AuthenticateWithPhoneNumberScreenState
   @override
   Widget build(BuildContext context) {
     ref.listen(authenticateWithPhoneNumberNotifierProvider, (previous, next) {
-      if (next.status == AuthenticateWithPhoneNumberStatus.success) {
+      if (previous?.status != next.status &&
+          next.status == AuthenticateWithPhoneNumberStatus.success) {
         context.push(AppRoutes.webView);
-        
+
         ref
             .read(authenticateWithPhoneNumberNotifierProvider.notifier)
             .onChangeStatus(AuthenticateWithPhoneNumberStatus.init);
@@ -44,7 +43,7 @@ class _AuthenticateWithPhoneNumberScreenState
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: widget.title, onTap: widget.onPrev),
         body: SGContainer(
-            color: Color(0xFFFAFAFA),
+            color: const Color(0xFFFAFAFA),
             padding: EdgeInsets.symmetric(
                 horizontal: SGSpacing.p4, vertical: SGSpacing.p8),
             child: Column(children: [
@@ -56,7 +55,12 @@ class _AuthenticateWithPhoneNumberScreenState
               ]),
               SizedBox(height: SGSpacing.p10),
               GestureDetector(
-                onTap: widget.onNext,
+                onTap: () {
+                  ref
+                      .read(
+                          authenticateWithPhoneNumberNotifierProvider.notifier)
+                      .identityVerification();
+                },
                 child: SGContainer(
                     padding: EdgeInsets.symmetric(
                         horizontal: SGSpacing.p4, vertical: SGSpacing.p6),

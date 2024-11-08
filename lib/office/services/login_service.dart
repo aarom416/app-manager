@@ -27,6 +27,25 @@ class LoginService {
       return Future.error(e);
     }
   }
+
+  Future<Response<dynamic>> verifyPhone({required String loginId}) async {
+    try {
+      final response = await RequestApi.post(
+        RestApiUri.verifyPhone,
+        queryParameters: {
+          'loginId': loginId,
+        },
+      );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final loginServiceProvider = Provider<LoginService>((ref) => LoginService());

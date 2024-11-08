@@ -69,6 +69,9 @@ class _WebViewScreenState extends ConsumerState<WebViewScreen> {
       );
 
     Future.microtask(() async {
+      ref
+          .read(webViewNotifierProvider.notifier)
+          .onChangeStatus(WebViewStatus.init);
       final state = ref.watch(webViewNotifierProvider);
       controller.loadFile(await saveHtmlFile(state.html));
     });
@@ -77,9 +80,11 @@ class _WebViewScreenState extends ConsumerState<WebViewScreen> {
   @override
   Widget build(BuildContext context) {
     ref.listen(webViewNotifierProvider, (previous, next) {
-      if (next.status == WebViewStatus.success ||
-          next.status == WebViewStatus.error) {
-        Navigator.of(context).pop();
+      if (previous?.status != next.status) {
+        if (next.status == WebViewStatus.success ||
+            next.status == WebViewStatus.error) {
+          Navigator.of(context).pop();
+        }
       }
     });
 

@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
+import 'package:singleeat/office/models/user_model.dart';
 import 'package:singleeat/office/services/login_service.dart';
 
 part 'login_provider.freezed.dart';
@@ -58,7 +59,7 @@ class LoginNotifier extends _$LoginNotifier {
         final data = ResultResponseModel.fromJson(response.data);
         if (data.success) {
           state = state.copyWith(
-            status: LoginStatus.success,
+            status: LoginStatus.direct,
             error: const ResultFailResponseModel(),
           );
         }
@@ -132,11 +133,40 @@ class LoginNotifier extends _$LoginNotifier {
         state =
             state.copyWith(showTitleMessage: '고객센터(1600-6623)로 문의하시길 바랍니다.');
         break;
-        break;
 
       default:
-        final error = ResultFailResponseModel.fromJson(response.data);
-        state = state.copyWith(error: error);
+        state = state.copyWith(
+            error: ResultFailResponseModel.fromJson(response.data));
+        break;
+    }
+  }
+
+  Future<void> verifyPhone() async {
+    final response = await ref
+        .read(loginServiceProvider)
+        .verifyPhone(loginId: state.loginId);
+
+    switch (response.statusCode) {
+      case 200:
+        final result = ResultResponseModel.fromJson(response.data);
+        final user = UserModel.fromJson(result.data);
+        UserHive.set(user: user.copyWith(status: UserStatus.success));
+        state = state.copyWith(status: LoginStatus.success);
+        break;
+      case 202:
+        final result = ResultResponseModel.fromJson(response.data);
+        final user = UserModel.fromJson(result.data);
+        UserHive.set(user: user.copyWith(status: UserStatus.wait));
+        state = state.copyWith(status: LoginStatus.success);
+        break;
+      case 206:
+        final result = ResultResponseModel.fromJson(response.data);
+        final user = UserModel.fromJson(result.data);
+        UserHive.set(user: user.copyWith(status: UserStatus.notEntry));
+        state = state.copyWith(status: LoginStatus.success);
+        break;
+      default:
+        // 종료
         break;
     }
   }
@@ -145,6 +175,7 @@ class LoginNotifier extends _$LoginNotifier {
 enum LoginStatus {
   init,
   password,
+  direct,
   success,
   error,
 }

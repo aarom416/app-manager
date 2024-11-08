@@ -1,10 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
+import 'package:singleeat/office/providers/login_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
 
 part 'webview_provider.freezed.dart';
-
 part 'webview_provider.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -25,7 +25,7 @@ class WebViewNotifier extends _$WebViewNotifier {
     state = state.copyWith(identityVerificationId: identityVerificationId);
   }
 
-  void onChangeStatus(WebViewStatus status) {
+  void onChangeStatus(WebViewStatus status) async {
     if (status == WebViewStatus.success) {
       switch (state.method) {
         case AuthenticateWithPhoneNumberMethod.SIGNUP:
@@ -34,6 +34,7 @@ class WebViewNotifier extends _$WebViewNotifier {
               .onChangeStatus(SignupStatus.step2);
           break;
         case AuthenticateWithPhoneNumberMethod.DIRECT:
+          await ref.read(loginNotifierProvider.notifier).verifyPhone();
           break;
         case AuthenticateWithPhoneNumberMethod.ACCOUNT:
           break;
@@ -42,7 +43,7 @@ class WebViewNotifier extends _$WebViewNotifier {
         case AuthenticateWithPhoneNumberMethod.PHONE:
           break;
       }
-    } else {
+    } else if (status == WebViewStatus.error) {
       switch (state.method) {
         case AuthenticateWithPhoneNumberMethod.SIGNUP:
           ref

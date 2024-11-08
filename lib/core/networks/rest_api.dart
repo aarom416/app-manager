@@ -21,4 +21,6 @@ class RestApiUri {
   static const String findPassword = '/api/v1/owner/auth/sign-up/find-password';
   static const String identityVerification =
       '/owner/pages/identity-verification';
+  static const String verifyPhone =
+      '/api/v1/owner/auth/direct-login/verify-phone';
 }

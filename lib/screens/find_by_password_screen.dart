@@ -9,6 +9,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/find_by_password_provider.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
 
@@ -28,6 +29,15 @@ class _FindByPasswordScreenState extends ConsumerState<FindByPasswordScreen> {
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
+
+  @override
+  void initState() {
+    Future.microtask(() {
+      ref
+          .read(authenticateWithPhoneNumberNotifierProvider.notifier)
+          .onChangeMethod(AuthenticateWithPhoneNumberMethod.PASSWORD);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,17 +98,13 @@ class _FindByPasswordScreenState extends ConsumerState<FindByPasswordScreen> {
             ref.read(findByPasswordNotifierProvider.notifier).findPassword();
           }),
           AuthenticateWithPhoneNumberScreen(
-              title: "비밀번호 찾기",
-              onPrev: () {
-                FocusScope.of(context).unfocus();
+            title: "비밀번호 찾기",
+            onPrev: () {
+              FocusScope.of(context).unfocus();
 
-                animateToPage(0);
-              },
-              onNext: () {
-                FocusScope.of(context).unfocus();
-
-                animateToPage(2);
-              }),
+              animateToPage(0);
+            },
+          ),
           ChangePasswordScreen(
               title: "비밀번호 찾기",
               onPrev: () {
