@@ -1498,6 +1498,7 @@ class SignupFormScreen extends ConsumerStatefulWidget {
 }
 
 class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
+  final loginIdFocusNode = FocusNode();
   final passwordFocusNode = FocusNode();
   final passwordConfirmFocusNode = FocusNode();
 
@@ -1527,35 +1528,14 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
         (state.emailStatus == SignupEmailStatus.success);
   }
 
-  final TextEditingController _idController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  String? _idErrorText;
-  String? _passwordErrorText;
-
-  void _validateId(String value) {
-    final idRegex = RegExp(r'^[a-zA-Z0-9]{6,12}$');
-    setState(() {
-      if (idRegex.hasMatch(value)) {
-        _idErrorText = null; // Valid ID
-      } else {
-        _idErrorText = "아이디는 6~12자 이내, 영문, 숫자만 사용 가능합니다.";
-      }
-    });
-  }
-
-  void _validatePassword(String value) {
-    final passwordRegex = RegExp(r'^[a-zA-Z0-9!@#$%^&*()_+]{8,16}$');
-    setState(() {
-      if (passwordRegex.hasMatch(value)) {
-        _passwordErrorText = null; // Valid password
-      } else {
-        _passwordErrorText = "비밀번호는 8~16자 이내, 영문, 숫자, 특수문자만 사용 가능합니다.";
-      }
-    });
-  }
-
   @override
   void initState() {
+    loginIdFocusNode.addListener(() {
+      if (!loginIdFocusNode.hasFocus) {
+        ref.read(signupNotifierProvider.notifier).loginIdValidation();
+      }
+    });
+
     passwordFocusNode.addListener(() {
       if (!passwordFocusNode.hasFocus) {
         ref.read(signupNotifierProvider.notifier).passwordValidation();
@@ -1617,9 +1597,8 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                       children: [
                         Expanded(
                           child: TextField(
-                              controller: _idController,
+                              focusNode: loginIdFocusNode,
                               onChanged: (value) {
-                                _validateId(value);
                                 provider.onChangeLoginId(value);
                               },
                               style: TextStyle(
@@ -1666,11 +1645,11 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 )
               ],
             ),
-            if (_idErrorText != null)
+            if (state.loginIdError.errorMessage.isNotEmpty)
               Padding(
                 padding: EdgeInsets.only(top: SGSpacing.p2),
                 child: Text(
-                  _idErrorText!,
+                  state.loginIdError.errorMessage,
                   style: TextStyle(
                     fontSize: FontSize.tiny,
                     color: SGColors.warningRed,
@@ -1693,14 +1672,13 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                     children: [
                       Expanded(
                         child: TextField(
-                            controller: _passwordController,
                             focusNode: passwordFocusNode,
                             onChanged: (value) {
-                              _validatePassword(value);
                               provider.onChangePassword(value);
                             },
                             style: TextStyle(
-                                fontSize: FontSize.small, color: SGColors.gray5),
+                                fontSize: FontSize.small,
+                                color: SGColors.gray5),
                             obscureText: !passwordVisible,
                             decoration: InputDecoration(
                               isDense: true,
@@ -1731,11 +1709,11 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 ],
               ),
             )),
-            if (_passwordErrorText != null)
+            if (state.passwordValidError.errorMessage.isNotEmpty)
               Padding(
                 padding: EdgeInsets.only(top: SGSpacing.p2),
                 child: Text(
-                  _passwordErrorText!,
+                  state.passwordValidError.errorMessage,
                   style: TextStyle(
                     fontSize: FontSize.tiny,
                     color: SGColors.warningRed,
@@ -1792,11 +1770,10 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
             )),
             if (state.password.isNotEmpty &&
                 state.passwordConfirm.isNotEmpty &&
-                state.password != state.passwordConfirm) ... {
+                state.password != state.passwordConfirm) ...{
               SizedBox(height: SGSpacing.p2),
               SGTypography.body("비밀번호가 다릅니다.",
-                  size: FontSize.tiny,
-                  color: SGColors.warningRed),
+                  size: FontSize.tiny, color: SGColors.warningRed),
             },
             SizedBox(height: SGSpacing.p8),
             SGTypography.body("이메일",

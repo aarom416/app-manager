@@ -148,37 +148,41 @@ class SignupNotifier extends _$SignupNotifier {
     return await checkFile(image);
   }
 
+  void loginIdValidation() {
+    // 정규식: 8~16자의 영문, 숫자, 특수 문자 포함
+    final regExp = RegExp(r'^[A-Za-z0-9]{6,12}$');
+    if (state.loginId.isEmpty || !regExp.hasMatch(state.loginId)) {
+      state = state.copyWith(
+          loginIdError: const ResultFailResponseModel(
+              errorMessage: '6~12자 이내, 영문, 숫자만 사용 가능합니다'));
+    } else {
+      state = state.copyWith(loginIdError: const ResultFailResponseModel());
+    }
+  }
+
   void passwordValidation() {
     final regExp = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#\$&*~]).{8,16}$');
     if (!regExp.hasMatch(state.password)) {
       state = state.copyWith(
-          error: const ResultFailResponseModel(
+          passwordError: const ResultFailResponseModel(
               errorMessage: '8~16자의 영문, 숫자, 특수문자를 포함해주세요'));
     } else {
-      state = state.copyWith(error: const ResultFailResponseModel());
+      state = state.copyWith(passwordError: const ResultFailResponseModel());
     }
   }
 
   void passwordConfirmValidation() {
     if (state.password == state.passwordConfirm) {
-      state = state.copyWith(error: const ResultFailResponseModel());
+      state =
+          state.copyWith(passwordValidError: const ResultFailResponseModel());
     } else {
       state = state.copyWith(
-          error:
+          passwordValidError:
               const ResultFailResponseModel(errorMessage: '비밀번호가 일치하지 않습니다.'));
     }
   }
 
   void checkLoginId() async {
-    // 정규식: 8~16자의 영문, 숫자, 특수 문자 포함
-    final regExp = RegExp(r'^[A-Za-z0-9]{6,12}$');
-    if (state.loginId.isEmpty || !regExp.hasMatch(state.loginId)) {
-      state = state.copyWith(
-          error: const ResultFailResponseModel(
-              errorMessage: '6~12자 이내, 영문, 숫자만 사용 가능합니다'));
-      return;
-    }
-
     final response = await ref
         .read(signupServiceProvider)
         .checkLoginId(loginId: state.loginId);
@@ -186,7 +190,7 @@ class SignupNotifier extends _$SignupNotifier {
     if (response.statusCode == 200) {
       state = state.copyWith(
         loginIdValid: true,
-        error: const ResultFailResponseModel(),
+        loginIdError: const ResultFailResponseModel(),
       );
     } else {
       final error = ResultFailResponseModel.fromJson(response.data);
@@ -371,5 +375,9 @@ abstract class SignupState with _$SignupState {
     @Default(false) bool isAdditionalAgree,
     @Default(false) bool isBusinessNumber,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
+    @Default(ResultFailResponseModel()) ResultFailResponseModel loginIdError,
+    @Default(ResultFailResponseModel()) ResultFailResponseModel passwordError,
+    @Default(ResultFailResponseModel())
+    ResultFailResponseModel passwordValidError,
   }) = _SignupState;
 }
