@@ -13,6 +13,8 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/hives/user_hive.dart';
+import 'package:singleeat/office/models/user_model.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
@@ -118,16 +120,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 Navigator.pop(context);
               },
               onNext: () {
-                /*
                 ref
                     .read(signupNotifierProvider.notifier)
-                    .onChangeStatus(SignupStatus.step4);
-                    JSS
-                 */
+                    .onChangeStatus(SignupStatus.step5);
 
+                /*
                 ref
                     .read(authenticateWithPhoneNumberNotifierProvider.notifier)
                     .identityVerification();
+                    JSS
+                 */
               }),
           SignupFormScreen(onPrev: () {
             FocusScope.of(context).unfocus();
@@ -175,7 +177,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   }
 }
 
-class _SignUpCompleteScreen extends StatefulWidget {
+class _SignUpCompleteScreen extends ConsumerStatefulWidget {
   VoidCallback onLogout;
   VoidCallback onPrev;
 
@@ -186,12 +188,11 @@ class _SignUpCompleteScreen extends StatefulWidget {
   });
 
   @override
-  State<_SignUpCompleteScreen> createState() => _SignUpCompleteScreenState();
+  ConsumerState<_SignUpCompleteScreen> createState() =>
+      _SignUpCompleteScreenState();
 }
 
-class _SignUpCompleteScreenState extends State<_SignUpCompleteScreen> {
-  bool toggled = false;
-
+class _SignUpCompleteScreenState extends ConsumerState<_SignUpCompleteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -242,14 +243,14 @@ class _SignUpCompleteScreenState extends State<_SignUpCompleteScreen> {
               horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
           child: Center(
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-            if (toggled)
+            if (UserHive.get().status == UserStatus.wait)
               _GreetingScreen()
             else
               _NotRegisteredScreen(
                 onPressActionButton: () {
-                  setState(() {
-                    toggled = true;
-                  });
+                  ref
+                      .read(signupNotifierProvider.notifier)
+                      .onChangeStatus(SignupStatus.step4);
                 },
               )
           ])),

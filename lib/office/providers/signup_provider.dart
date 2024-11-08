@@ -183,6 +183,12 @@ class SignupNotifier extends _$SignupNotifier {
   }
 
   void checkLoginId() async {
+    loginIdValidation();
+
+    if (state.loginIdError.errorMessage.isNotEmpty) {
+      return;
+    }
+
     final response = await ref
         .read(signupServiceProvider)
         .checkLoginId(loginId: state.loginId);
@@ -195,7 +201,8 @@ class SignupNotifier extends _$SignupNotifier {
     } else {
       final error = ResultFailResponseModel.fromJson(response.data);
       state = state.copyWith(
-          error: error.copyWith(errorMessage: '이미 존재하는 아이디입니다.'));
+        loginIdError: error.copyWith(errorMessage: '이미 존재하는 아이디입니다.'),
+      );
     }
   }
 
@@ -240,7 +247,7 @@ class SignupNotifier extends _$SignupNotifier {
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);
       final user = UserModel.fromJson(result.data);
-      UserHive.set(user: user);
+      UserHive.set(user: user.copyWith(status: UserStatus.notEntry));
 
       state = state.copyWith(status: SignupStatus.step3);
     } else {
@@ -321,9 +328,11 @@ class SignupNotifier extends _$SignupNotifier {
     final response =
         await ref.read(signupServiceProvider).enroll(formData: formData);
     if (response.statusCode == 200) {
-      //
+      UserHive.set(user: UserHive.get().copyWith(status: UserStatus.wait));
+      state = state.copyWith(status: SignupStatus.step5);
     } else {
-      //
+      state = state.copyWith(
+          error: ResultFailResponseModel.fromJson(response.data));
     }
   }
 
