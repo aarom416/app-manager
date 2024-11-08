@@ -210,6 +210,21 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
       passwordConfirm.isNotEmpty &&
       password == passwordConfirm;
 
+  final TextEditingController _passwordController = TextEditingController();
+
+  String? _passwordErrorText;
+
+  void _validatePassword(String value) {
+    final passwordRegex = RegExp(r'^[a-zA-Z0-9!@#$%^&*()_+]{8,16}$');
+    setState(() {
+      if (passwordRegex.hasMatch(value)) {
+        _passwordErrorText = null; // Valid password
+      } else {
+        _passwordErrorText = "비밀번호는 8~16자 이내, 영문, 숫자, 특수문자만 사용 가능합니다.";
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -262,6 +277,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           onChanged: (value) {
                             setState(() {
                               password = value;
+                              _validatePassword(value);
                             });
                           },
                           controller: controller,
@@ -295,6 +311,17 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ],
                 ),
               )),
+              if (_passwordErrorText != null)
+                Padding(
+                  padding: EdgeInsets.only(top: SGSpacing.p2),
+                  child: Text(
+                    _passwordErrorText!,
+                    style: TextStyle(
+                      fontSize: FontSize.tiny,
+                      color: SGColors.warningRed,
+                    ),
+                  ),
+                ),
               Row(children: []),
               SizedBox(height: SGSpacing.p8),
               if (password.isNotEmpty &&
