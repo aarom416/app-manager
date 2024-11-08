@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
+import 'package:singleeat/core/utils/file.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/office/models/user_model.dart';
@@ -75,7 +76,7 @@ class SignupNotifier extends _$SignupNotifier {
     state = state.copyWith(phone: phone);
   }
 
-  void onChangeCategory(List<String> category) {
+  void onChangeCategory(List<String> categories) {
     /*
     브랜드 카테고리
       0 : 샐러드
@@ -87,7 +88,17 @@ class SignupNotifier extends _$SignupNotifier {
       중복 가능합니다.
       예를 들어 샌드위치, 카페, 베이커리 인 경우 '234' 입니다.
      */
-    state = state.copyWith(category: category.join());
+    String category = categories.join();
+    category = category.replaceAll('샐러드', '0');
+    category = category.replaceAll('포케', '1');
+    category = category.replaceAll('샌드위치', '2');
+    category = category.replaceAll('카페', '3');
+    category = category.replaceAll('베이커리', '4');
+    category = category.replaceAll('버거', '5');
+
+    // 0~5 정렬
+    List<String> sortedCategoryList = category.split('')..sort();
+    state = state.copyWith(category: sortedCategoryList.join());
   }
 
   void onChangeBusinessType(String businessType) {
@@ -119,16 +130,22 @@ class SignupNotifier extends _$SignupNotifier {
     }
   }
 
-  void onChangeBusinessRegistrationPicture() {
-    final ImagePicker picker = ImagePicker();
+  Future<String> onChangeAccountPicture() async {
+    final image = await pickImage();
+    state = state.copyWith(accountPicture: image);
+    return await checkFile(image);
   }
 
-  void onChangeBusinessPermitPicture(String businessPermitPicture) {
-    state = state.copyWith(businessPermitPicture: businessPermitPicture);
+  Future<String> onChangeBusinessRegistrationPicture() async {
+    final image = await pickImage();
+    state = state.copyWith(businessRegistrationPicture: image);
+    return await checkFile(image);
   }
 
-  void onChangeAccountPicture(String accountPicture) {
-    state = state.copyWith(accountPicture: accountPicture);
+  Future<String> onChangeBusinessPermitPicture() async {
+    final image = await pickImage();
+    state = state.copyWith(businessPermitPicture: image);
+    return await checkFile(image);
   }
 
   void passwordValidation() {
@@ -258,6 +275,7 @@ class SignupNotifier extends _$SignupNotifier {
 
     if (response.statusCode == 200) {
       state = state.copyWith(isBusinessNumber: true);
+      return true;
     } else {
       state = state.copyWith(
           isBusinessNumber: false,
@@ -265,6 +283,44 @@ class SignupNotifier extends _$SignupNotifier {
     }
 
     return false;
+  }
+
+  void enroll() async {
+    if (state.businessRegistrationPicture == null ||
+        state.businessPermitPicture == null) {
+      return;
+    }
+
+    final formData = FormData.fromMap({
+      'businessNumber': state.businessNumber,
+      'ceoName': state.ceoName,
+      'storeName': state.storeName,
+      'address': state.address,
+      'phone': state.phone,
+      'category': state.category,
+      'businessType': state.businessType,
+      'accountPicture': await MultipartFile.fromFile(state.accountPicture!.path,
+          filename: state.accountPicture!.name),
+      'businessRegistrationPicture': await MultipartFile.fromFile(
+          state.businessRegistrationPicture!.path,
+          filename: state.businessRegistrationPicture!.name),
+    });
+
+    if (state.accountPicture != null) {
+      formData.files.add(MapEntry(
+        'businessPermitPicture',
+        await MultipartFile.fromFile(state.businessPermitPicture!.path,
+            filename: state.businessPermitPicture!.name),
+      ));
+    }
+
+    final response =
+        await ref.read(signupServiceProvider).enroll(formData: formData);
+    if (response.statusCode == 200) {
+      //
+    } else {
+      //
+    }
   }
 
   void reset() async {
@@ -306,9 +362,9 @@ abstract class SignupState with _$SignupState {
     @Default('') String phone,
     @Default('') String category,
     @Default(0) int businessType,
-    @Default('') String businessRegistrationPicture, // string($binary)
-    @Default('') String businessPermitPicture, // string($binary)
-    @Default('') String accountPicture, // string($binary)
+    XFile? businessRegistrationPicture, // string($binary)
+    XFile? businessPermitPicture, // string($binary)
+    XFile? accountPicture, // string($binary)
     @Default(false) bool isSendCode,
     @Default(false) bool loginIdValid,
     @Default(false) bool isSingleeatAgree,
@@ -316,7 +372,4 @@ abstract class SignupState with _$SignupState {
     @Default(false) bool isBusinessNumber,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
   }) = _SignupState;
-
-  factory SignupState.fromJson(Map<String, dynamic> json) =>
-      _$SignupStateFromJson(json);
 }

@@ -1,5 +1,6 @@
 class RestApiUri {
   static const String applicationJson = 'application/json';
+  static const String multipartFormData = 'multipart/form-data';
   static const String applicationXWwwFormUrlencoded =
       'application/x-www-form-urlencoded';
 
@@ -7,6 +8,7 @@ class RestApiUri {
   static const String sendCode = '/api/v1/owner/auth/sign-up/send-code';
   static const String verifyCode = '/api/v1/owner/auth/sign-up/verify-code';
   static const String signUp = '/api/v1/owner/auth/sign-up';
+  static const String enroll = '/api/v1/owner/enroll';
   static const String singleatResearchStatus =
       '/api/v1/owner/singleat-research-status';
   static const String additionalServiceStatus =

@@ -118,16 +118,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                 Navigator.pop(context);
               },
               onNext: () {
+                /*
                 ref
                     .read(signupNotifierProvider.notifier)
                     .onChangeStatus(SignupStatus.step4);
+                    JSS
+                 */
 
-                /*
                 ref
                     .read(authenticateWithPhoneNumberNotifierProvider.notifier)
                     .identityVerification();
-                    JSS
-                 */
               }),
           SignupFormScreen(onPrev: () {
             FocusScope.of(context).unfocus();
@@ -1098,8 +1098,9 @@ class _StoreRegistrationFormScreenState
               ]),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               InkWell(
-                onTap: () {
-                  provider.onChangeBusinessRegistrationPicture();
+                onTap: () async {
+                  String message = await provider.onChangeAccountPicture();
+                  if (message.isNotEmpty) showFailDialogWithImage(message, "");
                 },
                 child: SGContainer(
                     borderColor: SGColors.primary,
@@ -1107,7 +1108,10 @@ class _StoreRegistrationFormScreenState
                     padding: EdgeInsets.all(SGSpacing.p4),
                     child: Row(
                       children: [
-                        SGTypography.body("파일 업로드",
+                        SGTypography.body(
+                            (state.accountPicture == null)
+                                ? "파일 업로드"
+                                : state.accountPicture!.name,
                             color: SGColors.primary,
                             size: FontSize.small,
                             weight: FontWeight.w400),
@@ -1142,21 +1146,31 @@ class _StoreRegistrationFormScreenState
                     color: SGColors.primary),
               ]),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-              SGContainer(
-                  borderColor: SGColors.primary,
-                  borderRadius: BorderRadius.circular(SGSpacing.p3),
-                  padding: EdgeInsets.all(SGSpacing.p4),
-                  child: Row(
-                    children: [
-                      SGTypography.body("반드시 금년도에 발급한 사본을 보내주세요.",
-                          color: SGColors.primary,
-                          size: FontSize.small,
-                          weight: FontWeight.w400),
-                      Spacer(),
-                      Image.asset("assets/images/upload.png",
-                          width: SGSpacing.p4, height: SGSpacing.p4),
-                    ],
-                  )),
+              InkWell(
+                onTap: () async {
+                  String message =
+                      await provider.onChangeBusinessRegistrationPicture();
+                  if (message.isNotEmpty) showFailDialogWithImage(message, "");
+                },
+                child: SGContainer(
+                    borderColor: SGColors.primary,
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    padding: EdgeInsets.all(SGSpacing.p4),
+                    child: Row(
+                      children: [
+                        SGTypography.body(
+                            (state.businessRegistrationPicture == null)
+                                ? "반드시 금년도에 발급한 사본을 보내주세요."
+                                : state.businessRegistrationPicture!.name,
+                            color: SGColors.primary,
+                            size: FontSize.small,
+                            weight: FontWeight.w400),
+                        Spacer(),
+                        Image.asset("assets/images/upload.png",
+                            width: SGSpacing.p4, height: SGSpacing.p4),
+                      ],
+                    )),
+              ),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               SGContainer(
                   child: Row(
@@ -1182,21 +1196,31 @@ class _StoreRegistrationFormScreenState
                     color: SGColors.primary),
               ]),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-              SGContainer(
-                  borderColor: SGColors.primary,
-                  borderRadius: BorderRadius.circular(SGSpacing.p3),
-                  padding: EdgeInsets.all(SGSpacing.p4),
-                  child: Row(
-                    children: [
-                      SGTypography.body("반드시 금년도에 발급한 사본을 보내주세요.",
-                          color: SGColors.primary,
-                          size: FontSize.small,
-                          weight: FontWeight.w400),
-                      Spacer(),
-                      Image.asset("assets/images/upload.png",
-                          width: SGSpacing.p4, height: SGSpacing.p4),
-                    ],
-                  )),
+              InkWell(
+                onTap: () async {
+                  String message =
+                      await provider.onChangeBusinessPermitPicture();
+                  if (message.isNotEmpty) showFailDialogWithImage(message, "");
+                },
+                child: SGContainer(
+                    borderColor: SGColors.primary,
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    padding: EdgeInsets.all(SGSpacing.p4),
+                    child: Row(
+                      children: [
+                        SGTypography.body(
+                            (state.businessPermitPicture == null)
+                                ? "반드시 금년도에 발급한 사본을 보내주세요."
+                                : state.businessPermitPicture!.name,
+                            color: SGColors.primary,
+                            size: FontSize.small,
+                            weight: FontWeight.w400),
+                        const Spacer(),
+                        Image.asset("assets/images/upload.png",
+                            width: SGSpacing.p4, height: SGSpacing.p4),
+                      ],
+                    )),
+              ),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               SGContainer(
                   child: Row(
@@ -1211,32 +1235,28 @@ class _StoreRegistrationFormScreenState
             SizedBox(height: SGSpacing.p14),
             SGActionButton(
                 onPressed: () {
-                  if (businessRegistrationController.text.isNotEmpty &&
-                          representativeNameController.text.isNotEmpty &&
-                          storeNumberController.text.isNotEmpty &&
-                          storeNameController.text.isNotEmpty &&
-                          storeAddressController.text.isNotEmpty &&
-                          category != null &&
-                          businessType != null
-                      // && _accountImage != null &&
-                      // _businessRegistrationImage != null &&
-                      // _operationImage != null
-                      ) {
-                    widget.onNext();
+                  if (state.businessNumber.isNotEmpty &&
+                      state.ceoName.isNotEmpty &&
+                      state.storeName.isNotEmpty &&
+                      state.address.isNotEmpty &&
+                      state.phone.isNotEmpty &&
+                      state.category.isNotEmpty &&
+                      state.businessType != -1 &&
+                      state.businessRegistrationPicture != null &&
+                      state.businessPermitPicture != null) {
+                    provider.enroll();
                   }
                 },
                 label: "연구소 입점 신청하기",
-                disabled: !(businessRegistrationController.text.isNotEmpty &&
-                        representativeNameController.text.isNotEmpty &&
-                        storeNumberController.text.isNotEmpty &&
-                        storeNameController.text.isNotEmpty &&
-                        storeAddressController.text.isNotEmpty &&
-                        category != null &&
-                        businessType != null
-                    // && _accountImage != null &&
-                    // _businessRegistrationImage != null &&
-                    // _operationImage != null
-                    )),
+                disabled: !(state.businessNumber.isNotEmpty &&
+                    state.ceoName.isNotEmpty &&
+                    state.storeName.isNotEmpty &&
+                    state.address.isNotEmpty &&
+                    state.phone.isNotEmpty &&
+                    state.category.isNotEmpty &&
+                    state.businessType != -1 &&
+                    state.businessRegistrationPicture != null &&
+                    state.businessPermitPicture != null)),
           ]),
         ));
   }
@@ -1447,13 +1467,13 @@ class _TermCheckScreenState extends ConsumerState<_TermCheckScreen> {
               SizedBox(height: SGSpacing.p15),
               SGActionButton(
                 onPressed: () {
-                  terms.map((e) {
-                    if (e.title == '싱그릿 식단 연구소 수신 동의') {
-                      provider.onChangeIsSingleeatAgree(e.checked);
-                    } else if (e.title == '부가 서비스 및 혜택 안내 동의') {
-                      provider.onChangeIsAdditionalAgree(e.checked);
+                  for (int i = 0; i < terms.length; i++) {
+                    if (terms[i].title == '싱그릿 식단 연구소 수신 동의') {
+                      provider.onChangeIsSingleeatAgree(terms[i].checked);
+                    } else if (terms[i].title == '부가 서비스 및 혜택 안내 동의') {
+                      provider.onChangeIsAdditionalAgree(terms[i].checked);
                     }
-                  });
+                  }
 
                   if (isAllRequiredChecked) {
                     provider.changeStatus();
