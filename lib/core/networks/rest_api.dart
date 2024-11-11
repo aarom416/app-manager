@@ -25,4 +25,6 @@ class RestApiUri {
       '/api/v1/owner/auth/direct-login/verify-phone';
   static const String fcmToken = '/api/v1/owner/notification/push/fcm-token';
   static const String logout = '/api/v1/owner/logout';
+  static const String updatePassword =
+      '/api/v1/owner/auth/sign-up/update-password';
 }

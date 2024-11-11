@@ -1,7 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/find_account_provider.dart';
+import 'package:singleeat/office/providers/find_by_password_provider.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
 
@@ -30,7 +32,8 @@ class WebViewNotifier extends _$WebViewNotifier {
     state = state.copyWith(method: method);
   }
 
-  void onChangeStatus(WebViewStatus status) async {
+  void onChangeStatus(
+      {required WebViewStatus status, String errorMessage = ''}) async {
     if (status == WebViewStatus.success) {
       switch (state.method) {
         case AuthenticateWithPhoneNumberMethod.SIGNUP:
@@ -47,11 +50,17 @@ class WebViewNotifier extends _$WebViewNotifier {
               .onChangeStatus(FindAccountStatus.step3);
           break;
         case AuthenticateWithPhoneNumberMethod.PASSWORD:
+          ref
+              .read(findByPasswordNotifierProvider.notifier)
+              .onChangeStatus(FindByPasswordStatus.step3);
           break;
         case AuthenticateWithPhoneNumberMethod.PHONE:
           break;
       }
     } else if (status == WebViewStatus.error) {
+      state = state.copyWith(
+          error: ResultFailResponseModel(errorMessage: errorMessage));
+
       switch (state.method) {
         case AuthenticateWithPhoneNumberMethod.SIGNUP:
           ref
@@ -69,6 +78,9 @@ class WebViewNotifier extends _$WebViewNotifier {
               .onChangeStatus(FindAccountStatus.error);
           break;
         case AuthenticateWithPhoneNumberMethod.PASSWORD:
+          ref
+              .read(findByPasswordNotifierProvider.notifier)
+              .onChangeStatus(FindByPasswordStatus.error);
           break;
         case AuthenticateWithPhoneNumberMethod.PHONE:
           break;
@@ -93,6 +105,7 @@ abstract class WebViewState with _$WebViewState {
     @Default(AuthenticateWithPhoneNumberMethod.SIGNUP)
     AuthenticateWithPhoneNumberMethod method,
     @Default('') String identityVerificationId,
+    @Default(ResultFailResponseModel()) ResultFailResponseModel error,
   }) = _WebViewState;
 
   factory WebViewState.fromJson(Map<String, dynamic> json) =>

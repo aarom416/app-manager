@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -9,6 +10,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/find_by_password_provider.dart';
 import 'package:singleeat/office/providers/webview_provider.dart';
@@ -47,46 +49,62 @@ class _FindByPasswordScreenState extends ConsumerState<FindByPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     ref.listen(findByPasswordNotifierProvider, (previous, next) {
-      if (next.status == FindByPasswordStatus.success) {
+      if (previous?.status != next.status) {
         FocusScope.of(context).unfocus();
-        animateToPage(1);
-      } else if (next.status == FindByPasswordStatus.error) {
-        showSGDialog(
-            context: context,
-            childrenBuilder: (ctx) => [
-                  Center(
-                    child: SGTypography.body(
-                      ref
-                          .read(findByPasswordNotifierProvider)
-                          .error
-                          .errorMessage,
-                      size: FontSize.medium,
-                      weight: FontWeight.w700,
-                      align: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: SGSpacing.p5),
-                  Row(children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.of(ctx).pop();
-                        },
-                        child: SGContainer(
-                          color: SGColors.primary,
-                          padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                          borderRadius: BorderRadius.circular(SGSpacing.p3),
-                          child: Center(
-                            child: SGTypography.body("확인",
-                                size: FontSize.normal,
-                                weight: FontWeight.normal,
-                                color: SGColors.white),
-                          ),
+
+        switch (next.status) {
+          case FindByPasswordStatus.step1:
+            animateToPage(0);
+            break;
+          case FindByPasswordStatus.step2:
+            animateToPage(1);
+            break;
+          case FindByPasswordStatus.step3:
+            animateToPage(2);
+            break;
+          case FindByPasswordStatus.step4:
+            animateToPage(3);
+            break;
+          case FindByPasswordStatus.error:
+            showSGDialog(
+                context: context,
+                childrenBuilder: (ctx) => [
+                      Center(
+                        child: SGTypography.body(
+                          ref
+                              .read(findByPasswordNotifierProvider)
+                              .error
+                              .errorMessage,
+                          size: FontSize.medium,
+                          weight: FontWeight.w700,
+                          align: TextAlign.center,
                         ),
                       ),
-                    ),
-                  ]),
-                ]);
+                      SizedBox(height: SGSpacing.p5),
+                      Row(children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(ctx).pop();
+                            },
+                            child: SGContainer(
+                              color: SGColors.primary,
+                              padding:
+                                  EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                              borderRadius: BorderRadius.circular(SGSpacing.p3),
+                              child: Center(
+                                child: SGTypography.body("확인",
+                                    size: FontSize.normal,
+                                    weight: FontWeight.normal,
+                                    color: SGColors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ]);
+            break;
+        }
       }
     });
 
@@ -131,7 +149,7 @@ class _FindByPasswordScreenState extends ConsumerState<FindByPasswordScreen> {
             onNext: () {
               FocusScope.of(context).unfocus();
 
-              Navigator.pop(context);
+              context.go(AppRoutes.login);
             },
           )
         ],
@@ -190,7 +208,7 @@ class _SuccessChangePasswordScreen extends StatelessWidget {
   }
 }
 
-class ChangePasswordScreen extends StatefulWidget {
+class ChangePasswordScreen extends ConsumerStatefulWidget {
   VoidCallback? onPrev;
   VoidCallback? onNext;
   String title;
@@ -203,13 +221,11 @@ class ChangePasswordScreen extends StatefulWidget {
   });
 
   @override
-  State<ChangePasswordScreen> createState() => ChangePasswordScreenState();
+  ConsumerState<ChangePasswordScreen> createState() =>
+      ChangePasswordScreenState();
 }
 
-class ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  String password = "";
-  String passwordConfirm = "";
-
+class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   bool passwordVisible = false;
   bool passwordVisibleConfirm = false;
 
@@ -217,27 +233,17 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
   late TextEditingController controllerConfirm = TextEditingController();
 
   bool get isPasswordValid =>
-      password.isNotEmpty &&
-      passwordConfirm.isNotEmpty &&
-      password == passwordConfirm;
-
-  final TextEditingController _passwordController = TextEditingController();
+      ref.read(findByPasswordNotifierProvider).password.isNotEmpty &&
+      ref.read(findByPasswordNotifierProvider).passwordConfirm.isNotEmpty &&
+      ref.read(findByPasswordNotifierProvider).password ==
+          ref.read(findByPasswordNotifierProvider).passwordConfirm;
 
   String? _passwordErrorText;
 
-  void _validatePassword(String value) {
-    final passwordRegex = RegExp(r'^[a-zA-Z0-9!@#$%^&*()_+]{8,16}$');
-    setState(() {
-      if (passwordRegex.hasMatch(value)) {
-        _passwordErrorText = null; // Valid password
-      } else {
-        _passwordErrorText = "비밀번호는 8~16자의 영문, 숫자, 특수문자만 사용 가능합니다.";
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(findByPasswordNotifierProvider);
+    final provider = ref.read(findByPasswordNotifierProvider.notifier);
     return Scaffold(
         appBar: AppBarWithLeftArrow(
             title: widget.title,
@@ -251,10 +257,10 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
             child: SGActionButton(
                 onPressed: () {
                   if (isPasswordValid) {
-                    showFailDialogWithImage(
-                        "비밀번호 변경을 위해\n이전과 다른 비밀번호를 입력해주세요.", "");
-                    widget.onNext!();
+                    provider.updatePassword();
                   }
+
+                  //
                 },
                 disabled: !isPasswordValid,
                 label: "다음")),
@@ -286,10 +292,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     Expanded(
                       child: TextField(
                           onChanged: (value) {
-                            setState(() {
-                              password = value;
-                              _validatePassword(value);
-                            });
+                            provider.onChangePassword(value);
                           },
                           controller: controller,
                           style: TextStyle(
@@ -349,9 +352,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     Expanded(
                       child: TextField(
                           onChanged: (value) {
-                            setState(() {
-                              passwordConfirm = value;
-                            });
+                            provider.onChangePasswordConfirm(value);
                           },
                           controller: controllerConfirm,
                           style: TextStyle(
@@ -385,9 +386,9 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
               )),
               SizedBox(height: SGSpacing.p2),
-              if (password.isNotEmpty &&
-                  passwordConfirm.isNotEmpty &&
-                  password != passwordConfirm)
+              if (state.password.isNotEmpty &&
+                  state.passwordConfirm.isNotEmpty &&
+                  state.password != state.passwordConfirm)
                 SGTypography.body("다시 한 번 확인해주세요.",
                     size: FontSize.small,
                     weight: FontWeight.w400,
