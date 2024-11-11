@@ -5,9 +5,11 @@ import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/office/models/user_model.dart';
+import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/find_by_password_provider.dart';
 import 'package:singleeat/office/providers/home_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
+import 'package:singleeat/office/providers/webview_provider.dart';
 import 'package:singleeat/office/services/login_service.dart';
 
 part 'login_provider.freezed.dart';
@@ -201,6 +203,8 @@ class LoginNotifier extends _$LoginNotifier {
     UserHive.set(user: const UserModel());
 
     state = const LoginState();
+    ref.invalidate(authenticateWithPhoneNumberNotifierProvider);
+    ref.invalidate(webViewNotifierProvider);
     ref.invalidate(signupNotifierProvider);
     ref.invalidate(findByPasswordNotifierProvider);
     ref.invalidate(homeNotifierProvider);

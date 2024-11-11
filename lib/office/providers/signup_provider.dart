@@ -297,11 +297,6 @@ class SignupNotifier extends _$SignupNotifier {
   }
 
   void enroll() async {
-    if (state.businessRegistrationPicture == null ||
-        state.businessPermitPicture == null) {
-      return;
-    }
-
     final formData = FormData.fromMap({
       'businessNumber': state.businessNumber,
       'ceoName': state.ceoName,
@@ -317,7 +312,7 @@ class SignupNotifier extends _$SignupNotifier {
           filename: state.businessRegistrationPicture!.name),
     });
 
-    if (state.accountPicture != null) {
+    if (state.businessPermitPicture != null) {
       formData.files.add(MapEntry(
         'businessPermitPicture',
         await MultipartFile.fromFile(state.businessPermitPicture!.path,
@@ -334,10 +329,6 @@ class SignupNotifier extends _$SignupNotifier {
       state = state.copyWith(
           error: ResultFailResponseModel.fromJson(response.data));
     }
-  }
-
-  void reset() async {
-    state = const SignupState();
   }
 }
 

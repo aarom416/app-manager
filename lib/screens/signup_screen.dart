@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -636,10 +634,6 @@ class _StoreRegistrationFormScreenState
   TextEditingController storeAddressController = TextEditingController();
   TextEditingController storeNumberController = TextEditingController();
 
-  File? _accountImage;
-  File? _businessRegistrationImage;
-  File? _operationImage;
-
   String representativeName = '';
   String storeName = '';
   String storeAddress = '';
@@ -729,6 +723,7 @@ class _StoreRegistrationFormScreenState
                         children: [
                           Expanded(
                             child: TextField(
+                                keyboardType: TextInputType.number,
                                 onChanged: (value) {
                                   provider.onChangeBusinessNumber(value);
                                 },
@@ -939,6 +934,7 @@ class _StoreRegistrationFormScreenState
                         children: [
                           Expanded(
                             child: TextField(
+                                keyboardType: TextInputType.number,
                                 onChanged: (value) {
                                   provider.onChangePhone(value);
                                 },
@@ -1217,7 +1213,8 @@ class _StoreRegistrationFormScreenState
                       state.category.isNotEmpty &&
                       state.businessType != -1 &&
                       state.accountPicture != null &&
-                      state.businessRegistrationPicture != null) {
+                      state.businessRegistrationPicture != null &&
+                      state.businessPermitPicture != null) {
                     provider.enroll();
                   }
                 },
@@ -1230,7 +1227,8 @@ class _StoreRegistrationFormScreenState
                     state.category.isNotEmpty &&
                     state.businessType != -1 &&
                     state.accountPicture != null &&
-                    state.businessRegistrationPicture != null)),
+                    state.businessRegistrationPicture != null &&
+                    state.businessPermitPicture != null)),
           ]),
         ));
   }
@@ -1940,6 +1938,7 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                           },
                           style: TextStyle(
                               fontSize: FontSize.small, color: SGColors.gray5),
+                          keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             isDense: true,
                             isCollapsed: true,
