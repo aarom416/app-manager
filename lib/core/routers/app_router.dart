@@ -8,6 +8,7 @@ import 'package:singleeat/screens/home_screen.dart';
 import 'package:singleeat/screens/login_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/signup_screen.dart';
+import 'package:singleeat/screens/store_registration_form_screen.dart';
 import 'package:singleeat/screens/webview_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
@@ -20,24 +21,47 @@ class AppRouter {
     routes: <RouteBase>[
       GoRoute(
           path: AppRoutes.home,
-          pageBuilder: (context, state) =>
-              const NoTransitionPage(child: HomeScreen(title: ''))),
+          pageBuilder: (context, state) {
+            UniqueKey? extra = state.extra as UniqueKey?;
+            if (extra == null) {
+              return const NoTransitionPage(child: HomeScreen(title: ''));
+            } else {
+              return NoTransitionPage(
+                  child: HomeScreen(
+                title: '',
+                key: ValueKey(extra),
+              ));
+            }
+          }),
       GoRoute(
           path: AppRoutes.webView,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: WebViewScreen())),
       GoRoute(
           path: AppRoutes.login,
-          pageBuilder: (context, state) =>
-              const NoTransitionPage(child: LoginScreen())),
+          pageBuilder: (context, state) {
+            UniqueKey? extra = state.extra as UniqueKey?;
+            if (extra == null) {
+              return const NoTransitionPage(child: LoginScreen());
+            } else {
+              return NoTransitionPage(child: LoginScreen(key: ValueKey(extra)));
+            }
+          }),
       GoRoute(
           path: AppRoutes.signup,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: SignupScreen())),
       GoRoute(
           path: AppRoutes.signupComplete,
-          pageBuilder: (context, state) =>
-              const NoTransitionPage(child: SignUpCompleteScreen())),
+          pageBuilder: (context, state) {
+            UniqueKey? extra = state.extra as UniqueKey?;
+            if (extra == null) {
+              return const NoTransitionPage(child: SignUpCompleteScreen());
+            } else {
+              return NoTransitionPage(
+                  child: SignUpCompleteScreen(key: ValueKey(extra)));
+            }
+          }),
       GoRoute(
           path: AppRoutes.authenticateWithPhoneNumber,
           pageBuilder: (context, state) {
@@ -63,6 +87,22 @@ class AppRouter {
           path: AppRoutes.findByAccount,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: FindAccountScreen())),
+      GoRoute(
+          path: AppRoutes.profileEdit,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: ProfileEditScreen())),
+      GoRoute(
+          path: AppRoutes.storeRegistrationForm,
+          pageBuilder: (context, state) {
+            UniqueKey? extra = state.extra as UniqueKey?;
+            if (extra == null) {
+              return const NoTransitionPage(
+                  child: StoreRegistrationFormScreen());
+            } else {
+              return NoTransitionPage(
+                  child: StoreRegistrationFormScreen(key: ValueKey(extra)));
+            }
+          }),
     ],
   );
 }

@@ -149,7 +149,7 @@ class _FindByPasswordScreenState extends ConsumerState<FindByPasswordScreen> {
             onNext: () {
               FocusScope.of(context).unfocus();
 
-              context.go(AppRoutes.login);
+              context.go(AppRoutes.login, extra: UniqueKey());
             },
           )
         ],

@@ -13,7 +13,6 @@ import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/user_model.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
-import 'package:singleeat/office/providers/signup_provider.dart';
 
 class SignUpCompleteScreen extends ConsumerStatefulWidget {
   const SignUpCompleteScreen({
@@ -51,7 +50,7 @@ class _SignUpCompleteScreenState extends ConsumerState<SignUpCompleteScreen> {
                     bool logout =
                         await ref.read(loginNotifierProvider.notifier).logout();
                     if (logout) {
-                      context.go(AppRoutes.login);
+                      context.go(AppRoutes.login, extra: UniqueKey());
                     }
                   },
                   child: SGContainer(
@@ -68,8 +67,7 @@ class _SignUpCompleteScreenState extends ConsumerState<SignUpCompleteScreen> {
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => _ProfileEditScreen()));
+                    context.push(AppRoutes.profileEdit);
                   },
                   child: SGContainer(
                       color: SGColors.primary,
@@ -94,9 +92,7 @@ class _SignUpCompleteScreenState extends ConsumerState<SignUpCompleteScreen> {
             else
               _NotRegisteredScreen(
                 onPressActionButton: () {
-                  ref
-                      .read(signupNotifierProvider.notifier)
-                      .onChangeStatus(SignupStatus.step4);
+                  context.push(AppRoutes.storeRegistrationForm);
                 },
               )
           ])),
@@ -104,24 +100,24 @@ class _SignUpCompleteScreenState extends ConsumerState<SignUpCompleteScreen> {
   }
 }
 
-class _ProfileEditScreen extends ConsumerStatefulWidget {
-  const _ProfileEditScreen({super.key});
+class ProfileEditScreen extends ConsumerStatefulWidget {
+  const ProfileEditScreen({super.key});
 
   @override
-  ConsumerState<_ProfileEditScreen> createState() => _ProfileEditScreenState();
+  ConsumerState<ProfileEditScreen> createState() => _ProfileEditScreenState();
 }
 
-class _ProfileEditScreenState extends ConsumerState<_ProfileEditScreen> {
+class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   late TextEditingController usernameController =
-      TextEditingController(text: "singleat");
+      TextEditingController(text: UserHive.get().loginId);
   late TextEditingController nameController =
-      TextEditingController(text: "싱그릿");
+      TextEditingController(text: UserHive.get().name);
   late TextEditingController authCodeController =
       TextEditingController(text: "");
   late TextEditingController emailController =
-      TextEditingController(text: "singleeat@singleeat.com");
+      TextEditingController(text: UserHive.get().email);
   late TextEditingController phoneNumberController =
-      TextEditingController(text: "010-1234-5678");
+      TextEditingController(text: UserHive.get().phone);
 
   String username = "singleat";
   String name = "싱그릿";

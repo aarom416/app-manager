@@ -111,41 +111,6 @@ class SignupService {
       return Future.error(e);
     }
   }
-
-  Future<Response<dynamic>> checkBusinessNumber(String businessNumber) async {
-    try {
-      final response = await RequestApi.post(
-        RestApiUri.checkBusinessNumber
-            .replaceAll('{businessRegistrationNumber}', businessNumber),
-      );
-
-      return response;
-    } on DioException catch (e) {
-      logger.e("DioException: ${e.message}");
-      return Future.error(e);
-    } on Exception catch (e) {
-      logger.e(e);
-      return Future.error(e);
-    }
-  }
-
-  Future<Response<dynamic>> enroll({required FormData formData}) async {
-    try {
-      final response = await RequestApi.post(
-        RestApiUri.enroll,
-        data: formData,
-        contentType: RestApiUri.multipartFormData,
-      );
-
-      return response;
-    } on DioException catch (e) {
-      logger.e("DioException: ${e.message}");
-      return Future.error(e);
-    } on Exception catch (e) {
-      logger.e(e);
-      return Future.error(e);
-    }
-  }
 }
 
 final signupServiceProvider = Provider<SignupService>((ref) => SignupService());

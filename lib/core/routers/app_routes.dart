@@ -7,4 +7,6 @@ class AppRoutes {
   static const String authenticateWithPhoneNumber = '/authenticate/phoneNumber';
   static const String findByPassword = '/find/password';
   static const String findByAccount = '/find/account';
+  static const String profileEdit = '/profile/edit';
+  static const String storeRegistrationForm = '/store/registration/form';
 }

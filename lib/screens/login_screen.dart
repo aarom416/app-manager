@@ -118,9 +118,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           UserModel user = UserHive.get();
 
           if (user.status == UserStatus.success) {
-            context.go(AppRoutes.home);
+            context.go(AppRoutes.home, extra: UniqueKey());
           } else {
-            context.go(AppRoutes.signupComplete);
+            context.go(AppRoutes.signupComplete, extra: UniqueKey());
           }
 
         default:
