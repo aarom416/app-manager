@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
+import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
@@ -31,6 +32,8 @@ class ImageUploadScreen extends StatefulWidget {
   State<ImageUploadScreen> createState() => _ImageUploadScreenState();
 }
 
+
+
 class _ImageUploadScreenState extends State<ImageUploadScreen> {
   static const columns = 3;
   List<(int, String?)> get imageSlots => [
@@ -39,6 +42,75 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
             (widget.maximumImages + columns - 1) ~/ columns * columns - widget.maximumImages, (index) => null),
       ].mapIndexed((index, value) => (index, value)).toList();
 
+  void showFailDialogWithImage({
+    required String mainTitle,
+    required String subTitle,
+  }) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          if (subTitle.isEmpty) ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(ctx);
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ] else ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p4),
+            Center(
+                child: SGTypography.body(subTitle,
+                    color: SGColors.gray4,
+                    size: FontSize.small,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(ctx);
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ]
+        ]);
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,8 +119,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
             child: SGActionButton(
                 onPressed: () {
+                  showFailDialogWithImage(mainTitle: "이미지 불러오기 실패", subTitle: "유효하지 않은 이미지 파일 형식입니다.\n다시 한 번 확인해주세요.");
                   // widget.onSubmit(controller.text);
-                  Navigator.of(context).pop();
                 },
                 label: widget.buttonText)),
         body: SGContainer(

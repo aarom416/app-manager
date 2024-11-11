@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
+import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/selection_bottom_sheet.dart';
 import 'package:singleeat/core/components/sizing.dart';
@@ -577,6 +578,76 @@ class _EditDeliveryTipScreenState extends State<_EditDeliveryTipScreen> {
           defaulDelieryTipController.text != defaulDelieryTip.toKoreanCurrency;
     });
   }
+
+  void showFailDialogWithImage({
+    required String mainTitle,
+    required String subTitle,
+  }) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          if (subTitle.isEmpty) ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(ctx);
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ] else ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p4),
+            Center(
+                child: SGTypography.body(subTitle,
+                    color: SGColors.gray4,
+                    size: FontSize.small,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(ctx);
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ]
+        ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -586,8 +657,8 @@ class _EditDeliveryTipScreenState extends State<_EditDeliveryTipScreen> {
           child: SGActionButton(
               disabled: !isButtonEnabled,
               onPressed: () {
+                showFailDialogWithImage(mainTitle: "배달팁 등록 실패", subTitle: "배달팁은 5,000원 이하만 설정 가능합니다.");
                 FocusScope.of(context).unfocus();
-                Navigator.pop(context);
               },
               label: "변경하기")),
       body: SGContainer(

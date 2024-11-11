@@ -207,64 +207,6 @@ class _CuisineOptionCategoryCardState extends State<_CuisineOptionCategoryCard> 
               Icon(Icons.edit, size: FontSize.small),
             ]),
           ),
-          Spacer(),
-          GestureDetector(
-            onTap: () {
-              showSGDialog(
-                  context: context,
-                  childrenBuilder: (ctx) => [
-                        Center(
-                            child: SGTypography.body("옵션 카테고리를\n정말 삭제하시겠습니까?",
-                                size: FontSize.large,
-                                weight: FontWeight.w700,
-                                lineHeight: 1.25,
-                                align: TextAlign.center)),
-                        SizedBox(height: SGSpacing.p5 / 2),
-                        SGTypography.body("옵션 카테고리 내 옵션도 전부 삭제됩니다.", color: SGColors.gray4),
-                        SizedBox(height: SGSpacing.p5),
-                        Row(children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.of(ctx).pop();
-                              },
-                              child: SGContainer(
-                                color: SGColors.gray3,
-                                padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                borderRadius: BorderRadius.circular(SGSpacing.p3),
-                                child: Center(
-                                  child: SGTypography.body("취소",
-                                      size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: SGSpacing.p2),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.of(ctx).pop();
-                              },
-                              child: SGContainer(
-                                color: SGColors.primary,
-                                padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                borderRadius: BorderRadius.circular(SGSpacing.p3),
-                                child: Center(
-                                  child: SGTypography.body("확인",
-                                      size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ]),
-                      ]);
-            },
-            child: SGContainer(
-                borderColor: SGColors.line2,
-                borderRadius: BorderRadius.circular(SGSpacing.p20),
-                padding: EdgeInsets.symmetric(vertical: SGSpacing.p1 + SGSpacing.p05, horizontal: SGSpacing.p2),
-                child: SGTypography.body("옵션삭제", color: SGColors.gray4, weight: FontWeight.w400)),
-          ),
         ],
       ),
       ...widget.category.options
@@ -562,8 +504,8 @@ class _CuisineManagementScreenState extends State<_CuisineManagementScreen> {
       Row(children: [
         Expanded(
             child: GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewCuisineCategoryScreen()));
+               onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewCuisineCategoryScreen()));
           },
           child: SGContainer(
               color: SGColors.primary,
@@ -571,11 +513,11 @@ class _CuisineManagementScreenState extends State<_CuisineManagementScreen> {
               borderRadius: BorderRadius.circular(SGSpacing.p2),
               child: Center(
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                ColorFiltered(
-                    colorFilter: ColorFilter.mode(SGColors.white, BlendMode.srcIn),
-                    child: Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3)),
-                SizedBox(width: SGSpacing.p2),
-                SGTypography.body("메뉴 카테고리 추가", size: FontSize.small, weight: FontWeight.w500, color: SGColors.white)
+                      ColorFiltered(
+                          colorFilter: ColorFilter.mode(SGColors.white, BlendMode.srcIn),
+                          child: Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3)),
+                      SizedBox(width: SGSpacing.p2),
+                    SGTypography.body ("메뉴 카테고리 추가", size: FontSize.small, weight: FontWeight.w500, color: SGColors.white)
               ]))),
         )),
         SizedBox(width: SGSpacing.p2),
@@ -590,11 +532,11 @@ class _CuisineManagementScreenState extends State<_CuisineManagementScreen> {
               borderRadius: BorderRadius.circular(SGSpacing.p2),
               child: Center(
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                ColorFiltered(
-                    colorFilter: ColorFilter.mode(SGColors.white, BlendMode.srcIn),
-                    child: Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3)),
-                SizedBox(width: SGSpacing.p2),
-                SGTypography.body("메뉴 추가", size: FontSize.small, weight: FontWeight.w500, color: SGColors.white)
+                        ColorFiltered(
+                            colorFilter: ColorFilter.mode(SGColors.white, BlendMode.srcIn),
+                            child: Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3)),
+                        SizedBox(width: SGSpacing.p2),
+                      SGTypography.body("메뉴 추가", size: FontSize.small, weight: FontWeight.w500, color: SGColors.white)
               ]))),
         )),
       ]),
@@ -607,7 +549,7 @@ class _CuisineManagementScreenState extends State<_CuisineManagementScreen> {
   }
 }
 
-class _CuisineCategoryCard extends StatelessWidget {
+class _CuisineCategoryCard extends StatefulWidget {
   final CuisineCategory cuisineCategory;
 
   _CuisineCategoryCard({
@@ -616,21 +558,96 @@ class _CuisineCategoryCard extends StatelessWidget {
   });
 
   @override
+  State<_CuisineCategoryCard> createState() => _CuisineCategoryCardState();
+}
+
+class _CuisineCategoryCardState extends State<_CuisineCategoryCard> {
+
+  void showFailDialogWithImage({
+    required String mainTitle,
+    required String subTitle,
+  }) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          if (subTitle.isEmpty) ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CuisineScreen()));
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ] else ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p4),
+            Center(
+                child: SGTypography.body(subTitle,
+                    color: SGColors.gray4,
+                    size: FontSize.small,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(ctx);
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ]
+        ]);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(mainAxisSize: MainAxisSize.min, children: [
       MultipleInformationBox(children: [
         GestureDetector(
           onTap: () {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => UpdateCuisineCategoryScreen(category: cuisineCategory)));
+                .push(MaterialPageRoute(builder: (context) => UpdateCuisineCategoryScreen(category: widget.cuisineCategory)));
           },
           child: Row(mainAxisSize: MainAxisSize.max, children: [
-            SGTypography.body(cuisineCategory.name, size: FontSize.normal, weight: FontWeight.w600),
+            SGTypography.body(widget.cuisineCategory.name, size: FontSize.normal, weight: FontWeight.w600),
             SizedBox(width: SGSpacing.p1),
             const Icon(Icons.edit, size: FontSize.small),
           ]),
         ),
-        ...cuisineCategory.cuisines.mapIndexed((idx, cuisine) => Column(mainAxisSize: MainAxisSize.min, children: [
+        ...widget.cuisineCategory.cuisines.mapIndexed((idx, cuisine) => Column(mainAxisSize: MainAxisSize.min, children: [
               if (idx != 0) ...[
                 SizedBox(height: SGSpacing.p4),
                 Divider(height: 1, color: SGColors.line1, thickness: 1),
@@ -638,7 +655,7 @@ class _CuisineCategoryCard extends StatelessWidget {
               SizedBox(height: SGSpacing.p4),
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => CuisineScreen()));
+                  showFailDialogWithImage(mainTitle: "해당 메뉴는 삭제된 메뉴입니다.", subTitle: "");
                 },
                 child: Row(children: [
                   ClipRRect(

@@ -157,6 +157,75 @@ class _CouponIssueScreenState extends State<CouponIssueScreen> {
         _ => false,
       };
 
+  void showFailDialogWithImage({
+    required String mainTitle,
+    required String subTitle,
+  }) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          if (subTitle.isEmpty) ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(ctx);
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ] else ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p4),
+            Center(
+                child: SGTypography.body(subTitle,
+                    color: SGColors.gray4,
+                    size: FontSize.small,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(ctx);
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ]
+        ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -293,6 +362,19 @@ class _CouponIssueScreenState extends State<CouponIssueScreen> {
                             color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500)),
                   ],
                 )),
+                SizedBox(height: SGSpacing.p2),
+                if (int.parse(_minimumOrderAmountController.text.replaceAll(',', '')) == 0) ... {
+                } else  ... {
+                  if ((int.parse(_minimumOrderAmountController.text.replaceAll(',', '')) < 5000 ||
+                      int.parse(_minimumOrderAmountController.text.replaceAll(',', '')) >= 50000)) ... [
+                    SGTypography.body(
+                      "최소 주문 금액은 5,000원 이상 50,000원 미만으로 설정할 수 있습니다.",
+                      color: SGColors.warningRed,
+                      size: FontSize.tiny,
+                      weight: FontWeight.w500,
+                    ),
+                  ],
+                },
                 SizedBox(height: SGSpacing.p3),
                 SGTypography.body("쿠폰 사용에 있어 최소 주문 금액을 적어주시면 됩니다!", color: SGColors.gray4, size: FontSize.tiny),
               ],
@@ -425,6 +507,7 @@ class _CouponIssueScreenState extends State<CouponIssueScreen> {
                                 SizedBox(height: SGSpacing.p4),
                                 GestureDetector(
                                   onTap: () {
+                                    showFailDialogWithImage(mainTitle:  "쿠폰 발급 실패", subTitle: "이미 동일한 조건의 쿠폰이 발급되었습니다.\n다른 쿠폰을 확인해주세요.");
                                     context.read<CouponListBloc>().add(AddCoupon(
                                           CouponModel(
                                             id: couponId,

@@ -167,6 +167,7 @@ class _LookUpUsernameScreen extends StatefulWidget {
 
 class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
   String username = "";
+  String errorMessage = "";
   late TextEditingController controller = TextEditingController();
 
   @override
@@ -174,12 +175,13 @@ class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: "아이디 찾기", onTap: widget.onPrev),
       floatingActionButton: Container(
-          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+          constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
+              maxHeight: 58),
           child: SGActionButton(
               onPressed: () {
                 if (username.isNotEmpty) {
                   FocusScope.of(context).unfocus();
-
                   widget.onNext!();
                 }
               },
@@ -187,49 +189,82 @@ class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
               label: "다음")),
       body: SGContainer(
         color: Color(0xFFFFFFFF),
-        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p8),
+        padding: EdgeInsets.symmetric(
+            horizontal: SGSpacing.p4, vertical: SGSpacing.p8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                SGTypography.body("아이디 찾기", size: FontSize.xlarge, weight: FontWeight.w700, lineHeight: 1.35),
+                SGTypography.body("아이디 찾기",
+                    size: FontSize.xlarge,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.35),
               ],
             ),
             SizedBox(height: SGSpacing.p8),
-            SGTypography.body("이름", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
+            SGTypography.body("이름",
+                size: FontSize.small,
+                weight: FontWeight.w500,
+                color: SGColors.gray4),
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
             SGTextFieldWrapper(
-                child: SGContainer(
-              padding: EdgeInsets.all(SGSpacing.p4),
-              width: double.infinity,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                        onChanged: (value) {
+              child: SGContainer(
+                padding: EdgeInsets.all(SGSpacing.p4),
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      onChanged: (value) {
+                        final validCharacters = RegExp(r'^[a-zA-Z0-9ㄱ-ㅎ가-힣\s]*$');
+                        if (validCharacters.hasMatch(value)) {
                           setState(() {
                             username = value;
+                            errorMessage = "";
                           });
-                        },
-                        controller: controller,
-                        style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                        decoration: InputDecoration(
-                          isDense: true,
-                          isCollapsed: true,
-                          hintStyle:
-                              TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                          hintText: "이름을 입력해주세요.",
-                          border:
-                              const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                        )),
-                  ),
-                ],
+                        } else {
+                          setState(() {
+                            errorMessage =
+                            "특수문자는 입력하실 수 없습니다.\n한글, 영문, 숫자, 띄어쓰기만 입력해주세요";
+                          });
+                        }
+                      },
+                      controller: controller,
+                      style: TextStyle(
+                          fontSize: FontSize.small, color: SGColors.gray5),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        isCollapsed: true,
+                        hintStyle: TextStyle(
+                            color: SGColors.gray3,
+                            fontSize: FontSize.small,
+                            fontWeight: FontWeight.w400),
+                        hintText: "이름을 입력해주세요.",
+                        border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                            borderSide: BorderSide.none),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            )),
+            ),
+            SizedBox(height: SGSpacing.p2),
+            if (errorMessage.isNotEmpty)
+              Text(
+                errorMessage,
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: FontSize.small,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
           ],
         ),
       ),
     );
   }
 }
+
+

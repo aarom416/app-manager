@@ -12,6 +12,8 @@ import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/office/components/cuisine_selection_bottom_sheet.dart';
 import 'package:singleeat/office/models/cuisine_model.dart';
 
+import '../core/components/dialog.dart';
+
 class NewCuisineCategoryScreen extends StatefulWidget {
   const NewCuisineCategoryScreen({super.key});
 
@@ -69,6 +71,74 @@ class _NewCuisineCategoryScreenState extends State<NewCuisineCategoryScreen> {
   void initState() {
     super.initState();
   }
+  void showFailDialogWithImage({
+    required String mainTitle,
+    required String subTitle,
+  }) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          if (subTitle.isEmpty) ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(ctx);
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ] else ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p4),
+            Center(
+                child: SGTypography.body(subTitle,
+                    color: SGColors.gray4,
+                    size: FontSize.small,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(ctx);
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ]
+        ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +148,7 @@ class _NewCuisineCategoryScreenState extends State<NewCuisineCategoryScreen> {
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
           child: SGActionButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                showFailDialogWithImage(mainTitle: "메뉴 카테고리 추가 실패", subTitle: "삭제된 메뉴가 포함되어있습니다.\n다시 한 번 시도해주세요.");
               },
               label: "추가하기")),
       body: SGContainer(

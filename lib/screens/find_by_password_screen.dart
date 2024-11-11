@@ -46,7 +46,7 @@ class _FindByPasswordScreenState extends ConsumerState<FindByPasswordScreen> {
                           .error
                           .errorMessage,
                       size: FontSize.medium,
-                      weight: FontWeight.normal,
+                      weight: FontWeight.w700,
                       align: TextAlign.center,
                     ),
                   ),
@@ -220,7 +220,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
       if (passwordRegex.hasMatch(value)) {
         _passwordErrorText = null; // Valid password
       } else {
-        _passwordErrorText = "비밀번호는 8~16자 이내, 영문, 숫자, 특수문자만 사용 가능합니다.";
+        _passwordErrorText = "비밀번호는 8~16자의 영문, 숫자, 특수문자만 사용 가능합니다.";
       }
     });
   }
@@ -317,21 +317,13 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   child: Text(
                     _passwordErrorText!,
                     style: TextStyle(
-                      fontSize: FontSize.tiny,
+                      fontSize: FontSize.small,
                       color: SGColors.warningRed,
                     ),
                   ),
                 ),
               Row(children: []),
               SizedBox(height: SGSpacing.p8),
-              if (password.isNotEmpty &&
-                  passwordConfirm.isNotEmpty &&
-                  password != passwordConfirm)
-                SGTypography.body("비밀번호가 다릅니다.",
-                    size: FontSize.small,
-                    weight: FontWeight.w500,
-                    color: SGColors.warningRed)
-              else
                 SGTypography.body("비밀번호 확인",
                     size: FontSize.small,
                     weight: FontWeight.w500,
@@ -381,6 +373,14 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ],
                 ),
               )),
+              SizedBox(height: SGSpacing.p2),
+              if (password.isNotEmpty &&
+                  passwordConfirm.isNotEmpty &&
+                  password != passwordConfirm)
+                SGTypography.body("다시 한 번 확인해주세요.",
+                    size: FontSize.small,
+                    weight: FontWeight.w400,
+                    color: SGColors.warningRed)
             ])));
   }
 

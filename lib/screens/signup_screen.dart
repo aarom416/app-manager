@@ -288,16 +288,6 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "싱그릿 식단 연구소"),
-        floatingActionButton: Container(
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
-                maxHeight: 58),
-            child: SGActionButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                disabled: emailAuthRequested && !emailAuthConfirmed,
-                label: "저장")),
         body: SGContainer(
           color: SGColors.white,
           padding: EdgeInsets.symmetric(
@@ -1265,7 +1255,7 @@ class _StoreRegistrationFormScreenState
                       weight: FontWeight.w700,
                       lineHeight: 1.25,
                       align: TextAlign.center)),
-              SizedBox(height: SGSpacing.p6),
+              SizedBox(height: SGSpacing.p4),
               GestureDetector(
                 onTap: () {
                   Navigator.pop(ctx);
@@ -1505,7 +1495,7 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
       if (passwordRegex.hasMatch(value)) {
         _passwordErrorText = null; // Valid password
       } else {
-        _passwordErrorText = "비밀번호는 8~16자 이내, 영문, 숫자, 특수문자만 사용 가능합니다.";
+        _passwordErrorText = "비밀번호는 8~16자의 영문, 숫자, 특수문자만 사용 가능합니다.";
       }
     });
   }
@@ -1628,7 +1618,7 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 child: Text(
                   _idErrorText!,
                   style: TextStyle(
-                    fontSize: FontSize.tiny,
+                    fontSize: FontSize.small,
                     color: SGColors.warningRed,
                   ),
                 ),
@@ -1693,7 +1683,7 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 child: Text(
                   _passwordErrorText!,
                   style: TextStyle(
-                    fontSize: FontSize.tiny,
+                    fontSize: FontSize.small,
                     color: SGColors.warningRed,
                   ),
                 ),
@@ -1750,8 +1740,8 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 state.passwordConfirm.isNotEmpty &&
                 state.password != state.passwordConfirm) ... {
               SizedBox(height: SGSpacing.p2),
-              SGTypography.body("비밀번호가 다릅니다.",
-                  size: FontSize.tiny,
+                SGTypography.body("다시 한 번 확인해주세요.",
+                  size: FontSize.small,
                   color: SGColors.warningRed),
             },
             SizedBox(height: SGSpacing.p8),
