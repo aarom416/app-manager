@@ -12,7 +12,7 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/user_model.dart';
-import 'package:singleeat/office/providers/reset_provider.dart';
+import 'package:singleeat/office/providers/login_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
 
 class SignUpCompleteScreen extends ConsumerStatefulWidget {
@@ -47,9 +47,12 @@ class _SignUpCompleteScreenState extends ConsumerState<SignUpCompleteScreen> {
               children: [
                 Expanded(
                     child: GestureDetector(
-                  onTap: () {
-                    ref.read(resetNotifierProvider.notifier).reset();
-                    context.go(AppRoutes.login);
+                  onTap: () async {
+                    bool logout =
+                        await ref.read(loginNotifierProvider.notifier).logout();
+                    if (logout) {
+                      context.go(AppRoutes.login);
+                    }
                   },
                   child: SGContainer(
                       color: SGColors.gray1,

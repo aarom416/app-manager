@@ -7,6 +7,7 @@ import 'package:singleeat/office/providers/login_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
 
 part 'reset_provider.freezed.dart';
+
 part 'reset_provider.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -14,14 +15,6 @@ class ResetNotifier extends _$ResetNotifier {
   @override
   ResetState build() {
     return const ResetState();
-  }
-
-  void reset() {
-    ref.read(loginNotifierProvider.notifier).logout();
-    ref.invalidate(loginNotifierProvider);
-    ref.invalidate(signupNotifierProvider);
-    ref.invalidate(findByPasswordNotifierProvider);
-    ref.invalidate(homeNotifierProvider);
   }
 }
 

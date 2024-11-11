@@ -5,6 +5,9 @@ import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/office/models/user_model.dart';
+import 'package:singleeat/office/providers/find_by_password_provider.dart';
+import 'package:singleeat/office/providers/home_provider.dart';
+import 'package:singleeat/office/providers/signup_provider.dart';
 import 'package:singleeat/office/services/login_service.dart';
 
 part 'login_provider.freezed.dart';
@@ -177,19 +180,32 @@ class LoginNotifier extends _$LoginNotifier {
     }
   }
 
-  Future<void> logout() async {
-    final response = await ref
-        .read(loginServiceProvider)
-        .logout(fcmTokenId: UserHive.getBox(key: UserKey.fcm));
+  Future<bool> logout() async {
+    try {
+      final response = await ref
+          .read(loginServiceProvider)
+          .logout(fcmTokenId: UserHive.getBox(key: UserKey.fcm));
 
-    switch (response.statusCode) {
-      case 200:
-        verifyPhoneBySuccess(response: response, status: UserStatus.success);
-        break;
-      default:
-        // 종료
-        break;
+      switch (response.statusCode) {
+        case 200:
+          verifyPhoneBySuccess(response: response, status: UserStatus.success);
+          break;
+        default:
+          // 종료
+          break;
+      }
+    } catch (e) {
+      return false;
     }
+
+    UserHive.set(user: const UserModel());
+
+    state = const LoginState();
+    ref.invalidate(signupNotifierProvider);
+    ref.invalidate(findByPasswordNotifierProvider);
+    ref.invalidate(homeNotifierProvider);
+
+    return true;
   }
 }
 
