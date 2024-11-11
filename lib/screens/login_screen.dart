@@ -9,7 +9,9 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
+import 'package:singleeat/office/models/user_model.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
 
@@ -61,7 +63,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               .onChangeStatus(LoginStatus.init);
 
         case LoginStatus.success:
-          context.go(AppRoutes.signupComplete);
+          UserModel user = UserHive.get();
+
+          if (user.status == UserStatus.success) {
+            context.go(AppRoutes.home);
+          } else {
+            context.go(AppRoutes.signupComplete);
+          }
+
         default:
           break;
       }

@@ -19,7 +19,7 @@ class AppRouter {
     debugLogDiagnostics: true,
     routes: <RouteBase>[
       GoRoute(
-          path: AppRoutes.root,
+          path: AppRoutes.home,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: HomeScreen(title: ''))),
       GoRoute(

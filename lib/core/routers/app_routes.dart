@@ -1,5 +1,5 @@
 class AppRoutes {
-  static const String root = '/';
+  static const String home = '/';
   static const String webView = '/webView';
   static const String login = '/login';
   static const String signup = '/signup';
