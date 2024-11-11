@@ -43,6 +43,7 @@ class _WebViewScreenState extends ConsumerState<WebViewScreen> {
       ..setNavigationDelegate(
         NavigationDelegate(
           onHttpError: (error) => logger.e(error.request?.uri),
+          onPageFinished: (url) {},
           onNavigationRequest: (NavigationRequest request) {
             String url = request.url;
             final uri = Uri.parse(url);
@@ -57,11 +58,15 @@ class _WebViewScreenState extends ConsumerState<WebViewScreen> {
               ref
                   .read(webViewNotifierProvider.notifier)
                   .onChangeStatus(WebViewStatus.error);
-              // } else if (url.contains("identity-verification-success-redirect")) {
-            } else if (url.contains("identity-verification-success")) {
+            } else if (url.contains("identity-verification-success-redirect")) {
               ref
                   .read(webViewNotifierProvider.notifier)
                   .onChangeStatus(WebViewStatus.success);
+            } else if (url
+                .contains('identity-verification-success-account-redirect')) {
+              // 아이디 찾기는 redirect http가 온다? > https로 수정해야함
+              // String path = url.replaceAll('http://', 'https://');
+              // controller.loadRequest(Uri.parse(path));
             }
 
             return NavigationDecision.navigate;

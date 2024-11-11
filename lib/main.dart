@@ -41,6 +41,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await Hive.initFlutter();
+  await Hive.openBox('user');
+
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
@@ -61,10 +65,6 @@ void main() async {
   }
   initializeFCM();
 
-  await Hive.initFlutter();
-  await Hive.openBox('user');
-
-  // runApp(const MyApp());
   runApp(const ProviderScope(observers: [], child: RunApp()));
 }
 
