@@ -1,20 +1,27 @@
 import 'package:hive/hive.dart';
 import 'package:singleeat/office/models/user_model.dart';
 
+enum UserKey {
+  info,
+  loginId,
+  fcm,
+}
+
 class UserHive {
   static void set({
     required UserModel user,
   }) {
     final box = Hive.box('user');
     final map = user.toJson();
-    box.put('info', map);
+    box.put(UserKey.info.name, map);
   }
 
-  static void setLoginId({
-    required String loginId,
+  static void setBox({
+    required UserKey key,
+    required String value,
   }) {
     final box = Hive.box('user');
-    box.put('loginId', loginId);
+    box.put(key.name, value);
   }
 
   static UserModel get() {
@@ -34,16 +41,11 @@ class UserHive {
     }
   }
 
-  static String getLoginId() {
+  static String getBox({required UserKey key}) {
     final box = Hive.box('user');
     final map = box.toMap();
-    final String loginId = map['loginId'] ?? '';
 
-    if (loginId.isEmpty) {
-      return '';
-    } else {
-      return loginId;
-    }
+    return map[key.name] ?? '';
   }
 
   // 로그아웃

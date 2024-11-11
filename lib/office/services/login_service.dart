@@ -46,6 +46,44 @@ class LoginService {
       return Future.error(e);
     }
   }
+
+  Future<Response<dynamic>> fcmToken({required String fcmToken}) async {
+    try {
+      final response = await RequestApi.post(
+        RestApiUri.fcmToken,
+        data: {
+          'fcmToken': fcmToken,
+        },
+      );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  Future<Response<dynamic>> logout({required String fcmToken}) async {
+    try {
+      final response = await RequestApi.post(
+        RestApiUri.logout,
+        queryParameters: {
+          'fcmToken': fcmToken,
+        },
+      );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final loginServiceProvider = Provider<LoginService>((ref) => LoginService());

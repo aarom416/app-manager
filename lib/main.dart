@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logger/logger.dart';
 import 'package:singleeat/core/routers/app_router.dart';
+import 'package:singleeat/core/utils/fcm.dart';
 import 'package:singleeat/office/bloc/coupon_list_bloc.dart';
 import 'package:singleeat/office/bloc/manager_bloc.dart';
 import 'package:singleeat/office/bloc/store_bloc.dart';
@@ -58,6 +59,7 @@ void main() async {
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
   }
+  initializeFCM();
 
   await Hive.initFlutter();
   await Hive.openBox('user');

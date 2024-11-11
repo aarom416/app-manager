@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
@@ -13,7 +14,7 @@ part 'login_provider.g.dart';
 class LoginNotifier extends _$LoginNotifier {
   @override
   LoginState build() {
-    String loginId = UserHive.getLoginId();
+    String loginId = UserHive.getBox(key: UserKey.loginId);
     if (loginId.isEmpty) {
       return const LoginState();
     } else {
@@ -48,9 +49,9 @@ class LoginNotifier extends _$LoginNotifier {
 
     // 아이디 저장
     if (state.isRememberLoginId) {
-      UserHive.setLoginId(loginId: state.loginId);
+      UserHive.setBox(key: UserKey.loginId, value: state.loginId);
     } else {
-      UserHive.setLoginId(loginId: '');
+      UserHive.setBox(key: UserKey.loginId, value: '');
     }
 
     switch (response.statusCode) {
@@ -141,6 +142,20 @@ class LoginNotifier extends _$LoginNotifier {
     }
   }
 
+  void verifyPhoneBySuccess({
+    required Response response,
+    required UserStatus status,
+  }) async {
+    final result = ResultResponseModel.fromJson(response.data);
+    final user = UserModel.fromJson(result.data);
+    UserHive.set(user: user.copyWith(status: status));
+    state = state.copyWith(status: LoginStatus.success);
+
+    await ref
+        .read(loginServiceProvider)
+        .fcmToken(fcmToken: UserHive.getBox(key: UserKey.fcm));
+  }
+
   Future<void> verifyPhone() async {
     final response = await ref
         .read(loginServiceProvider)
@@ -148,22 +163,28 @@ class LoginNotifier extends _$LoginNotifier {
 
     switch (response.statusCode) {
       case 200:
-        final result = ResultResponseModel.fromJson(response.data);
-        final user = UserModel.fromJson(result.data);
-        UserHive.set(user: user.copyWith(status: UserStatus.success));
-        state = state.copyWith(status: LoginStatus.success);
+        verifyPhoneBySuccess(response: response, status: UserStatus.success);
         break;
       case 202:
-        final result = ResultResponseModel.fromJson(response.data);
-        final user = UserModel.fromJson(result.data);
-        UserHive.set(user: user.copyWith(status: UserStatus.wait));
-        state = state.copyWith(status: LoginStatus.success);
+        verifyPhoneBySuccess(response: response, status: UserStatus.wait);
         break;
       case 206:
-        final result = ResultResponseModel.fromJson(response.data);
-        final user = UserModel.fromJson(result.data);
-        UserHive.set(user: user.copyWith(status: UserStatus.notEntry));
-        state = state.copyWith(status: LoginStatus.success);
+        verifyPhoneBySuccess(response: response, status: UserStatus.notEntry);
+        break;
+      default:
+        // 종료
+        break;
+    }
+  }
+
+  Future<void> logout() async {
+    final response = await ref
+        .read(loginServiceProvider)
+        .logout(fcmToken: UserHive.getBox(key: UserKey.fcm));
+
+    switch (response.statusCode) {
+      case 200:
+        verifyPhoneBySuccess(response: response, status: UserStatus.success);
         break;
       default:
         // 종료

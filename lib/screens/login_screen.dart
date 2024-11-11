@@ -14,9 +14,6 @@ import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/user_model.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
-import 'package:singleeat/screens/find_account_screen.dart';
-import 'package:singleeat/screens/find_by_password_screen.dart';
-import 'package:singleeat/screens/home_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -43,31 +40,32 @@ class LoginFailScreen extends StatelessWidget {
               height: SGSpacing.p5,
             ),
             SGTypography.body("로그인 실패",
-                color: SGColors.black, size: FontSize.xlarge, weight: FontWeight.bold),
+                color: SGColors.black,
+                size: FontSize.xlarge,
+                weight: FontWeight.bold),
             SizedBox(
               height: SGSpacing.p4,
             ),
             SGTypography.body("해당 계정은 로그아웃 처리되었습니다.",
-                color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w400),
-            SizedBox(
-              height: SGSpacing.p1
-            ),
+                color: SGColors.gray4,
+                size: FontSize.normal,
+                weight: FontWeight.w400),
+            SizedBox(height: SGSpacing.p1),
             SGTypography.body("다시 한 번 로그인 해주세요.",
-                color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w400),
-            SizedBox(
-                height: SGSpacing.p5
-            ),
+                color: SGColors.gray4,
+                size: FontSize.normal,
+                weight: FontWeight.w400),
+            SizedBox(height: SGSpacing.p5),
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
                 );
               },
               child: SGContainer(
                 margin: EdgeInsets.only(
-                  left: SGSpacing.p28 + SGSpacing.p2,
-                  right: SGSpacing.p28 + SGSpacing.p2
-                ),
+                    left: SGSpacing.p28 + SGSpacing.p2,
+                    right: SGSpacing.p28 + SGSpacing.p2),
                 padding: EdgeInsets.symmetric(
                     horizontal: SGSpacing.p2, vertical: SGSpacing.p4),
                 borderRadius: BorderRadius.circular(100),
@@ -168,15 +166,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           SizedBox(height: SGSpacing.p10),
           SGTextFieldWrapper(
               child: SGContainer(
-                  padding: EdgeInsets.all(SGSpacing.p4),
-                  width: double.infinity,
-                  child: TextField(
-                      onChanged: (value) {
-                        ref
-                            .read(loginNotifierProvider.notifier)
-                            .onChangeLoginId(value);
-                      },
-                      style:
+            padding: EdgeInsets.all(SGSpacing.p4),
+            width: double.infinity,
+            child: TextField(
+                onChanged: (value) {
+                  ref
+                      .read(loginNotifierProvider.notifier)
+                      .onChangeLoginId(value);
+                },
+                style:
                     TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
                 decoration: InputDecoration(
                   isDense: true,
@@ -266,7 +264,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           SGActionButton(
               onPressed: () {
                 ref.read(loginNotifierProvider.notifier).directLogin();
-
                 /*이
                 showFailDialogWithImageNoSecondTitle("5분만 로그인이 제한됩니다.");
                 showFailDialogWithImage(
@@ -281,9 +278,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               },
               label: "로그인"),
           SizedBox(height: SGSpacing.p8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             GestureDetector(
                 onTap: () {
                   context.push(AppRoutes.signup);
@@ -297,16 +292,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 onTap: () {
                   FocusScope.of(context).unfocus();
 
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => FindAccountScreen(
-                            onPressFindPassword: () {
-                              FocusScope.of(context).unfocus();
-
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      const FindByPasswordScreen()));
-                            },
-                          )));
+                  context.push(AppRoutes.findByPassword);
                 },
                 child: Center(
                     child: SGTypography.body("아이디 찾기",

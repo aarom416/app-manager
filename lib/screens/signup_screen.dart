@@ -612,7 +612,7 @@ class _GreetingScreen extends StatelessWidget {
   }
 }
 
-class _StoreRegistrationFormScreen extends StatefulWidget {
+class _StoreRegistrationFormScreen extends ConsumerStatefulWidget {
   final VoidCallback onPrev;
   final VoidCallback onNext;
 
@@ -1216,8 +1216,8 @@ class _StoreRegistrationFormScreenState
                       state.phone.isNotEmpty &&
                       state.category.isNotEmpty &&
                       state.businessType != -1 &&
-                      state.businessRegistrationPicture != null &&
-                      state.businessPermitPicture != null) {
+                      state.accountPicture != null &&
+                      state.businessRegistrationPicture != null) {
                     provider.enroll();
                   }
                 },
@@ -1229,8 +1229,8 @@ class _StoreRegistrationFormScreenState
                     state.phone.isNotEmpty &&
                     state.category.isNotEmpty &&
                     state.businessType != -1 &&
-                    state.businessRegistrationPicture != null &&
-                    state.businessPermitPicture != null)),
+                    state.accountPicture != null &&
+                    state.businessRegistrationPicture != null)),
           ]),
         ));
   }
@@ -1773,9 +1773,8 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 state.passwordConfirm.isNotEmpty &&
                 state.password != state.passwordConfirm) ...{
               SizedBox(height: SGSpacing.p2),
-                SGTypography.body("다시 한 번 확인해주세요.",
-                  size: FontSize.small,
-                  color: SGColors.warningRed),
+              SGTypography.body("다시 한 번 확인해주세요.",
+                  size: FontSize.small, color: SGColors.warningRed),
             },
             SizedBox(height: SGSpacing.p8),
             SGTypography.body("이메일",
