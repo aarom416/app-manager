@@ -159,6 +159,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             padding: EdgeInsets.all(SGSpacing.p4),
             width: double.infinity,
             child: TextField(
+                controller: _loginController,
                 onChanged: (value) {
                   ref
                       .read(loginNotifierProvider.notifier)
