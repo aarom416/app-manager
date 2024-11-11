@@ -66,12 +66,12 @@ class LoginService {
     }
   }
 
-  Future<Response<dynamic>> logout({required String fcmToken}) async {
+  Future<Response<dynamic>> logout({required String fcmTokenId}) async {
     try {
       final response = await RequestApi.post(
         RestApiUri.logout,
         queryParameters: {
-          'fcmToken': fcmToken,
+          'fcmTokenId': fcmToken,
         },
       );
 

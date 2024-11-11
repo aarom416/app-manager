@@ -180,7 +180,7 @@ class LoginNotifier extends _$LoginNotifier {
   Future<void> logout() async {
     final response = await ref
         .read(loginServiceProvider)
-        .logout(fcmToken: UserHive.getBox(key: UserKey.fcm));
+        .logout(fcmTokenId: UserHive.getBox(key: UserKey.fcm));
 
     switch (response.statusCode) {
       case 200:
