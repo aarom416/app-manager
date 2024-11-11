@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
@@ -9,16 +10,19 @@ import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
+import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
+import 'package:singleeat/office/providers/find_account_provider.dart';
+import 'package:singleeat/office/providers/webview_provider.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
 
-class FindAccountScreen extends StatefulWidget {
+class FindAccountScreen extends ConsumerStatefulWidget {
   const FindAccountScreen({super.key});
 
   @override
-  State<FindAccountScreen> createState() => _FindAccountScreenState();
+  ConsumerState<FindAccountScreen> createState() => _FindAccountScreenState();
 }
 
-class _FindAccountScreenState extends State<FindAccountScreen> {
+class _FindAccountScreenState extends ConsumerState<FindAccountScreen> {
   PageController pageController = PageController();
 
   void animateToPage(int index) => pageController.animateToPage(
@@ -28,7 +32,40 @@ class _FindAccountScreenState extends State<FindAccountScreen> {
       );
 
   @override
+  void initState() {
+    Future.microtask(() {
+      ref
+          .read(authenticateWithPhoneNumberNotifierProvider.notifier)
+          .onChangeMethod(AuthenticateWithPhoneNumberMethod.ACCOUNT);
+
+      ref
+          .read(webViewNotifierProvider.notifier)
+          .onChangeMethod(AuthenticateWithPhoneNumberMethod.ACCOUNT);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    ref.listen(findAccountNotifierProvider, (previous, next) {
+      if (previous?.status != next.status) {
+        FocusScope.of(context).unfocus();
+
+        switch (next.status) {
+          case FindAccountStatus.step1:
+            animateToPage(0);
+            break;
+          case FindAccountStatus.step2:
+            animateToPage(1);
+            break;
+          case FindAccountStatus.step3:
+            animateToPage(2);
+            break;
+          default:
+            break;
+        }
+      }
+    });
+
     return Scaffold(
         body: PageView(
             controller: pageController,
@@ -50,13 +87,6 @@ class _FindAccountScreenState extends State<FindAccountScreen> {
 
                 animateToPage(0);
               }),
-          /*
-              onNext: () {
-                FocusScope.of(context).unfocus();
-
-                animateToPage(2);
-              }
-               */
           _ExistingAccountScreen(
             findPasswordCallback: () {
               FocusScope.of(context).unfocus();
@@ -239,7 +269,8 @@ class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
                   children: [
                     TextField(
                       onChanged: (value) {
-                        final validCharacters = RegExp(r'^[a-zA-Z0-9ㄱ-ㅎ가-힣\s]*$');
+                        final validCharacters =
+                            RegExp(r'^[a-zA-Z0-9ㄱ-ㅎ가-힣\s]*$');
                         if (validCharacters.hasMatch(value)) {
                           setState(() {
                             username = value;
@@ -248,7 +279,7 @@ class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
                         } else {
                           setState(() {
                             errorMessage =
-                            "특수문자는 입력하실 수 없습니다.\n한글, 영문, 숫자, 띄어쓰기만 입력해주세요";
+                                "특수문자는 입력하실 수 없습니다.\n한글, 영문, 숫자, 띄어쓰기만 입력해주세요";
                           });
                         }
                       },
@@ -288,5 +319,3 @@ class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
     );
   }
 }
-
-

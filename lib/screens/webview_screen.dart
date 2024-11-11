@@ -57,7 +57,8 @@ class _WebViewScreenState extends ConsumerState<WebViewScreen> {
               ref
                   .read(webViewNotifierProvider.notifier)
                   .onChangeStatus(WebViewStatus.error);
-            } else if (url.contains("identity-verification-success-redirect")) {
+              // } else if (url.contains("identity-verification-success-redirect")) {
+            } else if (url.contains("identity-verification-success")) {
               ref
                   .read(webViewNotifierProvider.notifier)
                   .onChangeStatus(WebViewStatus.success);

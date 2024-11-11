@@ -11,6 +11,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/find_by_password_provider.dart';
+import 'package:singleeat/office/providers/webview_provider.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
 
 class FindByPasswordScreen extends ConsumerStatefulWidget {
@@ -35,6 +36,10 @@ class _FindByPasswordScreenState extends ConsumerState<FindByPasswordScreen> {
     Future.microtask(() {
       ref
           .read(authenticateWithPhoneNumberNotifierProvider.notifier)
+          .onChangeMethod(AuthenticateWithPhoneNumberMethod.PASSWORD);
+
+      ref
+          .read(webViewNotifierProvider.notifier)
           .onChangeMethod(AuthenticateWithPhoneNumberMethod.PASSWORD);
     });
   }
@@ -330,10 +335,10 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 ),
               Row(children: []),
               SizedBox(height: SGSpacing.p8),
-                SGTypography.body("비밀번호 확인",
-                    size: FontSize.small,
-                    weight: FontWeight.w500,
-                    color: SGColors.gray4),
+              SGTypography.body("비밀번호 확인",
+                  size: FontSize.small,
+                  weight: FontWeight.w500,
+                  color: SGColors.gray4),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               SGTextFieldWrapper(
                   child: SGContainer(

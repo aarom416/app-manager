@@ -12,7 +12,6 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/user_model.dart';
-import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -92,15 +91,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       Image.asset("assets/images/checkbox-on.png", width: SGSpacing.p6);
   final checkboxOff =
       Image.asset("assets/images/checkbox-off.png", width: SGSpacing.p6);
-
-  @override
-  void initState() {
-    Future.microtask(() {
-      ref
-          .read(authenticateWithPhoneNumberNotifierProvider.notifier)
-          .onChangeMethod(AuthenticateWithPhoneNumberMethod.DIRECT);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -292,7 +282,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 onTap: () {
                   FocusScope.of(context).unfocus();
 
-                  context.push(AppRoutes.findByPassword);
+                  context.push(AppRoutes.findByAccount);
                 },
                 child: Center(
                     child: SGTypography.body("아이디 찾기",

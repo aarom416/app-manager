@@ -59,6 +59,14 @@ class LoginNotifier extends _$LoginNotifier {
       UserHive.setBox(key: UserKey.loginId, value: '');
     }
 
+    // 본인 인증
+    ref
+        .read(authenticateWithPhoneNumberNotifierProvider.notifier)
+        .onChangeMethod(AuthenticateWithPhoneNumberMethod.DIRECT);
+    ref
+        .read(webViewNotifierProvider.notifier)
+        .onChangeMethod(AuthenticateWithPhoneNumberMethod.DIRECT);
+
     switch (response.statusCode) {
       case 200:
         // 로그인 성공

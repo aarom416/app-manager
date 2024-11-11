@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
+import 'package:singleeat/office/providers/find_account_provider.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
 
@@ -25,6 +26,10 @@ class WebViewNotifier extends _$WebViewNotifier {
     state = state.copyWith(identityVerificationId: identityVerificationId);
   }
 
+  void onChangeMethod(AuthenticateWithPhoneNumberMethod method) {
+    state = state.copyWith(method: method);
+  }
+
   void onChangeStatus(WebViewStatus status) async {
     if (status == WebViewStatus.success) {
       switch (state.method) {
@@ -37,6 +42,9 @@ class WebViewNotifier extends _$WebViewNotifier {
           await ref.read(loginNotifierProvider.notifier).verifyPhone();
           break;
         case AuthenticateWithPhoneNumberMethod.ACCOUNT:
+          ref
+              .read(findAccountNotifierProvider.notifier)
+              .onChangeStatus(FindAccountStatus.step3);
           break;
         case AuthenticateWithPhoneNumberMethod.PASSWORD:
           break;
@@ -51,8 +59,14 @@ class WebViewNotifier extends _$WebViewNotifier {
               .onChangeStatus(SignupStatus.error);
           break;
         case AuthenticateWithPhoneNumberMethod.DIRECT:
+          ref
+              .read(loginNotifierProvider.notifier)
+              .onChangeStatus(LoginStatus.error);
           break;
         case AuthenticateWithPhoneNumberMethod.ACCOUNT:
+          ref
+              .read(findAccountNotifierProvider.notifier)
+              .onChangeStatus(FindAccountStatus.error);
           break;
         case AuthenticateWithPhoneNumberMethod.PASSWORD:
           break;
