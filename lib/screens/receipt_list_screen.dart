@@ -110,9 +110,6 @@ class _ReceiptListScreenState extends State<ReceiptListScreen> with SingleTicker
       length: 3,
       child: Scaffold(
           appBar: AppBarWithLeftArrow(title: "지난 주문 내역"),
-          floatingActionButton: Container(
-              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
-              child: SGActionButton(onPressed: () {}, label: "조회")),
           body: Column(
             children: [
               SGContainer(
@@ -460,8 +457,10 @@ class _ReceiptDetailScreen extends StatelessWidget {
                     DataTableRow(left: "주문일시", right: "00.00(일) 00:00"),
                     SizedBox(height: SGSpacing.p4),
                     DataTableRow(left: "접수일시", right: "00.00(일) 00:00"),
-                    SizedBox(height: SGSpacing.p4),
-                    DataTableRow(left: "전달 완료", right: "00.00(일) 00:00"),
+                    if (order.status != OrderStatus.cancelled) ... [
+                      SizedBox(height: SGSpacing.p4),
+                      DataTableRow(left: "전달 완료", right: "00.00(일) 00:00"),
+                    ],
                   ]),
                   SizedBox(height: SGSpacing.p4),
                   MultipleInformationBox(children: [
@@ -480,7 +479,10 @@ class _ReceiptDetailScreen extends StatelessWidget {
                     DataTableRow(left: "연락처", right: "050-****-****"),
                   ]),
                 ],
-                SizedBox(height: SGSpacing.p12),
+                SizedBox(height: SGSpacing.p24),
+                Container(
+                    constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+                    child: SGActionButton(onPressed: () {}, label: "고객 센터")),
               ],
             )));
   }

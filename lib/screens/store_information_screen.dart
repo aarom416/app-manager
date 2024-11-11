@@ -11,6 +11,8 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/screens/email_edit_screen.dart';
+import 'package:singleeat/core/screens/phone_edit_screen.dart';
 import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 import 'package:singleeat/office/bloc/manager_bloc.dart';
 
@@ -48,7 +50,7 @@ class _StoreInformationScreenState extends State<StoreInformationScreen> {
                     child: SingleInformationBox(label: '전화번호', value: phoneNumber, editable: true),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => TextFieldEditScreen(
+                          builder: (context) => PhoneEditScreen(
                               value: phoneNumber,
                               title: "연락처 변경",
                               hintText: "연락처를 입력해주세요.",
@@ -64,7 +66,7 @@ class _StoreInformationScreenState extends State<StoreInformationScreen> {
                     child: SingleInformationBox(label: '이메일', value: email, editable: true),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => TextFieldEditScreen(
+                          builder: (context) => EmailEditScreen(
                               value: email,
                               title: "이메일 변경",
                               hintText: "이메일을 입력해주세요.",

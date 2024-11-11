@@ -14,12 +14,76 @@ import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/user_model.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
+import 'package:singleeat/screens/find_account_screen.dart';
+import 'package:singleeat/screens/find_by_password_screen.dart';
+import 'package:singleeat/screens/home_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class LoginFailScreen extends StatelessWidget {
+  const LoginFailScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SGContainer(
+        color: Colors.white,
+        height: double.infinity,
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset("assets/images/warning.png", width: SGSpacing.p12),
+            SizedBox(
+              height: SGSpacing.p5,
+            ),
+            SGTypography.body("로그인 실패",
+                color: SGColors.black, size: FontSize.xlarge, weight: FontWeight.bold),
+            SizedBox(
+              height: SGSpacing.p4,
+            ),
+            SGTypography.body("해당 계정은 로그아웃 처리되었습니다.",
+                color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w400),
+            SizedBox(
+              height: SGSpacing.p1
+            ),
+            SGTypography.body("다시 한 번 로그인 해주세요.",
+                color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w400),
+            SizedBox(
+                height: SGSpacing.p5
+            ),
+            GestureDetector(
+              onTap: (){
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
+              },
+              child: SGContainer(
+                margin: EdgeInsets.only(
+                  left: SGSpacing.p28 + SGSpacing.p2,
+                  right: SGSpacing.p28 + SGSpacing.p2
+                ),
+                padding: EdgeInsets.symmetric(
+                    horizontal: SGSpacing.p2, vertical: SGSpacing.p4),
+                borderRadius: BorderRadius.circular(100),
+                borderColor: SGColors.primary,
+                child: Center(
+                    child: SGTypography.body("로그인하기   >",
+                        size: FontSize.medium,
+                        weight: FontWeight.w500,
+                        color: SGColors.primary)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
@@ -104,16 +168,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           SizedBox(height: SGSpacing.p10),
           SGTextFieldWrapper(
               child: SGContainer(
-            padding: EdgeInsets.all(SGSpacing.p4),
-            width: double.infinity,
-            child: TextField(
-                controller: _loginController,
-                onChanged: (value) {
-                  ref
-                      .read(loginNotifierProvider.notifier)
-                      .onChangeLoginId(value);
-                },
-                style:
+                  padding: EdgeInsets.all(SGSpacing.p4),
+                  width: double.infinity,
+                  child: TextField(
+                      onChanged: (value) {
+                        ref
+                            .read(loginNotifierProvider.notifier)
+                            .onChangeLoginId(value);
+                      },
+                      style:
                     TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
                 decoration: InputDecoration(
                   isDense: true,
@@ -204,7 +267,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               onPressed: () {
                 ref.read(loginNotifierProvider.notifier).directLogin();
 
-                /*
+                /*이
                 showFailDialogWithImageNoSecondTitle("5분만 로그인이 제한됩니다.");
                 showFailDialogWithImage(
                     "회원 탈퇴가 완료된 계정입니다.", "회원 탈퇴 후 21일 이내에는 로그인할 수 없습니다.");
@@ -218,37 +281,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               },
               label: "로그인"),
           SizedBox(height: SGSpacing.p8),
-          Row(children: [
-            Expanded(
-                child: GestureDetector(
-                    onTap: () {
-                      context.push(AppRoutes.signup);
-                    },
-                    child: Center(
-                        child: SGTypography.body("회원가입",
-                            color: SGColors.gray4, size: FontSize.normal)))),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+            GestureDetector(
+                onTap: () {
+                  context.push(AppRoutes.signup);
+                },
+                child: Center(
+                    child: SGTypography.body("회원가입",
+                        color: SGColors.gray4, size: FontSize.normal))),
             SGContainer(
                 height: SGSpacing.p3, color: SGColors.line3, borderWidth: 0.5),
-            Expanded(
-                child: GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
+            GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).unfocus();
 
-                      context.push(AppRoutes.findByAccount);
-                    },
-                    child: Center(
-                        child: SGTypography.body("아이디 찾기",
-                            color: SGColors.gray4, size: FontSize.normal)))),
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => FindAccountScreen(
+                            onPressFindPassword: () {
+                              FocusScope.of(context).unfocus();
+
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      const FindByPasswordScreen()));
+                            },
+                          )));
+                },
+                child: Center(
+                    child: SGTypography.body("아이디 찾기",
+                        color: SGColors.gray4, size: FontSize.normal))),
             SGContainer(
                 height: SGSpacing.p3, color: SGColors.line3, borderWidth: 0.5),
-            Expanded(
-                child: GestureDetector(
-                    onTap: () {
-                      context.push(AppRoutes.findByPassword);
-                    },
-                    child: Center(
-                        child: SGTypography.body("비밀번호 찾기",
-                            color: SGColors.gray4, size: FontSize.normal)))),
+            GestureDetector(
+                onTap: () {
+                  context.push(AppRoutes.findByPassword);
+                },
+                child: Center(
+                    child: SGTypography.body("비밀번호 찾기",
+                        color: SGColors.gray4, size: FontSize.normal))),
           ])
         ]),
       ),

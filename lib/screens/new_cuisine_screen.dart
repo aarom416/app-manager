@@ -615,6 +615,75 @@ class _NewCuisineRegistrationStepScreenState extends State<_NewCuisineRegistrati
   String intro = "연어 500g + 곡물밥 300g";
   String description = "연어와 곡물 베이스 조화의 오븐에 바싹 구운 연어를 올린 단백질 듬뿍 샐러드";
 
+  void showFailDialogWithImage({
+    required String mainTitle,
+    required String subTitle,
+  }) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+          if (subTitle.isEmpty) ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(ctx);
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ] else ...[
+            Center(
+                child: SGTypography.body(mainTitle,
+                    size: FontSize.medium,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p4),
+            Center(
+                child: SGTypography.body(subTitle,
+                    color: SGColors.gray4,
+                    size: FontSize.small,
+                    weight: FontWeight.w700,
+                    lineHeight: 1.25,
+                    align: TextAlign.center)),
+            SizedBox(height: SGSpacing.p6),
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(ctx);
+              },
+              child: SGContainer(
+                color: SGColors.primary,
+                width: double.infinity,
+                borderColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Center(
+                    child: SGTypography.body("확인",
+                        color: SGColors.white,
+                        weight: FontWeight.w700,
+                        size: FontSize.normal)),
+              ),
+            )
+          ]
+        ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -638,10 +707,11 @@ class _NewCuisineRegistrationStepScreenState extends State<_NewCuisineRegistrati
                 )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
-                    child: GestureDetector(
-                  onTap: () {
-                    widget.onNext();
-                  },
+                        child: GestureDetector(
+                      onTap: () {
+                        widget.onNext();
+                        showFailDialogWithImage(mainTitle: "메뉴 추가 실패", subTitle: "이미 동일한 메뉴가 등록되어있습니다.\n다시 한번 확인해주세요.");
+                      },
                   child: SGContainer(
                       color: SGColors.primary,
                       padding: EdgeInsets.all(SGSpacing.p4),

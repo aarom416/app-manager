@@ -189,6 +189,7 @@ class _LookUpUsernameScreen extends StatefulWidget {
 
 class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
   String username = "";
+  String errorMessage = "";
   late TextEditingController controller = TextEditingController();
 
   @override
@@ -203,7 +204,6 @@ class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
               onPressed: () {
                 if (username.isNotEmpty) {
                   FocusScope.of(context).unfocus();
-
                   widget.onNext!();
                 }
               },
@@ -231,40 +231,62 @@ class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
                 color: SGColors.gray4),
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
             SGTextFieldWrapper(
-                child: SGContainer(
-              padding: EdgeInsets.all(SGSpacing.p4),
-              width: double.infinity,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                        onChanged: (value) {
+              child: SGContainer(
+                padding: EdgeInsets.all(SGSpacing.p4),
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      onChanged: (value) {
+                        final validCharacters = RegExp(r'^[a-zA-Z0-9ㄱ-ㅎ가-힣\s]*$');
+                        if (validCharacters.hasMatch(value)) {
                           setState(() {
                             username = value;
+                            errorMessage = "";
                           });
-                        },
-                        controller: controller,
-                        style: TextStyle(
-                            fontSize: FontSize.small, color: SGColors.gray5),
-                        decoration: InputDecoration(
-                          isDense: true,
-                          isCollapsed: true,
-                          hintStyle: TextStyle(
-                              color: SGColors.gray3,
-                              fontSize: FontSize.small,
-                              fontWeight: FontWeight.w400),
-                          hintText: "이름을 입력해주세요.",
-                          border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.zero,
-                              borderSide: BorderSide.none),
-                        )),
-                  ),
-                ],
+                        } else {
+                          setState(() {
+                            errorMessage =
+                            "특수문자는 입력하실 수 없습니다.\n한글, 영문, 숫자, 띄어쓰기만 입력해주세요";
+                          });
+                        }
+                      },
+                      controller: controller,
+                      style: TextStyle(
+                          fontSize: FontSize.small, color: SGColors.gray5),
+                      decoration: InputDecoration(
+                        isDense: true,
+                        isCollapsed: true,
+                        hintStyle: TextStyle(
+                            color: SGColors.gray3,
+                            fontSize: FontSize.small,
+                            fontWeight: FontWeight.w400),
+                        hintText: "이름을 입력해주세요.",
+                        border: const OutlineInputBorder(
+                            borderRadius: BorderRadius.zero,
+                            borderSide: BorderSide.none),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            )),
+            ),
+            SizedBox(height: SGSpacing.p2),
+            if (errorMessage.isNotEmpty)
+              Text(
+                errorMessage,
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: FontSize.small,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
           ],
         ),
       ),
     );
   }
 }
+
+

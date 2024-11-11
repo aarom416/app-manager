@@ -976,7 +976,7 @@ class CheckPasswordScreenState extends State<CheckPasswordScreen> {
             child: SGActionButton(
                 onPressed: () {
                   if (isPasswordValid) {
-                    showFailDialogWithImage("입력하신 비밀번호가 현재 비밀번호와 일치하지 않습니다.", "다시 한 번 확인 후 입력해 주세요.");
+                    showFailDialogWithImage("비밀번호 인증 실패", "입력하신 비밀번호가 올바르지 않습니다.\n다시 확인해주세요.");
                   }
                 },
                 disabled: !isPasswordValid,
@@ -1094,6 +1094,59 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   bool get isPasswordValid => password.isNotEmpty && passwordConfirm.isNotEmpty && password == passwordConfirm;
 
+  String? _passwordErrorText;
+
+  void _validatePassword(String value) {
+    final passwordRegex = RegExp(r'^[a-zA-Z0-9!@#$%^&*()_+]{8,16}$');
+    setState(() {
+      if (passwordRegex.hasMatch(value)) {
+        _passwordErrorText = null; // Valid password
+      } else {
+        _passwordErrorText = "비밀번호는 8~16자의 영문, 숫자, 특수문자만 사용 가능합니다.";
+      }
+    });
+  }
+
+  void showFailDialogWithImageBoth(String mainTitle) {
+    showSGDialogWithImageBoth(
+        context: context,
+        childrenBuilder: (ctx) => [
+          Column(
+            children: [
+              Center(
+                  child: SGTypography.body(mainTitle,
+                      size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)
+              ),
+              SizedBox(height: SGSpacing.p6),
+            ],
+          ),
+          Row(
+            children: [
+              SGFlexible(
+                flex: 2,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(ctx).pop();
+                    setState(() {
+                    });
+                  },
+                  child: SGContainer(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    color: SGColors.primary,
+                    child: Center(
+                      child: SGTypography.body("확인",
+                          size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1106,6 +1159,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
             child: SGActionButton(
                 onPressed: () {
+                  showFailDialogWithImageBoth("비밀번호 변경을 위해\n이전과 다른 비밀번호를 입력해주세요.");
                   if (isPasswordValid) {
                     Navigator.of(context).push(MaterialPageRoute(builder: (context) => _SuccessChangePasswordScreen()));
                   }
@@ -1134,6 +1188,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           child: TextField(
                               onChanged: (value) {
                                 setState(() {
+                                  _validatePassword(value);
                                   password = value;
                                 });
                               },
@@ -1160,13 +1215,20 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       ],
                     ),
                   )),
+              if (_passwordErrorText != null)
+                Padding(
+                  padding: EdgeInsets.only(top: SGSpacing.p2),
+                  child: Text(
+                    _passwordErrorText!,
+                    style: TextStyle(
+                      fontSize: FontSize.small,
+                      color: SGColors.warningRed,
+                    ),
+                  ),
+                ),
               Row(children: []),
               SizedBox(height: SGSpacing.p8),
-              if (password.isNotEmpty && passwordConfirm.isNotEmpty && password != passwordConfirm)
-                SGTypography.body("비밀번호가 다릅니다.",
-                    size: FontSize.small, weight: FontWeight.w500, color: SGColors.warningRed)
-              else
-                SGTypography.body("비밀번호 확인", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
+              SGTypography.body("비밀번호 확인", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               SGTextFieldWrapper(
                   child: SGContainer(
@@ -1205,6 +1267,10 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       ],
                     ),
                   )),
+              SizedBox(height: SGSpacing.p2),
+              if (password.isNotEmpty && passwordConfirm.isNotEmpty && password != passwordConfirm)
+                SGTypography.body("다시 한 번 확인해주세요.",
+                    size: FontSize.small, weight: FontWeight.w500, color: SGColors.warningRed)
             ])));
   }
 }

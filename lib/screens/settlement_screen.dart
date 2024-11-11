@@ -309,7 +309,7 @@ class SettlementDetailScreen extends StatelessWidget {
               ]),
               SizedBox(height: SGSpacing.p4),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                SGTypography.body("4. 중개 수수료", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
+                SGTypography.body("4. 부가세", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
                 SGTypography.body("${(-settlement.commissionFee).toKoreanCurrency}원",
                     color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
               ]),
