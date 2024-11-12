@@ -834,6 +834,10 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
         ref.read(signupNotifierProvider.notifier).passwordConfirmValidation();
       }
     });
+
+    Future.microtask(() {
+      ref.read(signupNotifierProvider.notifier).reset();
+    });
   }
 
   @override

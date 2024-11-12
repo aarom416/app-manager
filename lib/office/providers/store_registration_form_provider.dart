@@ -9,7 +9,6 @@ import 'package:singleeat/office/models/user_model.dart';
 import 'package:singleeat/office/services/store_registration_form_service.dart';
 
 part 'store_registration_form_provider.freezed.dart';
-
 part 'store_registration_form_provider.g.dart';
 
 @Riverpod(keepAlive: true)

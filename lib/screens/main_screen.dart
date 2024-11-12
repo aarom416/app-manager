@@ -9,6 +9,7 @@ import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
+import 'package:singleeat/office/providers/main_provider.dart';
 import 'package:singleeat/screens/coupon_management_screen.dart';
 import 'package:singleeat/screens/event_history_screen.dart';
 import 'package:singleeat/screens/notice_screen.dart';
@@ -28,8 +29,6 @@ class MainScreen extends ConsumerStatefulWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  bool isActive = true;
-  bool _isClosed = false;
   final List<NoticeModel> notices = [
     NoticeModel(
         title: "[서비스안내] 6월24일(월)부터 정산 관리 시스템이 개편되었으니 참고하시길 바랍니다.",
@@ -67,7 +66,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     );
   }
 
-  void showOperationStopDialog({required BuildContext context}) {
+  void showOperationStopDialog(
+      {required BuildContext context, required MainNotifier provider}) {
     showSGDialog(
         context: context,
         childrenBuilder: (ctx) => [
@@ -105,9 +105,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(ctx).pop();
-                        setState(() {
-                          isActive = true;
-                        });
+                        provider.onChangeOperationStatus(0);
                       },
                       child: SGContainer(
                         width: double.infinity,
@@ -129,7 +127,15 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 
   @override
+  void initState() {
+    ref.read(mainNotifierProvider.notifier).ownerHome();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(mainNotifierProvider);
+    final provider = ref.read(mainNotifierProvider.notifier);
+
     const toolbarHeight = 64.0;
     return Scaffold(
       appBar: AppBar(
@@ -191,16 +197,15 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                               ),
                               SGContainer(
                                   child: SGSwitch(
-                                      value: isActive,
+                                      value: state.operationStatus == 1,
                                       onChanged: (toggled) {
-                                        setState(() {
-                                          if (isActive) {
-                                            isActive = !isActive;
-                                          } else {
-                                            showOperationStopDialog(
-                                                context: context);
-                                          }
-                                        });
+                                        if (state.operationStatus == 1) {
+                                          showOperationStopDialog(
+                                              context: context,
+                                              provider: provider);
+                                        } else {
+                                          provider.onChangeOperationStatus(1);
+                                        }
                                       })),
                             ]),
                       )),

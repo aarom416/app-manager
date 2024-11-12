@@ -18,7 +18,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  int selectedIndex = 0;
+  int selectedIndex = 1;
 
   void _onItemTapped(int index) {
     setState(() {

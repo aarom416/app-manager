@@ -184,6 +184,10 @@ class SignupNotifier extends _$SignupNotifier {
           error: ResultFailResponseModel.fromJson(response.data));
     }
   }
+
+  void reset() {
+    state = SignupState(status: state.status);
+  }
 }
 
 enum SignupStatus {
