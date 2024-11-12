@@ -9,6 +9,7 @@ import 'package:singleeat/screens/find_by_password_webview_screen.dart';
 import 'package:singleeat/screens/home_screen.dart';
 import 'package:singleeat/screens/login_screen.dart';
 import 'package:singleeat/screens/login_webview_screen.dart';
+import 'package:singleeat/screens/notification_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/signup_screen.dart';
 import 'package:singleeat/screens/signup_webview_screen.dart';
@@ -118,6 +119,10 @@ class AppRouter {
                   child: StoreRegistrationFormScreen(key: ValueKey(extra)));
             }
           }),
+      GoRoute(
+          path: AppRoutes.notification,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: NotificationScreen())),
     ],
   );
 }

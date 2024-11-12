@@ -31,4 +31,5 @@ class RestApiUri {
   static const String ownerHome = '/api/v1/owner/owner-home';
   static const String operationStatus =
       '/api/v1/owner/store-info/operation-status';
+  static const String loadNotification = '/api/v1/owner/notification/{page}';
 }
