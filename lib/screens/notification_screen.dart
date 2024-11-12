@@ -68,7 +68,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 class _NotificationCard extends StatelessWidget {
   final NotificationModel notification;
 
-  _NotificationCard({required this.notification});
+  const _NotificationCard({required this.notification});
 
   @override
   Widget build(BuildContext context) {

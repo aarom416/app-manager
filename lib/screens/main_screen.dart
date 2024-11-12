@@ -17,7 +17,6 @@ import 'package:singleeat/screens/event_history_screen.dart';
 import 'package:singleeat/screens/notice_screen.dart';
 import 'package:singleeat/screens/order_history_screen.dart';
 import 'package:singleeat/screens/settlement_screen.dart';
-import 'package:singleeat/screens/statistics_screen.dart';
 import 'package:singleeat/screens/store_information_screen.dart';
 import 'package:singleeat/screens/store_management_screen.dart';
 import 'package:singleeat/screens/taxes_screen.dart';
@@ -229,8 +228,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                                 builder: (context) => OrderHistoryScreen()));
                           }),
                           menuButton('통계', "menu-statistics", () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => StatisticsScreen()));
+                            context.push(AppRoutes.statistics);
                           }),
                         ]),
                         Row(children: [

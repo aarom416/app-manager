@@ -13,6 +13,7 @@ import 'package:singleeat/screens/notification_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/signup_screen.dart';
 import 'package:singleeat/screens/signup_webview_screen.dart';
+import 'package:singleeat/screens/statistics_screen.dart';
 import 'package:singleeat/screens/store_registration_form_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
@@ -123,6 +124,10 @@ class AppRouter {
           path: AppRoutes.notification,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: NotificationScreen())),
+      GoRoute(
+          path: AppRoutes.statistics,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: StatisticsScreen())),
     ],
   );
 }

@@ -1,7 +1,9 @@
 import 'dart:math' as math;
+
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
@@ -9,6 +11,7 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/office/providers/statistics_provider.dart';
 
 class AppColors {
   static const Color primary = contentColorCyan;
@@ -73,6 +76,7 @@ class AppUtils {
   }
 
   AppUtils._internal();
+
   static final AppUtils _singleton = AppUtils._internal();
 
   double degreeToRadian(double degree) {
@@ -83,13 +87,13 @@ class AppUtils {
     return radian * 180 / math.pi;
   }
 
-  // Future<bool> tryToLaunchUrl(String url) async {
-  //   final uri = Uri.parse(url);
-  //   if (await canLaunchUrl(uri)) {
-  //     return await launchUrl(uri);
-  //   }
-  //   return false;
-  // }
+// Future<bool> tryToLaunchUrl(String url) async {
+//   final uri = Uri.parse(url);
+//   if (await canLaunchUrl(uri)) {
+//     return await launchUrl(uri);
+//   }
+//   return false;
+// }
 }
 
 class SGTooltip extends StatelessWidget {
@@ -108,14 +112,14 @@ class SGTooltip extends StatelessWidget {
   }
 }
 
-class StatisticsScreen extends StatefulWidget {
+class StatisticsScreen extends ConsumerStatefulWidget {
   const StatisticsScreen({super.key});
 
   @override
-  State<StatisticsScreen> createState() => _StatisticsScreenState();
+  ConsumerState<StatisticsScreen> createState() => _StatisticsScreenState();
 }
 
-class _StatisticsScreenState extends State<StatisticsScreen> {
+class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   BarChartItemData totalData = BarChartItemData(
     labels: ['10일', '11일', '12일', '13일', '14일', '15일', '16일'],
     items: [
@@ -233,11 +237,20 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   bool collapsed = true;
 
   @override
+  void initState() {
+    Future.microtask(() {
+      ref.read(statisticsNotifierProvider.notifier).loadStatisticsByStoreId();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final totalCount = totalData.items.fold(
         0.0,
         (previousValue, element) =>
-            previousValue + element.fold(0.0, (previousValue, element) => previousValue + element.value));
+            previousValue +
+            element.fold(0.0,
+                (previousValue, element) => previousValue + element.value));
 
     final totalDelivery = segmentedData.items
         .fold(
@@ -245,7 +258,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             (previousValue, element) =>
                 previousValue +
                 element.fold(
-                    0.0, (previousValue, element) => previousValue + (element.itemType == '배달' ? element.value : 0)))
+                    0.0,
+                    (previousValue, element) =>
+                        previousValue +
+                        (element.itemType == '배달' ? element.value : 0)))
         .toInt();
     final totalTakeout = segmentedData.items
         .fold(
@@ -253,7 +269,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             (previousValue, element) =>
                 previousValue +
                 element.fold(
-                    0.0, (previousValue, element) => previousValue + (element.itemType == '포장' ? element.value : 0)))
+                    0.0,
+                    (previousValue, element) =>
+                        previousValue +
+                        (element.itemType == '포장' ? element.value : 0)))
         .toInt();
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "통계"),
@@ -262,46 +281,76 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
             child: ListView(children: [
               SizedBox(height: SGSpacing.p7),
-              SGTypography.body("맞춤 식단 추천 횟수", weight: FontWeight.w700, size: FontSize.normal, color: SGColors.black),
+              SGTypography.body("맞춤 식단 추천 횟수",
+                  weight: FontWeight.w700,
+                  size: FontSize.normal,
+                  color: SGColors.black),
               SizedBox(height: SGSpacing.p3),
               MultipleInformationBox(children: [
                 Text.rich(TextSpan(children: [
                   WidgetSpan(
                       child: SGTypography.body("최근 7일간",
-                          weight: FontWeight.w700, size: FontSize.normal, color: SGColors.black, lineHeight: 1.5)),
+                          weight: FontWeight.w700,
+                          size: FontSize.normal,
+                          color: SGColors.black,
+                          lineHeight: 1.5)),
                 ])),
                 Text.rich(TextSpan(children: [
                   WidgetSpan(
                       child: SGTypography.body("맞춤 식단 추천이 총 ",
-                          weight: FontWeight.w700, size: FontSize.normal, color: SGColors.black, lineHeight: 1.5)),
+                          weight: FontWeight.w700,
+                          size: FontSize.normal,
+                          color: SGColors.black,
+                          lineHeight: 1.5)),
                   WidgetSpan(
                       child: SGTypography.body("${totalCount.toInt()}회",
-                          weight: FontWeight.w700, size: FontSize.normal, color: SGColors.primary, lineHeight: 1.5)),
+                          weight: FontWeight.w700,
+                          size: FontSize.normal,
+                          color: SGColors.primary,
+                          lineHeight: 1.5)),
                   WidgetSpan(
                       child: SGTypography.body("이에요.",
-                          weight: FontWeight.w700, size: FontSize.normal, color: SGColors.black, lineHeight: 1.5)),
+                          weight: FontWeight.w700,
+                          size: FontSize.normal,
+                          color: SGColors.black,
+                          lineHeight: 1.5)),
                 ])),
                 Histogram(data: totalData),
               ]),
               SizedBox(height: SGSpacing.p8),
-              SGTypography.body("주문 고객 수", weight: FontWeight.w700, size: FontSize.normal, color: SGColors.black),
+              SGTypography.body("주문 고객 수",
+                  weight: FontWeight.w700,
+                  size: FontSize.normal,
+                  color: SGColors.black),
               SizedBox(height: SGSpacing.p3),
               MultipleInformationBox(children: [
                 Text.rich(TextSpan(children: [
                   WidgetSpan(
                       child: SGTypography.body("최근 7일간",
-                          weight: FontWeight.w700, size: FontSize.normal, color: SGColors.black, lineHeight: 1.5)),
+                          weight: FontWeight.w700,
+                          size: FontSize.normal,
+                          color: SGColors.black,
+                          lineHeight: 1.5)),
                 ])),
                 Text.rich(TextSpan(children: [
                   WidgetSpan(
                       child: SGTypography.body("주문 고객 수는 총 ",
-                          weight: FontWeight.w700, size: FontSize.normal, color: SGColors.black, lineHeight: 1.5)),
+                          weight: FontWeight.w700,
+                          size: FontSize.normal,
+                          color: SGColors.black,
+                          lineHeight: 1.5)),
                   WidgetSpan(
                       child: SGTypography.body("${totalCount.toInt()}명",
-                          weight: FontWeight.w700, size: FontSize.normal, color: SGColors.primary, lineHeight: 1.5)),
+                          weight: FontWeight.w700,
+                          size: FontSize.normal,
+                          color: SGColors.primary,
+                          lineHeight: 1.5)),
                   WidgetSpan(
                       child: SGTypography.body("이에요.",
-                          weight: FontWeight.w700, size: FontSize.normal, color: SGColors.black, lineHeight: 1.5)),
+                          weight: FontWeight.w700,
+                          size: FontSize.normal,
+                          color: SGColors.black,
+                          lineHeight: 1.5)),
                 ])),
                 SizedBox(height: SGSpacing.p4),
                 renderSelectionChips(
@@ -321,7 +370,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   SGContainer(
                       borderColor: SGColors.line3,
                       borderRadius: BorderRadius.circular(SGSpacing.p2),
-                      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
                       child: Row(children: [
                         SGContainer(
                           width: SGSpacing.p7 / 2,
@@ -330,16 +380,22 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           borderRadius: BorderRadius.circular(SGSpacing.p1),
                         ),
                         SizedBox(width: SGSpacing.p2),
-                        SGTypography.body("배달", size: FontSize.small, color: SGColors.gray5, weight: FontWeight.w700),
+                        SGTypography.body("배달",
+                            size: FontSize.small,
+                            color: SGColors.gray5,
+                            weight: FontWeight.w700),
                         SizedBox(width: SGSpacing.p2),
-                        SGTypography.body("최근 7일, ${totalDelivery}명이 배달 주문 했어요.",
-                            size: FontSize.small, color: SGColors.gray4),
+                        SGTypography.body(
+                            "최근 7일, ${totalDelivery}명이 배달 주문 했어요.",
+                            size: FontSize.small,
+                            color: SGColors.gray4),
                       ])),
                   SizedBox(height: SGSpacing.p2),
                   SGContainer(
                       borderColor: SGColors.line3,
                       borderRadius: BorderRadius.circular(SGSpacing.p2),
-                      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
                       child: Row(children: [
                         SGContainer(
                           width: SGSpacing.p7 / 2,
@@ -348,7 +404,10 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           borderRadius: BorderRadius.circular(SGSpacing.p1),
                         ),
                         SizedBox(width: SGSpacing.p2),
-                        SGTypography.body("포장", size: FontSize.small, color: SGColors.gray5, weight: FontWeight.w700),
+                        SGTypography.body("포장",
+                            size: FontSize.small,
+                            color: SGColors.gray5,
+                            weight: FontWeight.w700),
                         SizedBox(width: SGSpacing.p2),
                         SGTypography.body("최근 7일, ${totalTakeout}명이 포장 주문 했어요.",
                             size: FontSize.small, color: SGColors.gray4),
@@ -386,9 +445,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     child: SGContainer(
                       borderColor: SGColors.primary,
                       borderRadius: BorderRadius.circular(SGSpacing.p2),
-                      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
                       child: Row(children: [
-                        SGTypography.body(collapsed ? "자세히" : "접기", size: FontSize.small, color: SGColors.primary),
+                        SGTypography.body(collapsed ? "자세히" : "접기",
+                            size: FontSize.small, color: SGColors.primary),
                       ]),
                     ),
                   )
@@ -399,7 +460,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   Row renderSelectionChips(
-      {required String selectedLabel, required List<String> labels, required Function(String) onTap}) {
+      {required String selectedLabel,
+      required List<String> labels,
+      required Function(String) onTap}) {
     return Row(children: [
       ...labels
           .map((e) => [
@@ -409,11 +472,19 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     },
                     child: SGContainer(
                         borderRadius: BorderRadius.circular(SGSpacing.p24),
-                        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                        borderColor: e == selectedLabel ? Color(0xFF79DF70).withOpacity(0.2) : SGColors.line2,
-                        color: e == selectedLabel ? Color(0xFF79DF70).withOpacity(0.12) : SGColors.white,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                        borderColor: e == selectedLabel
+                            ? Color(0xFF79DF70).withOpacity(0.2)
+                            : SGColors.line2,
+                        color: e == selectedLabel
+                            ? Color(0xFF79DF70).withOpacity(0.12)
+                            : SGColors.white,
                         child: SGTypography.body(e,
-                            size: FontSize.small, color: e == selectedLabel ? SGColors.primary : SGColors.gray5))),
+                            size: FontSize.small,
+                            color: e == selectedLabel
+                                ? SGColors.primary
+                                : SGColors.gray5))),
                 SizedBox(width: SGSpacing.p2)
               ])
           .flattened
@@ -455,7 +526,8 @@ class SplineChartItemData {
   List<FlSpot> items;
 
   SplineChartItemData({required this.labels, required this.items}) {
-    final maxValue = items.fold(0.0, (previousValue, element) => math.max(previousValue, element.x));
+    final maxValue = items.fold(
+        0.0, (previousValue, element) => math.max(previousValue, element.x));
     assert(labels.length >= maxValue.toInt() - 1);
   }
 }
@@ -465,7 +537,8 @@ class LineChartItemData {
   List<FlSpot> items;
 
   LineChartItemData({required this.labels, required this.items}) {
-    final maxValue = items.fold(0.0, (previousValue, element) => math.max(previousValue, element.x));
+    final maxValue = items.fold(
+        0.0, (previousValue, element) => math.max(previousValue, element.x));
     assert(labels.length >= maxValue.toInt() - 1);
   }
 }
@@ -503,7 +576,8 @@ class HistogramState extends State<Histogram> {
                 barTouchData: BarTouchData(
                   enabled: true,
                   touchTooltipData: BarTouchTooltipData(
-                    tooltipPadding: EdgeInsets.all(SGSpacing.p2).copyWith(bottom: SGSpacing.p1),
+                    tooltipPadding: EdgeInsets.all(SGSpacing.p2)
+                        .copyWith(bottom: SGSpacing.p1),
                     fitInsideHorizontally: true,
                     tooltipMargin: SGSpacing.p4,
                     tooltipBorder: BorderSide(
@@ -540,7 +614,9 @@ class HistogramState extends State<Histogram> {
                                     TextSpan(
                                       text: "\n${e.itemType} ",
                                       style: TextStyle(
-                                          color: SGColors.black, fontSize: FontSize.tiny, fontFamily: 'Pretendard'),
+                                          color: SGColors.black,
+                                          fontSize: FontSize.tiny,
+                                          fontFamily: 'Pretendard'),
                                     ),
                                     TextSpan(
                                       text: "${e.value.toInt()}명",
@@ -618,7 +694,10 @@ class HistogramState extends State<Histogram> {
               barsSpace: barsSpace,
               barRods: [
                 BarChartRodData(
-                  toY: item.fold(0, (previousValue, element) => previousValue + element.value),
+                  toY: item.fold(
+                      0,
+                      (previousValue, element) =>
+                          previousValue + element.value),
                   rodStackItems: extractRodStackItems(item),
                   borderRadius: BorderRadius.circular(SGSpacing.p1),
                   width: barsWidth,
@@ -630,8 +709,11 @@ class HistogramState extends State<Histogram> {
 
   List<BarChartRodStackItem> extractRodStackItems(List<BarChartItem> item) {
     return item.mapIndexed((index, element) {
-      final previousValue = item.sublist(0, index).fold(0.0, (previousValue, element) => previousValue + element.value);
-      return BarChartRodStackItem(previousValue, previousValue + element.value, labelToColorMap[element.itemType]!);
+      final previousValue = item
+          .sublist(0, index)
+          .fold(0.0, (previousValue, element) => previousValue + element.value);
+      return BarChartRodStackItem(previousValue, previousValue + element.value,
+          labelToColorMap[element.itemType]!);
     }).toList();
   }
 
@@ -646,6 +728,7 @@ const horizontalLineColor = Color(0xFFF2F2F2);
 
 class SplineChart extends StatefulWidget {
   final SplineChartItemData data;
+
   SplineChart({super.key, required this.data});
 
   @override
@@ -739,13 +822,20 @@ class _SplineChartState extends State<SplineChart> {
                   fontSize: FontSize.tiny,
                 ),
                 children: [
-                  TextSpan(text: "전체 ", style: TextStyle(color: SGColors.black)),
-                  TextSpan(text: "${flSpot.y.toInt()}", style: TextStyle(color: SGColors.primary)),
+                  TextSpan(
+                      text: "전체 ", style: TextStyle(color: SGColors.black)),
+                  TextSpan(
+                      text: "${flSpot.y.toInt()}",
+                      style: TextStyle(color: SGColors.primary)),
                   TextSpan(text: "명", style: TextStyle(color: SGColors.black)),
                 ],
                 textAlign: TextAlign.start,
               );
-              if (flSpot.x == 0 || flSpot.x == 0.1 || flSpot.x == 0.2 || flSpot.x == 0.3 || flSpot.x == 0.5) {
+              if (flSpot.x == 0 ||
+                  flSpot.x == 0.1 ||
+                  flSpot.x == 0.2 ||
+                  flSpot.x == 0.3 ||
+                  flSpot.x == 0.5) {
                 return LineTooltipItem(
                   "d''(x) > 0",
                   TextStyle(color: SGColors.black, fontWeight: FontWeight.bold),
@@ -844,6 +934,7 @@ class _SplineChartState extends State<SplineChart> {
 
 class SolidLineChart extends StatefulWidget {
   final LineChartItemData data;
+
   SolidLineChart({super.key, required this.data});
 
   @override
@@ -938,13 +1029,20 @@ class _SolidLineChartState extends State<SolidLineChart> {
                   fontSize: FontSize.tiny,
                 ),
                 children: [
-                  TextSpan(text: "전체 ", style: TextStyle(color: SGColors.black)),
-                  TextSpan(text: "${flSpot.y.toInt()}", style: TextStyle(color: SGColors.primary)),
+                  TextSpan(
+                      text: "전체 ", style: TextStyle(color: SGColors.black)),
+                  TextSpan(
+                      text: "${flSpot.y.toInt()}",
+                      style: TextStyle(color: SGColors.primary)),
                   TextSpan(text: "명", style: TextStyle(color: SGColors.black)),
                 ],
                 textAlign: TextAlign.start,
               );
-              if (flSpot.x == 0 || flSpot.x == 0.1 || flSpot.x == 0.2 || flSpot.x == 0.3 || flSpot.x == 0.5) {
+              if (flSpot.x == 0 ||
+                  flSpot.x == 0.1 ||
+                  flSpot.x == 0.2 ||
+                  flSpot.x == 0.3 ||
+                  flSpot.x == 0.5) {
                 return LineTooltipItem(
                   "d''(x) > 0",
                   TextStyle(color: SGColors.black, fontWeight: FontWeight.bold),
