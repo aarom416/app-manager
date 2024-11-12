@@ -12,7 +12,6 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/find_account_provider.dart';
-import 'package:singleeat/office/providers/webview_provider.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
 
 class FindAccountScreen extends ConsumerStatefulWidget {
@@ -36,10 +35,6 @@ class _FindAccountScreenState extends ConsumerState<FindAccountScreen> {
     Future.microtask(() {
       ref
           .read(authenticateWithPhoneNumberNotifierProvider.notifier)
-          .onChangeMethod(AuthenticateWithPhoneNumberMethod.ACCOUNT);
-
-      ref
-          .read(webViewNotifierProvider.notifier)
           .onChangeMethod(AuthenticateWithPhoneNumberMethod.ACCOUNT);
     });
   }

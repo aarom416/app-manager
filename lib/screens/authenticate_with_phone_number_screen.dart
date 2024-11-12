@@ -32,11 +32,24 @@ class _AuthenticateWithPhoneNumberScreenState
     ref.listen(authenticateWithPhoneNumberNotifierProvider, (previous, next) {
       if (previous?.status != next.status &&
           next.status == AuthenticateWithPhoneNumberStatus.success) {
-        context.push(AppRoutes.webView);
+        switch (next.method) {
+          case AuthenticateWithPhoneNumberMethod.SIGNUP:
+            context.push(AppRoutes.signupWebView);
+            break;
+          case AuthenticateWithPhoneNumberMethod.DIRECT:
+            context.push(AppRoutes.loginWebView);
+            break;
+          case AuthenticateWithPhoneNumberMethod.ACCOUNT:
+            context.push(AppRoutes.findByAccountWebView);
+            break;
+          case AuthenticateWithPhoneNumberMethod.PASSWORD:
+            context.push(AppRoutes.findByPasswordWebView);
+            break;
+          case AuthenticateWithPhoneNumberMethod.PHONE:
+            break;
+        }
 
-        ref
-            .read(authenticateWithPhoneNumberNotifierProvider.notifier)
-            .onChangeStatus(AuthenticateWithPhoneNumberStatus.init);
+        ref.read(authenticateWithPhoneNumberNotifierProvider.notifier).reset();
       }
     });
 

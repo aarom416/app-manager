@@ -5,7 +5,7 @@ import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/office/models/user_model.dart';
-import 'package:singleeat/office/providers/webview_provider.dart';
+import 'package:singleeat/office/providers/signup_webview_provider.dart';
 import 'package:singleeat/office/services/signup_service.dart';
 
 part 'signup_provider.freezed.dart';
@@ -144,7 +144,7 @@ class SignupNotifier extends _$SignupNotifier {
   void signUp() async {
     final response = await ref.read(signupServiceProvider).signUp({
       'identityVerificationId':
-          ref.read(webViewNotifierProvider).identityVerificationId,
+          ref.read(signupWebViewNotifierProvider).identityVerificationId,
       'loginId': state.loginId,
       'password': state.password,
       'email': '${state.email}@${state.domain}',

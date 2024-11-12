@@ -93,6 +93,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       Image.asset("assets/images/checkbox-off.png", width: SGSpacing.p6);
 
   @override
+  void initState() {
+    Future.microtask(() {
+      ref.read(loginNotifierProvider.notifier).autoLogin();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref.listen(loginNotifierProvider, (previous, next) {
       switch (next.status) {
@@ -103,6 +110,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               'title': '로그인',
             },
           );
+
           ref
               .read(loginNotifierProvider.notifier)
               .onChangeStatus(LoginStatus.init);

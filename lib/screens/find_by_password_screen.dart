@@ -13,7 +13,6 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/find_by_password_provider.dart';
-import 'package:singleeat/office/providers/webview_provider.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
 
 class FindByPasswordScreen extends ConsumerStatefulWidget {
@@ -37,11 +36,11 @@ class _FindByPasswordScreenState extends ConsumerState<FindByPasswordScreen> {
   void initState() {
     Future.microtask(() {
       ref
-          .read(authenticateWithPhoneNumberNotifierProvider.notifier)
-          .onChangeMethod(AuthenticateWithPhoneNumberMethod.PASSWORD);
+          .read(findByPasswordNotifierProvider.notifier)
+          .onChangeStatus(FindByPasswordStatus.step1);
 
       ref
-          .read(webViewNotifierProvider.notifier)
+          .read(authenticateWithPhoneNumberNotifierProvider.notifier)
           .onChangeMethod(AuthenticateWithPhoneNumberMethod.PASSWORD);
     });
   }

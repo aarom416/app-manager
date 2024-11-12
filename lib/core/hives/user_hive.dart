@@ -5,6 +5,7 @@ enum UserKey {
   info,
   loginId,
   fcm,
+  fcmTokenId,
 }
 
 class UserHive {

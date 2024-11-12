@@ -27,4 +27,5 @@ class RestApiUri {
   static const String logout = '/api/v1/owner/logout';
   static const String updatePassword =
       '/api/v1/owner/auth/sign-up/update-password';
+  static const String autoLogin = '/api/v1/owner/login/auto-login';
 }

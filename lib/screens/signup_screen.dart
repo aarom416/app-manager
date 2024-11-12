@@ -15,7 +15,6 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
-import 'package:singleeat/office/providers/webview_provider.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/store_registration_form_screen.dart';
@@ -41,10 +40,6 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     Future.microtask(() {
       ref
           .read(authenticateWithPhoneNumberNotifierProvider.notifier)
-          .onChangeMethod(AuthenticateWithPhoneNumberMethod.SIGNUP);
-
-      ref
-          .read(webViewNotifierProvider.notifier)
           .onChangeMethod(AuthenticateWithPhoneNumberMethod.SIGNUP);
 
       ref

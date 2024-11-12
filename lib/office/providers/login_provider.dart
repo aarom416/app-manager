@@ -6,10 +6,13 @@ import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/office/models/user_model.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
+import 'package:singleeat/office/providers/find_account_webview_provider.dart';
 import 'package:singleeat/office/providers/find_by_password_provider.dart';
+import 'package:singleeat/office/providers/find_by_password_webview_provider.dart';
 import 'package:singleeat/office/providers/home_provider.dart';
+import 'package:singleeat/office/providers/login_webview_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
-import 'package:singleeat/office/providers/webview_provider.dart';
+import 'package:singleeat/office/providers/signup_webview_provider.dart';
 import 'package:singleeat/office/services/login_service.dart';
 
 part 'login_provider.freezed.dart';
@@ -62,9 +65,6 @@ class LoginNotifier extends _$LoginNotifier {
     // 본인 인증
     ref
         .read(authenticateWithPhoneNumberNotifierProvider.notifier)
-        .onChangeMethod(AuthenticateWithPhoneNumberMethod.DIRECT);
-    ref
-        .read(webViewNotifierProvider.notifier)
         .onChangeMethod(AuthenticateWithPhoneNumberMethod.DIRECT);
 
     switch (response.statusCode) {
@@ -160,13 +160,34 @@ class LoginNotifier extends _$LoginNotifier {
     required UserStatus status,
   }) async {
     final result = ResultResponseModel.fromJson(response.data);
-    final user = UserModel.fromJson(result.data);
+    Map<String, dynamic> modifiedData = Map.from(result.data);
+
+    modifiedData['accessToken'] =
+        modifiedData['accessToken'] ?? UserHive.get().accessToken;
+    modifiedData['refreshToken'] =
+        modifiedData['refreshToken'] ?? UserHive.get().refreshToken;
+
+    final user = UserModel.fromJson(modifiedData);
     UserHive.set(user: user.copyWith(status: status));
     state = state.copyWith(status: LoginStatus.success);
 
-    await ref
+    fcmToken();
+  }
+
+  void fcmToken() async {
+    final response = await ref
         .read(loginServiceProvider)
         .fcmToken(fcmToken: UserHive.getBox(key: UserKey.fcm));
+
+    if (response.statusCode == 200) {
+      final result = ResultResponseModel.fromJson(response.data);
+      UserHive.setBox(
+        key: UserKey.fcmTokenId,
+        value: (result.data['fcmTokenId'] ?? '').toString(),
+      );
+    } else {
+      // error
+    }
   }
 
   Future<void> verifyPhone() async {
@@ -194,7 +215,7 @@ class LoginNotifier extends _$LoginNotifier {
     try {
       final response = await ref
           .read(loginServiceProvider)
-          .logout(fcmTokenId: UserHive.getBox(key: UserKey.fcm));
+          .logout(fcmTokenId: UserHive.getBox(key: UserKey.fcmTokenId));
 
       switch (response.statusCode) {
         case 200:
@@ -212,12 +233,38 @@ class LoginNotifier extends _$LoginNotifier {
 
     state = const LoginState();
     ref.invalidate(authenticateWithPhoneNumberNotifierProvider);
-    ref.invalidate(webViewNotifierProvider);
+    ref.invalidate(loginWebViewNotifierProvider);
+    ref.invalidate(findAccountWebViewNotifierProvider);
+    ref.invalidate(findByPasswordWebViewNotifierProvider);
+    ref.invalidate(signupWebViewNotifierProvider);
     ref.invalidate(signupNotifierProvider);
     ref.invalidate(findByPasswordNotifierProvider);
     ref.invalidate(homeNotifierProvider);
 
     return true;
+  }
+
+  void autoLogin() async {
+    // 로그아웃 상태
+    UserModel user = UserHive.get();
+    if (user.accessToken.isEmpty || user.refreshToken.isEmpty) return;
+
+    final response = await ref.read(loginServiceProvider).autoLogin();
+
+    switch (response.statusCode) {
+      case 200:
+        verifyPhoneBySuccess(response: response, status: UserStatus.success);
+        break;
+      case 202:
+        verifyPhoneBySuccess(response: response, status: UserStatus.wait);
+        break;
+      case 206:
+        verifyPhoneBySuccess(response: response, status: UserStatus.notEntry);
+        break;
+      default:
+        // 종료
+        break;
+    }
   }
 }
 

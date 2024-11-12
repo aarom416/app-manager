@@ -71,10 +71,23 @@ class LoginService {
       final response = await RequestApi.post(
         RestApiUri.logout,
         queryParameters: {
-          'fcmTokenId': fcmToken,
+          'fcmTokenId': fcmTokenId,
         },
       );
 
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  Future<Response<dynamic>> autoLogin() async {
+    try {
+      final response = await RequestApi.get(path: RestApiUri.autoLogin);
       return response;
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");

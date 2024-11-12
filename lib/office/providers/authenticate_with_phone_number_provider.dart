@@ -1,9 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
+import 'package:singleeat/office/providers/find_account_webview_provider.dart';
 import 'package:singleeat/office/providers/find_by_password_provider.dart';
+import 'package:singleeat/office/providers/find_by_password_webview_provider.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
-import 'package:singleeat/office/providers/webview_provider.dart';
+import 'package:singleeat/office/providers/login_webview_provider.dart';
+import 'package:singleeat/office/providers/signup_webview_provider.dart';
 import 'package:singleeat/office/services/authenticate_with_phone_number_service.dart';
 
 part 'authenticate_with_phone_number_provider.freezed.dart';
@@ -25,36 +28,56 @@ class AuthenticateWithPhoneNumberNotifier
     state = state.copyWith(method: method);
   }
 
-  void identityVerification() async {
-    String loginId = '';
-    switch (state.method) {
-      case AuthenticateWithPhoneNumberMethod.SIGNUP:
-        break;
-      case AuthenticateWithPhoneNumberMethod.DIRECT:
-        loginId = ref.read(loginNotifierProvider).loginId;
-        break;
-      case AuthenticateWithPhoneNumberMethod.ACCOUNT:
-        break;
-      case AuthenticateWithPhoneNumberMethod.PASSWORD:
-        loginId = ref.read(findByPasswordNotifierProvider).loginId;
-        break;
-      case AuthenticateWithPhoneNumberMethod.PHONE:
-        break;
+  String getLoginId() {
+    if (state.method == AuthenticateWithPhoneNumberMethod.DIRECT) {
+      return ref.read(loginNotifierProvider).loginId ?? '';
+    } else if (state.method == AuthenticateWithPhoneNumberMethod.PASSWORD) {
+      return ref.read(findByPasswordNotifierProvider).loginId ?? '';
     }
 
+    return '';
+  }
+
+  void identityVerification() async {
     final response = await ref
         .read(authenticateWithPhoneNumberServiceProvider)
         .identityVerification(
-          loginId: loginId,
+          loginId: getLoginId(),
           method: state.method.name,
         );
 
     if (response.statusCode == 200) {
-      ref
-          .read(webViewNotifierProvider.notifier)
-          .onChangeHtml(html: response.data, method: state.method);
+      switch (state.method) {
+        case AuthenticateWithPhoneNumberMethod.SIGNUP:
+          ref
+              .read(signupWebViewNotifierProvider.notifier)
+              .onChangeHtml(html: response.data);
+          break;
+        case AuthenticateWithPhoneNumberMethod.DIRECT:
+          ref
+              .read(loginWebViewNotifierProvider.notifier)
+              .onChangeHtml(html: response.data);
+          break;
+        case AuthenticateWithPhoneNumberMethod.ACCOUNT:
+          ref
+              .read(findAccountWebViewNotifierProvider.notifier)
+              .onChangeHtml(html: response.data);
+          break;
+        case AuthenticateWithPhoneNumberMethod.PASSWORD:
+          ref
+              .read(findByPasswordWebViewNotifierProvider.notifier)
+              .onChangeHtml(html: response.data);
+          break;
+        case AuthenticateWithPhoneNumberMethod.PHONE:
+          break;
+      }
+
       state = state.copyWith(status: AuthenticateWithPhoneNumberStatus.success);
     }
+  }
+
+  void reset() {
+    state = AuthenticateWithPhoneNumberState(method: state.method);
   }
 }
 

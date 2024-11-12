@@ -8,7 +8,7 @@ abstract class ResultResponseModel with _$ResultResponseModel {
   const factory ResultResponseModel({
     @Default(false) bool success,
     @Default('') String message,
-    @Default({}) Map<String, Object> data,
+    @Default({}) Map<String, Object?> data,
   }) = _ResultResponseModel;
 
   factory ResultResponseModel.fromJson(Map<String, dynamic> json) =>
