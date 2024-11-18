@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/networks/dio_service.dart';
@@ -9,6 +10,10 @@ import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 
 class RequestApi {
+  final Ref ref;
+
+  RequestApi(this.ref);
+
   static Map<String, Object> getHeader({String? contentType}) {
     Map<String, Object> header = {
       'Authorization': 'Bearer ${UserHive.get().accessToken}'
@@ -149,3 +154,7 @@ class RequestApi {
     }
   }
 }
+
+final requestApiProvider = Provider<RequestApi>((ref) {
+  return RequestApi(ref);
+});
