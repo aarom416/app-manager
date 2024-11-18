@@ -1,7 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/networks/dio_service.dart';
 import 'package:singleeat/core/networks/rest_api.dart';
+import 'package:singleeat/core/routers/app_router.dart';
+import 'package:singleeat/core/routers/app_routes.dart';
+import 'package:singleeat/office/models/result_response_model.dart';
 
 class RequestApi {
   static Map<String, Object> getHeader({String? contentType}) {
@@ -19,39 +24,43 @@ class RequestApi {
   }
 
   static Future<bool> dioException(Response response) async {
-    /*
     if (response.statusCode == 401) {
-      ErrorModel error = ErrorModel.fromJson(response.data);
-      if (error.code == "1201") {
-        try {
-          final response = await Dio().post(
-            '${RestApiUri.host}/auth/v2/refresh',
-            data: {
-              'authorization': UserHive.get().authorization,
-              'uid': UserHive.get().uid,
-            },
-            options: Options().copyWith(headers: getHeader()),
+      try {
+        final response = await Dio().post(
+          '${RestApiUri.host}/api/v1/owner/token/access-token',
+          options: Options().copyWith(headers: {
+            'Authorization': 'Bearer ${UserHive.get().refreshToken}'
+          }),
+          queryParameters: {
+            'fcmTokenId': UserHive.getBox(key: UserKey.fcmTokenId)
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final result = ResultResponseModel.fromJson(response.data);
+          String accessToken = (result.data['accessToken'] ?? '') as String;
+          String refreshToken = (result.data['refreshToken']) as String;
+
+          UserHive.set(
+            user: UserHive.get().copyWith(
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+            ),
           );
 
-          if (response.statusCode == 200) {
-            UserHive.set(
-                user: UserHive.get()
-                    .copyWith(authorization: response.data['authorization']));
-
-            return true;
-          } else {
-            // 토큰 인증 기간이 만료됨
-            GoRouter.of(rootNavKey.currentContext!)
-                .go(AppRoutes.loginRoute, extra: LoginStatus.expire);
-          }
-        } on DioException catch (e) {
-          return Future.error(e);
-        } on Exception catch (e) {
-          return Future.error(e);
+          return true;
+        } else {
+          // 토큰 인증 기간이 만료됨
+          GoRouter.of(rootNavKey.currentContext!)
+              .go(AppRoutes.login, extra: UniqueKey());
         }
+      } on DioException catch (e) {
+        return Future.error(e);
+      } on Exception catch (e) {
+        return Future.error(e);
       }
     }
-     */
+
     return false;
   }
 
