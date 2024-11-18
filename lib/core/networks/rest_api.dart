@@ -29,6 +29,8 @@ class RestApiUri {
       '/api/v1/owner/auth/sign-up/update-password';
   static const String autoLogin = '/api/v1/owner/login/auto-login';
   static const String ownerHome = '/api/v1/owner/owner-home';
+  static const String totalOrderAmount =
+      '/api/v1/owner/total-order-amount/{storeId}';
   static const String operationStatus =
       '/api/v1/owner/store-info/operation-status';
   static const String loadNotification = '/api/v1/owner/notification/{page}';
