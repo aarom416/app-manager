@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -10,6 +9,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/find_by_password_provider.dart';
@@ -148,7 +148,9 @@ class _FindByPasswordScreenState extends ConsumerState<FindByPasswordScreen> {
             onNext: () {
               FocusScope.of(context).unfocus();
 
-              context.go(AppRoutes.login, extra: UniqueKey());
+              ref
+                  .read(goRouterProvider)
+                  .go(AppRoutes.login, extra: UniqueKey());
             },
           )
         ],

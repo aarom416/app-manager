@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/reload_button.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/profile_provider.dart';
 import 'package:singleeat/screens/receipt_list_screen.dart';
@@ -146,17 +146,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   _NavigationLinkItem(
                       title: "자동 영업 임시중지",
                       onTap: () {
-                        context.push(AppRoutes.temporaryClosed);
+                        ref
+                            .read(goRouterProvider)
+                            .push(AppRoutes.temporaryClosed);
                       }),
                   _NavigationLinkItem(
                       title: "알림 설정",
                       onTap: () {
-                        context.push(AppRoutes.notificationConfiguration);
+                        ref
+                            .read(goRouterProvider)
+                            .push(AppRoutes.notificationConfiguration);
                       }),
                   _NavigationLinkItem(
                       title: "계정 설정",
                       onTap: () {
-                        context.push(AppRoutes.profileDeleteSession);
+                        ref
+                            .read(goRouterProvider)
+                            .push(AppRoutes.profileDeleteSession);
                       }),
                 ],
               ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -9,9 +9,10 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 
-class CheckPasswordScreen extends StatefulWidget {
+class CheckPasswordScreen extends ConsumerStatefulWidget {
   String title;
 
   CheckPasswordScreen({
@@ -20,10 +21,11 @@ class CheckPasswordScreen extends StatefulWidget {
   });
 
   @override
-  State<CheckPasswordScreen> createState() => _CheckPasswordScreenState();
+  ConsumerState<CheckPasswordScreen> createState() =>
+      _CheckPasswordScreenState();
 }
 
-class _CheckPasswordScreenState extends State<CheckPasswordScreen> {
+class _CheckPasswordScreenState extends ConsumerState<CheckPasswordScreen> {
   String password = "";
 
   bool passwordVisible = false;
@@ -48,7 +50,9 @@ class _CheckPasswordScreenState extends State<CheckPasswordScreen> {
                 onPressed: () {
                   if (isPasswordValid) {
                     showFailDialogWithImage(
-                        "비밀번호 인증 실패", "입력하신 비밀번호가 올바르지 않습니다.\n다시 확인해주세요.");
+                        ref: ref,
+                        mainTitle: "비밀번호 인증 실패",
+                        subTitle: "입력하신 비밀번호가 올바르지 않습니다.\n다시 확인해주세요.");
                   }
                 },
                 disabled: !isPasswordValid,
@@ -120,7 +124,10 @@ class _CheckPasswordScreenState extends State<CheckPasswordScreen> {
             ])));
   }
 
-  void showFailDialogWithImage(String mainTitle, String subTitle) {
+  void showFailDialogWithImage(
+      {required WidgetRef ref,
+      required String mainTitle,
+      required String subTitle}) {
     showSGDialogWithImage(
         context: context,
         childrenBuilder: (ctx) => [
@@ -141,7 +148,7 @@ class _CheckPasswordScreenState extends State<CheckPasswordScreen> {
               SizedBox(height: SGSpacing.p6),
               GestureDetector(
                 onTap: () {
-                  context.push(AppRoutes.changePassword);
+                  ref.read(goRouterProvider).push(AppRoutes.changePassword);
                 },
                 child: SGContainer(
                   color: SGColors.primary,

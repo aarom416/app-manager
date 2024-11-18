@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -10,6 +9,7 @@ import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/user_model.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
@@ -50,7 +50,9 @@ class _SignUpCompleteScreenState extends ConsumerState<SignUpCompleteScreen> {
                     bool logout =
                         await ref.read(loginNotifierProvider.notifier).logout();
                     if (logout) {
-                      context.go(AppRoutes.login, extra: UniqueKey());
+                      ref
+                          .read(goRouterProvider)
+                          .go(AppRoutes.login, extra: UniqueKey());
                     }
                   },
                   child: SGContainer(
@@ -67,7 +69,7 @@ class _SignUpCompleteScreenState extends ConsumerState<SignUpCompleteScreen> {
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
-                    context.push(AppRoutes.profileEdit);
+                    ref.read(goRouterProvider).push(AppRoutes.profileEdit);
                   },
                   child: SGContainer(
                       color: SGColors.primary,
@@ -92,7 +94,9 @@ class _SignUpCompleteScreenState extends ConsumerState<SignUpCompleteScreen> {
             else
               _NotRegisteredScreen(
                 onPressActionButton: () {
-                  context.push(AppRoutes.storeRegistrationForm);
+                  ref
+                      .read(goRouterProvider)
+                      .push(AppRoutes.storeRegistrationForm);
                 },
               )
           ])),

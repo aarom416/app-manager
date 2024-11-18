@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
@@ -10,12 +9,11 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 
 class NotificationConfigurationScreen extends ConsumerStatefulWidget {
-  NotificationConfigurationScreen({
-    super.key,
-  });
+  const NotificationConfigurationScreen({super.key});
 
   @override
   ConsumerState<NotificationConfigurationScreen> createState() =>
@@ -110,7 +108,9 @@ class _NotificationConfigurationScreenState
             SizedBox(height: SGSpacing.p3),
             GestureDetector(
               onTap: () {
-                context.push(AppRoutes.businessNotificationConfiguration);
+                ref
+                    .read(goRouterProvider)
+                    .push(AppRoutes.businessNotificationConfiguration);
               },
               child: SGContainer(
                   padding: EdgeInsets.symmetric(

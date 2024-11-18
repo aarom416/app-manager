@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/spacing.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/core/utils/file.dart';
 import 'package:singleeat/main.dart';
@@ -106,7 +107,7 @@ class _LoginWebViewScreenState extends ConsumerState<LoginWebViewScreen> {
                   if (isStatus) {
                     context.pop(context);
                   } else {
-                    context.go(AppRoutes.login);
+                    ref.read(goRouterProvider).go(AppRoutes.login);
                   }
                 },
                 disabled: false,

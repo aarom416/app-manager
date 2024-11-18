@@ -7,6 +7,7 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/core/utils/file.dart';
 import 'package:singleeat/main.dart';
@@ -105,7 +106,7 @@ class _FindAccountWebViewScreenState
                   Expanded(
                       child: GestureDetector(
                     onTap: () {
-                      context.go(AppRoutes.findByPassword);
+                      ref.read(goRouterProvider).go(AppRoutes.findByPassword);
                     },
                     child: SGContainer(
                         color: SGColors.gray1,
@@ -121,7 +122,7 @@ class _FindAccountWebViewScreenState
                   Expanded(
                       child: GestureDetector(
                     onTap: () {
-                      context.go(AppRoutes.login);
+                      ref.read(goRouterProvider).go(AppRoutes.login);
                     },
                     child: SGContainer(
                         color: SGColors.primary,

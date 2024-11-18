@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -12,6 +11,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
@@ -29,7 +29,8 @@ class SignupScreen extends ConsumerStatefulWidget {
 class _SignupScreenState extends ConsumerState<SignupScreen> {
   PageController pageController = PageController();
 
-  void animateToPage(int index) => pageController.animateToPage(
+  void animateToPage(int index) =>
+      pageController.animateToPage(
         index,
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
@@ -66,43 +67,46 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
             animateToPage(2);
             break;
           case SignupStatus.step4:
-            context.go(AppRoutes.storeRegistrationForm, extra: UniqueKey());
+            ref
+                .read(goRouterProvider)
+                .go(AppRoutes.storeRegistrationForm, extra: UniqueKey());
             break;
           case SignupStatus.error:
             showSGDialog(
                 context: context,
-                childrenBuilder: (ctx) => [
-                      Center(
-                        child: SGTypography.body(
-                          '전화번호 인증을 실패하였습니다.',
-                          size: FontSize.medium,
-                          weight: FontWeight.normal,
-                          align: TextAlign.center,
-                        ),
-                      ),
-                      SizedBox(height: SGSpacing.p5),
-                      Row(children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.of(ctx).pop();
-                            },
-                            child: SGContainer(
-                              color: SGColors.primary,
-                              padding:
-                                  EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                              borderRadius: BorderRadius.circular(SGSpacing.p3),
-                              child: Center(
-                                child: SGTypography.body("확인",
-                                    size: FontSize.normal,
-                                    weight: FontWeight.normal,
-                                    color: SGColors.white),
-                              ),
-                            ),
+                childrenBuilder: (ctx) =>
+                [
+                  Center(
+                    child: SGTypography.body(
+                      '전화번호 인증을 실패하였습니다.',
+                      size: FontSize.medium,
+                      weight: FontWeight.normal,
+                      align: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: SGSpacing.p5),
+                  Row(children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(ctx).pop();
+                        },
+                        child: SGContainer(
+                          color: SGColors.primary,
+                          padding:
+                          EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                          child: Center(
+                            child: SGTypography.body("확인",
+                                size: FontSize.normal,
+                                weight: FontWeight.normal,
+                                color: SGColors.white),
                           ),
                         ),
-                      ]),
-                    ]);
+                      ),
+                    ),
+                  ]),
+                ]);
             break;
         }
       }
@@ -113,30 +117,30 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
             controller: pageController,
             physics: const NeverScrollableScrollPhysics(),
             children: [
-          AuthenticateWithPhoneNumberScreen(
-              title: "회원가입",
-              onPrev: () {
+              AuthenticateWithPhoneNumberScreen(
+                  title: "회원가입",
+                  onPrev: () {
+                    FocusScope.of(context).unfocus();
+
+                    Navigator.pop(context);
+                  }),
+              SignupFormScreen(onPrev: () {
                 FocusScope.of(context).unfocus();
 
-                Navigator.pop(context);
+                animateToPage(0);
+              }, onNext: () {
+                FocusScope.of(context).unfocus();
+
+                animateToPage(2);
               }),
-          SignupFormScreen(onPrev: () {
-            FocusScope.of(context).unfocus();
+              _TermCheckScreen(onPrev: () {
+                FocusScope.of(context).unfocus();
 
-            animateToPage(0);
-          }, onNext: () {
-            FocusScope.of(context).unfocus();
-
-            animateToPage(2);
-          }),
-          _TermCheckScreen(onPrev: () {
-            FocusScope.of(context).unfocus();
-
-            animateToPage(1);
-          }),
-          const StoreRegistrationFormScreen(),
-          const SignUpCompleteScreen(),
-        ]));
+                animateToPage(1);
+              }),
+              const StoreRegistrationFormScreen(),
+              const SignUpCompleteScreen(),
+            ]));
   }
 }
 
@@ -163,42 +167,45 @@ class _SignUpCompleteScreenState extends State<_SignUpCompleteScreen> {
         appBar: AppBarWithLeftArrow(title: "싱그릿 식단 연구소", onTap: widget.onPrev),
         floatingActionButton: Container(
             constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
+                maxWidth: MediaQuery
+                    .of(context)
+                    .size
+                    .width - SGSpacing.p8,
                 maxHeight: 58),
             child: Row(
               children: [
                 Expanded(
                     child: GestureDetector(
-                  onTap: () {
-                    widget.onLogout();
-                  },
-                  child: SGContainer(
-                      color: SGColors.gray1,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("로그아웃",
-                              size: FontSize.large,
-                              color: SGColors.gray5,
-                              weight: FontWeight.w700))),
-                )),
+                      onTap: () {
+                        widget.onLogout();
+                      },
+                      child: SGContainer(
+                          color: SGColors.gray1,
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                          child: Center(
+                              child: SGTypography.body("로그아웃",
+                                  size: FontSize.large,
+                                  color: SGColors.gray5,
+                                  weight: FontWeight.w700))),
+                    )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
                     child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => _ProfileEditScreen()));
-                  },
-                  child: SGContainer(
-                      color: SGColors.primary,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("내 정보",
-                              size: FontSize.large,
-                              color: SGColors.white,
-                              weight: FontWeight.w700))),
-                )),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => _ProfileEditScreen()));
+                      },
+                      child: SGContainer(
+                          color: SGColors.primary,
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                          child: Center(
+                              child: SGTypography.body("내 정보",
+                                  size: FontSize.large,
+                                  color: SGColors.white,
+                                  weight: FontWeight.w700))),
+                    )),
               ],
             )),
         body: SGContainer(
@@ -207,17 +214,17 @@ class _SignUpCompleteScreenState extends State<_SignUpCompleteScreen> {
               horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
           child: Center(
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-            if (toggled)
-              _GreetingScreen()
-            else
-              _NotRegisteredScreen(
-                onPressActionButton: () {
-                  setState(() {
-                    toggled = true;
-                  });
-                },
-              )
-          ])),
+                if (toggled)
+                  _GreetingScreen()
+                else
+                  _NotRegisteredScreen(
+                    onPressActionButton: () {
+                      setState(() {
+                        toggled = true;
+                      });
+                    },
+                  )
+              ])),
         ));
   }
 }
@@ -233,15 +240,15 @@ class _ProfileEditScreen extends StatefulWidget {
 
 class _ProfileEditScreenState extends State<_ProfileEditScreen> {
   late TextEditingController usernameController =
-      TextEditingController(text: "singleat");
+  TextEditingController(text: "singleat");
   late TextEditingController nameController =
-      TextEditingController(text: "싱그릿");
+  TextEditingController(text: "싱그릿");
   late TextEditingController authCodeController =
-      TextEditingController(text: "");
+  TextEditingController(text: "");
   late TextEditingController emailController =
-      TextEditingController(text: "singleeat@singleeat.com");
+  TextEditingController(text: "singleeat@singleeat.com");
   late TextEditingController phoneNumberController =
-      TextEditingController(text: "010-1234-5678");
+  TextEditingController(text: "010-1234-5678");
 
   String username = "singleat";
   String name = "싱그릿";
@@ -270,38 +277,38 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
                   Expanded(
                     child: SGTextFieldWrapper(
                         child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                                enabled: false,
-                                controller: usernameController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    username = value;
-                                  });
-                                },
-                                style: TextStyle(
-                                    fontSize: FontSize.small,
-                                    color: SGColors.gray5),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  isCollapsed: true,
-                                  hintStyle: TextStyle(
-                                      color: SGColors.gray3,
-                                      fontSize: FontSize.small,
-                                      fontWeight: FontWeight.w400),
-                                  hintText: "아이디를 입력해주세요.",
-                                  border: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.zero,
-                                      borderSide: BorderSide.none),
-                                )),
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          width: double.infinity,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                    enabled: false,
+                                    controller: usernameController,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        username = value;
+                                      });
+                                    },
+                                    style: TextStyle(
+                                        fontSize: FontSize.small,
+                                        color: SGColors.gray5),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      isCollapsed: true,
+                                      hintStyle: TextStyle(
+                                          color: SGColors.gray3,
+                                          fontSize: FontSize.small,
+                                          fontWeight: FontWeight.w400),
+                                      hintText: "아이디를 입력해주세요.",
+                                      border: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.zero,
+                                          borderSide: BorderSide.none),
+                                    )),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
+                        )),
                   ),
                 ],
               ),
@@ -318,38 +325,38 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
                   Expanded(
                     child: SGTextFieldWrapper(
                         child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                                controller: nameController,
-                                enabled: false,
-                                onChanged: (value) {
-                                  setState(() {
-                                    name = value;
-                                  });
-                                },
-                                style: TextStyle(
-                                    fontSize: FontSize.small,
-                                    color: SGColors.gray5),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  isCollapsed: true,
-                                  hintStyle: TextStyle(
-                                      color: SGColors.gray3,
-                                      fontSize: FontSize.small,
-                                      fontWeight: FontWeight.w400),
-                                  hintText: "이름을 입력해주세요.",
-                                  border: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.zero,
-                                      borderSide: BorderSide.none),
-                                )),
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          width: double.infinity,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                    controller: nameController,
+                                    enabled: false,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        name = value;
+                                      });
+                                    },
+                                    style: TextStyle(
+                                        fontSize: FontSize.small,
+                                        color: SGColors.gray5),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      isCollapsed: true,
+                                      hintStyle: TextStyle(
+                                          color: SGColors.gray3,
+                                          fontSize: FontSize.small,
+                                          fontWeight: FontWeight.w400),
+                                      hintText: "이름을 입력해주세요.",
+                                      border: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.zero,
+                                          borderSide: BorderSide.none),
+                                    )),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
+                        )),
                   ),
                 ],
               ),
@@ -366,38 +373,38 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
                   Expanded(
                     child: SGTextFieldWrapper(
                         child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                                enabled: false,
-                                controller: emailController,
-                                onChanged: (value) {
-                                  setState(() {
-                                    email = value;
-                                  });
-                                },
-                                style: TextStyle(
-                                    fontSize: FontSize.small,
-                                    color: SGColors.gray5),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  isCollapsed: true,
-                                  hintStyle: TextStyle(
-                                      color: SGColors.gray3,
-                                      fontSize: FontSize.small,
-                                      fontWeight: FontWeight.w400),
-                                  hintText: "이메일을 입력해주세요.",
-                                  border: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.zero,
-                                      borderSide: BorderSide.none),
-                                )),
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          width: double.infinity,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                    enabled: false,
+                                    controller: emailController,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        email = value;
+                                      });
+                                    },
+                                    style: TextStyle(
+                                        fontSize: FontSize.small,
+                                        color: SGColors.gray5),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      isCollapsed: true,
+                                      hintStyle: TextStyle(
+                                          color: SGColors.gray3,
+                                          fontSize: FontSize.small,
+                                          fontWeight: FontWeight.w400),
+                                      hintText: "이메일을 입력해주세요.",
+                                      border: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.zero,
+                                          borderSide: BorderSide.none),
+                                    )),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
+                        )),
                   ),
                 ],
               ),
@@ -409,35 +416,35 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
                   Expanded(
                     child: SGTextFieldWrapper(
                         child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                                controller: authCodeController,
-                                onChanged: (value) {
-                                  // 인증코드
-                                },
-                                style: TextStyle(
-                                    fontSize: FontSize.small,
-                                    color: SGColors.gray5),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  isCollapsed: true,
-                                  hintStyle: TextStyle(
-                                      color: SGColors.gray3,
-                                      fontSize: FontSize.small,
-                                      fontWeight: FontWeight.w400),
-                                  hintText: "인증번호",
-                                  border: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.zero,
-                                      borderSide: BorderSide.none),
-                                )),
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          width: double.infinity,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                    controller: authCodeController,
+                                    onChanged: (value) {
+                                      // 인증코드
+                                    },
+                                    style: TextStyle(
+                                        fontSize: FontSize.small,
+                                        color: SGColors.gray5),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      isCollapsed: true,
+                                      hintStyle: TextStyle(
+                                          color: SGColors.gray3,
+                                          fontSize: FontSize.small,
+                                          fontWeight: FontWeight.w400),
+                                      hintText: "인증번호",
+                                      border: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.zero,
+                                          borderSide: BorderSide.none),
+                                    )),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
+                        )),
                   ),
                 ],
               ),
@@ -473,38 +480,38 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
                   Expanded(
                     child: SGTextFieldWrapper(
                         child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                                controller: phoneNumberController,
-                                enabled: false,
-                                onChanged: (value) {
-                                  setState(() {
-                                    phoneNumber = value;
-                                  });
-                                },
-                                style: TextStyle(
-                                    fontSize: FontSize.small,
-                                    color: SGColors.gray5),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  isCollapsed: true,
-                                  hintStyle: TextStyle(
-                                      color: SGColors.gray3,
-                                      fontSize: FontSize.small,
-                                      fontWeight: FontWeight.w400),
-                                  hintText: "이름을 입력해주세요.",
-                                  border: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.zero,
-                                      borderSide: BorderSide.none),
-                                )),
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          width: double.infinity,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                    controller: phoneNumberController,
+                                    enabled: false,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        phoneNumber = value;
+                                      });
+                                    },
+                                    style: TextStyle(
+                                        fontSize: FontSize.small,
+                                        color: SGColors.gray5),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      isCollapsed: true,
+                                      hintStyle: TextStyle(
+                                          color: SGColors.gray3,
+                                          fontSize: FontSize.small,
+                                          fontWeight: FontWeight.w400),
+                                      hintText: "이름을 입력해주세요.",
+                                      border: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.zero,
+                                          borderSide: BorderSide.none),
+                                    )),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
+                        )),
                   ),
                 ],
               ),
@@ -633,9 +640,10 @@ class _TermCheckScreenState extends ConsumerState<_TermCheckScreen> {
 
   bool get isAllChecked => terms.every((element) => element.checked);
 
-  bool get isAllRequiredChecked => terms
-      .where((element) => element.isRequired)
-      .every((element) => element.checked);
+  bool get isAllRequiredChecked =>
+      terms
+          .where((element) => element.isRequired)
+          .every((element) => element.checked);
 
   @override
   Widget build(BuildContext context) {
@@ -679,50 +687,52 @@ class _TermCheckScreenState extends ConsumerState<_TermCheckScreen> {
                     ])),
               ),
               ...terms
-                  .mapIndexed((index, term) => [
-                        SizedBox(height: SGSpacing.p3),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              terms = terms
-                                  .mapIndexed((i, e) => i == index
-                                      ? e.copyWith(checked: !e.checked)
-                                      : e)
-                                  .toList();
-                            });
-                          },
-                          child: SGContainer(
-                              padding: EdgeInsets.all(SGSpacing.p4),
-                              child: Row(children: [
-                                Image.asset(
-                                    term.checked
-                                        ? "assets/images/checkbox-on.png"
-                                        : "assets/images/checkbox-off.png",
-                                    width: SGSpacing.p6,
-                                    height: SGSpacing.p6),
-                                SizedBox(width: SGSpacing.p2),
-                                SGTypography.body(term.title,
-                                    size: FontSize.normal,
-                                    weight: FontWeight.w600,
-                                    color: SGColors.gray5),
-                                SizedBox(width: SGSpacing.p1),
-                                if (term.isRequired)
-                                  SGTypography.body("(필수)",
-                                      size: FontSize.normal,
-                                      color: SGColors.primary,
-                                      weight: FontWeight.w400)
-                                else
-                                  SGTypography.body("(선택)",
-                                      size: FontSize.normal,
-                                      color: SGColors.gray3,
-                                      weight: FontWeight.w400),
-                                Spacer(),
-                                Icon(Icons.arrow_forward_ios,
-                                    size: FontSize.small,
-                                    color: SGColors.gray3),
-                              ])),
-                        ),
-                      ])
+                  .mapIndexed((index, term) =>
+              [
+                SizedBox(height: SGSpacing.p3),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      terms = terms
+                          .mapIndexed((i, e) =>
+                      i == index
+                          ? e.copyWith(checked: !e.checked)
+                          : e)
+                          .toList();
+                    });
+                  },
+                  child: SGContainer(
+                      padding: EdgeInsets.all(SGSpacing.p4),
+                      child: Row(children: [
+                        Image.asset(
+                            term.checked
+                                ? "assets/images/checkbox-on.png"
+                                : "assets/images/checkbox-off.png",
+                            width: SGSpacing.p6,
+                            height: SGSpacing.p6),
+                        SizedBox(width: SGSpacing.p2),
+                        SGTypography.body(term.title,
+                            size: FontSize.normal,
+                            weight: FontWeight.w600,
+                            color: SGColors.gray5),
+                        SizedBox(width: SGSpacing.p1),
+                        if (term.isRequired)
+                          SGTypography.body("(필수)",
+                              size: FontSize.normal,
+                              color: SGColors.primary,
+                              weight: FontWeight.w400)
+                        else
+                          SGTypography.body("(선택)",
+                              size: FontSize.normal,
+                              color: SGColors.gray3,
+                              weight: FontWeight.w400),
+                        Spacer(),
+                        Icon(Icons.arrow_forward_ios,
+                            size: FontSize.small,
+                            color: SGColors.gray3),
+                      ])),
+                ),
+              ])
                   .flattened,
               SizedBox(height: SGSpacing.p15),
               SGActionButton(
@@ -882,35 +892,35 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 Expanded(
                   child: SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.all(SGSpacing.p4),
-                    width: double.infinity,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                              focusNode: loginIdFocusNode,
-                              onChanged: (value) {
-                                provider.onChangeLoginId(value);
-                              },
-                              style: TextStyle(
-                                  fontSize: FontSize.small,
-                                  color: SGColors.gray5),
-                              decoration: InputDecoration(
-                                isDense: true,
-                                isCollapsed: true,
-                                hintStyle: TextStyle(
-                                    color: SGColors.gray3,
-                                    fontSize: FontSize.small,
-                                    fontWeight: FontWeight.w400),
-                                hintText: "아이디를 입력해주세요.",
-                                border: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                    borderSide: BorderSide.none),
-                              )),
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        width: double.infinity,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                  focusNode: loginIdFocusNode,
+                                  onChanged: (value) {
+                                    provider.onChangeLoginId(value);
+                                  },
+                                  style: TextStyle(
+                                      fontSize: FontSize.small,
+                                      color: SGColors.gray5),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    isCollapsed: true,
+                                    hintStyle: TextStyle(
+                                        color: SGColors.gray3,
+                                        fontSize: FontSize.small,
+                                        fontWeight: FontWeight.w400),
+                                    hintText: "아이디를 입력해주세요.",
+                                    border: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.zero,
+                                        borderSide: BorderSide.none),
+                                  )),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )),
+                      )),
                 ),
                 SizedBox(width: SGSpacing.p2),
                 GestureDetector(
@@ -955,51 +965,51 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
             SGTextFieldWrapper(
                 child: SGContainer(
-              padding: EdgeInsets.all(SGSpacing.p4),
-              width: double.infinity,
-              child: Column(
-                children: [
-                  Row(
+                  padding: EdgeInsets.all(SGSpacing.p4),
+                  width: double.infinity,
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: TextField(
-                            focusNode: passwordFocusNode,
-                            onChanged: (value) {
-                              provider.onChangePassword(value);
-                            },
-                            style: TextStyle(
-                                fontSize: FontSize.small,
-                                color: SGColors.gray5),
-                            obscureText: !passwordVisible,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              isCollapsed: true,
-                              hintStyle: TextStyle(
-                                  color: SGColors.gray3,
-                                  fontSize: FontSize.small,
-                                  fontWeight: FontWeight.w400),
-                              hintText: "8~16자의 영문, 숫자, 특수문자를 입력해주세요.",
-                              border: const OutlineInputBorder(
-                                  borderRadius: BorderRadius.zero,
-                                  borderSide: BorderSide.none),
-                            )),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                                focusNode: passwordFocusNode,
+                                onChanged: (value) {
+                                  provider.onChangePassword(value);
+                                },
+                                style: TextStyle(
+                                    fontSize: FontSize.small,
+                                    color: SGColors.gray5),
+                                obscureText: !passwordVisible,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  isCollapsed: true,
+                                  hintStyle: TextStyle(
+                                      color: SGColors.gray3,
+                                      fontSize: FontSize.small,
+                                      fontWeight: FontWeight.w400),
+                                  hintText: "8~16자의 영문, 숫자, 특수문자를 입력해주세요.",
+                                  border: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.zero,
+                                      borderSide: BorderSide.none),
+                                )),
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  passwordVisible = !passwordVisible;
+                                });
+                              },
+                              child: Icon(
+                                  passwordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: SGColors.gray3)),
+                        ],
                       ),
-                      GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              passwordVisible = !passwordVisible;
-                            });
-                          },
-                          child: Icon(
-                              passwordVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: SGColors.gray3)),
                     ],
                   ),
-                ],
-              ),
-            )),
+                )),
             if (state.passwordValidError.errorMessage.isNotEmpty)
               Padding(
                 padding: EdgeInsets.only(top: SGSpacing.p2),
@@ -1019,46 +1029,47 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
             SGTextFieldWrapper(
                 child: SGContainer(
-              padding: EdgeInsets.all(SGSpacing.p4),
-              width: double.infinity,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                        focusNode: passwordConfirmFocusNode,
-                        onChanged: (value) {
-                          provider.onChangePasswordConfirm(value);
-                        },
-                        style: TextStyle(
-                            fontSize: FontSize.small, color: SGColors.gray5),
-                        obscureText: !passwordVisibleConfirm,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          isCollapsed: true,
-                          hintStyle: TextStyle(
-                              color: SGColors.gray3,
-                              fontSize: FontSize.small,
-                              fontWeight: FontWeight.w400),
-                          hintText: "비밀번호를 다시 한번 입력해주세요.",
-                          border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.zero,
-                              borderSide: BorderSide.none),
-                        )),
+                  padding: EdgeInsets.all(SGSpacing.p4),
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                            focusNode: passwordConfirmFocusNode,
+                            onChanged: (value) {
+                              provider.onChangePasswordConfirm(value);
+                            },
+                            style: TextStyle(
+                                fontSize: FontSize.small,
+                                color: SGColors.gray5),
+                            obscureText: !passwordVisibleConfirm,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              isCollapsed: true,
+                              hintStyle: TextStyle(
+                                  color: SGColors.gray3,
+                                  fontSize: FontSize.small,
+                                  fontWeight: FontWeight.w400),
+                              hintText: "비밀번호를 다시 한번 입력해주세요.",
+                              border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.zero,
+                                  borderSide: BorderSide.none),
+                            )),
+                      ),
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              passwordVisibleConfirm = !passwordVisibleConfirm;
+                            });
+                          },
+                          child: Icon(
+                              passwordVisibleConfirm
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: SGColors.gray3)),
+                    ],
                   ),
-                  GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          passwordVisibleConfirm = !passwordVisibleConfirm;
-                        });
-                      },
-                      child: Icon(
-                          passwordVisibleConfirm
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: SGColors.gray3)),
-                ],
-              ),
-            )),
+                )),
             if (state.password.isNotEmpty &&
                 state.passwordConfirm.isNotEmpty &&
                 state.password != state.passwordConfirm) ...{
@@ -1077,36 +1088,36 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 Expanded(
                   child: SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.all(SGSpacing.p4),
-                    width: double.infinity,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                              onChanged: (value) {
-                                ref
-                                    .read(signupNotifierProvider.notifier)
-                                    .onChangeEmail(value);
-                              },
-                              style: TextStyle(
-                                  fontSize: FontSize.small,
-                                  color: SGColors.gray5),
-                              decoration: InputDecoration(
-                                isDense: true,
-                                isCollapsed: true,
-                                hintStyle: TextStyle(
-                                    color: SGColors.gray3,
-                                    fontSize: FontSize.small,
-                                    fontWeight: FontWeight.w400),
-                                hintText: "이메일 앞자리",
-                                border: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                    borderSide: BorderSide.none),
-                              )),
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        width: double.infinity,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                  onChanged: (value) {
+                                    ref
+                                        .read(signupNotifierProvider.notifier)
+                                        .onChangeEmail(value);
+                                  },
+                                  style: TextStyle(
+                                      fontSize: FontSize.small,
+                                      color: SGColors.gray5),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    isCollapsed: true,
+                                    hintStyle: TextStyle(
+                                        color: SGColors.gray3,
+                                        fontSize: FontSize.small,
+                                        fontWeight: FontWeight.w400),
+                                    hintText: "이메일 앞자리",
+                                    border: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.zero,
+                                        borderSide: BorderSide.none),
+                                  )),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )),
+                      )),
                 ),
                 SizedBox(width: SGSpacing.p4),
                 SGTypography.body("@",
@@ -1117,38 +1128,38 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 Expanded(
                   child: SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.all(SGSpacing.p4),
-                    width: double.infinity,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                              enabled: emailInputOption == "직접 입력",
-                              controller: emailDomainController,
-                              onChanged: (value) {
-                                ref
-                                    .read(signupNotifierProvider.notifier)
-                                    .onChangeDomain(value);
-                              },
-                              style: TextStyle(
-                                  fontSize: FontSize.small,
-                                  color: SGColors.gray5),
-                              decoration: InputDecoration(
-                                isDense: true,
-                                isCollapsed: true,
-                                hintStyle: TextStyle(
-                                    color: SGColors.gray3,
-                                    fontSize: FontSize.small,
-                                    fontWeight: FontWeight.w400),
-                                hintText: "이메일 뒷자리",
-                                border: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                    borderSide: BorderSide.none),
-                              )),
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        width: double.infinity,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                  enabled: emailInputOption == "직접 입력",
+                                  controller: emailDomainController,
+                                  onChanged: (value) {
+                                    ref
+                                        .read(signupNotifierProvider.notifier)
+                                        .onChangeDomain(value);
+                                  },
+                                  style: TextStyle(
+                                      fontSize: FontSize.small,
+                                      color: SGColors.gray5),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    isCollapsed: true,
+                                    hintStyle: TextStyle(
+                                        color: SGColors.gray3,
+                                        fontSize: FontSize.small,
+                                        fontWeight: FontWeight.w400),
+                                    hintText: "이메일 뒷자리",
+                                    border: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.zero,
+                                        borderSide: BorderSide.none),
+                                  )),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )),
+                      )),
                 ),
               ],
             ),
@@ -1182,32 +1193,32 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                 children: [
                   SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.all(SGSpacing.p4),
-                    width: double.infinity,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                              enabled: false,
-                              style: TextStyle(
-                                  fontSize: FontSize.small,
-                                  color: SGColors.gray5),
-                              decoration: InputDecoration(
-                                isDense: true,
-                                isCollapsed: true,
-                                hintStyle: TextStyle(
-                                    color: SGColors.gray3,
-                                    fontSize: FontSize.small,
-                                    fontWeight: FontWeight.w400),
-                                hintText: emailInputOption,
-                                border: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                    borderSide: BorderSide.none),
-                              )),
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        width: double.infinity,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                  enabled: false,
+                                  style: TextStyle(
+                                      fontSize: FontSize.small,
+                                      color: SGColors.gray5),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    isCollapsed: true,
+                                    hintStyle: TextStyle(
+                                        color: SGColors.gray3,
+                                        fontSize: FontSize.small,
+                                        fontWeight: FontWeight.w400),
+                                    hintText: emailInputOption,
+                                    border: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.zero,
+                                        borderSide: BorderSide.none),
+                                  )),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )),
+                      )),
                   SGContainer(
                       padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
                       child: Image.asset("assets/images/dropdown-arrow.png",
@@ -1219,34 +1230,35 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
             if (state.isSendCode) ...[
               SGTextFieldWrapper(
                   child: SGContainer(
-                padding: EdgeInsets.all(SGSpacing.p4),
-                width: double.infinity,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                          onChanged: (value) {
-                            provider.onChangeAuthCode(value);
-                          },
-                          style: TextStyle(
-                              fontSize: FontSize.small, color: SGColors.gray5),
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            isCollapsed: true,
-                            hintStyle: TextStyle(
-                                color: SGColors.gray3,
-                                fontSize: FontSize.small,
-                                fontWeight: FontWeight.w400),
-                            hintText: "인증번호",
-                            border: const OutlineInputBorder(
-                                borderRadius: BorderRadius.zero,
-                                borderSide: BorderSide.none),
-                          )),
+                    padding: EdgeInsets.all(SGSpacing.p4),
+                    width: double.infinity,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                              onChanged: (value) {
+                                provider.onChangeAuthCode(value);
+                              },
+                              style: TextStyle(
+                                  fontSize: FontSize.small,
+                                  color: SGColors.gray5),
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                isCollapsed: true,
+                                hintStyle: TextStyle(
+                                    color: SGColors.gray3,
+                                    fontSize: FontSize.small,
+                                    fontWeight: FontWeight.w400),
+                                hintText: "인증번호",
+                                border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero,
+                                    borderSide: BorderSide.none),
+                              )),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )),
+                  )),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               GestureDetector(
                 onTap: () {
@@ -1264,26 +1276,27 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                             weight: FontWeight.w500,
                             size: FontSize.small))),
               ),
-            ] else ...[
-              GestureDetector(
-                onTap: () {
-                  ref.read(signupNotifierProvider.notifier).sendCode();
-                  // showDialog("사장님 이메일로 인증메일을\n보내드렸습니다.");
-                  //
-                },
-                child: SGContainer(
-                    padding: EdgeInsets.symmetric(
-                        vertical: SGSpacing.p4 + SGSpacing.p05),
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(
-                        child: SGTypography.body("이메일 인증",
-                            color: SGColors.primary,
-                            weight: FontWeight.w700,
-                            size: FontSize.small))),
-              ),
-            ],
+            ] else
+              ...[
+                GestureDetector(
+                  onTap: () {
+                    ref.read(signupNotifierProvider.notifier).sendCode();
+                    // showDialog("사장님 이메일로 인증메일을\n보내드렸습니다.");
+                    //
+                  },
+                  child: SGContainer(
+                      padding: EdgeInsets.symmetric(
+                          vertical: SGSpacing.p4 + SGSpacing.p05),
+                      width: double.infinity,
+                      borderColor: SGColors.primary,
+                      borderRadius: BorderRadius.circular(SGSpacing.p3),
+                      child: Center(
+                          child: SGTypography.body("이메일 인증",
+                              color: SGColors.primary,
+                              weight: FontWeight.w700,
+                              size: FontSize.small))),
+                ),
+              ],
             SizedBox(height: SGSpacing.p24),
             SGActionButton(
                 onPressed: () {
@@ -1300,69 +1313,71 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
   void showDialog(String message) {
     showSGDialog(
         context: context,
-        childrenBuilder: (ctx) => [
-              Center(
-                  child: SGTypography.body(message,
-                      size: FontSize.medium,
+        childrenBuilder: (ctx) =>
+        [
+          Center(
+              child: SGTypography.body(message,
+                  size: FontSize.medium,
+                  weight: FontWeight.w700,
+                  lineHeight: 1.25,
+                  align: TextAlign.center)),
+          SizedBox(height: SGSpacing.p8),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(ctx);
+            },
+            child: SGContainer(
+              color: SGColors.primary,
+              width: double.infinity,
+              borderColor: SGColors.primary,
+              padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Center(
+                  child: SGTypography.body("확인",
+                      color: SGColors.white,
                       weight: FontWeight.w700,
-                      lineHeight: 1.25,
-                      align: TextAlign.center)),
-              SizedBox(height: SGSpacing.p8),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(ctx);
-                },
-                child: SGContainer(
-                  color: SGColors.primary,
-                  width: double.infinity,
-                  borderColor: SGColors.primary,
-                  padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                  borderRadius: BorderRadius.circular(SGSpacing.p3),
-                  child: Center(
-                      child: SGTypography.body("확인",
-                          color: SGColors.white,
-                          weight: FontWeight.w700,
-                          size: FontSize.normal)),
-                ),
-              )
-            ]);
+                      size: FontSize.normal)),
+            ),
+          )
+        ]);
   }
 
   void showFailDialogWithImage(String mainTitle, String subTitle) {
     showSGDialogWithImage(
         context: context,
-        childrenBuilder: (ctx) => [
-              Center(
-                  child: SGTypography.body(mainTitle,
-                      size: FontSize.medium,
+        childrenBuilder: (ctx) =>
+        [
+          Center(
+              child: SGTypography.body(mainTitle,
+                  size: FontSize.medium,
+                  weight: FontWeight.w700,
+                  lineHeight: 1.25,
+                  align: TextAlign.center)),
+          Center(
+              child: SGTypography.body(subTitle,
+                  color: SGColors.gray4,
+                  size: FontSize.small,
+                  weight: FontWeight.w700,
+                  lineHeight: 1.25,
+                  align: TextAlign.center)),
+          SizedBox(height: SGSpacing.p6),
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(ctx);
+            },
+            child: SGContainer(
+              color: SGColors.primary,
+              width: double.infinity,
+              borderColor: SGColors.primary,
+              padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Center(
+                  child: SGTypography.body("확인",
+                      color: SGColors.white,
                       weight: FontWeight.w700,
-                      lineHeight: 1.25,
-                      align: TextAlign.center)),
-              Center(
-                  child: SGTypography.body(subTitle,
-                      color: SGColors.gray4,
-                      size: FontSize.small,
-                      weight: FontWeight.w700,
-                      lineHeight: 1.25,
-                      align: TextAlign.center)),
-              SizedBox(height: SGSpacing.p6),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(ctx);
-                },
-                child: SGContainer(
-                  color: SGColors.primary,
-                  width: double.infinity,
-                  borderColor: SGColors.primary,
-                  padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                  borderRadius: BorderRadius.circular(SGSpacing.p3),
-                  child: Center(
-                      child: SGTypography.body("확인",
-                          color: SGColors.white,
-                          weight: FontWeight.w700,
-                          size: FontSize.normal)),
-                ),
-              )
-            ]);
+                      size: FontSize.normal)),
+            ),
+          )
+        ]);
   }
 }

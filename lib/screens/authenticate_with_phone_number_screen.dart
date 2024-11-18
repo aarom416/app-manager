@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/authenticate_with_phone_number_provider.dart';
 
@@ -34,16 +34,16 @@ class _AuthenticateWithPhoneNumberScreenState
           next.status == AuthenticateWithPhoneNumberStatus.success) {
         switch (next.method) {
           case AuthenticateWithPhoneNumberMethod.SIGNUP:
-            context.push(AppRoutes.signupWebView);
+            ref.read(goRouterProvider).push(AppRoutes.signupWebView);
             break;
           case AuthenticateWithPhoneNumberMethod.DIRECT:
-            context.push(AppRoutes.loginWebView);
+            ref.read(goRouterProvider).push(AppRoutes.loginWebView);
             break;
           case AuthenticateWithPhoneNumberMethod.ACCOUNT:
-            context.push(AppRoutes.findByAccountWebView);
+            ref.read(goRouterProvider).push(AppRoutes.findByAccountWebView);
             break;
           case AuthenticateWithPhoneNumberMethod.PASSWORD:
-            context.push(AppRoutes.findByPasswordWebView);
+            ref.read(goRouterProvider).push(AppRoutes.findByPasswordWebView);
             break;
           case AuthenticateWithPhoneNumberMethod.PHONE:
             break;

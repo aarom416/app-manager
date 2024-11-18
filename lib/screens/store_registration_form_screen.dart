@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -11,6 +10,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/store_registration_form_provider.dart';
 
@@ -70,7 +70,9 @@ class _StoreRegistrationFormScreenState
           case StoreRegistrationFormStatus.init:
             break;
           case StoreRegistrationFormStatus.success:
-            context.go(AppRoutes.signupComplete, extra: UniqueKey());
+            ref
+                .read(goRouterProvider)
+                .go(AppRoutes.signupComplete, extra: UniqueKey());
             break;
           case StoreRegistrationFormStatus.error:
             break;
@@ -84,7 +86,7 @@ class _StoreRegistrationFormScreenState
         appBar: AppBarWithLeftArrow(
             title: "싱그릿 식단 연구소",
             onTap: () {
-              context.go(AppRoutes.login);
+              ref.read(goRouterProvider).go(AppRoutes.login);
             }),
         body: SGContainer(
           color: SGColors.white,

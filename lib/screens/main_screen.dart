@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/flex.dart';
@@ -10,6 +9,7 @@ import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/main_provider.dart';
 import 'package:singleeat/screens/coupon_management_screen.dart';
@@ -158,7 +158,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         actions: [
           GestureDetector(
             onTap: () {
-              context.push(AppRoutes.notification);
+              ref.read(goRouterProvider).push(AppRoutes.notification);
             },
             child: SGContainer(
                 padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
@@ -228,7 +228,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                                 builder: (context) => OrderHistoryScreen()));
                           }),
                           menuButton('통계', "menu-statistics", () {
-                            context.push(AppRoutes.statistics);
+                            ref
+                                .read(goRouterProvider)
+                                .push(AppRoutes.statistics);
                           }),
                         ]),
                         Row(children: [

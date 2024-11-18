@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
@@ -10,9 +11,10 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 
-class ChangePasswordScreen extends StatefulWidget {
+class ChangePasswordScreen extends ConsumerStatefulWidget {
   VoidCallback? onPrev;
   VoidCallback? onNext;
   String title;
@@ -25,10 +27,11 @@ class ChangePasswordScreen extends StatefulWidget {
   });
 
   @override
-  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+  ConsumerState<ChangePasswordScreen> createState() =>
+      _ChangePasswordScreenState();
 }
 
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
+class _ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   String password = "";
   String passwordConfirm = "";
 
@@ -116,7 +119,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   showFailDialogWithImageBoth(
                       "비밀번호 변경을 위해\n이전과 다른 비밀번호를 입력해주세요.");
                   if (isPasswordValid) {
-                    context.push(AppRoutes.successChangePassword);
+                    ref
+                        .read(goRouterProvider)
+                        .push(AppRoutes.successChangePassword);
                   }
                 },
                 disabled: !isPasswordValid,

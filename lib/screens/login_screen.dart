@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
@@ -10,6 +9,7 @@ import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
+import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/user_model.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
@@ -104,7 +104,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ref.listen(loginNotifierProvider, (previous, next) {
       switch (next.status) {
         case LoginStatus.direct:
-          context.push(
+          ref.read(goRouterProvider).push(
             AppRoutes.authenticateWithPhoneNumber,
             extra: {
               'title': '로그인',
@@ -117,7 +117,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           break;
 
         case LoginStatus.password:
-          context.push(AppRoutes.findByPassword);
+          ref.read(goRouterProvider).push(AppRoutes.findByPassword);
           ref
               .read(loginNotifierProvider.notifier)
               .onChangeStatus(LoginStatus.init);
@@ -126,9 +126,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           UserModel user = UserHive.get();
 
           if (user.status == UserStatus.success) {
-            context.go(AppRoutes.home, extra: UniqueKey());
+            ref.read(goRouterProvider).go(AppRoutes.home, extra: UniqueKey());
           } else {
-            context.go(AppRoutes.signupComplete, extra: UniqueKey());
+            ref
+                .read(goRouterProvider)
+                .go(AppRoutes.signupComplete, extra: UniqueKey());
           }
 
         default:
@@ -280,7 +282,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             GestureDetector(
                 onTap: () {
-                  context.push(AppRoutes.signup);
+                  ref.read(goRouterProvider).push(AppRoutes.signup);
                 },
                 child: Center(
                     child: SGTypography.body("회원가입",
@@ -291,7 +293,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 onTap: () {
                   FocusScope.of(context).unfocus();
 
-                  context.push(AppRoutes.findByAccount);
+                  ref.read(goRouterProvider).push(AppRoutes.findByAccount);
                 },
                 child: Center(
                     child: SGTypography.body("아이디 찾기",
@@ -300,7 +302,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 height: SGSpacing.p3, color: SGColors.line3, borderWidth: 0.5),
             GestureDetector(
                 onTap: () {
-                  context.push(AppRoutes.findByPassword);
+                  ref.read(goRouterProvider).push(AppRoutes.findByPassword);
                 },
                 child: Center(
                     child: SGTypography.body("비밀번호 찾기",
