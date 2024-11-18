@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/networks/dio_service.dart';
 import 'package:singleeat/core/networks/rest_api.dart';
@@ -56,8 +55,7 @@ class RequestApi {
           return true;
         } else {
           // 토큰 인증 기간이 만료됨
-          GoRouter.of(rootNavKey.currentContext!)
-              .go(AppRoutes.login, extra: UniqueKey());
+          ref.read(goRouterProvider).go(AppRoutes.login, extra: UniqueKey());
         }
       } on DioException catch (e) {
         return Future.error(e);
