@@ -5,12 +5,16 @@ import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
 class LoginService {
+  final Ref ref;
+
+  LoginService(this.ref);
+
   Future<Response<dynamic>> directLogin({
     required String loginId,
     required String password,
   }) async {
     try {
-      final response = await RequestApi.post(
+      final response = ref.read(requestApiProvider).post(
         RestApiUri.directLogin,
         queryParameters: {
           'loginId': loginId,
@@ -30,7 +34,7 @@ class LoginService {
 
   Future<Response<dynamic>> verifyPhone({required String loginId}) async {
     try {
-      final response = await RequestApi.post(
+      final response = ref.read(requestApiProvider).post(
         RestApiUri.verifyPhone,
         queryParameters: {
           'loginId': loginId,
@@ -49,7 +53,7 @@ class LoginService {
 
   Future<Response<dynamic>> fcmToken({required String fcmToken}) async {
     try {
-      final response = await RequestApi.post(
+      final response = ref.read(requestApiProvider).post(
         RestApiUri.fcmToken,
         data: {
           'fcmToken': fcmToken,
@@ -68,7 +72,7 @@ class LoginService {
 
   Future<Response<dynamic>> logout({required String fcmTokenId}) async {
     try {
-      final response = await RequestApi.post(
+      final response = ref.read(requestApiProvider).post(
         RestApiUri.logout,
         queryParameters: {
           'fcmTokenId': fcmTokenId,
@@ -87,7 +91,8 @@ class LoginService {
 
   Future<Response<dynamic>> autoLogin() async {
     try {
-      final response = await RequestApi.get(path: RestApiUri.autoLogin);
+      final response =
+          ref.read(requestApiProvider).get(path: RestApiUri.autoLogin);
       return response;
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
@@ -99,4 +104,4 @@ class LoginService {
   }
 }
 
-final loginServiceProvider = Provider<LoginService>((ref) => LoginService());
+final loginServiceProvider = Provider<LoginService>((ref) => LoginService(ref));

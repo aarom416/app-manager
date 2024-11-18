@@ -28,7 +28,7 @@ class RequestApi {
     return header;
   }
 
-  static Future<bool> dioException(Response response) async {
+  Future<bool> dioException(Response response) async {
     if (response.statusCode == 401) {
       try {
         final response = await Dio().post(
@@ -69,7 +69,7 @@ class RequestApi {
     return false;
   }
 
-  static Future<Response<dynamic>> get<T>({
+  Future<Response<dynamic>> get<T>({
     required String path,
     Object? data,
     Map<String, dynamic>? queryParameters,
@@ -110,7 +110,7 @@ class RequestApi {
   }
 
   // 2023.06.21[holywater]: 공통 Post 처리
-  static Future<Response<dynamic>> post<T>(
+  Future<Response<dynamic>> post<T>(
     String path, {
     Object? data,
     Map<String, dynamic>? queryParameters,

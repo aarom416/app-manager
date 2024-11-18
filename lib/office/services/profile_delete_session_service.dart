@@ -5,11 +5,15 @@ import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
 class ProfileDeleteSessionService {
+  final Ref ref;
+
+  ProfileDeleteSessionService(this.ref);
+
   Future<Response<dynamic>> load() async {
     try {
-      final response = await RequestApi.get(
-        path: RestApiUri.loadNotification.replaceAll('{page}', '0'),
-      );
+      final response = ref.read(requestApiProvider).get(
+            path: RestApiUri.loadNotification.replaceAll('{page}', '0'),
+          );
 
       return response;
     } on DioException catch (e) {
@@ -24,4 +28,4 @@ class ProfileDeleteSessionService {
 
 final profileDeleteSessionServiceProvider =
     Provider<ProfileDeleteSessionService>(
-        (ref) => ProfileDeleteSessionService());
+        (ref) => ProfileDeleteSessionService(ref));

@@ -5,10 +5,15 @@ import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
 class SignupService {
+  final Ref ref;
+
+  SignupService(this.ref);
+
   Future<Response<dynamic>> checkLoginId({required String loginId}) async {
     try {
-      final response = await RequestApi.post(
-          RestApiUri.checkLoginId.replaceAll('{loginId}', loginId));
+      final response = ref
+          .read(requestApiProvider)
+          .post(RestApiUri.checkLoginId.replaceAll('{loginId}', loginId));
       return response;
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
@@ -21,7 +26,7 @@ class SignupService {
 
   Future<Response<dynamic>> sendCode({required String email}) async {
     try {
-      final response = await RequestApi.post(
+      final response = ref.read(requestApiProvider).post(
         RestApiUri.sendCode,
         queryParameters: {
           'email': email,
@@ -41,7 +46,7 @@ class SignupService {
   Future<Response<dynamic>> verifyCode(
       {required String email, required String authCode}) async {
     try {
-      final response = await RequestApi.post(
+      final response = ref.read(requestApiProvider).post(
         RestApiUri.verifyCode,
         data: {
           'email': email,
@@ -61,10 +66,10 @@ class SignupService {
 
   Future<Response<dynamic>> signUp(Map<String, Object> data) async {
     try {
-      final response = await RequestApi.post(
-        RestApiUri.signUp,
-        data: data,
-      );
+      final response = ref.read(requestApiProvider).post(
+            RestApiUri.signUp,
+            data: data,
+          );
 
       return response;
     } on DioException catch (e) {
@@ -79,10 +84,10 @@ class SignupService {
   Future<Response<dynamic>> singleatResearchStatus(
       Map<String, int> data) async {
     try {
-      final response = await RequestApi.post(
-        RestApiUri.singleatResearchStatus,
-        queryParameters: data,
-      );
+      final response = ref.read(requestApiProvider).post(
+            RestApiUri.singleatResearchStatus,
+            queryParameters: data,
+          );
 
       return response;
     } on DioException catch (e) {
@@ -97,10 +102,10 @@ class SignupService {
   Future<Response<dynamic>> additionalServiceStatus(
       Map<String, int> data) async {
     try {
-      final response = await RequestApi.post(
-        RestApiUri.additionalServiceStatus,
-        queryParameters: data,
-      );
+      final response = ref.read(requestApiProvider).post(
+            RestApiUri.additionalServiceStatus,
+            queryParameters: data,
+          );
 
       return response;
     } on DioException catch (e) {
@@ -113,4 +118,5 @@ class SignupService {
   }
 }
 
-final signupServiceProvider = Provider<SignupService>((ref) => SignupService());
+final signupServiceProvider =
+    Provider<SignupService>((ref) => SignupService(ref));

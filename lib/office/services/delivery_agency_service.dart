@@ -5,11 +5,15 @@ import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
 class DeliveryAgencyService {
+  final Ref ref;
+
+  DeliveryAgencyService(this.ref);
+
   Future<Response<dynamic>> load() async {
     try {
-      final response = await RequestApi.get(
-        path: RestApiUri.loadNotification.replaceAll('{page}', '0'),
-      );
+      final response = ref.read(requestApiProvider).get(
+            path: RestApiUri.loadNotification.replaceAll('{page}', '0'),
+          );
 
       return response;
     } on DioException catch (e) {
@@ -23,4 +27,4 @@ class DeliveryAgencyService {
 }
 
 final deliveryAgencyServiceProvider =
-    Provider<DeliveryAgencyService>((ref) => DeliveryAgencyService());
+    Provider<DeliveryAgencyService>((ref) => DeliveryAgencyService(ref));

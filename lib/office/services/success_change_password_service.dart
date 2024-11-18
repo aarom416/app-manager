@@ -5,11 +5,15 @@ import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
 class SuccessChangePasswordService {
+  final Ref ref;
+
+  SuccessChangePasswordService(this.ref);
+
   Future<Response<dynamic>> load() async {
     try {
-      final response = await RequestApi.get(
-        path: RestApiUri.loadNotification.replaceAll('{page}', '0'),
-      );
+      final response = ref.read(requestApiProvider).get(
+            path: RestApiUri.loadNotification.replaceAll('{page}', '0'),
+          );
 
       return response;
     } on DioException catch (e) {
@@ -24,4 +28,4 @@ class SuccessChangePasswordService {
 
 final successChangePasswordServiceProvider =
     Provider<SuccessChangePasswordService>(
-        (ref) => SuccessChangePasswordService());
+        (ref) => SuccessChangePasswordService(ref));

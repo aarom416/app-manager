@@ -5,11 +5,15 @@ import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
 class FindByPasswordService {
+  final Ref ref;
+
+  FindByPasswordService(this.ref);
+
   Future<Response<dynamic>> findPassword({
     required String loginId,
   }) async {
     try {
-      final response = await RequestApi.post(
+      final response = ref.read(requestApiProvider).post(
         RestApiUri.findPassword,
         queryParameters: {
           'loginId': loginId,
@@ -31,7 +35,7 @@ class FindByPasswordService {
     required String password,
   }) async {
     try {
-      final response = await RequestApi.post(
+      final response = ref.read(requestApiProvider).post(
         RestApiUri.updatePassword,
         data: {
           'loginId': loginId,
@@ -51,4 +55,4 @@ class FindByPasswordService {
 }
 
 final findByPasswordServiceProvider =
-    Provider<FindByPasswordService>((ref) => FindByPasswordService());
+    Provider<FindByPasswordService>((ref) => FindByPasswordService(ref));

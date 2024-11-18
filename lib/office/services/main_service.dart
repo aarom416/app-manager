@@ -5,11 +5,15 @@ import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
 class MainService {
+  final Ref ref;
+
+  MainService(this.ref);
+
   Future<Response<dynamic>> ownerHome() async {
     try {
-      final response = await RequestApi.get(
-        path: RestApiUri.ownerHome,
-      );
+      final response = ref.read(requestApiProvider).get(
+            path: RestApiUri.ownerHome,
+          );
 
       return response;
     } on DioException catch (e) {
@@ -26,7 +30,8 @@ class MainService {
     required int operationStatus,
   }) async {
     try {
-      final response = await RequestApi.post(RestApiUri.operationStatus, data: {
+      final response =
+          ref.read(requestApiProvider).post(RestApiUri.operationStatus, data: {
         'storeId': storeId,
         'operationStatus': operationStatus,
       });
@@ -42,4 +47,4 @@ class MainService {
   }
 }
 
-final mainServiceProvider = Provider<MainService>((ref) => MainService());
+final mainServiceProvider = Provider<MainService>((ref) => MainService(ref));

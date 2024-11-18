@@ -5,12 +5,16 @@ import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
 class AuthenticateWithPhoneNumberService {
+  final Ref ref;
+
+  AuthenticateWithPhoneNumberService(this.ref);
+
   Future<Response<dynamic>> identityVerification({
     required String loginId,
     required String method,
   }) async {
     try {
-      final response = await RequestApi.get(
+      final response = ref.read(requestApiProvider).get(
         path: RestApiUri.identityVerification,
         queryParameters: {
           'loginId': loginId,
@@ -31,4 +35,4 @@ class AuthenticateWithPhoneNumberService {
 
 final authenticateWithPhoneNumberServiceProvider =
     Provider<AuthenticateWithPhoneNumberService>(
-        (ref) => AuthenticateWithPhoneNumberService());
+        (ref) => AuthenticateWithPhoneNumberService(ref));

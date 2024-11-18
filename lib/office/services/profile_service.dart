@@ -5,11 +5,15 @@ import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
 class ProfileService {
+  final Ref ref;
+
+  ProfileService(this.ref);
+
   Future<Response<dynamic>> totalOrderAmount({required String storeId}) async {
     try {
-      final response = await RequestApi.get(
-        path: RestApiUri.totalOrderAmount.replaceAll('{storeId}', storeId),
-      );
+      final response = ref.read(requestApiProvider).get(
+            path: RestApiUri.totalOrderAmount.replaceAll('{storeId}', storeId),
+          );
 
       return response;
     } on DioException catch (e) {
@@ -23,4 +27,4 @@ class ProfileService {
 }
 
 final profileServiceProvider =
-    Provider<ProfileService>((ref) => ProfileService());
+    Provider<ProfileService>((ref) => ProfileService(ref));

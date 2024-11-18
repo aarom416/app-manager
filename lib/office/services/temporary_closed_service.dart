@@ -5,11 +5,15 @@ import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
 class TemporaryClosedService {
+  final Ref ref;
+
+  TemporaryClosedService(this.ref);
+
   Future<Response<dynamic>> load() async {
     try {
-      final response = await RequestApi.get(
-        path: RestApiUri.loadNotification.replaceAll('{page}', '0'),
-      );
+      final response = ref.read(requestApiProvider).get(
+            path: RestApiUri.loadNotification.replaceAll('{page}', '0'),
+          );
 
       return response;
     } on DioException catch (e) {
@@ -23,4 +27,4 @@ class TemporaryClosedService {
 }
 
 final temporaryClosedServiceProvider =
-    Provider<TemporaryClosedService>((ref) => TemporaryClosedService());
+    Provider<TemporaryClosedService>((ref) => TemporaryClosedService(ref));

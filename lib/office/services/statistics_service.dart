@@ -5,14 +5,18 @@ import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
 class StatisticsService {
+  final Ref ref;
+
+  StatisticsService(this.ref);
+
   Future<Response<dynamic>> loadStatisticsByStoreId({
     required String storeId,
   }) async {
     try {
-      final response = await RequestApi.get(
-        path:
-            RestApiUri.loadStatisticsByStoreId.replaceAll('{storeId}', storeId),
-      );
+      final response = ref.read(requestApiProvider).get(
+            path: RestApiUri.loadStatisticsByStoreId
+                .replaceAll('{storeId}', storeId),
+          );
 
       return response;
     } on DioException catch (e) {
@@ -26,4 +30,4 @@ class StatisticsService {
 }
 
 final statisticsServiceProvider =
-    Provider<StatisticsService>((ref) => StatisticsService());
+    Provider<StatisticsService>((ref) => StatisticsService(ref));
