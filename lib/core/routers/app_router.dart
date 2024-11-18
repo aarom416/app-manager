@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
+import 'package:singleeat/screens/business_notification_configuration_screen.dart';
+import 'package:singleeat/screens/check_password_screen.dart';
+import 'package:singleeat/screens/delivery_agency_screen.dart';
 import 'package:singleeat/screens/find_account_screen.dart';
 import 'package:singleeat/screens/find_account_webview_screen.dart';
 import 'package:singleeat/screens/find_by_password_screen.dart';
@@ -9,12 +12,17 @@ import 'package:singleeat/screens/find_by_password_webview_screen.dart';
 import 'package:singleeat/screens/home_screen.dart';
 import 'package:singleeat/screens/login_screen.dart';
 import 'package:singleeat/screens/login_webview_screen.dart';
+import 'package:singleeat/screens/notification_configuration_screen.dart';
 import 'package:singleeat/screens/notification_screen.dart';
+import 'package:singleeat/screens/profile_delete_session_screen.dart';
+import 'package:singleeat/screens/register_delivery_agency_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/signup_screen.dart';
 import 'package:singleeat/screens/signup_webview_screen.dart';
 import 'package:singleeat/screens/statistics_screen.dart';
 import 'package:singleeat/screens/store_registration_form_screen.dart';
+import 'package:singleeat/screens/success_change_password_screen.dart';
+import 'package:singleeat/screens/temporary_closed_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
 
@@ -108,6 +116,42 @@ class AppRouter {
           path: AppRoutes.profileEdit,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: ProfileEditScreen())),
+      GoRoute(
+          path: AppRoutes.notificationConfiguration,
+          pageBuilder: (context, state) =>
+              NoTransitionPage(child: NotificationConfigurationScreen())),
+      GoRoute(
+          path: AppRoutes.businessNotificationConfiguration,
+          pageBuilder: (context, state) => NoTransitionPage(
+              child: BusinessNotificationConfigurationScreen())),
+      GoRoute(
+          path: AppRoutes.deliveryAgency,
+          pageBuilder: (context, state) =>
+              NoTransitionPage(child: DeliveryAgencyScreen())),
+      GoRoute(
+          path: AppRoutes.temporaryClosed,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: TemporaryClosedScreen())),
+      GoRoute(
+          path: AppRoutes.profileDeleteSession,
+          pageBuilder: (context, state) =>
+              NoTransitionPage(child: ProfileDeleteSessionScreen())),
+      GoRoute(
+          path: AppRoutes.checkPassword,
+          pageBuilder: (context, state) =>
+              NoTransitionPage(child: CheckPasswordScreen(title: "비밀번호 확인"))),
+      GoRoute(
+          path: AppRoutes.changePassword,
+          pageBuilder: (context, state) =>
+              NoTransitionPage(child: ChangePasswordScreen(title: "비밀번호 변경"))),
+      GoRoute(
+          path: AppRoutes.registerDeliveryAgency,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: RegisterDeliveryAgencyScreen())),
+      GoRoute(
+          path: AppRoutes.successChangePassword,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: SuccessChangePasswordScreen())),
       GoRoute(
           path: AppRoutes.storeRegistrationForm,
           pageBuilder: (context, state) {

@@ -14,4 +14,14 @@ class AppRoutes {
   static const String storeRegistrationForm = '/store/registration/form';
   static const String notification = '/notification';
   static const String statistics = '/statistics';
+  static const String notificationConfiguration = '/notification/configuration';
+  static const String businessNotificationConfiguration =
+      '/business/notification/configuration';
+  static const String deliveryAgency = '/delivery/agency';
+  static const String registerDeliveryAgency = '/register/delivery/agency';
+  static const String temporaryClosed = '/temporary/closed';
+  static const String profileDeleteSession = '/profile/delete/session';
+  static const String checkPassword = '/check/password';
+  static const String changePassword = '/change/password';
+  static const String successChangePassword = '/success/change/password';
 }
