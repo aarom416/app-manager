@@ -9,7 +9,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
-import 'package:singleeat/screens/login_screen.dart';
+import 'package:singleeat/office/providers/login_provider.dart';
 
 class ProfileDeleteSessionScreen extends ConsumerStatefulWidget {
   const ProfileDeleteSessionScreen({super.key});
@@ -45,8 +45,6 @@ class _ProfileDeleteSessionScreenState
                               child: GestureDetector(
                                 onTap: () {
                                   Navigator.of(ctx).pop();
-                                  showFailDialogWithImage("로그아웃 실패",
-                                      "현재 가게가 영업 중이거나 진행 중인 주문이 있어\n로그아웃을 진행할 수 없습니다.");
                                 },
                                 child: SGContainer(
                                   color: SGColors.gray3,
@@ -67,9 +65,19 @@ class _ProfileDeleteSessionScreenState
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  Navigator.of(ctx).pop();
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => LoginScreen()));
+                                  ref
+                                      .read(loginNotifierProvider.notifier)
+                                      .logout()
+                                      .then((value) {
+                                    if (value) {
+                                      ref.read(goRouterProvider).go(
+                                          AppRoutes.login,
+                                          extra: UniqueKey());
+                                    } else {
+                                      showFailDialogWithImage("로그아웃 실패",
+                                          "현재 가게가 영업 중이거나 진행 중인 주문이 있어\n로그아웃을 진행할 수 없습니다.");
+                                    }
+                                  });
                                 },
                                 child: SGContainer(
                                   color: SGColors.primary,

@@ -6,6 +6,7 @@ import 'package:singleeat/core/networks/dio_service.dart';
 import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
+import 'package:singleeat/main.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 
 class RequestApi {
@@ -28,6 +29,8 @@ class RequestApi {
   }
 
   Future<bool> dioException(Response response) async {
+    logger.e("dioException: ${response.data}, $response");
+
     if (response.statusCode == 401) {
       try {
         final response = await Dio().post(
