@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/sizing.dart';
@@ -6,24 +7,28 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/office/providers/notification_configuration_provider.dart';
+import 'package:singleeat/office/providers/signup_provider.dart';
 
-class BusinessNotificationConfigurationScreen extends StatefulWidget {
-  BusinessNotificationConfigurationScreen({
-    super.key,
-  });
+class BusinessNotificationConfigurationScreen extends ConsumerStatefulWidget {
+  const BusinessNotificationConfigurationScreen({super.key});
 
   @override
-  State<BusinessNotificationConfigurationScreen> createState() =>
+  ConsumerState<BusinessNotificationConfigurationScreen> createState() =>
       _BusinessNotificationConfigurationScreenState();
 }
 
 class _BusinessNotificationConfigurationScreenState
-    extends State<BusinessNotificationConfigurationScreen> {
+    extends ConsumerState<BusinessNotificationConfigurationScreen> {
   bool allowAnnounce = true;
-  bool allowBenefit = false;
+  bool allowBenefit = true;
 
   @override
   Widget build(BuildContext context) {
+    final provider =
+        ref.read(notificationConfigurationNotifierProvider.notifier);
+    final state = ref.watch(notificationConfigurationNotifierProvider);
+
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "알림 받기 설정"),
         body: SGContainer(
@@ -44,10 +49,17 @@ class _BusinessNotificationConfigurationScreenState
                         size: FontSize.normal, weight: FontWeight.w500),
                     Spacer(),
                     SGSwitch(
-                        value: allowAnnounce,
+                        value: state.isSingleatResearchStatus,
                         onChanged: (value) {
-                          setState(() {
-                            allowAnnounce = value;
+                          final signupProvider =
+                              ref.read(signupNotifierProvider.notifier);
+
+                          signupProvider.onChangeIsSingleeatAgree(value);
+
+                          signupProvider.changeStatus().then((result) {
+                            if (result) {
+                              provider.onChangeIsSingleeatAgree(value);
+                            }
                           });
                         })
                   ])),
@@ -64,10 +76,17 @@ class _BusinessNotificationConfigurationScreenState
                         size: FontSize.normal, weight: FontWeight.w500),
                     Spacer(),
                     SGSwitch(
-                        value: allowBenefit,
+                        value: state.isAdditionalServiceStatus,
                         onChanged: (value) {
-                          setState(() {
-                            allowBenefit = value;
+                          final signupProvider =
+                              ref.read(signupNotifierProvider.notifier);
+
+                          signupProvider.onChangeIsAdditionalAgree(value);
+
+                          signupProvider.changeStatus().then((result) {
+                            if (result) {
+                              provider.onChangeIsAdditionalAgree(value);
+                            }
                           });
                         })
                   ])),

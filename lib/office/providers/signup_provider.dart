@@ -162,7 +162,7 @@ class SignupNotifier extends _$SignupNotifier {
     }
   }
 
-  void changeStatus() async {
+  Future<bool> changeStatus() async {
     Response response = await ref
         .read(signupServiceProvider)
         .singleatResearchStatus({'status': (state.isSingleeatAgree) ? 1 : 0});
@@ -170,7 +170,7 @@ class SignupNotifier extends _$SignupNotifier {
     if (response.statusCode != 200) {
       state = state.copyWith(
           error: ResultFailResponseModel.fromJson(response.data));
-      return;
+      return false;
     }
 
     response = await ref
@@ -179,10 +179,14 @@ class SignupNotifier extends _$SignupNotifier {
 
     if (response.statusCode == 200) {
       state = state.copyWith(status: SignupStatus.step4);
+
+      return true;
     } else {
       state = state.copyWith(
           error: ResultFailResponseModel.fromJson(response.data));
     }
+
+    return false;
   }
 
   void reset() {

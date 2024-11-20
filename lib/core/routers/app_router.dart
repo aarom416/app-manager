@@ -123,10 +123,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
           path: AppRoutes.notificationConfiguration,
           pageBuilder: (context, state) =>
-              NoTransitionPage(child: NotificationConfigurationScreen())),
+              const NoTransitionPage(child: NotificationConfigurationScreen())),
       GoRoute(
           path: AppRoutes.businessNotificationConfiguration,
-          pageBuilder: (context, state) => NoTransitionPage(
+          pageBuilder: (context, state) => const NoTransitionPage(
               child: BusinessNotificationConfigurationScreen())),
       GoRoute(
           path: AppRoutes.deliveryAgency,

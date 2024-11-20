@@ -40,6 +40,9 @@ class RestApiUri {
   static const String operationStatus =
       '/api/v1/owner/store-info/operation-status';
   static const String loadNotification = '/api/v1/owner/notification/{page}';
+  static const String notificationStatus = '/api/v1/owner/notification/status';
+  static const String orderNotificationStatus =
+      '/api/v1/owner/notification/order-notification-status';
   static const String loadStatisticsByStoreId =
       '/api/v1/owner/statistics/{storeId}';
 }

@@ -9,11 +9,33 @@ class NotificationConfigurationService {
 
   NotificationConfigurationService(this.ref);
 
-  Future<Response<dynamic>> load() async {
+  Future<Response<dynamic>> notificationStatus(
+      {required String storeId, required String fcmTokenId}) async {
     try {
       final response = ref.read(requestApiProvider).get(
-            path: RestApiUri.loadNotification.replaceAll('{page}', '0'),
-          );
+          path: RestApiUri.notificationStatus,
+          queryParameters: {"storeId": storeId, "ownerFCMTokenId": fcmTokenId});
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  Future<Response<dynamic>> orderNotificationStatus(
+      {required int orderNotificationStatus,
+      required String fcmTokenId}) async {
+    try {
+      final response = ref
+          .read(requestApiProvider)
+          .post(RestApiUri.orderNotificationStatus, queryParameters: {
+        "orderNotificationStatus": orderNotificationStatus,
+        "ownerFCMTokenId": fcmTokenId
+      });
 
       return response;
     } on DioException catch (e) {

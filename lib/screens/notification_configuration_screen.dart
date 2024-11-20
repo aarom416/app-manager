@@ -11,6 +11,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
+import 'package:singleeat/office/providers/notification_configuration_provider.dart';
 
 class NotificationConfigurationScreen extends ConsumerStatefulWidget {
   const NotificationConfigurationScreen({super.key});
@@ -24,14 +25,21 @@ class _NotificationConfigurationScreenState
     extends ConsumerState<NotificationConfigurationScreen> {
   @override
   void initState() {
-    Future.microtask(() {});
+    Future.microtask(() {
+      ref
+          .read(notificationConfigurationNotifierProvider.notifier)
+          .notificationStatus();
+    });
   }
 
-  bool allowAllNotification = true;
   double notificationVolume = 0.5;
 
   @override
   Widget build(BuildContext context) {
+    final provider =
+        ref.read(notificationConfigurationNotifierProvider.notifier);
+    final state = ref.watch(notificationConfigurationNotifierProvider);
+
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "알림 설정"),
         body: SGContainer(
@@ -52,16 +60,16 @@ class _NotificationConfigurationScreenState
                 child: Row(children: [
                   SGTypography.body("주문 알림 설정",
                       size: FontSize.normal, weight: FontWeight.w500),
-                  Spacer(),
+                  const Spacer(),
                   SGSwitch(
-                      value: allowAllNotification,
+                      value: state.isOrderNotificationStatus,
                       onChanged: (value) {
                         setState(() {
-                          if (allowAllNotification) {
+                          if (state.isOrderNotificationStatus) {
                             showFailDialogWithImageBoth("주문 알림을 비활성화하시겠습니까?",
                                 "비활성화 시 주문 관련 알림을 받을 수 없습니다.");
                           } else {
-                            allowAllNotification = true;
+                            provider.orderNotificationStatus(false);
                           }
                         });
                       })
@@ -182,10 +190,16 @@ class _NotificationConfigurationScreenState
                     flex: 2,
                     child: GestureDetector(
                       onTap: () {
+                        final isOrderNotificationStatus = ref
+                            .watch(notificationConfigurationNotifierProvider)
+                            .isOrderNotificationStatus;
+
+                        ref
+                            .read(notificationConfigurationNotifierProvider
+                                .notifier)
+                            .orderNotificationStatus(isOrderNotificationStatus);
+
                         Navigator.of(ctx).pop();
-                        setState(() {
-                          allowAllNotification = false;
-                        });
                       },
                       child: SGContainer(
                         width: double.infinity,
