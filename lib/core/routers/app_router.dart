@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
+import 'package:singleeat/screens/allergy_information_screen.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
 import 'package:singleeat/screens/business_notification_configuration_screen.dart';
 import 'package:singleeat/screens/check_password_screen.dart';
@@ -183,6 +184,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.orderHistory,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: OrderHistoryScreen())),
+      GoRoute(
+          path: AppRoutes.allergyInformation,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: AllergyInformationScreen())),
     ],
   );
 });

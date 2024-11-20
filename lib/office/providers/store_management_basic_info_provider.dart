@@ -7,6 +7,7 @@ import 'package:singleeat/office/models/store_info_model.dart';
 import 'package:singleeat/office/services/store_management_basic_info_service.dart';
 
 part 'store_management_basic_info_provider.freezed.dart';
+
 part 'store_management_basic_info_provider.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -25,25 +26,73 @@ class StoreManagementBasicInfoNotifier
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);
       final storeInfo = StoreInfoModel.fromJson(result.data);
-      state = state.copyWith(storeInfo: storeInfo);
+      state = state.copyWith(
+          storeInfo: storeInfo, error: const ResultFailResponseModel());
     } else {
       state = state.copyWith(
           error: ResultFailResponseModel.fromJson(response.data));
     }
   }
 
-  void onChangeStoreInfoByPhone(String phone) {
+  Future<bool> storePhone(String phone) async {
     StoreInfoModel storeInfo = state.storeInfo;
     storeInfo = storeInfo.copyWith(phone: phone);
 
     state = state.copyWith(storeInfo: storeInfo);
+
+    final response = await ref
+        .read(storeManagementBasicInfoServiceProvider)
+        .storePhone(phone: state.storeInfo.phone);
+
+    if (response.statusCode == 200) {
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(
+          error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
   }
 
-  void onChangeStoreInfoByIntroduction(String introduction) {
+  Future<bool> storeIntroduction(String introduction) async {
     StoreInfoModel storeInfo = state.storeInfo;
     storeInfo = storeInfo.copyWith(introduction: introduction);
 
     state = state.copyWith(storeInfo: storeInfo);
+
+    final response = await ref
+        .read(storeManagementBasicInfoServiceProvider)
+        .storeIntroduction(introduction: state.storeInfo.introduction);
+
+    if (response.statusCode == 200) {
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(
+          error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  Future<bool> storeOriginInformation(String originInformation) async {
+    StoreInfoModel storeInfo = state.storeInfo;
+    storeInfo = storeInfo.copyWith(originInformation: originInformation);
+
+    state = state.copyWith(storeInfo: storeInfo);
+
+    final response = await ref
+        .read(storeManagementBasicInfoServiceProvider)
+        .storeOriginInformation(
+            originInformation: state.storeInfo.originInformation);
+
+    if (response.statusCode == 200) {
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(
+          error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
   }
 }
 

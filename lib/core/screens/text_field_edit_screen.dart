@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -7,7 +6,6 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/office/bloc/manager_bloc.dart';
 
 class TextFieldEditScreen extends StatefulWidget {
   final String value;
@@ -33,7 +31,8 @@ class _TextFieldEditScreenState extends State<TextFieldEditScreen> {
   late String value;
   late TextEditingController controller = TextEditingController();
 
-  TextStyle baseStyle = TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
+  TextStyle baseStyle =
+      TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
 
   @override
   void initState() {
@@ -47,17 +46,21 @@ class _TextFieldEditScreenState extends State<TextFieldEditScreen> {
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: widget.title),
       floatingActionButton: Container(
-          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+          constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
+              maxHeight: 58),
           child: SGActionButton(
               onPressed: () {
                 widget.onSubmit(controller.text);
-                Navigator.of(context).pop();
+                // Navigator.of(context).pop();
               },
               label: widget.buttonText)),
       body: SGContainer(
           color: Color(0xFFFAFAFA),
-          padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          padding: EdgeInsets.symmetric(
+              horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             SGTypography.label("변경 전"),
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
             SGContainer(
@@ -72,7 +75,9 @@ class _TextFieldEditScreenState extends State<TextFieldEditScreen> {
                 isCollapsed: true,
                 hintStyle: baseStyle.copyWith(color: SGColors.gray3),
                 enabled: false,
-                border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.zero,
+                    borderSide: BorderSide.none),
               )),
             ),
             SizedBox(height: SGSpacing.p8),
@@ -96,7 +101,9 @@ class _TextFieldEditScreenState extends State<TextFieldEditScreen> {
                     isCollapsed: true,
                     hintText: widget.hintText,
                     hintStyle: baseStyle.copyWith(color: SGColors.gray3),
-                    border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.zero,
+                        borderSide: BorderSide.none),
                   )),
             ),
           ])),
