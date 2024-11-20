@@ -11,11 +11,24 @@ enum HomeStatus {
 }
 
 @freezed
+abstract class NewsModel with _$NewsModel {
+  const factory NewsModel({
+    @Default(0) int type,
+    @Default('') String title,
+    @Default('') String newsURL,
+    @Default('') String createdDate,
+  }) = _NewsModel;
+
+  factory NewsModel.fromJson(Map<String, dynamic> json) =>
+      _$NewsModelFromJson(json);
+}
+
+@freezed
 abstract class HomeModel with _$HomeModel {
   const factory HomeModel({
     @Default(0) int storeId,
     @Default(0) int operationStatus,
-    @Default([]) List newsDTOList,
+    @Default(<NewsModel>[]) List<NewsModel> newsDTOList,
   }) = _HomeModel;
 
   factory HomeModel.fromJson(Map<String, dynamic> json) =>

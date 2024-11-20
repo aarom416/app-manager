@@ -8,7 +8,6 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/extensions/datetime.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/main_provider.dart';
@@ -29,16 +28,6 @@ class MainScreen extends ConsumerStatefulWidget {
 }
 
 class _MainScreenState extends ConsumerState<MainScreen> {
-  final List<NoticeModel> notices = [
-    NoticeModel(
-        title: "[서비스안내] 6월24일(월)부터 정산 관리 시스템이 개편되었으니 참고하시길 바랍니다.",
-        date: DateTime.now(),
-        category: ""),
-    NoticeModel(title: "[서비스안내] 부가세 관련 안내", date: DateTime.now(), category: ""),
-    NoticeModel(
-        title: "[서비스안내] 주문내역 시스템 변경 안내", date: DateTime.now(), category: "")
-  ];
-
   Widget menuButton(String title, String iconName, void Function() onPressed) {
     return Expanded(
       child: GestureDetector(
@@ -294,7 +283,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                         SizedBox(height: SGSpacing.p4),
                         ListView.separated(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (ctx, i) => SGContainer(
                                 padding: EdgeInsets.symmetric(
                                     vertical: SGSpacing.p4),
@@ -310,7 +299,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               SGTypography.body(
-                                                  notices[i].title,
+                                                  state.result.newsDTOList[i]
+                                                      .title,
                                                   size: FontSize.small,
                                                   weight: FontWeight.w500,
                                                   overflow:
@@ -323,7 +313,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                                     SizedBox(
                                         height: SGSpacing.p1 + SGSpacing.p05),
                                     SGTypography.body(
-                                        notices[i].date.toShortDateTimeString,
+                                        state.result.newsDTOList[i].createdDate,
                                         size: FontSize.tiny,
                                         color: SGColors.gray3),
                                   ],
@@ -334,7 +324,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                                       thickness: 1,
                                       height: 1),
                                 ),
-                            itemCount: notices.length)
+                            itemCount: state.result.newsDTOList.length)
                       ]),
                     ),
                   ),
