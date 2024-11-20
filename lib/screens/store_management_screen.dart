@@ -6,10 +6,6 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/screens/store_management_basic_info_screen.dart';
-import 'package:singleeat/screens/store_management_business_hour_screen.dart';
-import 'package:singleeat/screens/store_management_delivery_tip_screen.dart';
-import 'package:singleeat/screens/store_management_holiday_management_screen.dart';
-import 'package:singleeat/screens/store_manangement_cuisine_management_screen.dart';
 
 class StoreManagementScreen extends StatefulWidget {
   const StoreManagementScreen({super.key});
@@ -20,6 +16,7 @@ class StoreManagementScreen extends StatefulWidget {
 
 class _StoreManagementScreenState extends State<StoreManagementScreen> {
   ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -30,7 +27,9 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                 controller: scrollController,
                 headerSliverBuilder: (ctx, _) => [
                       SliverOverlapAbsorber(
-                          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(ctx),
+                          handle:
+                              NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                  ctx),
                           sliver: SliverPersistentHeader(
                               pinned: true,
                               delegate: CustomTabBar(
@@ -53,21 +52,24 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                                   color: Color(0xFFBEBEBE),
                                 ),
                                 indicatorSize: TabBarIndicatorSize.tab,
-                                indicatorPadding: EdgeInsets.symmetric(horizontal: SGSpacing.p6),
+                                indicatorPadding: EdgeInsets.symmetric(
+                                    horizontal: SGSpacing.p6),
                                 indicatorWeight: 3.0,
-                                labelPadding: EdgeInsets.symmetric(horizontal: SGSpacing.p2),
+                                labelPadding: EdgeInsets.symmetric(
+                                    horizontal: SGSpacing.p2),
                               ))))
                     ],
                 body: SGContainer(
                     color: Color(0xFFFAFAFA),
-                    padding: EdgeInsets.only(top: SGSpacing.p15).copyWith(left: SGSpacing.p4, right: SGSpacing.p4),
+                    padding: EdgeInsets.only(top: SGSpacing.p15)
+                        .copyWith(left: SGSpacing.p4, right: SGSpacing.p4),
                     child: TabBarView(
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
                         StoreManagementBasicInfoScreen(),
-                        StoreManagementBusinessHourScreen(),
-                        StoreManagementDeliveryTipScreen(),
-                        StoreManangementCuisineManagementScreen(),
+                        // StoreManagementBusinessHourScreen(),
+                        // StoreManagementDeliveryTipScreen(),
+                        // StoreManangementCuisineManagementScreen(),
                       ],
                     )))));
   }

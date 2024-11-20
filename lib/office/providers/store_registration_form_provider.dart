@@ -18,6 +18,10 @@ class StoreRegistrationFormNotifier extends _$StoreRegistrationFormNotifier {
     return const StoreRegistrationFormState();
   }
 
+  void reset() {
+    state = const StoreRegistrationFormState();
+  }
+
   void onChangeBusinessNumber(String businessNumber) {
     state = state.copyWith(businessNumber: businessNumber);
   }

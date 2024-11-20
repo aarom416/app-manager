@@ -14,10 +14,8 @@ import 'package:singleeat/office/providers/main_provider.dart';
 import 'package:singleeat/screens/coupon_management_screen.dart';
 import 'package:singleeat/screens/event_history_screen.dart';
 import 'package:singleeat/screens/notice_screen.dart';
-import 'package:singleeat/screens/order_history_screen.dart';
 import 'package:singleeat/screens/settlement_screen.dart';
 import 'package:singleeat/screens/store_information_screen.dart';
-import 'package:singleeat/screens/store_management_screen.dart';
 import 'package:singleeat/screens/taxes_screen.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
@@ -209,12 +207,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                       child: Column(children: [
                         Row(children: [
                           menuButton('가게 관리', "menu-store", () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => StoreManagementScreen()));
+                            ref
+                                .read(goRouterProvider)
+                                .push(AppRoutes.storeManagement);
                           }),
                           menuButton('주문 내역', "menu-orders", () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => OrderHistoryScreen()));
+                            ref
+                                .read(goRouterProvider)
+                                .push(AppRoutes.orderHistory);
                           }),
                           menuButton('통계', "menu-statistics", () {
                             ref

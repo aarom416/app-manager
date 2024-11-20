@@ -15,12 +15,14 @@ import 'package:singleeat/screens/login_screen.dart';
 import 'package:singleeat/screens/login_webview_screen.dart';
 import 'package:singleeat/screens/notification_configuration_screen.dart';
 import 'package:singleeat/screens/notification_screen.dart';
+import 'package:singleeat/screens/order_history_screen.dart';
 import 'package:singleeat/screens/profile_delete_session_screen.dart';
 import 'package:singleeat/screens/register_delivery_agency_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/signup_screen.dart';
 import 'package:singleeat/screens/signup_webview_screen.dart';
 import 'package:singleeat/screens/statistics_screen.dart';
+import 'package:singleeat/screens/store_management_screen.dart';
 import 'package:singleeat/screens/store_registration_form_screen.dart';
 import 'package:singleeat/screens/success_change_password_screen.dart';
 import 'package:singleeat/screens/temporary_closed_screen.dart';
@@ -173,6 +175,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.statistics,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: StatisticsScreen())),
+      GoRoute(
+          path: AppRoutes.storeManagement,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: StoreManagementScreen())),
+      GoRoute(
+          path: AppRoutes.orderHistory,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: OrderHistoryScreen())),
     ],
   );
 });

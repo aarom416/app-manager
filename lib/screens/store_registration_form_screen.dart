@@ -63,6 +63,13 @@ class _StoreRegistrationFormScreenState
   bool get isFormValid => essentialTermChecked;
 
   @override
+  void initState() {
+    Future.microtask(() {
+      ref.read(storeRegistrationFormNotifierProvider.notifier).reset();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref.listen(storeRegistrationFormNotifierProvider, (previous, next) {
       if (previous?.status != next.status) {
