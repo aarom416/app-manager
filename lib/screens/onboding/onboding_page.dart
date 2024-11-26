@@ -1,8 +1,14 @@
-// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
-
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/components/spacing.dart';
+import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/screens/login_screen.dart';
+import 'package:singleeat/screens/onboding/views/onboding_first_view.dart';
+import 'package:singleeat/screens/onboding/views/onboding_second_view.dart';
+import 'package:singleeat/screens/onboding/views/onboding_third_view.dart';
+
+import '../../core/components/sizing.dart';
+import '../../core/constants/colors.dart';
 
 class OnbodingPage extends StatefulWidget {
   @override
@@ -10,150 +16,84 @@ class OnbodingPage extends StatefulWidget {
 }
 
 class _OnbodingPageState extends State<OnbodingPage> {
-  CarouselController carouselController = CarouselController();
-
   final PageController _controller = PageController();
-
-
-  Widget _finalBottom(BuildContext context){
-
-    return Container(
-      width: double.infinity,
-      child: InkWell(
-        highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        onTap: () async {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-              builder: (BuildContext context) =>
-              const LoginScreen()), (route) => false);
-        },
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-          height: 50,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: SGColors.primary
-          ),
-          child: Text(
-              '싱그릿 시작하기',
-              style: Fonts.bold16.copyWith(color: Colors.white)
-          ),
-        ),
-      ),
-    );
-  }
-
+  double _currentPage = 0.0;
 
   @override
-  Widget build(BuildContext context){
-    double hfem = MediaQuery.of(context).size.height;
-    final loginViewModel = Provider.of<LoginViewModel>(context);
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      setState(() {
+        _currentPage = _controller.page!;
+      });
+    });
+  }
 
-    final List<Widget> itemList = [
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> pages = [
       const OnbodingFirstView(),
       const OnbodingSecondView(),
       const OnbodingThirdView(),
-      const OnbodingFourthView(),
     ];
 
-    return Material(
-      child: Stack(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Positioned(
-            child: Container(
-              color: Colors.white,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+          SizedBox(
+            height: SGSpacing.p32,
+          ),
+          Flexible(
+            child: SizedBox(
+              height: SGSpacing.p32 * 3 + SGSpacing.p4 * 6,
               child: PageView.builder(
                 controller: _controller,
-                itemBuilder : (BuildContext context, int index){
-                  return itemList[index];
-                },
-                itemCount: itemList.length,
-                scrollDirection: Axis.horizontal,
+                itemCount: pages.length,
+                itemBuilder: (context, index) => pages[index],
               ),
             ),
           ),
-          Positioned(
-              bottom: hfem * 0.055,
-              child: Container(
-                color: Colors.transparent,
-                width: MediaQuery.of(context).size.width,
-                child: AnimatedBuilder(
-                    animation: _controller,
-                    builder: (BuildContext context, _){
-                      if(_controller.page?.round() == itemList.length - 1){
-                        return _finalBottom(context);
-                      } else {
-                        return Container(
-                          width: double.infinity,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                highlightColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                onTap: () async {
-                                  await loginViewModel.saveOnBodingState();
-                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                      const LoginPage()), (route) => false);
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(left: 30),
-                                  child: Text(
-                                      '건너뛰기',
-                                      style: Fonts.bold18.copyWith(color: colors.BaseGrey3)
-                                  ),
-                                ),
-                              ),
-                              DotsIndicator(
-                                dotsCount: itemList.length,
-                                position: _controller.page?.round() ?? 0,
-                                decorator: DotsDecorator(
-                                  color: colors.BaseGrey4,
-                                  activeColor: colors.ThemeMain,
-                                  size: const Size(7,7),
-                                  activeSize: const Size(10, 10),
-                                ),
-                              ),
-                              InkWell(
-                                highlightColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                onTap: (){
-                                  _controller.nextPage(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                  );
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(right: 30),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                          '다음',
-                                          style: Fonts.bold18.copyWith(color: colors.ThemeMain)
-                                      ),
-                                      Icon(
-                                        Icons.keyboard_arrow_right,
-                                        color: colors.ThemeMain,
-                                        size: 25,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    }
+
+          DotsIndicator(
+            dotsCount: pages.length,
+            position: _currentPage,
+            decorator: DotsDecorator(
+              color: SGColors.gray2,
+              activeColor: SGColors.primary,
+              size: const Size(10, 10),
+              activeSize: const Size(10, 10),
+            ),
+          ),
+          SizedBox(
+            height: SGSpacing.p24,
+          ),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const LoginScreen()));
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: SGColors.primary,
+                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              )
+              ),
+              child: SGTypography.body(
+                "싱그릿 식단 연구소 시작하기",
+                size: FontSize.medium,
+                weight: FontWeight.w700,
+                color: SGColors.white,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: SGSpacing.p14,
           )
         ],
       ),

@@ -156,13 +156,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
         child: Column(children: [
           SizedBox(height: SGSpacing.p20),
-          Image.asset("assets/images/app-logo.png", width: SGSpacing.p4 * 10),
-
-          /// LOGO
-          SGTypography.body("식단 연구소",
-              color: SGColors.primary,
-              weight: FontWeight.w600,
-              size: FontSize.large),
+          Image.asset("assets/images/app-logo.png",
+              height: SGSpacing.p4 * 10, width: SGSpacing.p4 * 10),
           SizedBox(height: SGSpacing.p10),
           SGTextFieldWrapper(
               child: SGContainer(

@@ -16,6 +16,7 @@ import 'package:singleeat/screens/login_screen.dart';
 import 'package:singleeat/screens/login_webview_screen.dart';
 import 'package:singleeat/screens/notification_configuration_screen.dart';
 import 'package:singleeat/screens/notification_screen.dart';
+import 'package:singleeat/screens/onboding/onboding_page.dart';
 import 'package:singleeat/screens/order_history_screen.dart';
 import 'package:singleeat/screens/profile_delete_session_screen.dart';
 import 'package:singleeat/screens/register_delivery_agency_screen.dart';
@@ -55,7 +56,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           pageBuilder: (context, state) {
             UniqueKey? extra = state.extra as UniqueKey?;
             if (extra == null) {
-              return const NoTransitionPage(child: LoginScreen());
+              return NoTransitionPage(child: OnbodingPage());
+              // return const NoTransitionPage(child: LoginScreen());
             } else {
               return NoTransitionPage(child: LoginScreen(key: ValueKey(extra)));
             }

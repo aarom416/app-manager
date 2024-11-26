@@ -31,7 +31,19 @@ class SingleInformationBox extends StatelessWidget {
             SizedBox(width: SGSpacing.p1),
             if (editable) const Icon(Icons.edit, size: FontSize.small),
             const Spacer(),
-            SGTypography.body(value, size: FontSize.small, color: SGColors.gray5, weight: FontWeight.w400),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: SGTypography.body(
+                  value,
+                  size: FontSize.small,
+                  color: SGColors.gray5,
+                  weight: FontWeight.w400,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+            ),
           ],
         ));
   }
