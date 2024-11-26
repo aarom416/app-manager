@@ -56,8 +56,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           pageBuilder: (context, state) {
             UniqueKey? extra = state.extra as UniqueKey?;
             if (extra == null) {
-              return NoTransitionPage(child: OnbodingPage());
-              // return const NoTransitionPage(child: LoginScreen());
+              return const NoTransitionPage(child: LoginScreen());
             } else {
               return NoTransitionPage(child: LoginScreen(key: ValueKey(extra)));
             }
