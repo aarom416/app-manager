@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/main.dart';
 
@@ -46,9 +47,11 @@ void setupMessageListener() {
         notification.body,
         NotificationDetails(
           android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            channelDescription: channel.description,
+            message.data['type'] == 'DELIVERY' ?
+                deliveryChannel.id : takeoutChannel.id,
+            message.data['type'] == "DELIVERY" ?
+                deliveryChannel.name : takeoutChannel.name,
+            channelDescription: deliveryChannel.description,
             icon: 'launch_background',
           ),
         ),

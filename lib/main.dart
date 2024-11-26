@@ -24,17 +24,66 @@ final logger = Logger(
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+  _showNotification(message);
 }
 
-const AndroidNotificationChannel channel = AndroidNotificationChannel(
-  'high_importance_channel',
-  'High Importance Notifications',
-  description: 'This channel is used for important notifications.',
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
+
+const AndroidNotificationChannel deliveryChannel = AndroidNotificationChannel(
+  'delivery_channel',
+  'Delivery Notifications',
   importance: Importance.high,
+  sound: RawResourceAndroidNotificationSound('delivery-alarm'),
 );
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+const AndroidNotificationChannel takeoutChannel = AndroidNotificationChannel(
+  'takeout_channel',
+  'Takeout Notifications',
+  importance: Importance.high,
+  sound: RawResourceAndroidNotificationSound('takeout-alarm'),
+);
+
+Future<void> _showNotification(RemoteMessage message) async {
+  String notificationType = message.data['type'] ?? 'DELIVERY';
+
+  AndroidNotificationDetails androidPlatformChannelSpecifics;
+  if (notificationType == 'DELIVERY') {
+    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'delivery_channel',
+      'Delivery Notifications',
+      importance: Importance.high,
+      priority: Priority.high,
+      sound: RawResourceAndroidNotificationSound('delivery-alarm'),
+    );
+  } else {
+    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'takeout_channel',
+      'Takeout Notifications',
+      importance: Importance.high,
+      priority: Priority.high,
+      sound: RawResourceAndroidNotificationSound('takeout-alarm'),
+    );
+  }
+
+  final DarwinNotificationDetails iOSPlatformChannelSpecifics = DarwinNotificationDetails(
+    sound: notificationType == 'DELIVERY'
+        ? 'delivery-alarm.wav'
+        : 'takeout-alarm.wav',
+  );
+
+  final NotificationDetails platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
+
+  await flutterLocalNotificationsPlugin.show(
+    0,
+    message.notification?.title ?? '알림',
+    message.notification?.body ?? '내용 없음',
+    platformChannelSpecifics,
+  );
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,23 +95,34 @@ void main() async {
   await Hive.openBox('user');
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     alert: true,
     badge: true,
     sound: true,
   );
+
   await flutterLocalNotificationsPlugin.initialize(
     const InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(),
     ),
   );
+
   if (Platform.isAndroid) {
     await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(deliveryChannel);
+
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(takeoutChannel);
   }
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    _showNotification(message);
+  });
+
   initializeFCM();
 
   runApp(const ProviderScope(observers: [], child: RunApp()));
@@ -76,7 +136,6 @@ class RunApp extends ConsumerWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'singleat',
-      // routerConfig: AppRouter().router,
       routerConfig: ref.watch(goRouterProvider),
       theme: ThemeData(fontFamily: 'PRETENDARD'),
     );
@@ -86,7 +145,6 @@ class RunApp extends ConsumerWidget {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -105,21 +163,6 @@ class MyApp extends StatelessWidget {
             title: 'Flutter Demo',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-              // This is the theme of your application.
-              //
-              // TRY THIS: Try running your application with "flutter run". You'll see
-              // the application has a purple toolbar. Then, without quitting the app,
-              // try changing the seedColor in the colorScheme below to Colors.green
-              // and then invoke "hot reload" (save your changes or press the "hot
-              // reload" button in a Flutter-supported IDE, or press "r" if you used
-              // the command line to start the app).
-              //
-              // Notice that the counter didn't reset back to zero; the application
-              // state is not lost during the reload. To reset the state, use hot
-              // restart instead.
-              //
-              // This works for code too, not just values: Most code changes can be
-              // tested with just a hot reload.
               colorSchemeSeed: Colors.black,
               appBarTheme: const AppBarTheme(
                 backgroundColor: Colors.white,
