@@ -32,11 +32,11 @@ class RestApiUri {
   static const String updateStorePicture = '/api/v1/owner/store-info/store-picture';
   // POST - 가게 번호 변경
   static const String storePhone = '/api/v1/owner/store-info/store-phone';
-  // POST - 포장 상태 수정 TODO
+  // POST - 포장 상태 수정
   static const String updatePickupStatus = '/api/v1/owner/store-info/pickup-status';
   // POST - 가게 원산지 및 알레르기 정보 수정
   static const String originInformation = '/api/v1/owner/store-info/origin-information';
-  // POST - 가게 영업 시간 변경 TODO
+  // POST - 가게 영업 시간 변경
   static const String updateOperationTime = '/api/v1/owner/store-info/operation-time-detail';
   // POST - 가게 영업 상태 변경
   static const String operationStatus = '/api/v1/owner/store-info/operation-status';
@@ -54,7 +54,7 @@ class RestApiUri {
   static const String updateDeliveryTime = '/api/v1/owner/store-info/expected-delivery-time';
   // POST - 가게 배달팁 변경 TODO
   static const String updateDeliveryTip = '/api/v1/owner/store-info/delivery-tip';
-  // POST - 배달 상태 수정 TODO
+  // POST - 배달 상태 수정
   static const String updateDeliveryStatus = '/api/v1/owner/store-info/delivery-status';
   // POST - 가게 휴게 시간 변경 TODO
   static const String updateBreakTime = '/api/v1/owner/store-info/break-time-detail';
@@ -78,7 +78,7 @@ class RestApiUri {
   /// 가게 정보 조회 API
   // GET - 가게 정보 조회
   static const String storeInfo = '/api/v1/owner/store-info/{storeId}';
-  // GET - 영업 정보 조회 TODO
+  // GET - 영업 정보 조회
   static const String getOperationInfo = '/api/v1/owner/store-info/operation-info/{storeId}';
   // GET - 메뉴/옵션 정보 조회 TODO
   static const String getMenuOptionInfo = '/api/v1/owner/store-info/menu-option-info/{storeId}';

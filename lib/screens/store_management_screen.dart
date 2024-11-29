@@ -6,7 +6,7 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/screens/store_management_basic_info_screen.dart';
-import 'package:singleeat/screens/store_management_business_hour_screen.dart';
+import 'package:singleeat/screens/home/storemanagement/operation/screen.dart';
 import 'package:singleeat/screens/store_management_delivery_tip_screen.dart';
 import 'package:singleeat/screens/store_manangement_cuisine_management_screen.dart';
 
@@ -70,7 +70,7 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
                         const StoreManagementBasicInfoScreen(),
-                        StoreManagementBusinessHourScreen(),
+                        const StoreOperationScreen(),
                         StoreManagementDeliveryTipScreen(),
                         StoreManangementCuisineManagementScreen(),
                       ],
