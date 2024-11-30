@@ -56,7 +56,7 @@ class RestApiUri {
   static const String updateDeliveryTip = '/api/v1/owner/store-info/delivery-tip';
   // POST - 배달 상태 수정
   static const String updateDeliveryStatus = '/api/v1/owner/store-info/delivery-status';
-  // POST - 가게 휴게 시간 변경 TODO
+  // POST - 가게 휴게 시간 변경
   static const String updateBreakTime = '/api/v1/owner/store-info/break-time-detail';
   // POST - 가게 로고 등록 및 변경 - 관리자 제한 API TODO
   static const String adminUpdateStoreThumbnail = '/api/v1/owner/admin/store-info/thumbnail';

@@ -103,6 +103,39 @@ class StoreOperationService {
       return Future.error(e);
     }
   }
+
+  /// POST - 가게 휴게 시간 변경
+  Future<Response<dynamic>> updateBreakTime(
+      {required String storeId,
+        required List<OperationTimeDetailModel> breakTimeDetails}) async {
+    try {
+      final response = await ref.read(requestApiProvider).post(
+        RestApiUri.updateBreakTime,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'dayList': breakTimeDetails.asMap().entries.map((entry) {
+            return entry.key;
+          }).toList(),
+          'startTimeList': breakTimeDetails.map((operationTimeDetail) {
+            return operationTimeDetail.startTime;
+          }).toList(),
+          'endTimeList': breakTimeDetails.map((operationTimeDetail) {
+            return operationTimeDetail.endTime;
+          }).toList()
+        },
+      );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+
 }
 
 final storeOperationServiceProvider =

@@ -98,6 +98,27 @@ class StoreOperationNotifier extends _$StoreOperationNotifier {
           error: ResultFailResponseModel.fromJson(response.data));
     }
   }
+
+  /// POST - 가게 휴게 시간 변경
+  void updateBreakTime(
+      List<OperationTimeDetailModel> breakTimeDetails) async {
+    final response = await ref
+        .read(storeOperationServiceProvider)
+        .updateBreakTime(
+        storeId: UserHive.getBox(key: UserKey.storeId),
+        breakTimeDetails: breakTimeDetails);
+
+    if (response.statusCode == 200) {
+      state = state.copyWith(
+          error: const ResultFailResponseModel(),
+          breakTimeDetailDTOList: breakTimeDetails);
+    } else {
+      state = state.copyWith(
+          error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
+
+
 }
 
 enum StoreOperationStatus {

@@ -16,7 +16,9 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/screens/store_management_holiday_management_screen.dart';
 
 import '../../../../utils/time_utils.dart';
+import 'breaktime/screen.dart';
 import 'businesshours/screen.dart';
+import 'model.dart';
 import 'provider.dart';
 
 class StoreOperationScreen extends ConsumerStatefulWidget {
@@ -151,11 +153,59 @@ class _StoreOperationScreenState extends ConsumerState<StoreOperationScreen> {
             ]);
   }
 
+  /// 주어진 OperationTimeDetailModel 리스트를 startTime과 endTime 값에 따라 그룹화.
+  List<List<OperationTimeDetailModel>> groupByStartAndEndTime(
+      List<OperationTimeDetailModel> data) {
+    List<List<OperationTimeDetailModel>> result = [];
+    List<OperationTimeDetailModel> currentGroup = [];
+
+    for (var i = 0; i < data.length; i++) {
+      if (currentGroup.isEmpty ||
+          (data[i].startTime == currentGroup.last.startTime &&
+              data[i].endTime == currentGroup.last.endTime)) {
+        currentGroup.add(data[i]);
+      } else {
+        result.add(currentGroup);
+        currentGroup = [data[i]];
+      }
+    }
+
+    if (currentGroup.isNotEmpty) {
+      result.add(currentGroup);
+    }
+
+    return result;
+  }
+
+  /// 주어진 요일별 영업시간 데이터에서 누락된 요일을 채워주는 함수.
+  List<OperationTimeDetailModel> fillMissingDays(List<OperationTimeDetailModel> data) {
+    const List<String> daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
+
+    // 입력 데이터를 Map으로 변환 (요일을 키로 사용)
+    final existingData = {
+      for (var model in data) model.day: model
+    };
+
+    // 모든 요일을 포함하도록 데이터 생성
+    final completeData = daysOfWeek.map((day) {
+      return existingData[day] ?? OperationTimeDetailModel(day: day, startTime: "00:00", endTime: "00:00");
+    }).toList();
+
+    return completeData;
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(storeOperationNotifierProvider);
 
     final provider = ref.read(storeOperationNotifierProvider.notifier);
+
+    var groupedOperationTimeDetails =
+        groupByStartAndEndTime(state.operationTimeDetailDTOList);
+
+    var groupedBreakTimeDetails =
+    groupByStartAndEndTime(fillMissingDays(state.breakTimeDetailDTOList));
+
 
     return ListView(children: [
       // --------------------------- 배달 주문 가능 ---------------------------
@@ -240,12 +290,15 @@ class _StoreOperationScreenState extends ConsumerState<StoreOperationScreen> {
           ),
         ]),
         SizedBox(height: SGSpacing.p5),
-        ...state.operationTimeDetailDTOList.map((operationTimeDetail) {
-          var day = "${operationTimeDetail.day}요일";
-          var time = operationTimeDetail.startTime == "00:00" &&
-                  operationTimeDetail.endTime == "24:00"
+        ...groupedOperationTimeDetails.map((operationTimeDetails) {
+          var day = operationTimeDetails.length == 1
+              ? "${operationTimeDetails.first.day}요일"
+              : "${operationTimeDetails.first.day}요일~${operationTimeDetails.last.day}요일";
+          var time = operationTimeDetails.first.startTime == "00:00" &&
+                  operationTimeDetails.first.endTime == "24:00"
               ? "24시간"
-              : "${convert24HourTimeToAmPmWithHourMinute(operationTimeDetail.startTime)}~${convert24HourTimeToAmPmWithHourMinute(operationTimeDetail.endTime)}";
+              : "${convert24HourTimeToAmPmWithHourMinute(operationTimeDetails.first.startTime)}~${convert24HourTimeToAmPmWithHourMinute(operationTimeDetails.first.endTime)}";
+
           return Column(
             children: [
               DataTableRow(
@@ -267,17 +320,40 @@ class _StoreOperationScreenState extends ConsumerState<StoreOperationScreen> {
               size: FontSize.normal, weight: FontWeight.w700),
           SizedBox(width: SGSpacing.p1),
           GestureDetector(
-              child: const Icon(Icons.edit, size: FontSize.small),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        const _NonBusinessHourConfigurationScreen()));
-              }),
+            child: const Icon(Icons.edit, size: FontSize.small),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => StoreBreakTimesScreen(
+                    breakTimeDetails: fillMissingDays(state.breakTimeDetailDTOList),
+                    onSaveFunction: (breakTimeDetails) {
+                      // print("onSaveFunction $breakTimeDetails");
+                      provider.updateBreakTime(breakTimeDetails);
+                      Navigator.of(context).pop();
+                    }),
+              ));
+            },
+          ),
         ]),
         SizedBox(height: SGSpacing.p5),
-        DataTableRow(left: "월요일~금요일", right: "오후 17:00~22:00"),
-        SizedBox(height: SGSpacing.p4),
-        DataTableRow(left: "토요일", right: "-"),
+        ...groupedBreakTimeDetails.map((operationTimeDetails) {
+          var day = operationTimeDetails.length == 1
+              ? "${operationTimeDetails.first.day}요일"
+              : "${operationTimeDetails.first.day}요일~${operationTimeDetails.last.day}요일";
+          var time = operationTimeDetails.first.startTime == "00:00" &&
+              operationTimeDetails.first.endTime == "00:00"
+              ? "-"
+              : "${convert24HourTimeToAmPmWithHourMinute(operationTimeDetails.first.startTime)}~${convert24HourTimeToAmPmWithHourMinute(operationTimeDetails.first.endTime)}";
+
+          return Column(
+            children: [
+              DataTableRow(
+                left: day,
+                right: time,
+              ),
+              SizedBox(height: SGSpacing.p4),
+            ],
+          );
+        }),
       ]),
 
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
