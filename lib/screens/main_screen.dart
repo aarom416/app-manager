@@ -15,7 +15,6 @@ import 'package:singleeat/screens/coupon_management_screen.dart';
 import 'package:singleeat/screens/event_history_screen.dart';
 import 'package:singleeat/screens/notice_screen.dart';
 import 'package:singleeat/screens/settlement_screen.dart';
-import 'package:singleeat/screens/store_information_screen.dart';
 import 'package:singleeat/screens/taxes_screen.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
@@ -232,10 +231,15 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                                 builder: (context) =>
                                     CouponManagementScreen()));
                           }),
-                          menuButton('사업자 정보', "menu-business-profile", () {
+                          /*menuButton('사업자 정보', "menu-business-profile", () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>
                                     StoreInformationScreen()));
+                          }),*/
+                          menuButton('사업자 정보', "menu-business-profile", () {
+                            ref
+                                .read(goRouterProvider)
+                                .push(AppRoutes.storeInformation);
                           }),
                         ]),
                         Row(children: [
