@@ -9,9 +9,11 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../core/components/date_range_picker.dart';
+import '../../../../../core/components/text_field_wrapper.dart';
+import '../../../../common/common_widgets.dart';
 import '../model.dart';
 
-class TemporaryHolidaysBox extends StatelessWidget {
+class TemporaryHolidaysBox extends StatefulWidget {
   final List<OperationTimeDetailModel> temporaryHolidays;
   final Function(List<OperationTimeDetailModel>) onEditFunction;
 
@@ -20,6 +22,29 @@ class TemporaryHolidaysBox extends StatelessWidget {
     required this.temporaryHolidays,
     required this.onEditFunction,
   });
+
+  @override
+  State<TemporaryHolidaysBox> createState() => _TemporaryHolidaysBoxState();
+}
+
+class _TemporaryHolidaysBoxState extends State<TemporaryHolidaysBox> {
+  late List<TextEditingController> textEditingControllers;
+
+  @override
+  void initState() {
+    super.initState();
+    textEditingControllers = widget.temporaryHolidays.map((holiday) => TextEditingController(text: holiday.ment)).toList();
+  }
+
+  @override
+  void dispose() {
+    for (var controller in textEditingControllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  int MENT_INPUT_MAX = 100;
 
   @override
   Widget build(BuildContext context) {
@@ -41,42 +66,94 @@ class TemporaryHolidaysBox extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ...temporaryHolidays
-                    .map((temporaryHoliday) => Tuple2(temporaryHoliday, temporaryHoliday.toDateRange()))
-                    .mapIndexed((index, holidayDateRangePair) => [
-                          Row(children: [
-                            Expanded(
-                              child: DateRangePicker(
-                                key: ValueKey(holidayDateRangePair.item2.id),
-                                variant: DateRangePickerVariant.small,
-                                dateRange: holidayDateRangePair.item2,
-                                onStartDateChanged: (startDate) {
-                                  temporaryHolidays[index] = holidayDateRangePair.item1.copyWith(startDate: DateFormat('yyyy.MM.dd').format(startDate));
-                                  onEditFunction(temporaryHolidays);
-                                },
-                                onEndDateChanged: (endDate) {
-                                  temporaryHolidays[index] = holidayDateRangePair.item1.copyWith(endDate: DateFormat('yyyy.MM.dd').format(endDate));
-                                  onEditFunction(temporaryHolidays);
-                                },
-                              ),
-                            ),
-                            SizedBox(width: SGSpacing.p3),
-                            GestureDetector(
-                              onTap: () {
-                                temporaryHolidays.removeAt(index);
-                                onEditFunction(temporaryHolidays);
+                ...widget.temporaryHolidays
+                    .asMap()
+                    .entries
+                    .map((entry) {
+
+                      int index = entry.key;
+                      OperationTimeDetailModel temporaryHoliday = entry.value;
+                      DateRange dateRange = temporaryHoliday.toDateRange();
+                      var textEditingController = textEditingControllers[index];
+
+                      return [
+                        Row(children: [
+                          Expanded(
+                            child: DateRangePicker(
+                              key: ValueKey(dateRange.id),
+                              variant: DateRangePickerVariant.small,
+                              dateRange: dateRange,
+                              onStartDateChanged: (startDate) {
+                                if (dateRange.end.isBefore(startDate)) {
+                                  showDefaultSnackBar(context, '시작 날짜는 종료 날짜보다 빨라야 합니다.');
+                                } else {
+                                  widget.temporaryHolidays[index] = temporaryHoliday.copyWith(startDate: DateFormat('yyyy.MM.dd').format(startDate));
+                                  widget.onEditFunction(widget.temporaryHolidays);
+                                }
                               },
-                              child: SGContainer(
-                                  borderWidth: 0,
-                                  width: SGSpacing.p5,
-                                  height: SGSpacing.p5,
-                                  borderRadius: BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
-                                  color: SGColors.warningRed,
-                                  child: Center(child: Image.asset('assets/images/minus-white.png', width: 16, height: 16))),
+                              onEndDateChanged: (endDate) {
+                                if (dateRange.start.isAfter(endDate)) {
+                                  showDefaultSnackBar(context, '종료 날짜는 시작 날짜보다 늦어야 합니다.');
+                                } else {
+                                  widget.temporaryHolidays[index] = temporaryHoliday.copyWith(endDate: DateFormat('yyyy.MM.dd').format(endDate));
+                                  widget.onEditFunction(widget.temporaryHolidays);
+                                }
+                              },
                             ),
-                          ]),
-                          SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                        ])
+                          ),
+                          SizedBox(width: SGSpacing.p3),
+                          GestureDetector(
+                            onTap: () {
+                              widget.temporaryHolidays.removeAt(index);
+                              widget.onEditFunction(widget.temporaryHolidays);
+                            },
+                            child: SGContainer(
+                                borderWidth: 0,
+                                width: SGSpacing.p5,
+                                height: SGSpacing.p5,
+                                borderRadius: BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
+                                color: SGColors.warningRed,
+                                child: Center(child: Image.asset('assets/images/minus-white.png', width: 16, height: 16))),
+                          ),
+                        ]),
+                        SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+                        SGTextFieldWrapper(
+                            child: SGContainer(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                          height: SGSpacing.p12,
+                          child: Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              TextField(
+                                controller: textEditingController,
+                                maxLines: 5,
+                                onChanged: (inputValue) {
+                                  print("onChanged $inputValue");
+                                  var inputValue_ = inputValue.substring(0, MENT_INPUT_MAX);
+                                  print("inputValue_ $inputValue_");
+                                  textEditingController.selection = TextSelection.fromPosition(TextPosition(offset: MENT_INPUT_MAX));
+                                  widget.temporaryHolidays[index] = temporaryHoliday.copyWith(ment: inputValue);
+                                  widget.onEditFunction(widget.temporaryHolidays);
+                                },
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.symmetric(vertical: SGSpacing.p3, horizontal: SGSpacing.p4),
+                                  // 패딩 조정
+                                  isCollapsed: true,
+                                  hintText: "ex) 가게 리모델링으로 1월 5일 ~ 8일 쉬어요",
+                                  hintStyle: TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small, color: SGColors.gray3),
+                                  border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                                ),
+                                textAlignVertical: TextAlignVertical.center, // 텍스트 가운데 정렬
+                              ),
+                            ],
+                          ),
+                        )),
+                        SizedBox(height: SGSpacing.p3),
+                      ];
+                    })
+                    .toList()
                     .flattened,
                 GestureDetector(
                   onTap: () {
@@ -93,17 +170,15 @@ class TemporaryHolidaysBox extends StatelessWidget {
                       return false; // 중복 없음
                     }
 
-                    print("temporaryHolidays $temporaryHolidays");
-                    if (hasDuplicateEntries(temporaryHolidays)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('중복된 임시휴무일이 있습니다.'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
+                    print("temporaryHolidays ${widget.temporaryHolidays}");
+                    if (hasDuplicateEntries(widget.temporaryHolidays)) {
+                      showDefaultSnackBar(context, '중복된 임시휴무일이 있습니다.');
                     } else {
-                      temporaryHolidays.add(DateRange(id: DateTime.now().millisecondsSinceEpoch, start: DateTime.now(), end: DateTime.now().add(const Duration(days: 1))).toOperationTimeDetailModel());
-                      onEditFunction(temporaryHolidays);
+                      textEditingControllers.add(TextEditingController(text: ''));
+                      var dateRange = DateRange(id: DateTime.now().millisecondsSinceEpoch, start: DateTime.now(), end: DateTime.now().add(const Duration(days: 30)));
+                      print("dateRange ${dateRange.start} ${dateRange.end}");
+                      widget.temporaryHolidays.add(dateRange.toOperationTimeDetailModel());
+                      widget.onEditFunction(widget.temporaryHolidays);
                     }
                   },
                   child: Row(children: [Image.asset("assets/images/accumulative.png", width: 24, height: 24), SizedBox(width: SGSpacing.p1), SGTypography.body("임시 휴무 추가하기", size: FontSize.small)]),
@@ -130,10 +205,6 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
 extension DateRangeExtensions on DateRange {
   OperationTimeDetailModel toOperationTimeDetailModel() {
     final dateFormat = DateFormat("yyyy.MM.dd");
-    return OperationTimeDetailModel(
-      holidayType: 1,
-      startDate: dateFormat.format(start),
-      endDate: dateFormat.format(end),
-    );
+    return OperationTimeDetailModel(holidayType: 1, startDate: dateFormat.format(start), endDate: dateFormat.format(end), ment: "기본 멘트...");
   }
 }
