@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/date_range_picker.dart';
@@ -10,6 +12,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
+import 'package:singleeat/screens/home/storeHistory/operation/provider.dart';
 
 class Event {
   final int id;
@@ -31,14 +34,14 @@ class Event {
       required this.beforeModifiedAt});
 }
 
-class EventHistoryScreen extends StatefulWidget {
+class EventHistoryScreen extends ConsumerStatefulWidget {
   const EventHistoryScreen({super.key});
 
   @override
-  State<EventHistoryScreen> createState() => _EventHistoryScreenState();
+  ConsumerState<EventHistoryScreen> createState() => _EventHistoryScreenState();
 }
 
-class _EventHistoryScreenState extends State<EventHistoryScreen> {
+class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
   late DateRange dateRange;
   late String currentTab;
 
@@ -108,6 +111,9 @@ class _EventHistoryScreenState extends State<EventHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(storeHistoryNotifierProvider);
+    final provider = ref.read(storeHistoryNotifierProvider.notifier);
+
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "이력"),
         body: SGContainer(
@@ -115,52 +121,63 @@ class _EventHistoryScreenState extends State<EventHistoryScreen> {
           borderWidth: 0,
           child: ListView(shrinkWrap: false, children: [
             SGContainer(
-                padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
+                padding: EdgeInsets.symmetric(
+                    horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
                 borderWidth: 0,
                 color: Colors.white,
-                child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  DateRangePicker(
-                    dateRange: dateRange,
-                    onStartDateChanged: (DateTime startDate) {
-                      setState(() {
-                        dateRange = dateRange.copyWith(start: startDate);
-                      });
-                    },
-                    onEndDateChanged: (DateTime endDate) {
-                      setState(() {
-                        dateRange = dateRange.copyWith(end: endDate);
-                      });
-                    },
-                  ),
-                  SizedBox(height: SGSpacing.p4),
-                  SGContainer(
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                    width: double.infinity,
-                    color: SGColors.primary,
-                    borderRadius: BorderRadius.circular(SGSpacing.p2),
-                    child: Center(
-                        child: SGTypography.body("조회",
-                            color: Colors.white, size: FontSize.normal, weight: FontWeight.w700)),
-                  ),
-                  SizedBox(height: SGSpacing.p4),
-                  MenuTabBar(
-                      currentTab: currentTab,
-                      tabs: ["가게", "메뉴"],
-                      onTabChanged: (String tab) {
-                        setState(() {
-                          currentTab = tab;
-                        });
-                      }),
-                ])),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DateRangePicker(
+                        dateRange: dateRange,
+                        onStartDateChanged: (DateTime startDate) {
+                          setState(() {
+                            dateRange = dateRange.copyWith(start: startDate);
+                          });
+                        },
+                        onEndDateChanged: (DateTime endDate) {
+                          setState(() {
+                            dateRange = dateRange.copyWith(end: endDate);
+                          });
+                        },
+                      ),
+                      SizedBox(height: SGSpacing.p4),
+                      SGContainer(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                        width: double.infinity,
+                        color: SGColors.primary,
+                        borderRadius: BorderRadius.circular(SGSpacing.p2),
+                        child: SGActionButton(
+                            onPressed: () {
+                              provider.getStoreHistory();
+                            },
+                            label: "조회"),
+                      ),
+                      SizedBox(height: SGSpacing.p4),
+                      MenuTabBar(
+                          currentTab: currentTab,
+                          tabs: ["가게", "메뉴"],
+                          onTabChanged: (String tab) {
+                            setState(() {
+                              currentTab = tab;
+                            });
+                          }),
+                    ])),
             SGContainer(
                 color: Colors.transparent,
                 padding: EdgeInsets.all(SGSpacing.p4),
                 borderWidth: 0,
-                child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  ...currentEvents.map((Event event) {
-                    return _EventCard(key: Key("${event.id}"), event: event);
-                  }),
-                ]))
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...currentEvents.map((Event event) {
+                        return _EventCard(
+                            key: Key("${event.id}"), event: event);
+                      }),
+                    ]))
           ]),
         ));
   }
@@ -211,26 +228,43 @@ class _EventCardState extends State<_EventCard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      SGTypography.body(formatDateTime(widget.event.datetime),
-                          color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
-                      SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                      SGTypography.body(widget.event.title, weight: FontWeight.w700, size: FontSize.normal),
-                    ]),
-                    Icon(collapsed ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up),
+                    Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SGTypography.body(
+                              formatDateTime(widget.event.datetime),
+                              color: SGColors.gray4,
+                              size: FontSize.small,
+                              weight: FontWeight.w500),
+                          SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+                          SGTypography.body(widget.event.title,
+                              weight: FontWeight.w700, size: FontSize.normal),
+                        ]),
+                    Icon(collapsed
+                        ? Icons.keyboard_arrow_down
+                        : Icons.keyboard_arrow_up),
                   ]),
             ),
             if (!collapsed) ...[
               COLLAPSED_DIVIDER(),
-              Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.start, children: [
-                ...[
-                  ["작업자", widget.event.modifiedBy],
-                  ["변경 시간", "${formatDateTime(widget.event.modifiedAt)}"],
-                ].map((List<String> pair) {
-                  return [DataTableRow(left: pair[0], right: pair[1]), SizedBox(height: SGSpacing.p3)];
-                }).flattened,
-              ]),
-              DataTableRow(left: "변경 전", right: "${formatDateTime(widget.event.beforeModifiedAt)}"),
+              Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ...[
+                      ["작업자", widget.event.modifiedBy],
+                      ["변경 시간", "${formatDateTime(widget.event.modifiedAt)}"],
+                    ].map((List<String> pair) {
+                      return [
+                        DataTableRow(left: pair[0], right: pair[1]),
+                        SizedBox(height: SGSpacing.p3)
+                      ];
+                    }).flattened,
+                  ]),
+              DataTableRow(
+                  left: "변경 전",
+                  right: "${formatDateTime(widget.event.beforeModifiedAt)}"),
             ],
           ],
         )));
