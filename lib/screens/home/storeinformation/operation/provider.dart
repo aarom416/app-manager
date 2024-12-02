@@ -36,6 +36,20 @@ class StoreInformationNotifier extends _$StoreInformationNotifier {
           error: ResultFailResponseModel.fromJson(response.data));
     }
   }
+
+  /// POST - 사업자 정보 업데이트
+  void updateBusinessInformation(int businessType) async {
+    final response = await ref
+        .read(storeInformationServiceProvider)
+        .updateBusinessInformation(
+            storeId: UserHive.getBox(key: UserKey.storeId),
+            businessType: businessType);
+
+    if (response.statusCode == 200) {
+      final result = ResultResponseModel.fromJson(response.data);
+      print(result);
+    }
+  }
 }
 
 enum StoreInformationStatus {
