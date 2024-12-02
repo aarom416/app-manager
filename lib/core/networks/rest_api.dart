@@ -46,7 +46,7 @@ class RestApiUri {
   static const String storeIntroduction = '/api/v1/owner/store-info/introduction';
   // POST - 가게 소개 사진 등록 및 변경 TODO
   static const String updateIntroductionPicture = '/api/v1/owner/store-info/introduction-picture';
-  // POST - 가게 휴무일 변경 TODO
+  // POST - 가게 휴무일 변경
   static const String updateHolidayDetail = '/api/v1/owner/store-info/holiday-detail';
   // POST - 포장 예상 시간 수정 TODO
   static const String updatePickupTime = '/api/v1/owner/store-info/expected-pickup-time';

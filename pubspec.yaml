@@ -84,9 +84,6 @@ dependencies:
   # for DateFormat
   intl: ^0.18.0
 
-  # for Tuple
-  tuple: ^2.0.0
-
 
 dev_dependencies:
   flutter_test:

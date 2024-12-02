@@ -116,6 +116,64 @@ class StoreOperationService {
       return Future.error(e);
     }
   }
+
+  /// POST - 가게 휴무일 변경
+  Future<Response<dynamic>> updateHolidayDetail({
+    required String storeId,
+    required int holidayStatus,
+    required List<OperationTimeDetailModel> regularHolidays,
+    required List<OperationTimeDetailModel> temporaryHolidays,
+  }) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateHolidayDetail,
+        /*
+          {
+            "storeId": 1,
+            "holidayStatus": 1,
+            "cycleList": [
+              1,
+              7,
+              3
+            ],
+            "dayList": [
+              0,
+              1,
+              2
+            ],
+            "startDateList": "[2024-01-01, 2024-02-01]",
+            "endDateList": "[2024-01-07, 2024-02-07]",
+            "mentList": "['', 가게 사정으로 휴업합니다.]"
+          }
+       */
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'holidayStatus': holidayStatus,
+          'cycleList': regularHolidays.map((operationTimeDetail) {
+            return operationTimeDetail.cycle;
+          }).toList(),
+          'dayList': regularHolidays.map((operationTimeDetail) {
+            return ['월', '화', '수', '목', '금', '토', '일'].indexOf(operationTimeDetail.day);
+          }).toList(),
+          'startDateList': temporaryHolidays.map((operationTimeDetail) {
+            return operationTimeDetail.startDate;
+          }).toList(),
+          'endDateList': temporaryHolidays.map((operationTimeDetail) {
+            return operationTimeDetail.endDate;
+          }).toList(),
+          'mentList': temporaryHolidays.map((operationTimeDetail) {
+            return operationTimeDetail.ment;
+          }).toList(),
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final storeOperationServiceProvider = Provider<StoreOperationService>((ref) => StoreOperationService(ref));

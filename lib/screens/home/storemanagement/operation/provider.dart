@@ -78,6 +78,16 @@ class StoreOperationNotifier extends _$StoreOperationNotifier {
       state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
     }
   }
+
+  /// POST - 가게 휴무일 변경
+  void updateHolidayDetail(int holidayStatus, List<OperationTimeDetailModel> regularHolidays, List<OperationTimeDetailModel> temporaryHolidays) async {
+    final response = await ref.read(storeOperationServiceProvider).updateHolidayDetail(storeId: UserHive.getBox(key: UserKey.storeId), holidayStatus: holidayStatus, regularHolidays: regularHolidays, temporaryHolidays: temporaryHolidays);
+    if (response.statusCode == 200) {
+      state = state.copyWith(error: const ResultFailResponseModel(), holidayStatus: holidayStatus, holidayDetailDTOList: regularHolidays + temporaryHolidays);
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
 }
 
 enum StoreOperationStatus {

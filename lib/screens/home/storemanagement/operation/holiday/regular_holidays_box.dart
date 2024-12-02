@@ -8,16 +8,17 @@ import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
+import '../../../../common/common_widgets.dart';
 import '../model.dart';
 
 const List<String> regularHolidayTypes = [
+  "매주",
   "매월 첫 번째",
   "매월 두 번째",
   "매월 세 번째",
   "매월 네 번째",
   "매월 다섯 번째",
   "매월 마지막",
-  "매주",
 ];
 
 final List<SelectionOption<int>> regularHolidayOptions = [...regularHolidayTypes.mapIndexed((index, regularHolidayType) => SelectionOption(value: index, label: regularHolidayType))];
@@ -137,26 +138,8 @@ class RegularHolidaysBox extends StatelessWidget {
                     .flattened,
                 GestureDetector(
                   onTap: () {
-                    /// 중복 확인
-                    bool hasDuplicateEntries(List<OperationTimeDetailModel> data) {
-                      final seen = <String>{};
-                      for (var item in data) {
-                        final key = "${item.holidayType}-${item.cycle}-${item.day}";
-                        if (seen.contains(key)) {
-                          return true; // 중복 발견
-                        }
-                        seen.add(key);
-                      }
-                      return false; // 중복 없음
-                    }
-
-                    if (hasDuplicateEntries(regularHolidays)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('중복된 정기휴무일이 있습니다.'),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
+                    if (hasDuplicateRegularHolidays(regularHolidays)) {
+                      showDefaultSnackBar(context, '중복된 정기휴무일이 있습니다.');
                     } else {
                       regularHolidays.add(const OperationTimeDetailModel(holidayType: 0, cycle: 0, day: "월"));
                       onEditFunction(regularHolidays);
@@ -169,4 +152,17 @@ class RegularHolidaysBox extends StatelessWidget {
       ],
     );
   }
+}
+
+/// regularHolidays 중복 확인
+bool hasDuplicateRegularHolidays(List<OperationTimeDetailModel> data) {
+  final seen = <String>{};
+  for (var item in data) {
+    final key = "${item.holidayType}-${item.cycle}-${item.day}";
+    if (seen.contains(key)) {
+      return true; // 중복 발견
+    }
+    seen.add(key);
+  }
+  return false; // 중복 없음
 }
