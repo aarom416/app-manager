@@ -12,7 +12,7 @@ import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/main_provider.dart';
 import 'package:singleeat/screens/coupon_management_screen.dart';
-import 'package:singleeat/screens/event_history_screen.dart';
+import 'package:singleeat/screens/home/storeHistory/operation/screen.dart';
 import 'package:singleeat/screens/notice_screen.dart';
 import 'package:singleeat/screens/settlement_screen.dart';
 import 'package:singleeat/screens/taxes_screen.dart';

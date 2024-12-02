@@ -11,7 +11,7 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/office/providers/statistics_provider.dart';
+import 'package:singleeat/screens/home/storestatistics/operation/provider.dart';
 
 class AppColors {
   static const Color primary = contentColorCyan;
@@ -239,12 +239,16 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   @override
   void initState() {
     Future.microtask(() {
-      ref.read(statisticsNotifierProvider.notifier).loadStatisticsByStoreId();
+      ref
+          .read(storeStatisticsNotifierProvider.notifier)
+          .loadStatisticsByStoreId();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(storeStatisticsNotifierProvider);
+
     final totalCount = totalData.items.fold(
         0.0,
         (previousValue, element) =>
@@ -303,7 +307,8 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                           color: SGColors.black,
                           lineHeight: 1.5)),
                   WidgetSpan(
-                      child: SGTypography.body("${totalCount.toInt()}회",
+                      child: SGTypography.body(
+                          "${state.storeStatistics.menuRecommendStatisticsDTOList.length}회",
                           weight: FontWeight.w700,
                           size: FontSize.normal,
                           color: SGColors.primary,
@@ -340,7 +345,8 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                           color: SGColors.black,
                           lineHeight: 1.5)),
                   WidgetSpan(
-                      child: SGTypography.body("${totalCount.toInt()}명",
+                      child: SGTypography.body(
+                          "${state.storeStatistics.orderInformationStatisticsDTOList.length}명",
                           weight: FontWeight.w700,
                           size: FontSize.normal,
                           color: SGColors.primary,
@@ -386,7 +392,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                             weight: FontWeight.w700),
                         SizedBox(width: SGSpacing.p2),
                         SGTypography.body(
-                            "최근 7일, ${totalDelivery}명이 배달 주문 했어요.",
+                            "최근 7일, ${state.deliveryCount}명이 배달 주문 했어요.",
                             size: FontSize.small,
                             color: SGColors.gray4),
                       ])),
@@ -409,8 +415,10 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                             color: SGColors.gray5,
                             weight: FontWeight.w700),
                         SizedBox(width: SGSpacing.p2),
-                        SGTypography.body("최근 7일, ${totalTakeout}명이 포장 주문 했어요.",
-                            size: FontSize.small, color: SGColors.gray4),
+                        SGTypography.body(
+                            "최근 7일, ${state.takeoutCount}명이 포장 주문 했어요.",
+                            size: FontSize.small,
+                            color: SGColors.gray4),
                       ])),
                   SizedBox(height: SGSpacing.p5),
                 ],

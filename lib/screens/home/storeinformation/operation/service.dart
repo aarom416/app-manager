@@ -31,6 +31,29 @@ class StoreInformationService {
       return Future.error(e);
     }
   }
+
+  /// POST - 사업자 정보 업데이트
+  /// 사업자 구분만 수정이 가능
+  Future<Response<dynamic>> updateBusinessInformation(
+      {required String storeId, required int businessType}) async {
+    try {
+      final response = ref.read(requestApiProvider).post(
+        RestApiUri.updateBusinessInformation,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'businessType': businessType,
+        },
+      );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final storeInformationServiceProvider =

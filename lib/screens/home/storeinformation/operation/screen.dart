@@ -41,8 +41,6 @@ class _StoreInformationScreenState
   Widget build(BuildContext context) {
     final state = ref.watch(storeInformationNotifierProvider);
 
-    final provider = ref.read(storeInformationNotifierProvider.notifier);
-
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBarWithLeftArrow(title: '사업자 정보'),
@@ -63,12 +61,12 @@ class _StoreInformationScreenState
                 GestureDetector(
                     child: SingleInformationBox(
                         label: '전화번호',
-                        value: state.storeInformation.phoneNumber,
+                        value: state.storeInformation.ownerPhoneNumber,
                         editable: true),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => PhoneEditScreen(
-                              value: state.storeInformation.phoneNumber,
+                              value: state.storeInformation.ownerPhoneNumber,
                               title: "사장님 전화번호 변경",
                               hintText: "연락처를 입력해주세요.",
                               buttonText: "변경하기",
@@ -82,12 +80,12 @@ class _StoreInformationScreenState
                 GestureDetector(
                     child: SingleInformationBox(
                         label: '이메일',
-                        value: state.storeInformation.email,
+                        value: state.storeInformation.ownerEmail,
                         editable: true),
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => EmailEditScreen(
-                              value: state.storeInformation.email,
+                              value: state.storeInformation.ownerEmail,
                               title: "이메일 변경",
                               hintText: "이메일을 입력해주세요.",
                               buttonText: "변경하기",
@@ -121,25 +119,27 @@ class _StoreInformationScreenState
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
                       left: "사업자등록번호",
-                      right: state.storeInformation.businessRegistrationNumber),
+                      right: state.storeInformation.businessNumber),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
                       left: "세금신고자료 발행정보",
-                      right: state.storeInformation.taxReportInfo),
+                      right: state.storeInformation.taxReportingInformation),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
                       left: "매출 규모 분류",
-                      right: state.storeInformation.salesScaleCategory),
+                      right: state.storeInformation.salesScaleClassification),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
                       left: "사업자 구분",
                       right: state.storeInformation.businessType),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
-                      left: "업태", right: state.storeInformation.businessForm),
+                      left: "업태",
+                      right: state.storeInformation.businessActivityStatus),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
-                      left: "종목", right: state.storeInformation.businessType),
+                      left: "종목",
+                      right: state.storeInformation.businessCategory),
                   DATA_TABLE_DIVIDER(),
                   SGTypography.body("소재지",
                       size: FontSize.small, weight: FontWeight.w600),
@@ -151,12 +151,11 @@ class _StoreInformationScreenState
                       left: "기본 주소", right: state.storeInformation.baseAddress),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
-                      left: "지번 주소",
-                      right: state.storeInformation.landLotAddress),
+                      left: "지번 주소", right: state.storeInformation.lotAddress),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
                       left: "상세 주소",
-                      right: state.storeInformation.detailedAddress),
+                      right: state.storeInformation.detailAddress),
                 ]),
                 SizedBox(height: SGSpacing.p8),
                 MultipleInformationBox(children: [
@@ -165,39 +164,38 @@ class _StoreInformationScreenState
                   SizedBox(height: SGSpacing.p5),
                   DataTableRow(
                       left: "영업신고증 고유번호",
-                      right: state.storeInformation.businessLicenseNumber),
+                      right: state.storeInformation.businessRegistrationNumber),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
-                      left: "대표자명",
-                      right: state.storeInformation.representativeName),
+                      left: "대표자명", right: state.storeInformation.ceoName),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
-                      left: "영업소 명칭", right: state.storeInformation.branchName),
+                      left: "영업소 명칭", right: state.storeInformation.storeName),
                   DATA_TABLE_DIVIDER(),
                   SGTypography.body("소재지",
                       size: FontSize.small, weight: FontWeight.w600),
                   SizedBox(height: SGSpacing.p5),
                   DataTableRow(
-                      left: "우편번호", right: state.storeInformation.postalCode2),
+                      left: "우편번호", right: state.storeInformation.postalCode),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
                       left: "기본 주소", right: state.storeInformation.baseAddress),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
-                      left: "지번 주소",
-                      right: state.storeInformation.landLotAddress),
+                      left: "지번 주소", right: state.storeInformation.lotAddress),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
                       left: "상세 주소",
-                      right: state.storeInformation.detailedAddress2),
+                      right: state.storeInformation.detailAddress),
                   DATA_TABLE_DIVIDER(),
                   DataTableRow(
                       left: "영업의 종류",
-                      right: state.storeInformation.businessCategory),
+                      right: state.storeInformation.operationType),
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
                       left: "통신판매신고증 정보",
-                      right: state.storeInformation.ecommerceRegistrationInfo),
+                      right: state
+                          .storeInformation.ecommerceRegistrationInformation),
                 ]),
                 SizedBox(height: SGSpacing.p20),
               ],
@@ -207,28 +205,39 @@ class _StoreInformationScreenState
   }
 }
 
-class _EditBusinessProfileScreen extends StatefulWidget {
+class _EditBusinessProfileScreen extends ConsumerStatefulWidget {
   const _EditBusinessProfileScreen({super.key});
 
   @override
-  State<_EditBusinessProfileScreen> createState() =>
+  ConsumerState<_EditBusinessProfileScreen> createState() =>
       _EditBusinessProfileScreenState();
 }
 
 class _EditBusinessProfileScreenState
-    extends State<_EditBusinessProfileScreen> {
-  String businessType = "일반 과세자";
+    extends ConsumerState<_EditBusinessProfileScreen> {
+  String businessType = "0";
+  var selectionOption;
+  @override
+  void initState() {
+    Future.microtask(() {
+      ref
+          .read(storeInformationNotifierProvider.notifier)
+          .getBusinessInformation();
+    });
+  }
 
   List<SelectionOption<String>> businessTypeOptions = [
-    SelectionOption(label: "일반 과세자", value: "일반 과세자"),
-    SelectionOption(label: "간이 과세자", value: "간이 과세자"),
-    SelectionOption(label: "법인 과세자", value: "법인 과세자"),
-    SelectionOption(label: "부가가치세 면세 사업자", value: "부가가치세 면세 사업자"),
-    SelectionOption(label: "면세법인 사업자", value: "면세법인 사업자"),
+    SelectionOption(label: "일반 과세자", value: "0"),
+    SelectionOption(label: "간이 과세자", value: "1"),
+    SelectionOption(label: "법인 과세자", value: "2"),
+    SelectionOption(label: "부가가치세 면세 사업자", value: "3"),
+    SelectionOption(label: "면세법인 사업자", value: "4"),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(storeInformationNotifierProvider);
+    final provider = ref.read(storeInformationNotifierProvider.notifier);
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "사업자 정보"),
         body: SGContainer(
@@ -243,7 +252,7 @@ class _EditBusinessProfileScreenState
                 padding: EdgeInsets.symmetric(
                     horizontal: SGSpacing.p4,
                     vertical: SGSpacing.p4 + SGSpacing.p05),
-                child: SGTypography.body("123-45-67891",
+                child: SGTypography.body(state.storeInformation.businessNumber,
                     size: FontSize.normal,
                     weight: FontWeight.w400,
                     color: SGColors.gray3),
@@ -271,7 +280,8 @@ class _EditBusinessProfileScreenState
                       horizontal: SGSpacing.p4,
                       vertical: SGSpacing.p4 + SGSpacing.p05),
                   child: Row(children: [
-                    SGTypography.body(businessType,
+                    SGTypography.body(
+                        businessTypeOptions[int.parse(businessType)].label,
                         color: SGColors.black,
                         size: FontSize.normal,
                         weight: FontWeight.w500),
@@ -291,7 +301,8 @@ class _EditBusinessProfileScreenState
                     horizontal: SGSpacing.p4,
                     vertical: SGSpacing.p4 + SGSpacing.p05),
                 child: Row(children: [
-                  SGTypography.body("음식점업",
+                  SGTypography.body(
+                      state.storeInformation.businessActivityStatus,
                       size: FontSize.normal,
                       weight: FontWeight.w400,
                       color: SGColors.gray3),
@@ -306,7 +317,7 @@ class _EditBusinessProfileScreenState
                     horizontal: SGSpacing.p4,
                     vertical: SGSpacing.p4 + SGSpacing.p05),
                 child: Row(children: [
-                  SGTypography.body("한식",
+                  SGTypography.body(state.storeInformation.businessCategory,
                       size: FontSize.normal,
                       weight: FontWeight.w400,
                       color: SGColors.gray3),
@@ -317,18 +328,22 @@ class _EditBusinessProfileScreenState
               SGTypography.label("소재지"),
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               MultipleInformationBox(children: [
-                DataTableRow(left: "우편번호", right: "566892"),
+                DataTableRow(
+                    left: "우편번호", right: state.storeInformation.postalCode),
                 SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: "기본 주소", right: "서울특별시"),
+                DataTableRow(
+                    left: "기본 주소", right: state.storeInformation.baseAddress),
                 SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: "지번 주소", right: "역삼 1동"),
+                DataTableRow(
+                    left: "지번 주소", right: state.storeInformation.lotAddress),
                 SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: "상세 주소", right: "A빌딩 303호"),
+                DataTableRow(
+                    left: "상세 주소", right: state.storeInformation.detailAddress),
               ]),
               SizedBox(height: SGSpacing.p15),
               SGActionButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    provider.updateBusinessInformation(int.parse(businessType));
                   },
                   label: "변경하기")
             ])));
