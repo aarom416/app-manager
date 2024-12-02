@@ -15,11 +15,7 @@ class StoreOperationService {
   /// GET - 영업 정보 조회
   Future<Response<dynamic>> getOperationInfo({required String storeId}) async {
     try {
-      final response = ref.read(requestApiProvider).get(
-            path: RestApiUri.getOperationInfo.replaceAll('{storeId}', storeId),
-          );
-
-      return response;
+      return ref.read(requestApiProvider).get(path: RestApiUri.getOperationInfo.replaceAll('{storeId}', storeId));
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);
@@ -30,18 +26,15 @@ class StoreOperationService {
   }
 
   /// POST - 배달 상태 수정
-  Future<Response<dynamic>> updateDeliveryStatus(
-      {required String storeId, required int deliveryStatus}) async {
+  Future<Response<dynamic>> updateDeliveryStatus({required String storeId, required int deliveryStatus}) async {
     try {
-      final response = await ref.read(requestApiProvider).post(
+      return await ref.read(requestApiProvider).post(
         RestApiUri.updateDeliveryStatus,
         data: {
           'storeId': UserHive.getBox(key: UserKey.storeId),
           'deliveryStatus': deliveryStatus,
         },
       );
-
-      return response;
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);
@@ -52,18 +45,15 @@ class StoreOperationService {
   }
 
   /// POST - 포장 상태 수정
-  Future<Response<dynamic>> updatePickupStatus(
-      {required String storeId, required int pickUpStatus}) async {
+  Future<Response<dynamic>> updatePickupStatus({required String storeId, required int pickUpStatus}) async {
     try {
-      final response = await ref.read(requestApiProvider).post(
+      return await ref.read(requestApiProvider).post(
         RestApiUri.updatePickupStatus,
         data: {
           'storeId': UserHive.getBox(key: UserKey.storeId),
           'pickUpStatus': pickUpStatus,
         },
       );
-
-      return response;
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);
@@ -74,11 +64,9 @@ class StoreOperationService {
   }
 
   /// POST - 가게 영업 시간 변경
-  Future<Response<dynamic>> updateOperationTime(
-      {required String storeId,
-      required List<OperationTimeDetailModel> operationTimeDetails}) async {
+  Future<Response<dynamic>> updateOperationTime({required String storeId, required List<OperationTimeDetailModel> operationTimeDetails}) async {
     try {
-      final response = await ref.read(requestApiProvider).post(
+      return await ref.read(requestApiProvider).post(
         RestApiUri.updateOperationTime,
         data: {
           'storeId': UserHive.getBox(key: UserKey.storeId),
@@ -93,8 +81,33 @@ class StoreOperationService {
           }).toList()
         },
       );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 
-      return response;
+  /// POST - 가게 휴게 시간 변경
+  Future<Response<dynamic>> updateBreakTime({required String storeId, required List<OperationTimeDetailModel> breakTimeDetails}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateBreakTime,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'dayList': breakTimeDetails.asMap().entries.map((entry) {
+            return entry.key;
+          }).toList(),
+          'startTimeList': breakTimeDetails.map((operationTimeDetail) {
+            return operationTimeDetail.startTime;
+          }).toList(),
+          'endTimeList': breakTimeDetails.map((operationTimeDetail) {
+            return operationTimeDetail.endTime;
+          }).toList()
+        },
+      );
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);
@@ -105,5 +118,4 @@ class StoreOperationService {
   }
 }
 
-final storeOperationServiceProvider =
-    Provider<StoreOperationService>((ref) => StoreOperationService(ref));
+final storeOperationServiceProvider = Provider<StoreOperationService>((ref) => StoreOperationService(ref));

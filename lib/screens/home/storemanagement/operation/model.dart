@@ -33,8 +33,7 @@ abstract class OperationTimeDetailModel with _$OperationTimeDetailModel {
     @Default('') String ment,
   }) = _OperationTimeDetailModel;
 
-  factory OperationTimeDetailModel.fromJson(Map<String, dynamic> json) =>
-      _$OperationTimeDetailModelFromJson(json);
+  factory OperationTimeDetailModel.fromJson(Map<String, dynamic> json) => _$OperationTimeDetailModelFromJson(json);
 }
 
 @freezed
@@ -42,15 +41,11 @@ abstract class StoreOperationInfoModel with _$StoreOperationInfoModel {
   const factory StoreOperationInfoModel({
     @Default(0) int deliveryStatus,
     @Default(0) int takeOutStatus,
-    @Default(<OperationTimeDetailModel>[])
-    List<OperationTimeDetailModel> operationTimeDetailDTOList,
-    @Default(<OperationTimeDetailModel>[])
-    List<OperationTimeDetailModel> breakTimeDetailDTOList,
-    @Default(<OperationTimeDetailModel>[])
-    List<OperationTimeDetailModel> holidayDetailDTOList,
+    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> operationTimeDetailDTOList,
+    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> breakTimeDetailDTOList,
+    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> holidayDetailDTOList,
     @Default(0) int holidayStatus,
   }) = _StoreOperationInfoModel;
 
-  factory StoreOperationInfoModel.fromJson(Map<String, dynamic> json) =>
-      _$StoreOperationInfoModelFromJson(json);
+  factory StoreOperationInfoModel.fromJson(Map<String, dynamic> json) => _$StoreOperationInfoModelFromJson(json);
 }

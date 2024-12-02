@@ -14,60 +14,54 @@ import 'package:singleeat/core/constants/colors.dart';
 import '../../../../../utils/time_utils.dart';
 import '../model.dart';
 
-class StoreOperationTimesScreen extends StatefulWidget {
-  final List<OperationTimeDetailModel> operationTimeDetails;
+class StoreBreakTimesScreen extends StatefulWidget {
+  final List<OperationTimeDetailModel> breakTimeDetails;
   final Function(List<OperationTimeDetailModel>) onSaveFunction;
 
-  const StoreOperationTimesScreen({super.key, required this.operationTimeDetails, required this.onSaveFunction});
+  const StoreBreakTimesScreen({super.key, required this.breakTimeDetails, required this.onSaveFunction});
 
   @override
-  State<StoreOperationTimesScreen> createState() => _StoreOperationTimesScreenState();
+  State<StoreBreakTimesScreen> createState() => _StoreBreakTimesScreenState();
 }
 
-class _StoreOperationTimesScreenState extends State<StoreOperationTimesScreen> {
-  late List<OperationTimeDetailModel> operationTimeDetails;
+class _StoreBreakTimesScreenState extends State<StoreBreakTimesScreen> {
+  late List<OperationTimeDetailModel> breakTimeDetails;
 
   @override
   void initState() {
     super.initState();
-    operationTimeDetails = List.from(widget.operationTimeDetails);
+    breakTimeDetails = List.from(widget.breakTimeDetails);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWithLeftArrow(title: "영업시간 변경"),
+        appBar: AppBarWithLeftArrow(title: "휴게시간 변경"),
         body: SGContainer(
-          color: Color(0xFFFAFAFA),
+          color: const Color(0xFFFAFAFA),
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
           child: ListView(
             children: [
-              ...operationTimeDetails
-                  .asMap()
-                  .entries
-                  .map((entry) {
-                    int index = entry.key;
-                    OperationTimeDetailModel businessHour = entry.value;
-                    return [
-                      __OperationTimeCard(
-                        key: ValueKey<int>(index),
-                        businessHour: businessHour,
-                        onEditFunction: (businessHour) {
-                          // print("onEditFunction index [$index] $businessHour");
-                          setState(() {
-                            operationTimeDetails[index] = businessHour;
-                          });
-                        },
-                      ),
-                      SizedBox(height: SGSpacing.p2 + SGSpacing.p05)
-                    ];
-                  })
+              ...breakTimeDetails
+                  .mapIndexed((index, businessHour) => [
+                        __BreakTimeCard(
+                          key: ValueKey<int>(index),
+                          businessHour: businessHour,
+                          onEditFunction: (businessHour) {
+                            // print("onEditFunction index [$index] $businessHour");
+                            setState(() {
+                              breakTimeDetails[index] = businessHour;
+                            });
+                          },
+                        ),
+                        SizedBox(height: SGSpacing.p2 + SGSpacing.p05)
+                      ])
                   .toList()
                   .flattened,
               SizedBox(height: SGSpacing.p15),
               SGActionButton(
                   onPressed: () {
-                    widget.onSaveFunction(operationTimeDetails);
+                    widget.onSaveFunction(breakTimeDetails);
                     Navigator.of(context).pop();
                   },
                   label: "변경하기",
@@ -78,11 +72,11 @@ class _StoreOperationTimesScreenState extends State<StoreOperationTimesScreen> {
   }
 }
 
-class __OperationTimeCard extends StatelessWidget {
+class __BreakTimeCard extends StatelessWidget {
   final OperationTimeDetailModel businessHour;
   final Function(OperationTimeDetailModel) onEditFunction;
 
-  __OperationTimeCard({
+  __BreakTimeCard({
     super.key,
     required this.businessHour,
     required this.onEditFunction,
@@ -109,7 +103,7 @@ class __OperationTimeCard extends StatelessWidget {
     final endTime = businessHour.endTime.split(':');
     var endHour = endTime[0];
     var endMinute = endTime[1];
-    var is24Hour = startHour == "00" && startMinute == "00" && endHour == "24" && endMinute == "00";
+    var isNoBreak = startHour == "00" && startMinute == "00" && endHour == "00" && endMinute == "00";
 
     return SGContainer(
       color: SGColors.white,
@@ -125,17 +119,17 @@ class __OperationTimeCard extends StatelessWidget {
             children: [
               SGTypography.body("${businessHour.day}요일", size: FontSize.normal, weight: FontWeight.w500),
               Spacer(),
-              SGTypography.body("24시", size: FontSize.normal, weight: FontWeight.w600, color: is24Hour ? SGColors.primary : SGColors.gray4),
+              SGTypography.body("24시", size: FontSize.normal, weight: FontWeight.w600, color: isNoBreak ? SGColors.primary : SGColors.gray4),
               SizedBox(width: SGSpacing.p1),
               SGSwitch(
-                value: is24Hour,
+                value: isNoBreak,
                 onChanged: (value) {
-                  onEditFunction(businessHour.copyWith(startTime: value ? "00:00" : "09:00", endTime: value ? "24:00" : "21:00"));
+                  onEditFunction(businessHour.copyWith(startTime: value ? "00:00" : "15:00", endTime: value ? "00:00" : "17:00"));
                 },
               ),
             ],
           ),
-          if (!is24Hour) ...[
+          if (!isNoBreak) ...[
             SizedBox(height: SGSpacing.p4),
             SGTypography.body("시작 시간", weight: FontWeight.w600, color: SGColors.gray4),
             SizedBox(height: SGSpacing.p2),
