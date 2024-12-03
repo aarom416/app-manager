@@ -6,9 +6,9 @@ import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/office/models/store_info_model.dart';
 import 'package:singleeat/office/services/store_management_basic_info_service.dart';
 
-part 'store_management_basic_info_provider.freezed.dart';
+part 'provider.freezed.dart';
 
-part 'store_management_basic_info_provider.g.dart';
+part 'provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class StoreManagementBasicInfoNotifier

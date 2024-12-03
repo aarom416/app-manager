@@ -13,7 +13,7 @@ import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/core/screens/image_upload_screen.dart';
 import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 import 'package:singleeat/core/screens/textarea_screen.dart';
-import 'package:singleeat/office/providers/store_management_basic_info_provider.dart';
+import 'package:singleeat/screens/home/storemanagement/infomation/provider.dart';
 
 class StoreManagementBasicInfoScreen extends ConsumerStatefulWidget {
   const StoreManagementBasicInfoScreen({super.key});

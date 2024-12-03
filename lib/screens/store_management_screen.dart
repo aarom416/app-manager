@@ -5,10 +5,10 @@ import 'package:singleeat/core/components/custom_tab_bar.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/screens/store_management_basic_info_screen.dart';
+import 'package:singleeat/screens/home/storemanagement/infomation/screen.dart';
 import 'package:singleeat/screens/home/storemanagement/operation/screen.dart';
-import 'package:singleeat/screens/store_management_delivery_tip_screen.dart';
-import 'package:singleeat/screens/store_manangement_cuisine_management_screen.dart';
+import 'package:singleeat/screens/home/storemanagement/delivery/screen.dart';
+import 'package:singleeat/screens/home/storemanagement/menu/screen.dart';
 
 class StoreManagementScreen extends StatefulWidget {
   const StoreManagementScreen({super.key});
@@ -70,7 +70,7 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
                         const StoreManagementBasicInfoScreen(),
-                        const StoreOperationScreen(),
+                        const OperationScreen(),
                         StoreManagementDeliveryTipScreen(),
                         StoreManangementCuisineManagementScreen(),
                       ],

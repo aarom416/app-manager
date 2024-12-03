@@ -14,23 +14,26 @@ import 'package:singleeat/core/constants/colors.dart';
 import '../../../../../utils/time_utils.dart';
 import '../model.dart';
 
-class StoreBreakTimesScreen extends StatefulWidget {
-  final List<OperationTimeDetailModel> breakTimeDetails;
+class BreakTimeScreen extends StatefulWidget {
+  final List<OperationTimeDetailModel> breakTimeDetailDTOList;
+  final List<OperationTimeDetailModel> regularHolidays;
   final Function(List<OperationTimeDetailModel>) onSaveFunction;
 
-  const StoreBreakTimesScreen({super.key, required this.breakTimeDetails, required this.onSaveFunction});
+  const BreakTimeScreen({super.key, required this.breakTimeDetailDTOList, required this.regularHolidays, required this.onSaveFunction});
 
   @override
-  State<StoreBreakTimesScreen> createState() => _StoreBreakTimesScreenState();
+  State<BreakTimeScreen> createState() => _BreakTimeScreenState();
 }
 
-class _StoreBreakTimesScreenState extends State<StoreBreakTimesScreen> {
-  late List<OperationTimeDetailModel> breakTimeDetails;
+class _BreakTimeScreenState extends State<BreakTimeScreen> {
+  late List<OperationTimeDetailModel> breakTimeDetailDTOList;
+  late List<OperationTimeDetailModel> regularHolidays;
 
   @override
   void initState() {
     super.initState();
-    breakTimeDetails = List.from(widget.breakTimeDetails);
+    breakTimeDetailDTOList = List.from(widget.breakTimeDetailDTOList);
+    regularHolidays = List.from(widget.regularHolidays);
   }
 
   @override
@@ -42,43 +45,91 @@ class _StoreBreakTimesScreenState extends State<StoreBreakTimesScreen> {
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
           child: ListView(
             children: [
-              ...breakTimeDetails
-                  .mapIndexed((index, businessHour) => [
-                        __BreakTimeCard(
-                          key: ValueKey<int>(index),
-                          businessHour: businessHour,
-                          onEditFunction: (businessHour) {
-                            // print("onEditFunction index [$index] $businessHour");
-                            setState(() {
-                              breakTimeDetails[index] = businessHour;
-                            });
-                          },
-                        ),
-                        SizedBox(height: SGSpacing.p2 + SGSpacing.p05)
-                      ])
+              ...breakTimeDetailDTOList
+                  .asMap()
+                  .entries
+                  .map((entry) {
+                    int index = entry.key;
+                    OperationTimeDetailModel breakTimeDetailDTO = entry.value;
+                    var isHoliday = regularHolidays.any((regularHoliday) => (regularHoliday.day == breakTimeDetailDTO.day) && regularHoliday.isWeekCycleHoliday());
+                    return isHoliday
+                        ? [
+                            __BreakTimeRegularHolidayCard(
+                              key: ValueKey<int>(index),
+                              breakTimeDetailDTO: breakTimeDetailDTO,
+                            ),
+                            SizedBox(height: SGSpacing.p2 + SGSpacing.p05)
+                          ]
+                        : [
+                            __BreakTimeCard(
+                              key: ValueKey<int>(index),
+                              breakTimeDetailDTO: breakTimeDetailDTO,
+                              onEditFunction: (breakTimeDetailDTO) {
+                                // print("onEditFunction index [$index] breakTimeDetailDTO");
+                                setState(() {
+                                  breakTimeDetailDTOList[index] = breakTimeDetailDTO;
+                                });
+                              },
+                            ),
+                            SizedBox(height: SGSpacing.p2 + SGSpacing.p05)
+                          ];
+                  })
                   .toList()
                   .flattened,
               SizedBox(height: SGSpacing.p15),
               SGActionButton(
                   onPressed: () {
-                    widget.onSaveFunction(breakTimeDetails);
+                    widget.onSaveFunction(breakTimeDetailDTOList);
                     Navigator.of(context).pop();
                   },
                   label: "변경하기",
-                  disabled: false)
+                  disabled: widget.breakTimeDetailDTOList.isEqualTo(breakTimeDetailDTOList))
             ],
           ),
         ));
   }
 }
 
+class __BreakTimeRegularHolidayCard extends StatelessWidget {
+  final OperationTimeDetailModel breakTimeDetailDTO;
+
+  const __BreakTimeRegularHolidayCard({
+    super.key,
+    required this.breakTimeDetailDTO,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SGContainer(
+      color: SGColors.white,
+      borderColor: SGColors.line2,
+      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+      borderRadius: BorderRadius.circular(SGSpacing.p4),
+      boxShadow: SGBoxShadow.large,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SGTypography.body("${breakTimeDetailDTO.day}요일", size: FontSize.normal, weight: FontWeight.w500),
+              const Spacer(),
+              SGTypography.body("정기휴무일", size: FontSize.normal, weight: FontWeight.w600, color: SGColors.gray4),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
 class __BreakTimeCard extends StatelessWidget {
-  final OperationTimeDetailModel businessHour;
+  final OperationTimeDetailModel breakTimeDetailDTO;
   final Function(OperationTimeDetailModel) onEditFunction;
 
   __BreakTimeCard({
     super.key,
-    required this.businessHour,
+    required this.breakTimeDetailDTO,
     required this.onEditFunction,
   })  : hourOptions = List.generate(
           24,
@@ -97,13 +148,12 @@ class __BreakTimeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final startTime = businessHour.startTime.split(':');
-    var startHour = startTime[0];
-    var startMinute = startTime[1];
-    final endTime = businessHour.endTime.split(':');
-    var endHour = endTime[0];
-    var endMinute = endTime[1];
-    var isNoBreak = startHour == "00" && startMinute == "00" && endHour == "00" && endMinute == "00";
+    final startTimeSplit = breakTimeDetailDTO.startTime.split(':');
+    final startHour = startTimeSplit[0];
+    final startMinute = startTimeSplit[1];
+    final endTimeSplit = breakTimeDetailDTO.endTime.split(':');
+    final endHour = endTimeSplit[0];
+    final endMinute = endTimeSplit[1];
 
     return SGContainer(
       color: SGColors.white,
@@ -117,19 +167,19 @@ class __BreakTimeCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SGTypography.body("${businessHour.day}요일", size: FontSize.normal, weight: FontWeight.w500),
+              SGTypography.body("${breakTimeDetailDTO.day}요일", size: FontSize.normal, weight: FontWeight.w500),
               Spacer(),
-              SGTypography.body("24시", size: FontSize.normal, weight: FontWeight.w600, color: isNoBreak ? SGColors.primary : SGColors.gray4),
+              SGTypography.body("24시", size: FontSize.normal, weight: FontWeight.w600, color: breakTimeDetailDTO.isNoBreak() ? SGColors.primary : SGColors.gray4),
               SizedBox(width: SGSpacing.p1),
               SGSwitch(
-                value: isNoBreak,
-                onChanged: (value) {
-                  onEditFunction(businessHour.copyWith(startTime: value ? "00:00" : "15:00", endTime: value ? "00:00" : "17:00"));
+                value: breakTimeDetailDTO.isNoBreak(),
+                onChanged: (noBreak) {
+                  onEditFunction(noBreak ? breakTimeDetailDTO.toNoBreak() : breakTimeDetailDTO.toDefaultBreakHour());
                 },
               ),
             ],
           ),
-          if (!isNoBreak) ...[
+          if (!breakTimeDetailDTO.isNoBreak()) ...[
             SizedBox(height: SGSpacing.p4),
             SGTypography.body("시작 시간", weight: FontWeight.w600, color: SGColors.gray4),
             SizedBox(height: SGSpacing.p2),
@@ -142,7 +192,7 @@ class __BreakTimeCard extends StatelessWidget {
                         title: "시작 시간을 설정해 주세요.",
                         options: hourOptions,
                         onSelect: (value) {
-                          onEditFunction(businessHour.copyWith(startTime: "$value:$startMinute"));
+                          onEditFunction(breakTimeDetailDTO.copyWith(startTime: "$value:$startMinute"));
                         },
                         selected: startHour);
                   },
@@ -165,7 +215,7 @@ class __BreakTimeCard extends StatelessWidget {
                         title: "시작 시간(분)을 설정해 주세요.",
                         options: minuteOptions,
                         onSelect: (minute) {
-                          onEditFunction(businessHour.copyWith(startTime: "$startHour:$minute"));
+                          onEditFunction(breakTimeDetailDTO.copyWith(startTime: "$startHour:$minute"));
                         },
                         selected: startMinute);
                   },
@@ -192,7 +242,7 @@ class __BreakTimeCard extends StatelessWidget {
                         title: "종료 시간을 설정해 주세요.",
                         options: hourOptions,
                         onSelect: (value) {
-                          onEditFunction(businessHour.copyWith(endTime: "$value:$endMinute"));
+                          onEditFunction(breakTimeDetailDTO.copyWith(endTime: "$value:$endMinute"));
                         },
                         selected: endHour);
                   },
@@ -215,7 +265,7 @@ class __BreakTimeCard extends StatelessWidget {
                         title: "종료 시간(분)을 설정해 주세요.",
                         options: minuteOptions,
                         onSelect: (minute) {
-                          onEditFunction(businessHour.copyWith(endTime: "$endHour:$minute"));
+                          onEditFunction(breakTimeDetailDTO.copyWith(endTime: "$endHour:$minute"));
                         },
                         selected: endMinute);
                   },

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -15,20 +14,20 @@ import 'package:singleeat/screens/home/storemanagement/operation/holiday/tempora
 import '../../../../common/common_widgets.dart';
 import '../model.dart';
 
-class StoreHolidayScreen extends StatefulWidget {
+class HolidayScreen extends StatefulWidget {
   final int holidayStatus;
-  final List<OperationTimeDetailModel> holidayDetails;
+  final List<OperationTimeDetailModel> regularHolidays;
+  final List<OperationTimeDetailModel> temporaryHolidays;
   final Function(int, List<OperationTimeDetailModel>, List<OperationTimeDetailModel>) onSaveFunction;
 
-  const StoreHolidayScreen({super.key, required this.holidayStatus, required this.holidayDetails, required this.onSaveFunction});
+  const HolidayScreen({super.key, required this.holidayStatus, required this.regularHolidays, required this.temporaryHolidays, required this.onSaveFunction});
 
   @override
-  State<StoreHolidayScreen> createState() => _StoreHolidayScreenState();
+  State<HolidayScreen> createState() => _HolidayScreenState();
 }
 
-class _StoreHolidayScreenState extends State<StoreHolidayScreen> {
+class _HolidayScreenState extends State<HolidayScreen> {
   late int holidayStatus;
-  late List<OperationTimeDetailModel> holidayDetails;
   late List<OperationTimeDetailModel> regularHolidays;
   late List<OperationTimeDetailModel> temporaryHolidays;
 
@@ -36,14 +35,8 @@ class _StoreHolidayScreenState extends State<StoreHolidayScreen> {
   void initState() {
     super.initState();
     holidayStatus = widget.holidayStatus;
-    holidayDetails = List.from(widget.holidayDetails);
-    // 정기휴무. cycle 순 정렬
-    regularHolidays = holidayDetails.where((element) => element.holidayType == 0).toList()..sort((a, b) => a.cycle.compareTo(b.cycle));
-    // 임시휴무. startDate 순 정렬
-    temporaryHolidays = holidayDetails.where((element) => element.holidayType != 0).toList()
-      ..sort((a, b) => DateFormat('yyyy.MM.dd').parse(a.startDate).compareTo(
-            DateFormat('yyyy.MM.dd').parse(b.startDate),
-          ));
+    regularHolidays = widget.regularHolidays;
+    temporaryHolidays = widget.temporaryHolidays;
   }
 
   @override
@@ -54,19 +47,19 @@ class _StoreHolidayScreenState extends State<StoreHolidayScreen> {
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
           child: SGActionButton(
               onPressed: () {
-                print("holidayStatus $holidayStatus");
-                print("regularHolidays $regularHolidays");
-                print("temporaryHolidays $temporaryHolidays");
                 if (hasDuplicateRegularHolidays(regularHolidays)) {
                   showDefaultSnackBar(context, '중복된 정기휴무일이 있습니다.');
                 } else if (hasDuplicateTemporaryHolidays(temporaryHolidays)) {
                   showDefaultSnackBar(context, '중복된 임시휴무일이 있습니다.');
+                } else if (hasOverlappingDateRanges(temporaryHolidays)) {
+                  showDefaultSnackBar(context, '날짜가 겹치는 임시휴무일이 있습니다.');
                 } else {
                   widget.onSaveFunction(holidayStatus, regularHolidays, temporaryHolidays);
                   Navigator.of(context).pop();
                 }
               },
-              label: "변경하기")),
+              label: "변경하기",
+              disabled: holidayStatus == widget.holidayStatus && widget.regularHolidays.isEqualTo(regularHolidays) && widget.temporaryHolidays.isEqualTo(temporaryHolidays))),
       body: SGContainer(
           color: const Color(0xFFFAFAFA),
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
@@ -98,12 +91,12 @@ class _StoreHolidayScreenState extends State<StoreHolidayScreen> {
             SizedBox(height: SGSpacing.p3),
 
             // --------------------------- 정기휴무 ---------------------------
-            RegularHolidaysBox(
+            RegularHolidayBox(
               regularHolidays: regularHolidays,
-              onEditFunction: (regularHolidays_) {
-                print("onEditFunction regularHolidays_ $regularHolidays_");
+              onEditFunction: (regularHolidays) {
+                // print("onEditFunction regularHolidays $regularHolidays");
                 setState(() {
-                  regularHolidays = regularHolidays_;
+                  this.regularHolidays = regularHolidays;
                 });
               },
             ),
@@ -111,12 +104,12 @@ class _StoreHolidayScreenState extends State<StoreHolidayScreen> {
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
 
             // --------------------------- 임시휴무 ---------------------------
-            TemporaryHolidaysBox(
+            TemporaryHolidayBox(
               temporaryHolidays: temporaryHolidays,
-              onEditFunction: (temporaryHolidays_) {
-                print("onEditFunction temporaryHolidays_ $temporaryHolidays_");
+              onEditFunction: (temporaryHolidays) {
+                // print("onEditFunction temporaryHolidays $temporaryHolidays");
                 setState(() {
-                  temporaryHolidays = temporaryHolidays_;
+                  this.temporaryHolidays = temporaryHolidays;
                 });
               },
             ),
