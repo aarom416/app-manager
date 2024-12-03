@@ -17,14 +17,14 @@ import 'model.dart';
 import 'operationtime/screen.dart';
 import 'provider.dart';
 
-class StoreOperationScreen extends ConsumerStatefulWidget {
-  const StoreOperationScreen({super.key});
+class OperationScreen extends ConsumerStatefulWidget {
+  const OperationScreen({super.key});
 
   @override
-  ConsumerState<StoreOperationScreen> createState() => _StoreOperationScreenState();
+  ConsumerState<OperationScreen> createState() => _OperationScreenState();
 }
 
-class _StoreOperationScreenState extends ConsumerState<StoreOperationScreen> {
+class _OperationScreenState extends ConsumerState<OperationScreen> {
   @override
   void initState() {
     Future.microtask(() {

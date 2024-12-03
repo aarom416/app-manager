@@ -10,7 +10,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/office/providers/store_management_basic_info_provider.dart';
+import 'package:singleeat/screens/home/storemanagement/infomation/provider.dart';
 
 class AllergyInformationScreen extends ConsumerStatefulWidget {
   const AllergyInformationScreen({super.key});

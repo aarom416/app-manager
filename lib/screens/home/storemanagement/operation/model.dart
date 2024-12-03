@@ -7,12 +7,6 @@ part 'model.freezed.dart';
 
 part 'model.g.dart';
 
-enum StoreOperationInfoStatus {
-  init,
-  success,
-  error,
-}
-
 @freezed
 abstract class OperationTimeDetailModel with _$OperationTimeDetailModel {
   const factory OperationTimeDetailModel({
