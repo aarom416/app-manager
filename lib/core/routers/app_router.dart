@@ -11,6 +11,8 @@ import 'package:singleeat/screens/find_account_screen.dart';
 import 'package:singleeat/screens/find_account_webview_screen.dart';
 import 'package:singleeat/screens/find_by_password_screen.dart';
 import 'package:singleeat/screens/find_by_password_webview_screen.dart';
+import 'package:singleeat/screens/home/storeinformation/operation/screen.dart';
+import 'package:singleeat/screens/home/storestatistics/operation/screen.dart';
 import 'package:singleeat/screens/home_screen.dart';
 import 'package:singleeat/screens/login_screen.dart';
 import 'package:singleeat/screens/login_webview_screen.dart';
@@ -22,7 +24,6 @@ import 'package:singleeat/screens/register_delivery_agency_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/signup_screen.dart';
 import 'package:singleeat/screens/signup_webview_screen.dart';
-import 'package:singleeat/screens/statistics_screen.dart';
 import 'package:singleeat/screens/store_management_screen.dart';
 import 'package:singleeat/screens/store_registration_form_screen.dart';
 import 'package:singleeat/screens/success_change_password_screen.dart';
@@ -180,6 +181,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.storeManagement,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: StoreManagementScreen())),
+      GoRoute(
+          path: AppRoutes.storeInformation,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: StoreInformationScreen())),
       GoRoute(
           path: AppRoutes.orderHistory,
           pageBuilder: (context, state) =>

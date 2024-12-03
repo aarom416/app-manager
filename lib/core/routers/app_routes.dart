@@ -25,6 +25,7 @@ class AppRoutes {
   static const String changePassword = '/change/password';
   static const String successChangePassword = '/success/change/password';
   static const String storeManagement = '/store/management';
+  static const String storeInformation = '/store/information';
   static const String orderHistory = '/order/history';
   static const String allergyInformation = '/allergy/information';
 }
