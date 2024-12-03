@@ -33,11 +33,11 @@ final List<SelectionOption<String>> daysOfWeekOptions = [
   SelectionOption(value: "일", label: "일요일"),
 ];
 
-class RegularHolidaysBox extends StatelessWidget {
+class RegularHolidayBox extends StatelessWidget {
   final List<OperationTimeDetailModel> regularHolidays;
   final Function(List<OperationTimeDetailModel>) onEditFunction;
 
-  const RegularHolidaysBox({
+  const RegularHolidayBox({
     super.key,
     required this.regularHolidays,
     required this.onEditFunction,
@@ -73,8 +73,8 @@ class RegularHolidaysBox extends StatelessWidget {
                                       context: context,
                                       title: "정기 휴무일의 주기를 설정해주세요.",
                                       options: regularHolidayOptions,
-                                      onSelect: (cycle_) {
-                                        regularHolidays[index] = regularHoliday.copyWith(cycle: cycle_);
+                                      onSelect: (cycle) {
+                                        regularHolidays[index] = regularHoliday.copyWith(cycle: cycle);
                                         onEditFunction(regularHolidays);
                                       },
                                       selected: regularHoliday.cycle);
@@ -97,8 +97,8 @@ class RegularHolidaysBox extends StatelessWidget {
                                       context: context,
                                       title: "정기 휴무일의 요일을 설정해주세요.",
                                       options: daysOfWeekOptions,
-                                      onSelect: (day_) {
-                                        regularHolidays[index] = regularHoliday.copyWith(day: day_);
+                                      onSelect: (day) {
+                                        regularHolidays[index] = regularHoliday.copyWith(day: day);
                                         onEditFunction(regularHolidays);
                                       },
                                       selected: regularHoliday.day);

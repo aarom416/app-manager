@@ -14,23 +14,26 @@ import 'package:singleeat/core/constants/colors.dart';
 import '../../../../../utils/time_utils.dart';
 import '../model.dart';
 
-class StoreOperationTimesScreen extends StatefulWidget {
-  final List<OperationTimeDetailModel> operationTimeDetails;
+class OperationTimeScreen extends StatefulWidget {
+  final List<OperationTimeDetailModel> operationTimeDetailDTOList;
+  final List<OperationTimeDetailModel> regularHolidays;
   final Function(List<OperationTimeDetailModel>) onSaveFunction;
 
-  const StoreOperationTimesScreen({super.key, required this.operationTimeDetails, required this.onSaveFunction});
+  const OperationTimeScreen({super.key, required this.operationTimeDetailDTOList, required this.regularHolidays, required this.onSaveFunction});
 
   @override
-  State<StoreOperationTimesScreen> createState() => _StoreOperationTimesScreenState();
+  State<OperationTimeScreen> createState() => _OperationTimeScreenState();
 }
 
-class _StoreOperationTimesScreenState extends State<StoreOperationTimesScreen> {
-  late List<OperationTimeDetailModel> operationTimeDetails;
+class _OperationTimeScreenState extends State<OperationTimeScreen> {
+  late List<OperationTimeDetailModel> operationTimeDetailDTOList;
+  late List<OperationTimeDetailModel> regularHolidays;
 
   @override
   void initState() {
     super.initState();
-    operationTimeDetails = List.from(widget.operationTimeDetails);
+    operationTimeDetailDTOList = List.from(widget.operationTimeDetailDTOList);
+    regularHolidays = List.from(widget.regularHolidays);
   }
 
   @override
@@ -42,44 +45,41 @@ class _StoreOperationTimesScreenState extends State<StoreOperationTimesScreen> {
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
           child: ListView(
             children: [
-              ...operationTimeDetails
+              ...operationTimeDetailDTOList
                   .asMap()
                   .entries
                   .map((entry) {
                     int index = entry.key;
-                    OperationTimeDetailModel businessHour = entry.value;
-                    print("businessHour $businessHour");
-                    // if(businessHour.startTime == "00:00") {
-                    //   return [
-                    //     __OperationRegularHolidayCard(
-                    //       key: ValueKey<int>(index),
-                    //       businessHour: businessHour,
-                    //     ),
-                    //     SizedBox(height: SGSpacing.p2 + SGSpacing.p05)
-                    //   ];
-                    // } else {
-                      return [
-                        __OperationTimeCard(
-                          key: ValueKey<int>(index),
-                          businessHour: businessHour,
-                          onEditFunction: (businessHour) {
-                            // print("onEditFunction index [$index] $businessHour");
-                            setState(() {
-                              operationTimeDetails[index] = businessHour;
-                            });
-                          },
-                        ),
-                        SizedBox(height: SGSpacing.p2 + SGSpacing.p05)
-                      ];
-                    // }
-
+                    OperationTimeDetailModel operationTimeDetailDTO = entry.value;
+                    var isHoliday = regularHolidays.any((regularHoliday) => (regularHoliday.day == operationTimeDetailDTO.day) && regularHoliday.isWeekCycleHoliday());
+                    return isHoliday
+                        ? [
+                            __OperationRegularHolidayCard(
+                              key: ValueKey<int>(index),
+                              operationTimeDetailDTO: operationTimeDetailDTO,
+                            ),
+                            SizedBox(height: SGSpacing.p2 + SGSpacing.p05)
+                          ]
+                        : [
+                            __OperationTimeCard(
+                              key: ValueKey<int>(index),
+                              operationTimeDetailDTO: operationTimeDetailDTO,
+                              onEditFunction: (operationTimeDetailDTO) {
+                                // print("onEditFunction index [$index] operationTimeDetailDTO");
+                                setState(() {
+                                  operationTimeDetailDTOList[index] = operationTimeDetailDTO;
+                                });
+                              },
+                            ),
+                            SizedBox(height: SGSpacing.p2 + SGSpacing.p05)
+                          ];
                   })
                   .toList()
                   .flattened,
               SizedBox(height: SGSpacing.p15),
               SGActionButton(
                   onPressed: () {
-                    widget.onSaveFunction(operationTimeDetails);
+                    widget.onSaveFunction(operationTimeDetailDTOList);
                     Navigator.of(context).pop();
                   },
                   label: "변경하기",
@@ -90,13 +90,46 @@ class _StoreOperationTimesScreenState extends State<StoreOperationTimesScreen> {
   }
 }
 
+class __OperationRegularHolidayCard extends StatelessWidget {
+  final OperationTimeDetailModel operationTimeDetailDTO;
+
+  const __OperationRegularHolidayCard({
+    super.key,
+    required this.operationTimeDetailDTO,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SGContainer(
+      color: SGColors.white,
+      borderColor: SGColors.line2,
+      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+      borderRadius: BorderRadius.circular(SGSpacing.p4),
+      boxShadow: SGBoxShadow.large,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SGTypography.body("${operationTimeDetailDTO.day}요일", size: FontSize.normal, weight: FontWeight.w500),
+              const Spacer(),
+              SGTypography.body("정기휴무일", size: FontSize.normal, weight: FontWeight.w600, color: SGColors.gray4),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
 class __OperationTimeCard extends StatelessWidget {
-  final OperationTimeDetailModel businessHour;
+  final OperationTimeDetailModel operationTimeDetailDTO;
   final Function(OperationTimeDetailModel) onEditFunction;
 
   __OperationTimeCard({
     super.key,
-    required this.businessHour,
+    required this.operationTimeDetailDTO,
     required this.onEditFunction,
   })  : hourOptions = List.generate(
           24,
@@ -123,13 +156,12 @@ class __OperationTimeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final startTime = businessHour.startTime.split(':');
+    final startTime = operationTimeDetailDTO.startTime.split(':');
     var startHour = startTime[0];
     var startMinute = startTime[1];
-    final endTime = businessHour.endTime.split(':');
+    final endTime = operationTimeDetailDTO.endTime.split(':');
     var endHour = endTime[0];
     var endMinute = endTime[1];
-    var is24Hour = startHour == "00" && startMinute == "00" && endHour == "24" && endMinute == "00";
 
     return SGContainer(
       color: SGColors.white,
@@ -143,24 +175,23 @@ class __OperationTimeCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SGTypography.body("${businessHour.day}요일", size: FontSize.normal, weight: FontWeight.w500),
+              SGTypography.body("${operationTimeDetailDTO.day}요일", size: FontSize.normal, weight: FontWeight.w500),
               const Spacer(),
-              SGTypography.body("24시", size: FontSize.normal, weight: FontWeight.w600, color: is24Hour ? SGColors.primary : SGColors.gray4),
+              SGTypography.body("24시", size: FontSize.normal, weight: FontWeight.w600, color: operationTimeDetailDTO.is24OperationHour() ? SGColors.primary : SGColors.gray4),
               SizedBox(width: SGSpacing.p1),
               SGSwitch(
-                value: is24Hour,
+                value: operationTimeDetailDTO.is24OperationHour(),
                 onChanged: (value) {
                   if (value) {
-                    onEditFunction(businessHour.to24Hour());
+                    onEditFunction(operationTimeDetailDTO.to24OperationHour());
                   } else {
-                    onEditFunction(businessHour.toDefaultHour());
+                    onEditFunction(operationTimeDetailDTO.toDefaultOperationHour());
                   }
-                  // onEditFunction(businessHour.copyWith(startTime: value ? "00:00" : "09:00", endTime: value ? "24:00" : "21:00"));
                 },
               ),
             ],
           ),
-          if (!is24Hour) ...[
+          if (!operationTimeDetailDTO.is24OperationHour()) ...[
             SizedBox(height: SGSpacing.p4),
             SGTypography.body("시작 시간", weight: FontWeight.w600, color: SGColors.gray4),
             SizedBox(height: SGSpacing.p2),
@@ -174,10 +205,10 @@ class __OperationTimeCard extends StatelessWidget {
                         options: hourOptions,
                         onSelect: (value) {
                           // 시작시 0시, 종료시 0시 설정하지 못하도록 한다.
-                          if(value == "0" && businessHour.endTime == "00:00") {
-                            onEditFunction(businessHour.copyWith(startTime: "$value:$startMinute", endTime: "01:00"));
+                          if (value == "0" && operationTimeDetailDTO.endTime == "00:00") {
+                            onEditFunction(operationTimeDetailDTO.copyWith(startTime: "$value:$startMinute", endTime: "01:00"));
                           } else {
-                            onEditFunction(businessHour.copyWith(startTime: "$value:$startMinute"));
+                            onEditFunction(operationTimeDetailDTO.copyWith(startTime: "$value:$startMinute"));
                           }
                         },
                         selected: startHour);
@@ -201,7 +232,7 @@ class __OperationTimeCard extends StatelessWidget {
                         title: "시작 시간(분)을 설정해 주세요.",
                         options: minuteOptions,
                         onSelect: (minute) {
-                          onEditFunction(businessHour.copyWith(startTime: "$startHour:$minute"));
+                          onEditFunction(operationTimeDetailDTO.copyWith(startTime: "$startHour:$minute"));
                         },
                         selected: startMinute);
                   },
@@ -226,9 +257,9 @@ class __OperationTimeCard extends StatelessWidget {
                     showSelectionBottomSheet<String>(
                         context: context,
                         title: "종료 시간을 설정해 주세요.",
-                        options: businessHour.startTime == "00:00" ? hourWithout0Options : hourOptions,
+                        options: operationTimeDetailDTO.startTime == "00:00" ? hourWithout0Options : hourOptions,
                         onSelect: (value) {
-                          onEditFunction(businessHour.copyWith(endTime: "$value:$endMinute"));
+                          onEditFunction(operationTimeDetailDTO.copyWith(endTime: "$value:$endMinute"));
                         },
                         selected: endHour);
                   },
@@ -251,7 +282,7 @@ class __OperationTimeCard extends StatelessWidget {
                         title: "종료 시간(분)을 설정해 주세요.",
                         options: minuteOptions,
                         onSelect: (minute) {
-                          onEditFunction(businessHour.copyWith(endTime: "$endHour:$minute"));
+                          onEditFunction(operationTimeDetailDTO.copyWith(endTime: "$endHour:$minute"));
                         },
                         selected: endMinute);
                   },
@@ -271,50 +302,4 @@ class __OperationTimeCard extends StatelessWidget {
       ),
     );
   }
-}
-
-class __OperationRegularHolidayCard extends StatelessWidget {
-  final OperationTimeDetailModel businessHour;
-
-  const __OperationRegularHolidayCard({
-    super.key,
-    required this.businessHour,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SGContainer(
-      color: SGColors.white,
-      borderColor: SGColors.line2,
-      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
-      borderRadius: BorderRadius.circular(SGSpacing.p4),
-      boxShadow: SGBoxShadow.large,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SGTypography.body("${businessHour.day}요일", size: FontSize.normal, weight: FontWeight.w500),
-          const Spacer(),
-          SGTypography.body("정기휴무일 입니다", size: FontSize.normal, weight: FontWeight.w600, color: SGColors.gray4),
-        ],
-      ),
-    );
-  }
-}
-
-
-extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
-  /// 기본 영업시간으로 변경
-  OperationTimeDetailModel toDefaultHour() {
-    return copyWith(startTime: "09:00", endTime: "21:00");
-  }
-
-  /// 24시간 영업으로 변경
-  OperationTimeDetailModel to24Hour() {
-    return copyWith(startTime: "00:00", endTime: "24:00");
-  }
-
-  /// 영업하지 않음(정기휴무)으로 변경
-  // OperationTimeDetailModel toOffHour() {
-  //   return copyWith(startTime: "00:00", endTime: "00:00");
-  // }
 }

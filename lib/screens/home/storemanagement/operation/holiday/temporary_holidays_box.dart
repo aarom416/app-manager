@@ -13,21 +13,21 @@ import '../../../../../core/components/text_field_wrapper.dart';
 import '../../../../common/common_widgets.dart';
 import '../model.dart';
 
-class TemporaryHolidaysBox extends StatefulWidget {
+class TemporaryHolidayBox extends StatefulWidget {
   final List<OperationTimeDetailModel> temporaryHolidays;
   final Function(List<OperationTimeDetailModel>) onEditFunction;
 
-  const TemporaryHolidaysBox({
+  const TemporaryHolidayBox({
     super.key,
     required this.temporaryHolidays,
     required this.onEditFunction,
   });
 
   @override
-  State<TemporaryHolidaysBox> createState() => _TemporaryHolidaysBoxState();
+  State<TemporaryHolidayBox> createState() => _TemporaryHolidayBoxState();
 }
 
-class _TemporaryHolidaysBoxState extends State<TemporaryHolidaysBox> {
+class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
   late List<TextEditingController> textEditingControllers;
 
   int MENT_INPUT_MAX = 100;
@@ -80,7 +80,7 @@ class _TemporaryHolidaysBoxState extends State<TemporaryHolidaysBox> {
                               variant: DateRangePickerVariant.small,
                               dateRange: dateRange,
                               onStartDateChanged: (startDate) {
-                                print("onStartDateChanged $startDate");
+                                // print("onStartDateChanged $startDate");
                                 if (dateRange.end.isBefore(startDate)) {
                                   showDefaultSnackBar(context, '시작 날짜는 종료 날짜보다 빨라야 합니다.');
                                 } else {
@@ -90,7 +90,7 @@ class _TemporaryHolidaysBoxState extends State<TemporaryHolidaysBox> {
                                 }
                               },
                               onEndDateChanged: (endDate) {
-                                print("onEndDateChanged $endDate");
+                                // print("onEndDateChanged $endDate");
                                 if (dateRange.start.isAfter(endDate)) {
                                   showDefaultSnackBar(context, '종료 날짜는 시작 날짜보다 늦어야 합니다.');
                                 } else {
@@ -133,7 +133,7 @@ class _TemporaryHolidaysBoxState extends State<TemporaryHolidaysBox> {
                                   LengthLimitingTextInputFormatter(MENT_INPUT_MAX), // 최대 입력 길이 제한
                                 ],
                                 onChanged: (inputValue) {
-                                  print("onChanged $inputValue");
+                                  // print("onChanged $inputValue");
                                   final updatedHolidays = List<OperationTimeDetailModel>.from(widget.temporaryHolidays);
                                   updatedHolidays[index] = temporaryHoliday.copyWith(ment: inputValue);
                                   widget.onEditFunction(updatedHolidays);
@@ -159,14 +159,16 @@ class _TemporaryHolidaysBoxState extends State<TemporaryHolidaysBox> {
                     .flattened,
                 GestureDetector(
                   onTap: () {
-                    print("temporaryHolidays ${widget.temporaryHolidays}");
+                    // print("temporaryHolidays ${widget.temporaryHolidays}");
                     if (hasDuplicateTemporaryHolidays(widget.temporaryHolidays)) {
                       showDefaultSnackBar(context, '중복된 임시휴무일이 있습니다.');
+                    } else if (hasOverlappingDateRanges(widget.temporaryHolidays)) {
+                      showDefaultSnackBar(context, '날짜가 겹치는 임시휴무일이 있습니다.');
                     } else {
                       textEditingControllers.add(TextEditingController());
                       // 새로운 임시 휴무 추가
                       var dateRange = DateRange(id: DateTime.now().millisecondsSinceEpoch, start: DateTime.now(), end: DateTime.now().add(const Duration(days: 30)));
-                      print("dateRange ${dateRange.start} ${dateRange.end}");
+                      // print("dateRange ${dateRange.start} ${dateRange.end}");
                       final newHoliday = dateRange.toOperationTimeDetailModel();
                       final updatedHolidays = List<OperationTimeDetailModel>.from(widget.temporaryHolidays);
                       updatedHolidays.add(newHoliday);
@@ -181,18 +183,6 @@ class _TemporaryHolidaysBoxState extends State<TemporaryHolidaysBox> {
     );
   }
 }
-
-/// OperationTimeDetailModel 에서 DateRange 를 만드는 확장함수
-extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
-  DateRange toDateRange() {
-    final dateFormat = DateFormat("yyyy.MM.dd");
-    int uniqueId = DateTime.now().millisecondsSinceEpoch;
-    DateTime startDate = dateFormat.parse(this.startDate);
-    DateTime endDate = dateFormat.parse(this.endDate);
-    return DateRange(id: uniqueId, start: startDate, end: endDate);
-  }
-}
-
 
 /// DateRange 에서 OperationTimeDetailModel 를 만드는 확장함수
 extension DateRangeExtensions on DateRange {
@@ -213,4 +203,30 @@ bool hasDuplicateTemporaryHolidays(List<OperationTimeDetailModel> data) {
     seen.add(key);
   }
   return false; // 중복 없음
+}
+
+/// temporaryHolidays 서로 겹치는 날짜가 있는지 확인
+bool hasOverlappingDateRanges(List<OperationTimeDetailModel> temporaryHolidays) {
+  // 날짜 형식을 정의
+  final dateFormat = DateFormat("yyyy.MM.dd");
+
+  // 시작 날짜와 종료 날짜를 각각 리스트로 추출
+  final startDates = temporaryHolidays.map((holiday) => dateFormat.parse(holiday.startDate)).toList();
+  final endDates = temporaryHolidays.map((holiday) => dateFormat.parse(holiday.endDate)).toList();
+
+  // 시작 날짜와 종료 날짜를 정렬 (시작 날짜 기준)
+  final sortedIndices = List.generate(startDates.length, (index) => index)..sort((a, b) => startDates[a].compareTo(startDates[b]));
+
+  // 정렬된 날짜를 기반으로 중복 여부 확인
+  for (int i = 0; i < sortedIndices.length - 1; i++) {
+    final currentIndex = sortedIndices[i];
+    final nextIndex = sortedIndices[i + 1];
+
+    // 현재 범위의 종료 날짜가 다음 범위의 시작 날짜보다 이후인지 확인
+    if (endDates[currentIndex].isAfter(startDates[nextIndex])) {
+      return true; // 겹침 발견
+    }
+  }
+
+  return false; // 겹침 없음
 }

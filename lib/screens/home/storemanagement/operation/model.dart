@@ -1,4 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../core/components/date_range_picker.dart';
 
 part 'model.freezed.dart';
 
@@ -48,4 +51,88 @@ abstract class StoreOperationInfoModel with _$StoreOperationInfoModel {
   }) = _StoreOperationInfoModel;
 
   factory StoreOperationInfoModel.fromJson(Map<String, dynamic> json) => _$StoreOperationInfoModelFromJson(json);
+}
+
+/// OperationTimeDetailModel 확장함수
+extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
+  /// 두 OperationTimeDetailModel 객체를 비교
+  bool isEqualTo(OperationTimeDetailModel other) {
+    return holidayType == other.holidayType &&
+        cycle == other.cycle &&
+        day == other.day &&
+        startTime == other.startTime &&
+        endTime == other.endTime &&
+        startDate == other.startDate &&
+        endDate == other.endDate &&
+        ment == other.ment;
+  }
+
+  /// OperationTimeDetailModel 에서 DateRange 를 생성
+  DateRange toDateRange() {
+    final dateFormat = DateFormat("yyyy.MM.dd");
+    int uniqueId = DateTime.now().millisecondsSinceEpoch;
+    DateTime startDate = dateFormat.parse(this.startDate);
+    DateTime endDate = dateFormat.parse(this.endDate);
+    return DateRange(id: uniqueId, start: startDate, end: endDate);
+  }
+
+  /// 24시간 영업인지의 여부
+  bool is24OperationHour() {
+    return startTime == "00:00" && endTime == "24:00";
+  }
+
+  /// 24시간 영업으로 변경
+  OperationTimeDetailModel to24OperationHour() {
+    return copyWith(startTime: "00:00", endTime: "24:00");
+  }
+
+  /// 기본 영업시간으로 변경
+  OperationTimeDetailModel toDefaultOperationHour() {
+    return copyWith(startTime: "09:00", endTime: "21:00");
+  }
+
+  /// 휴게시간 없는지의 여부
+  bool isNoBreak() {
+    return startTime == "00:00" && endTime == "00:00";
+  }
+
+  /// 휴게시간 없음으로 변경
+  OperationTimeDetailModel toNoBreak() {
+    return copyWith(startTime: "00:00", endTime: "00:00");
+  }
+
+  /// 기본 휴게시간으로 변경
+  OperationTimeDetailModel toDefaultBreakHour() {
+    return copyWith(startTime: "15:00", endTime: "17:00");
+  }
+
+  /// 정기 휴무 인지의 여부
+  bool isRegularHoliday() {
+    return holidayType == 0;
+  }
+
+  /// 임시 휴무 인지의 여부
+  bool isTemporaryHoliday() {
+    return holidayType == 1;
+  }
+
+  /// 주간 정기 휴무인지의 여부
+  bool isWeekCycleHoliday() {
+    return isRegularHoliday() && cycle == 0;
+  }
+}
+
+/// 두 List<OperationTimeDetailModel> 이 동일한지 비교하는 확장함수
+extension OperationTimeDetailModelListExtensions on List<OperationTimeDetailModel> {
+  bool isEqualTo(List<OperationTimeDetailModel> other) {
+    if (length != other.length) {
+      return false;
+    }
+    for (int i = 0; i < length; i++) {
+      if (!this[i].isEqualTo(other[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
