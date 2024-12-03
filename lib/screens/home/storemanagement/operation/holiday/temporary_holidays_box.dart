@@ -82,7 +82,8 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
                               onStartDateChanged: (startDate) {
                                 // print("onStartDateChanged $startDate");
                                 if (dateRange.end.isBefore(startDate)) {
-                                  showDefaultSnackBar(context, '시작 날짜는 종료 날짜보다 빨라야 합니다.');
+                                  showDefaultSnackBar(context, '시작 날짜는 종료 날짜보다 빨라야 합니다.', seconds: 4);
+                                  widget.onEditFunction(widget.temporaryHolidays);
                                 } else {
                                   final updatedHolidays = List<OperationTimeDetailModel>.from(widget.temporaryHolidays);
                                   updatedHolidays[index] = temporaryHoliday.copyWith(startDate: DateFormat('yyyy.MM.dd').format(startDate));
@@ -90,9 +91,11 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
                                 }
                               },
                               onEndDateChanged: (endDate) {
+                                // print("onEndDateChanged dateRange.start ${dateRange.start}");
                                 // print("onEndDateChanged $endDate");
                                 if (dateRange.start.isAfter(endDate)) {
-                                  showDefaultSnackBar(context, '종료 날짜는 시작 날짜보다 늦어야 합니다.');
+                                  showDefaultSnackBar(context, '종료 날짜는 시작 날짜보다 늦어야 합니다.', seconds: 4);
+                                  widget.onEditFunction(widget.temporaryHolidays);
                                 } else {
                                   final updatedHolidays = List<OperationTimeDetailModel>.from(widget.temporaryHolidays);
                                   updatedHolidays[index] = temporaryHoliday.copyWith(endDate: DateFormat('yyyy.MM.dd').format(endDate));
@@ -222,8 +225,8 @@ bool hasOverlappingDateRanges(List<OperationTimeDetailModel> temporaryHolidays) 
     final currentIndex = sortedIndices[i];
     final nextIndex = sortedIndices[i + 1];
 
-    // 현재 범위의 종료 날짜가 다음 범위의 시작 날짜보다 이후인지 확인
-    if (endDates[currentIndex].isAfter(startDates[nextIndex])) {
+    // 현재 범위의 종료 날짜가 다음 범위의 시작 날짜 이상인지 확인
+    if (!endDates[currentIndex].isBefore(startDates[nextIndex])) {
       return true; // 겹침 발견
     }
   }

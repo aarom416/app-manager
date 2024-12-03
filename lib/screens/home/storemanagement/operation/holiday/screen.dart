@@ -47,9 +47,6 @@ class _HolidayScreenState extends State<HolidayScreen> {
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
           child: SGActionButton(
               onPressed: () {
-                // print("holidayStatus $holidayStatus");
-                // print("regularHolidays $regularHolidays");
-                // print("temporaryHolidays $temporaryHolidays");
                 if (hasDuplicateRegularHolidays(regularHolidays)) {
                   showDefaultSnackBar(context, '중복된 정기휴무일이 있습니다.');
                 } else if (hasDuplicateTemporaryHolidays(temporaryHolidays)) {
@@ -61,7 +58,8 @@ class _HolidayScreenState extends State<HolidayScreen> {
                   Navigator.of(context).pop();
                 }
               },
-              label: "변경하기")),
+              label: "변경하기",
+              disabled: holidayStatus == widget.holidayStatus && widget.regularHolidays.isEqualTo(regularHolidays) && widget.temporaryHolidays.isEqualTo(temporaryHolidays))),
       body: SGContainer(
           color: const Color(0xFFFAFAFA),
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),

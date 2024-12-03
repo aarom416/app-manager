@@ -130,18 +130,20 @@ class _StoreOperationScreenState extends ConsumerState<StoreOperationScreen> {
 
     final provider = ref.read(storeOperationNotifierProvider.notifier);
 
-    List<OperationTimeDetailModel> regularHolidays = state.holidayDetailDTOList.where((holiday) => holiday.isRegularHoliday()).toList()..sort((a, b) => a.cycle.compareTo(b.cycle));
+    final List<OperationTimeDetailModel> regularHolidays = state.holidayDetailDTOList.where((holiday) => holiday.isRegularHoliday()).toList()..sort((a, b) => a.cycle.compareTo(b.cycle));
+    sortRegularHolidays(regularHolidays);
 
-    List<OperationTimeDetailModel> temporaryHolidays = state.holidayDetailDTOList.where((holiday) => holiday.isTemporaryHoliday()).toList()
+    final List<OperationTimeDetailModel> temporaryHolidays = state.holidayDetailDTOList.where((holiday) => holiday.isTemporaryHoliday()).toList()
       ..sort((a, b) => DateFormat('yyyy.MM.dd').parse(a.startDate).compareTo(
             DateFormat('yyyy.MM.dd').parse(b.startDate),
           ));
+    sortTemporaryHolidays(temporaryHolidays);
 
-    List<String> regularHolidayLabels = groupRegularHolidaysByCycle(regularHolidays);
+    final List<String> regularHolidayLabels = groupRegularHolidaysByCycle(regularHolidays);
 
-    var groupedOperationTimeDetailDTOList = groupByStartAndEndTime(state.operationTimeDetailDTOList, regularHolidays);
+    final groupedOperationTimeDetailDTOList = groupByStartAndEndTime(state.operationTimeDetailDTOList, regularHolidays);
 
-    var groupedBreakTimeDetailDTOList = groupByStartAndEndTime(fillMissingDays(state.breakTimeDetailDTOList), regularHolidays);
+    final groupedBreakTimeDetailDTOList = groupByStartAndEndTime(fillMissingDays(state.breakTimeDetailDTOList), regularHolidays);
 
     return ListView(children: [
       // --------------------------- 배달 주문 가능 ---------------------------
@@ -293,38 +295,6 @@ class _StoreOperationScreenState extends ConsumerState<StoreOperationScreen> {
                       temporaryHolidays: temporaryHolidays,
                       onSaveFunction: (holidayStatus, regularHolidays, temporaryHolidays) {
                         provider.updateHolidayDetail(holidayStatus, regularHolidays, temporaryHolidays);
-
-                        // // 영업시간 리스트
-                        // var operationTimeDetails = state.operationTimeDetailDTOList.map((item) => item.copyWith()).toList();
-                        //
-                        // // 영업하지 않는 것으로 표기된 것들을 기본 영업시간으로 변경
-                        // for (int i = 0; i < operationTimeDetails.length; i++) {
-                        //   if (operationTimeDetails[i].startTime == "00:00" && operationTimeDetails[i].endTime == "00:00") {
-                        //     operationTimeDetails[i] = operationTimeDetails[i].copyWith(
-                        //       startTime: "09:00",
-                        //       endTime: "21:00",
-                        //     );
-                        //   }
-                        // }
-                        //
-                        // // 만약 정기 휴무일의 주기가 ‘매주’ 라면 해당 정기 휴무 요일에 대해 운영 시간을 제거함.
-                        // for (var regularHoliday in regularHolidays) {
-                        //   if (regularHoliday.isWeekCycleHoliday()) {
-                        //     // day 값이 같은 항목 찾기
-                        //     for (int i = 0; i < operationTimeDetails.length; i++) {
-                        //       if (regularHoliday.day == operationTimeDetails[i].day) {
-                        //         operationTimeDetails[i] = operationTimeDetails[i].copyWith(
-                        //           startTime: "00:00",
-                        //           endTime: "00:00",
-                        //         );
-                        //       } else {}
-                        //     }
-                        //   }
-                        // }
-                        //
-                        // if (!state.operationTimeDetailDTOList.isEqualTo(operationTimeDetails)) {
-                        //   provider.updateOperationTime(operationTimeDetails);
-                        // }
                       }),
                 ));
               }),
@@ -356,7 +326,9 @@ class _StoreOperationScreenState extends ConsumerState<StoreOperationScreen> {
             OperationTimeDetailModel temporaryHoliday = entry.value;
             return Column(
               children: [
-                DataTableRow(left: isFirstIndex ? "임시 휴무" : "", right: "${temporaryHoliday.startDate}~${temporaryHoliday.endDate}"),
+                DataTableRow(
+                    left: isFirstIndex ? "임시 휴무" : "",
+                    right: (temporaryHoliday.startDate == temporaryHoliday.endDate) ? temporaryHoliday.startDate : "${temporaryHoliday.startDate}~${temporaryHoliday.endDate}"),
                 SizedBox(height: isLastIndex ? 0 : SGSpacing.p2),
               ],
             );
@@ -366,6 +338,46 @@ class _StoreOperationScreenState extends ConsumerState<StoreOperationScreen> {
       SizedBox(height: SGSpacing.p3),
     ]);
   }
+}
+
+/// 주어진 OperationTimeDetailModel 리스트를 cycle 오름차순 + day 오름차순 으로 정렬
+void sortRegularHolidays(List<OperationTimeDetailModel> regularHolidays) {
+  // 요일 순서를 정의
+  const List<String> dayOrder = ["월", "화", "수", "목", "금", "토", "일"];
+
+  // 정렬 로직: cycle -> day 순서로 정렬
+  regularHolidays.sort((a, b) {
+    // cycle을 기준으로 정렬
+    int cycleComparison = a.cycle.compareTo(b.cycle);
+    if (cycleComparison != 0) {
+      return cycleComparison;
+    }
+    // day를 요일 순서(dayOrder)를 기준으로 정렬
+    return dayOrder.indexOf(a.day).compareTo(dayOrder.indexOf(b.day));
+  });
+}
+
+/// 주어진 OperationTimeDetailModel 리스트를 cycle startDate 오름차순 + endDate 오름차순 으로 정렬
+void sortTemporaryHolidays(List<OperationTimeDetailModel> temporaryHolidays) {
+  // 날짜 형식 정의
+  final dateFormat = DateFormat("yyyy.MM.dd");
+
+  // 정렬 로직: startDate -> endDate 순서로 정렬
+  temporaryHolidays.sort((a, b) {
+    // startDate를 비교
+    final DateTime aStartDate = dateFormat.parse(a.startDate);
+    final DateTime bStartDate = dateFormat.parse(b.startDate);
+    int startDateComparison = aStartDate.compareTo(bStartDate);
+
+    if (startDateComparison != 0) {
+      return startDateComparison; // startDate가 다르면 이를 기준으로 정렬
+    }
+
+    // startDate가 같을 경우 endDate를 비교
+    final DateTime aEndDate = dateFormat.parse(a.endDate);
+    final DateTime bEndDate = dateFormat.parse(b.endDate);
+    return aEndDate.compareTo(bEndDate);
+  });
 }
 
 /// 주어진 OperationTimeDetailModel 리스트를 startTime과 endTime 값에 따라 그룹화.
@@ -413,6 +425,9 @@ List<OperationTimeDetailModel> fillMissingDays(List<OperationTimeDetailModel> da
 
 /// 정기 휴무일 표기용 레이블 생성 함수
 List<String> groupRegularHolidaysByCycle(List<OperationTimeDetailModel> regularHolidays) {
+  // 요일 순서를 정의 (월요일부터 일요일까지)
+  const List<String> dayOrder = ["월", "화", "수", "목", "금", "토", "일"];
+
   // 그룹화 기준: cycle, day
   Map<int, List<String>> groupedHolidays = {};
 
@@ -425,10 +440,13 @@ List<String> groupRegularHolidaysByCycle(List<OperationTimeDetailModel> regularH
 
   List<String> results = [];
   groupedHolidays.forEach((cycle, days) {
-    days.sort(); // 요일 정렬
+    // 요일 정렬: 정의된 순서(dayOrder)에 따라 정렬
+    days.sort((a, b) => dayOrder.indexOf(a).compareTo(dayOrder.indexOf(b)));
+
     String cycleText = cycle == 0 ? "매주" : "$cycle째 주";
     results.add("$cycleText ${days.join(', ')}요일 휴무");
   });
 
   return results;
 }
+

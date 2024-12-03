@@ -83,7 +83,7 @@ class _OperationTimeScreenState extends State<OperationTimeScreen> {
                     Navigator.of(context).pop();
                   },
                   label: "변경하기",
-                  disabled: false)
+                  disabled: widget.operationTimeDetailDTOList.isEqualTo(operationTimeDetailDTOList))
             ],
           ),
         ));
@@ -157,11 +157,11 @@ class __OperationTimeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final startTime = operationTimeDetailDTO.startTime.split(':');
-    var startHour = startTime[0];
-    var startMinute = startTime[1];
+    final startHour = startTime[0];
+    final startMinute = startTime[1];
     final endTime = operationTimeDetailDTO.endTime.split(':');
-    var endHour = endTime[0];
-    var endMinute = endTime[1];
+    final endHour = endTime[0];
+    final endMinute = endTime[1];
 
     return SGContainer(
       color: SGColors.white,

@@ -33,7 +33,7 @@ final List<SelectionOption<String>> daysOfWeekOptions = [
   SelectionOption(value: "일", label: "일요일"),
 ];
 
-class RegularHolidayBox extends StatelessWidget {
+class RegularHolidayBox extends StatefulWidget {
   final List<OperationTimeDetailModel> regularHolidays;
   final Function(List<OperationTimeDetailModel>) onEditFunction;
 
@@ -43,6 +43,11 @@ class RegularHolidayBox extends StatelessWidget {
     required this.onEditFunction,
   });
 
+  @override
+  State<RegularHolidayBox> createState() => _RegularHolidayBoxState();
+}
+
+class _RegularHolidayBoxState extends State<RegularHolidayBox> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -63,7 +68,7 @@ class RegularHolidayBox extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ...regularHolidays
+                ...widget.regularHolidays
                     .mapIndexed((index, regularHoliday) => [
                           Row(children: [
                             Expanded(
@@ -74,8 +79,9 @@ class RegularHolidayBox extends StatelessWidget {
                                       title: "정기 휴무일의 주기를 설정해주세요.",
                                       options: regularHolidayOptions,
                                       onSelect: (cycle) {
-                                        regularHolidays[index] = regularHoliday.copyWith(cycle: cycle);
-                                        onEditFunction(regularHolidays);
+                                        final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
+                                        updatedHolidays[index] = regularHoliday.copyWith(cycle: cycle);
+                                        widget.onEditFunction(updatedHolidays);
                                       },
                                       selected: regularHoliday.cycle);
                                 },
@@ -98,8 +104,9 @@ class RegularHolidayBox extends StatelessWidget {
                                       title: "정기 휴무일의 요일을 설정해주세요.",
                                       options: daysOfWeekOptions,
                                       onSelect: (day) {
-                                        regularHolidays[index] = regularHoliday.copyWith(day: day);
-                                        onEditFunction(regularHolidays);
+                                        final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
+                                        updatedHolidays[index] = regularHoliday.copyWith(day: day);
+                                        widget.onEditFunction(updatedHolidays);
                                       },
                                       selected: regularHoliday.day);
                                 },
@@ -121,8 +128,9 @@ class RegularHolidayBox extends StatelessWidget {
                             SizedBox(width: SGSpacing.p3),
                             GestureDetector(
                               onTap: () {
-                                regularHolidays.removeAt(index);
-                                onEditFunction(regularHolidays);
+                                final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
+                                updatedHolidays.removeAt(index);
+                                widget.onEditFunction(updatedHolidays);
                               },
                               child: SGContainer(
                                   borderWidth: 0,
@@ -138,11 +146,13 @@ class RegularHolidayBox extends StatelessWidget {
                     .flattened,
                 GestureDetector(
                   onTap: () {
-                    if (hasDuplicateRegularHolidays(regularHolidays)) {
+                    if (hasDuplicateRegularHolidays(widget.regularHolidays)) {
                       showDefaultSnackBar(context, '중복된 정기휴무일이 있습니다.');
                     } else {
-                      regularHolidays.add(const OperationTimeDetailModel(holidayType: 0, cycle: 0, day: "월"));
-                      onEditFunction(regularHolidays);
+                      const newHoliday = OperationTimeDetailModel(holidayType: 0, cycle: 0, day: "월");
+                      final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
+                      updatedHolidays.add(newHoliday);
+                      widget.onEditFunction(updatedHolidays);
                     }
                   },
                   child: Row(children: [Image.asset("assets/images/accumulative.png", width: 24, height: 24), SizedBox(width: SGSpacing.p1), SGTypography.body("정기 휴무 추가하기", size: FontSize.small)]),

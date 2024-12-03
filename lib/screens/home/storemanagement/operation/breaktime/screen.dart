@@ -83,7 +83,7 @@ class _BreakTimeScreenState extends State<BreakTimeScreen> {
                     Navigator.of(context).pop();
                   },
                   label: "변경하기",
-                  disabled: false)
+                  disabled: widget.breakTimeDetailDTOList.isEqualTo(breakTimeDetailDTOList))
             ],
           ),
         ));
@@ -149,11 +149,11 @@ class __BreakTimeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final startTimeSplit = breakTimeDetailDTO.startTime.split(':');
-    var startHour = startTimeSplit[0];
-    var startMinute = startTimeSplit[1];
+    final startHour = startTimeSplit[0];
+    final startMinute = startTimeSplit[1];
     final endTimeSplit = breakTimeDetailDTO.endTime.split(':');
-    var endHour = endTimeSplit[0];
-    var endMinute = endTimeSplit[1];
+    final endHour = endTimeSplit[0];
+    final endMinute = endTimeSplit[1];
 
     return SGContainer(
       color: SGColors.white,
