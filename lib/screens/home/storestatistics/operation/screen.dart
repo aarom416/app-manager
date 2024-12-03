@@ -142,7 +142,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
         BarChartItem(value: 4, itemType: "추천"),
       ],
       [
-        BarChartItem(value: 2, itemType: "추천"),
+        BarChartItem(value: 8, itemType: "추천"),
       ],
     ],
   );
@@ -249,35 +249,6 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(storeStatisticsNotifierProvider);
 
-    final totalCount = totalData.items.fold(
-        0.0,
-        (previousValue, element) =>
-            previousValue +
-            element.fold(0.0,
-                (previousValue, element) => previousValue + element.value));
-
-    final totalDelivery = segmentedData.items
-        .fold(
-            0.0,
-            (previousValue, element) =>
-                previousValue +
-                element.fold(
-                    0.0,
-                    (previousValue, element) =>
-                        previousValue +
-                        (element.itemType == '배달' ? element.value : 0)))
-        .toInt();
-    final totalTakeout = segmentedData.items
-        .fold(
-            0.0,
-            (previousValue, element) =>
-                previousValue +
-                element.fold(
-                    0.0,
-                    (previousValue, element) =>
-                        previousValue +
-                        (element.itemType == '포장' ? element.value : 0)))
-        .toInt();
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "통계"),
         body: SGContainer(
@@ -307,8 +278,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                           color: SGColors.black,
                           lineHeight: 1.5)),
                   WidgetSpan(
-                      child: SGTypography.body(
-                          "${state.storeStatistics.menuRecommendStatisticsDTOList.length}회",
+                      child: SGTypography.body("${state.dailyTotalCount}회",
                           weight: FontWeight.w700,
                           size: FontSize.normal,
                           color: SGColors.primary,
@@ -320,7 +290,61 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                           color: SGColors.black,
                           lineHeight: 1.5)),
                 ])),
-                Histogram(data: totalData),
+                Histogram(
+                    data: BarChartItemData(
+                  labels: state.totalCharLabelDaily,
+                  items: [
+                    [
+                      BarChartItem(
+                          value: state.storeStatistics
+                              .menuRecommendStatisticsDTOList[0].count
+                              .toDouble(),
+                          itemType: "추천"),
+                    ],
+                    [
+                      BarChartItem(
+                          value: state.storeStatistics
+                              .menuRecommendStatisticsDTOList[1].count
+                              .toDouble(),
+                          itemType: "추천"),
+                    ],
+                    [
+                      BarChartItem(
+                          value: state.storeStatistics
+                              .menuRecommendStatisticsDTOList[2].count
+                              .toDouble(),
+                          itemType: "추천"),
+                    ],
+                    [
+                      BarChartItem(
+                          value: state.storeStatistics
+                              .menuRecommendStatisticsDTOList[3].count
+                              .toDouble(),
+                          itemType: "추천"),
+                    ],
+                    [
+                      BarChartItem(
+                          value: state.storeStatistics
+                              .menuRecommendStatisticsDTOList[4].count
+                              .toDouble(),
+                          itemType: "추천"),
+                    ],
+                    [
+                      BarChartItem(
+                          value: state.storeStatistics
+                              .menuRecommendStatisticsDTOList[5].count
+                              .toDouble(),
+                          itemType: "추천"),
+                    ],
+                    [
+                      BarChartItem(
+                          value: state.storeStatistics
+                              .menuRecommendStatisticsDTOList[6].count
+                              .toDouble(),
+                          itemType: "추천"),
+                    ],
+                  ],
+                )),
               ]),
               SizedBox(height: SGSpacing.p8),
               SGTypography.body("주문 고객 수",
@@ -345,8 +369,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                           color: SGColors.black,
                           lineHeight: 1.5)),
                   WidgetSpan(
-                      child: SGTypography.body(
-                          "${state.storeStatistics.orderInformationStatisticsDTOList.length}명",
+                      child: SGTypography.body("${state.dailyOrderCount}명",
                           weight: FontWeight.w700,
                           size: FontSize.normal,
                           color: SGColors.primary,
@@ -369,9 +392,117 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                     }),
                 SizedBox(height: SGSpacing.p4),
                 if (selectedOrderStatisticsLabel == '전체')
-                  Histogram(data: totalData)
+                  Histogram(
+                      data: BarChartItemData(
+                    labels: state.totalCharLabelDaily,
+                    items: [
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[0].toDouble() +
+                                state.takeoutDailyCount[0].toDouble(),
+                            itemType: "추천"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[1].toDouble() +
+                                state.takeoutDailyCount[1].toDouble(),
+                            itemType: "추천"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[2].toDouble() +
+                                state.takeoutDailyCount[2].toDouble(),
+                            itemType: "추천"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[3].toDouble() +
+                                state.takeoutDailyCount[3].toDouble(),
+                            itemType: "추천"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[4].toDouble() +
+                                state.takeoutDailyCount[4].toDouble(),
+                            itemType: "추천"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[5].toDouble() +
+                                state.takeoutDailyCount[5].toDouble(),
+                            itemType: "추천"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[6].toDouble() +
+                                state.takeoutDailyCount[6].toDouble(),
+                            itemType: "추천"),
+                      ],
+                    ],
+                  ))
                 else ...[
-                  Histogram(data: segmentedData),
+                  Histogram(
+                      data: BarChartItemData(
+                    labels: state.totalCharLabelDaily,
+                    items: [
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[0].toDouble(),
+                            itemType: "배달"),
+                        BarChartItem(
+                            value: state.takeoutDailyCount[0].toDouble(),
+                            itemType: "포장"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[1].toDouble(),
+                            itemType: "배달"),
+                        BarChartItem(
+                            value: state.takeoutDailyCount[1].toDouble(),
+                            itemType: "포장"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[2].toDouble(),
+                            itemType: "배달"),
+                        BarChartItem(
+                            value: state.takeoutDailyCount[2].toDouble(),
+                            itemType: "포장"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[3].toDouble(),
+                            itemType: "배달"),
+                        BarChartItem(
+                            value: state.takeoutDailyCount[3].toDouble(),
+                            itemType: "포장"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[4].toDouble(),
+                            itemType: "배달"),
+                        BarChartItem(
+                            value: state.takeoutDailyCount[4].toDouble(),
+                            itemType: "포장"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[5].toDouble(),
+                            itemType: "배달"),
+                        BarChartItem(
+                            value: state.takeoutDailyCount[5].toDouble(),
+                            itemType: "포장"),
+                      ],
+                      [
+                        BarChartItem(
+                            value: state.deliveryDailyCount[6].toDouble(),
+                            itemType: "배달"),
+                        BarChartItem(
+                            value: state.takeoutDailyCount[6].toDouble(),
+                            itemType: "포장"),
+                      ],
+                    ],
+                  )),
                   SizedBox(height: SGSpacing.p5),
                   SGContainer(
                       borderColor: SGColors.line3,

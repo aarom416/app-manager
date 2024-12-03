@@ -24,7 +24,7 @@ class StoreHistoryNotifier extends _$StoreHistoryNotifier {
         .getStoreHistory(
             storeId: UserHive.getBox(key: UserKey.storeId),
             page: '0',
-            filter: '1');
+            filter: '0');
 
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);

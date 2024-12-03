@@ -12,8 +12,8 @@ enum StoreStatisticsStatus {
 @freezed
 class MenuRecommendStatisticsDTO with _$MenuRecommendStatisticsDTO {
   const factory MenuRecommendStatisticsDTO({
-    @Default(0) int menuId,
-    @Default('') String createdDate, //": "2024년 11월 25일"
+    @Default(0) int count,
+    @Default('') String date, //": "2024년 11월 25일"
   }) = _MenuRecommendStatisticsDTO;
 
   factory MenuRecommendStatisticsDTO.fromJson(Map<String, dynamic> json) =>
@@ -24,7 +24,8 @@ class MenuRecommendStatisticsDTO with _$MenuRecommendStatisticsDTO {
 class OrderInformationStatisticsDTO with _$OrderInformationStatisticsDTO {
   const factory OrderInformationStatisticsDTO({
     @Default('') String receivedFoodType,
-    @Default('') String completedDate, //": "2024년 11월 25일"
+    @Default('') String date, //": "2024년 11월 25일"
+    @Default(0) int count,
   }) = _OrderInformationStatisticsDTO;
 
   factory OrderInformationStatisticsDTO.fromJson(Map<String, dynamic> json) =>
