@@ -7,10 +7,10 @@ import 'package:singleeat/main.dart';
 
 import 'model.dart';
 
-class StoreOperationService {
+class OperationService {
   final Ref ref;
 
-  StoreOperationService(this.ref);
+  OperationService(this.ref);
 
   /// GET - 영업 정보 조회
   Future<Response<dynamic>> getOperationInfo({required String storeId}) async {
@@ -64,7 +64,7 @@ class StoreOperationService {
   }
 
   /// POST - 가게 영업 시간 변경
-  Future<Response<dynamic>> updateOperationTime({required String storeId, required List<OperationTimeDetailModel> operationTimeDetails}) async {
+  Future<Response<dynamic>> updateOperationTime({required String storeId, required List<OperationDataModel> operationTimeDetails}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateOperationTime,
@@ -91,7 +91,7 @@ class StoreOperationService {
   }
 
   /// POST - 가게 휴게 시간 변경
-  Future<Response<dynamic>> updateBreakTime({required String storeId, required List<OperationTimeDetailModel> breakTimeDetails}) async {
+  Future<Response<dynamic>> updateBreakTime({required String storeId, required List<OperationDataModel> breakTimeDetails}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateBreakTime,
@@ -121,8 +121,8 @@ class StoreOperationService {
   Future<Response<dynamic>> updateHolidayDetail({
     required String storeId,
     required int holidayStatus,
-    required List<OperationTimeDetailModel> regularHolidays,
-    required List<OperationTimeDetailModel> temporaryHolidays,
+    required List<OperationDataModel> regularHolidays,
+    required List<OperationDataModel> temporaryHolidays,
   }) async {
     try {
       return await ref.read(requestApiProvider).post(
@@ -176,4 +176,4 @@ class StoreOperationService {
   }
 }
 
-final storeOperationServiceProvider = Provider<StoreOperationService>((ref) => StoreOperationService(ref));
+final operationServiceProvider = Provider<OperationService>((ref) => OperationService(ref));

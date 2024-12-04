@@ -34,8 +34,8 @@ final List<SelectionOption<String>> daysOfWeekOptions = [
 ];
 
 class RegularHolidayBox extends StatefulWidget {
-  final List<OperationTimeDetailModel> regularHolidays;
-  final Function(List<OperationTimeDetailModel>) onEditFunction;
+  final List<OperationDataModel> regularHolidays;
+  final Function(List<OperationDataModel>) onEditFunction;
 
   const RegularHolidayBox({
     super.key,
@@ -79,7 +79,7 @@ class _RegularHolidayBoxState extends State<RegularHolidayBox> {
                                       title: "정기 휴무일의 주기를 설정해주세요.",
                                       options: regularHolidayOptions,
                                       onSelect: (cycle) {
-                                        final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
+                                        final updatedHolidays = List<OperationDataModel>.from(widget.regularHolidays);
                                         updatedHolidays[index] = regularHoliday.copyWith(cycle: cycle);
                                         widget.onEditFunction(updatedHolidays);
                                       },
@@ -104,7 +104,7 @@ class _RegularHolidayBoxState extends State<RegularHolidayBox> {
                                       title: "정기 휴무일의 요일을 설정해주세요.",
                                       options: daysOfWeekOptions,
                                       onSelect: (day) {
-                                        final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
+                                        final updatedHolidays = List<OperationDataModel>.from(widget.regularHolidays);
                                         updatedHolidays[index] = regularHoliday.copyWith(day: day);
                                         widget.onEditFunction(updatedHolidays);
                                       },
@@ -128,7 +128,7 @@ class _RegularHolidayBoxState extends State<RegularHolidayBox> {
                             SizedBox(width: SGSpacing.p3),
                             GestureDetector(
                               onTap: () {
-                                final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
+                                final updatedHolidays = List<OperationDataModel>.from(widget.regularHolidays);
                                 updatedHolidays.removeAt(index);
                                 widget.onEditFunction(updatedHolidays);
                               },
@@ -149,8 +149,8 @@ class _RegularHolidayBoxState extends State<RegularHolidayBox> {
                     if (hasDuplicateRegularHolidays(widget.regularHolidays)) {
                       showDefaultSnackBar(context, '중복된 정기휴무일이 있습니다.');
                     } else {
-                      const newHoliday = OperationTimeDetailModel(holidayType: 0, cycle: 0, day: "월");
-                      final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
+                      const newHoliday = OperationDataModel(holidayType: 0, cycle: 0, day: "월");
+                      final updatedHolidays = List<OperationDataModel>.from(widget.regularHolidays);
                       updatedHolidays.add(newHoliday);
                       widget.onEditFunction(updatedHolidays);
                     }
@@ -165,7 +165,7 @@ class _RegularHolidayBoxState extends State<RegularHolidayBox> {
 }
 
 /// regularHolidays 중복 확인
-bool hasDuplicateRegularHolidays(List<OperationTimeDetailModel> data) {
+bool hasDuplicateRegularHolidays(List<OperationDataModel> data) {
   final seen = <String>{};
   for (var item in data) {
     final key = "${item.holidayType}-${item.cycle}-${item.day}";

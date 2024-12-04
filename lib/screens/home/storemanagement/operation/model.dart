@@ -7,9 +7,11 @@ part 'model.freezed.dart';
 
 part 'model.g.dart';
 
+
+/// data retrieve 용 모델
 @freezed
-abstract class OperationTimeDetailModel with _$OperationTimeDetailModel {
-  const factory OperationTimeDetailModel({
+abstract class OperationDataModel with _$OperationDataModel {
+  const factory OperationDataModel({
     /*
         "holidayType": 0,
         "cycle": 7,
@@ -28,29 +30,30 @@ abstract class OperationTimeDetailModel with _$OperationTimeDetailModel {
     @Default('') String startDate,
     @Default('') String endDate,
     @Default('') String ment,
-  }) = _OperationTimeDetailModel;
+  }) = _OperationDataModel;
 
-  factory OperationTimeDetailModel.fromJson(Map<String, dynamic> json) => _$OperationTimeDetailModelFromJson(json);
+  factory OperationDataModel.fromJson(Map<String, dynamic> json) => _$OperationDataModelFromJson(json);
 }
 
+/// state 용 모델
 @freezed
-abstract class StoreOperationInfoModel with _$StoreOperationInfoModel {
-  const factory StoreOperationInfoModel({
+abstract class OperationStateModel with _$OperationStateModel {
+  const factory OperationStateModel({
     @Default(0) int deliveryStatus,
     @Default(0) int takeOutStatus,
-    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> operationTimeDetailDTOList,
-    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> breakTimeDetailDTOList,
-    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> holidayDetailDTOList,
+    @Default(<OperationDataModel>[]) List<OperationDataModel> operationTimeDetailDTOList,
+    @Default(<OperationDataModel>[]) List<OperationDataModel> breakTimeDetailDTOList,
+    @Default(<OperationDataModel>[]) List<OperationDataModel> holidayDetailDTOList,
     @Default(0) int holidayStatus,
-  }) = _StoreOperationInfoModel;
+  }) = _OperationStateModel;
 
-  factory StoreOperationInfoModel.fromJson(Map<String, dynamic> json) => _$StoreOperationInfoModelFromJson(json);
+  factory OperationStateModel.fromJson(Map<String, dynamic> json) => _$OperationStateModelFromJson(json);
 }
 
-/// OperationTimeDetailModel 확장함수
-extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
-  /// 두 OperationTimeDetailModel 객체를 비교
-  bool isEqualTo(OperationTimeDetailModel other) {
+/// OperationDataModel 확장함수
+extension OperationDataModelExtensions on OperationDataModel {
+  /// 두 OperationDataModel 객체를 비교
+  bool isEqualTo(OperationDataModel other) {
     return holidayType == other.holidayType &&
         cycle == other.cycle &&
         day == other.day &&
@@ -61,7 +64,7 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
         ment == other.ment;
   }
 
-  /// OperationTimeDetailModel 에서 DateRange 를 생성
+  /// OperationDataModel 에서 DateRange 를 생성
   DateRange toDateRange() {
     final dateFormat = DateFormat("yyyy.MM.dd");
     int uniqueId = DateTime.now().millisecondsSinceEpoch;
@@ -76,12 +79,12 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
   }
 
   /// 24시간 영업으로 변경
-  OperationTimeDetailModel to24OperationHour() {
+  OperationDataModel to24OperationHour() {
     return copyWith(startTime: "00:00", endTime: "24:00");
   }
 
   /// 기본 영업시간으로 변경
-  OperationTimeDetailModel toDefaultOperationHour() {
+  OperationDataModel toDefaultOperationHour() {
     return copyWith(startTime: "09:00", endTime: "21:00");
   }
 
@@ -91,12 +94,12 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
   }
 
   /// 휴게시간 없음으로 변경
-  OperationTimeDetailModel toNoBreak() {
+  OperationDataModel toNoBreak() {
     return copyWith(startTime: "00:00", endTime: "00:00");
   }
 
   /// 기본 휴게시간으로 변경
-  OperationTimeDetailModel toDefaultBreakHour() {
+  OperationDataModel toDefaultBreakHour() {
     return copyWith(startTime: "15:00", endTime: "17:00");
   }
 
@@ -116,9 +119,9 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
   }
 }
 
-/// 두 List<OperationTimeDetailModel> 이 동일한지 비교하는 확장함수
-extension OperationTimeDetailModelListExtensions on List<OperationTimeDetailModel> {
-  bool isEqualTo(List<OperationTimeDetailModel> other) {
+/// 두 List<OperationDataModel> 이 동일한지 비교하는 확장함수
+extension OperationDataModelListExtensions on List<OperationDataModel> {
+  bool isEqualTo(List<OperationDataModel> other) {
     if (length != other.length) {
       return false;
     }

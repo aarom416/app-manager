@@ -5,6 +5,7 @@ import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/screens/home/storemanagement/operation/service.dart';
 
+import '../../../common/emuns.dart';
 import 'model.dart';
 
 part 'provider.freezed.dart';
@@ -12,36 +13,36 @@ part 'provider.freezed.dart';
 part 'provider.g.dart';
 
 @Riverpod(keepAlive: true)
-class StoreOperationNotifier extends _$StoreOperationNotifier {
+class OperationNotifier extends _$OperationNotifier {
   @override
-  StoreOperationState build() {
-    return const StoreOperationState();
+  OperationState build() {
+    return const OperationState();
   }
 
   /// GET - 영업 정보 조회
   void getOperationInfo() async {
-    final response = await ref.read(storeOperationServiceProvider).getOperationInfo(storeId: UserHive.getBox(key: UserKey.storeId));
+    final response = await ref.read(operationServiceProvider).getOperationInfo(storeId: UserHive.getBox(key: UserKey.storeId));
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);
-      final storeOperationInfo = StoreOperationInfoModel.fromJson(result.data);
+      final operationStateModel = OperationStateModel.fromJson(result.data);
       state = state.copyWith(
-          status: StoreOperationStatus.success,
-          storeOperationInfo: storeOperationInfo,
-          deliveryStatus: storeOperationInfo.deliveryStatus,
-          takeOutStatus: storeOperationInfo.takeOutStatus,
-          operationTimeDetailDTOList: storeOperationInfo.operationTimeDetailDTOList,
-          breakTimeDetailDTOList: storeOperationInfo.breakTimeDetailDTOList,
-          holidayDetailDTOList: storeOperationInfo.holidayDetailDTOList,
-          holidayStatus: storeOperationInfo.holidayStatus,
+          dataRetrieveStatus: DataRetrieveStatus.success,
+          operationStateModel: operationStateModel,
+          deliveryStatus: operationStateModel.deliveryStatus,
+          takeOutStatus: operationStateModel.takeOutStatus,
+          operationTimeDetailDTOList: operationStateModel.operationTimeDetailDTOList,
+          breakTimeDetailDTOList: operationStateModel.breakTimeDetailDTOList,
+          holidayDetailDTOList: operationStateModel.holidayDetailDTOList,
+          holidayStatus: operationStateModel.holidayStatus,
           error: const ResultFailResponseModel());
     } else {
-      state = state.copyWith(status: StoreOperationStatus.error, error: ResultFailResponseModel.fromJson(response.data));
+      state = state.copyWith(dataRetrieveStatus: DataRetrieveStatus.error, error: ResultFailResponseModel.fromJson(response.data));
     }
   }
 
   /// POST - 배달 상태 수정
   void updateDeliveryStatus(int deliveryStatus) async {
-    final response = await ref.read(storeOperationServiceProvider).updateDeliveryStatus(storeId: UserHive.getBox(key: UserKey.storeId), deliveryStatus: deliveryStatus);
+    final response = await ref.read(operationServiceProvider).updateDeliveryStatus(storeId: UserHive.getBox(key: UserKey.storeId), deliveryStatus: deliveryStatus);
     if (response.statusCode == 200) {
       state = state.copyWith(error: const ResultFailResponseModel(), deliveryStatus: deliveryStatus);
     } else {
@@ -51,7 +52,7 @@ class StoreOperationNotifier extends _$StoreOperationNotifier {
 
   /// POST - 포장 상태 수정
   void updatePickupStatus(int pickUpStatus) async {
-    final response = await ref.read(storeOperationServiceProvider).updatePickupStatus(storeId: UserHive.getBox(key: UserKey.storeId), pickUpStatus: pickUpStatus);
+    final response = await ref.read(operationServiceProvider).updatePickupStatus(storeId: UserHive.getBox(key: UserKey.storeId), pickUpStatus: pickUpStatus);
     if (response.statusCode == 200) {
       state = state.copyWith(error: const ResultFailResponseModel(), takeOutStatus: pickUpStatus);
     } else {
@@ -60,8 +61,8 @@ class StoreOperationNotifier extends _$StoreOperationNotifier {
   }
 
   /// POST - 가게 영업 시간 변경
-  void updateOperationTime(List<OperationTimeDetailModel> operationTimeDetails) async {
-    final response = await ref.read(storeOperationServiceProvider).updateOperationTime(storeId: UserHive.getBox(key: UserKey.storeId), operationTimeDetails: operationTimeDetails);
+  void updateOperationTime(List<OperationDataModel> operationTimeDetails) async {
+    final response = await ref.read(operationServiceProvider).updateOperationTime(storeId: UserHive.getBox(key: UserKey.storeId), operationTimeDetails: operationTimeDetails);
     if (response.statusCode == 200) {
       state = state.copyWith(error: const ResultFailResponseModel(), operationTimeDetailDTOList: operationTimeDetails);
     } else {
@@ -70,8 +71,8 @@ class StoreOperationNotifier extends _$StoreOperationNotifier {
   }
 
   /// POST - 가게 휴게 시간 변경
-  void updateBreakTime(List<OperationTimeDetailModel> breakTimeDetails) async {
-    final response = await ref.read(storeOperationServiceProvider).updateBreakTime(storeId: UserHive.getBox(key: UserKey.storeId), breakTimeDetails: breakTimeDetails);
+  void updateBreakTime(List<OperationDataModel> breakTimeDetails) async {
+    final response = await ref.read(operationServiceProvider).updateBreakTime(storeId: UserHive.getBox(key: UserKey.storeId), breakTimeDetails: breakTimeDetails);
     if (response.statusCode == 200) {
       state = state.copyWith(error: const ResultFailResponseModel(), breakTimeDetailDTOList: breakTimeDetails);
     } else {
@@ -80,8 +81,10 @@ class StoreOperationNotifier extends _$StoreOperationNotifier {
   }
 
   /// POST - 가게 휴무일 변경
-  void updateHolidayDetail(int holidayStatus, List<OperationTimeDetailModel> regularHolidays, List<OperationTimeDetailModel> temporaryHolidays) async {
-    final response = await ref.read(storeOperationServiceProvider).updateHolidayDetail(storeId: UserHive.getBox(key: UserKey.storeId), holidayStatus: holidayStatus, regularHolidays: regularHolidays, temporaryHolidays: temporaryHolidays);
+  void updateHolidayDetail(int holidayStatus, List<OperationDataModel> regularHolidays, List<OperationDataModel> temporaryHolidays) async {
+    final response = await ref
+        .read(operationServiceProvider)
+        .updateHolidayDetail(storeId: UserHive.getBox(key: UserKey.storeId), holidayStatus: holidayStatus, regularHolidays: regularHolidays, temporaryHolidays: temporaryHolidays);
     if (response.statusCode == 200) {
       state = state.copyWith(error: const ResultFailResponseModel(), holidayStatus: holidayStatus, holidayDetailDTOList: regularHolidays + temporaryHolidays);
     } else {
@@ -90,25 +93,19 @@ class StoreOperationNotifier extends _$StoreOperationNotifier {
   }
 }
 
-enum StoreOperationStatus {
-  init,
-  success,
-  error,
-}
-
 @freezed
-abstract class StoreOperationState with _$StoreOperationState {
-  const factory StoreOperationState({
-    @Default(StoreOperationStatus.init) StoreOperationStatus status,
-    @Default(StoreOperationInfoModel()) StoreOperationInfoModel storeOperationInfo,
+abstract class OperationState with _$OperationState {
+  const factory OperationState({
+    @Default(DataRetrieveStatus.init) DataRetrieveStatus dataRetrieveStatus,
+    @Default(OperationStateModel()) OperationStateModel operationStateModel,
     @Default(0) int deliveryStatus,
     @Default(0) int takeOutStatus,
-    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> operationTimeDetailDTOList,
-    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> breakTimeDetailDTOList,
-    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> holidayDetailDTOList,
+    @Default(<OperationDataModel>[]) List<OperationDataModel> operationTimeDetailDTOList,
+    @Default(<OperationDataModel>[]) List<OperationDataModel> breakTimeDetailDTOList,
+    @Default(<OperationDataModel>[]) List<OperationDataModel> holidayDetailDTOList,
     @Default(0) int holidayStatus,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
-  }) = _StoreOperationState;
+  }) = _OperationState;
 
-  factory StoreOperationState.fromJson(Map<String, dynamic> json) => _$StoreOperationStateFromJson(json);
+  factory OperationState.fromJson(Map<String, dynamic> json) => _$OperationStateFromJson(json);
 }

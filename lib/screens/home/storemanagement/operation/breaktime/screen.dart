@@ -15,9 +15,9 @@ import '../../../../../utils/time_utils.dart';
 import '../model.dart';
 
 class BreakTimeScreen extends StatefulWidget {
-  final List<OperationTimeDetailModel> breakTimeDetailDTOList;
-  final List<OperationTimeDetailModel> regularHolidays;
-  final Function(List<OperationTimeDetailModel>) onSaveFunction;
+  final List<OperationDataModel> breakTimeDetailDTOList;
+  final List<OperationDataModel> regularHolidays;
+  final Function(List<OperationDataModel>) onSaveFunction;
 
   const BreakTimeScreen({super.key, required this.breakTimeDetailDTOList, required this.regularHolidays, required this.onSaveFunction});
 
@@ -26,8 +26,8 @@ class BreakTimeScreen extends StatefulWidget {
 }
 
 class _BreakTimeScreenState extends State<BreakTimeScreen> {
-  late List<OperationTimeDetailModel> breakTimeDetailDTOList;
-  late List<OperationTimeDetailModel> regularHolidays;
+  late List<OperationDataModel> breakTimeDetailDTOList;
+  late List<OperationDataModel> regularHolidays;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _BreakTimeScreenState extends State<BreakTimeScreen> {
                   .entries
                   .map((entry) {
                     int index = entry.key;
-                    OperationTimeDetailModel breakTimeDetailDTO = entry.value;
+                    OperationDataModel breakTimeDetailDTO = entry.value;
                     var isHoliday = regularHolidays.any((regularHoliday) => (regularHoliday.day == breakTimeDetailDTO.day) && regularHoliday.isWeekCycleHoliday());
                     return isHoliday
                         ? [
@@ -91,7 +91,7 @@ class _BreakTimeScreenState extends State<BreakTimeScreen> {
 }
 
 class __BreakTimeRegularHolidayCard extends StatelessWidget {
-  final OperationTimeDetailModel breakTimeDetailDTO;
+  final OperationDataModel breakTimeDetailDTO;
 
   const __BreakTimeRegularHolidayCard({
     super.key,
@@ -124,8 +124,8 @@ class __BreakTimeRegularHolidayCard extends StatelessWidget {
 }
 
 class __BreakTimeCard extends StatelessWidget {
-  final OperationTimeDetailModel breakTimeDetailDTO;
-  final Function(OperationTimeDetailModel) onEditFunction;
+  final OperationDataModel breakTimeDetailDTO;
+  final Function(OperationDataModel) onEditFunction;
 
   __BreakTimeCard({
     super.key,
