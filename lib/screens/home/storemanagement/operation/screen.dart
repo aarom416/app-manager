@@ -17,6 +17,8 @@ import 'model.dart';
 import 'operationtime/screen.dart';
 import 'provider.dart';
 
+
+/// 홈 > 가게관리 > 영업 탭 메인 페이지
 class OperationScreen extends ConsumerStatefulWidget {
   const OperationScreen({super.key});
 
@@ -130,10 +132,10 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
 
     final OperationNotifier provider = ref.read(operationNotifierProvider.notifier);
 
-    final List<OperationDataModel> regularHolidays = state.holidayDetailDTOList.where((holiday) => holiday.isRegularHoliday()).toList()..sort((a, b) => a.cycle.compareTo(b.cycle));
+    final List<OperationTimeDetailModel> regularHolidays = state.holidayDetailDTOList.where((holiday) => holiday.isRegularHoliday()).toList()..sort((a, b) => a.cycle.compareTo(b.cycle));
     sortRegularHolidays(regularHolidays);
 
-    final List<OperationDataModel> temporaryHolidays = state.holidayDetailDTOList.where((holiday) => holiday.isTemporaryHoliday()).toList()
+    final List<OperationTimeDetailModel> temporaryHolidays = state.holidayDetailDTOList.where((holiday) => holiday.isTemporaryHoliday()).toList()
       ..sort((a, b) => DateFormat('yyyy.MM.dd').parse(a.startDate).compareTo(
             DateFormat('yyyy.MM.dd').parse(b.startDate),
           ));
@@ -141,12 +143,12 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
 
     final List<String> regularHolidayLabels = groupRegularHolidaysByCycle(regularHolidays);
 
-    final List<List<OperationDataModel>> groupedOperationTimeDetailDTOList = groupByStartAndEndTime(state.operationTimeDetailDTOList, regularHolidays);
+    final List<List<OperationTimeDetailModel>> groupedOperationTimeDetailDTOList = groupByStartAndEndTime(state.operationTimeDetailDTOList, regularHolidays);
 
-    final List<List<OperationDataModel>> groupedBreakTimeDetailDTOList = groupByStartAndEndTime(fillMissingDays(state.breakTimeDetailDTOList), regularHolidays);
+    final List<List<OperationTimeDetailModel>> groupedBreakTimeDetailDTOList = groupByStartAndEndTime(fillMissingDays(state.breakTimeDetailDTOList), regularHolidays);
 
     return ListView(children: [
-      // --------------------------- 배달 주문 가능 ---------------------------
+      // --------------------------- 배달 주문 가능 card ---------------------------
       SGContainer(
           padding: EdgeInsets.all(SGSpacing.p4),
           borderRadius: BorderRadius.circular(SGSpacing.p3),
@@ -172,7 +174,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
 
       SizedBox(height: SGSpacing.p3),
 
-      // --------------------------- 포장 주문 가능 ---------------------------
+      // --------------------------- 포장 주문 가능 card ---------------------------
       SGContainer(
           padding: EdgeInsets.all(SGSpacing.p4),
           borderRadius: BorderRadius.circular(SGSpacing.p3),
@@ -198,7 +200,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
 
       SizedBox(height: SGSpacing.p3),
 
-      // --------------------------- 영업시간 ---------------------------
+      // --------------------------- 영업시간 card ---------------------------
       MultipleInformationBox(children: [
         Row(children: [
           SGTypography.body("영업시간", size: FontSize.normal, weight: FontWeight.w700),
@@ -222,7 +224,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
         ...groupedOperationTimeDetailDTOList.asMap().entries.map((entry) {
           int index = entry.key;
           bool isLastIndex = index == groupedOperationTimeDetailDTOList.length - 1;
-          List<OperationDataModel> operationTimeDetailDTOList = entry.value;
+          List<OperationTimeDetailModel> operationTimeDetailDTOList = entry.value;
           // print("operationTimeDetailDTO $operationTimeDetailDTOList");
           var day = operationTimeDetailDTOList.length == 1 ? "${operationTimeDetailDTOList.first.day}요일" : "${operationTimeDetailDTOList.first.day}요일~${operationTimeDetailDTOList.last.day}요일";
           var time = operationTimeDetailDTOList.first.is24OperationHour()
@@ -239,7 +241,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
 
       SizedBox(height: SGSpacing.p3),
 
-      // --------------------------- 휴게시간 ---------------------------
+      // --------------------------- 휴게시간 card ---------------------------
       MultipleInformationBox(children: [
         Row(children: [
           SGTypography.body("휴게시간", size: FontSize.normal, weight: FontWeight.w700),
@@ -263,7 +265,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
         ...groupedBreakTimeDetailDTOList.asMap().entries.map((entry) {
           int index = entry.key;
           bool isLastIndex = index == groupedBreakTimeDetailDTOList.length - 1;
-          List<OperationDataModel> breakTimeDetailDTOList = entry.value;
+          List<OperationTimeDetailModel> breakTimeDetailDTOList = entry.value;
           // print("operationTimeDetailDTO breakTimeDetailDTOList");
           var day = breakTimeDetailDTOList.length == 1 ? "${breakTimeDetailDTOList.first.day}요일" : "${breakTimeDetailDTOList.first.day}요일~${breakTimeDetailDTOList.last.day}요일";
           var time = breakTimeDetailDTOList.first.isNoBreak()
@@ -280,7 +282,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
 
       SizedBox(height: SGSpacing.p3),
 
-      // --------------------------- 휴무일 ---------------------------
+      // --------------------------- 휴무일 card ---------------------------
       MultipleInformationBox(children: [
         Row(children: [
           SGTypography.body("휴무일", size: FontSize.normal, weight: FontWeight.w700),
@@ -323,7 +325,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
             int index = entry.key;
             bool isFirstIndex = index == 0;
             bool isLastIndex = index == temporaryHolidays.length - 1;
-            OperationDataModel temporaryHoliday = entry.value;
+            OperationTimeDetailModel temporaryHoliday = entry.value;
             return Column(
               children: [
                 DataTableRow(
@@ -341,7 +343,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
 }
 
 /// 주어진 OperationTimeDetailModel 리스트를 cycle 오름차순 + day 오름차순 으로 정렬
-void sortRegularHolidays(List<OperationDataModel> regularHolidays) {
+void sortRegularHolidays(List<OperationTimeDetailModel> regularHolidays) {
   // 요일 순서를 정의
   const List<String> dayOrder = ["월", "화", "수", "목", "금", "토", "일"];
 
@@ -358,7 +360,7 @@ void sortRegularHolidays(List<OperationDataModel> regularHolidays) {
 }
 
 /// 주어진 OperationTimeDetailModel 리스트를 cycle startDate 오름차순 + endDate 오름차순 으로 정렬
-void sortTemporaryHolidays(List<OperationDataModel> temporaryHolidays) {
+void sortTemporaryHolidays(List<OperationTimeDetailModel> temporaryHolidays) {
   // 날짜 형식 정의
   final dateFormat = DateFormat("yyyy.MM.dd");
 
@@ -381,9 +383,9 @@ void sortTemporaryHolidays(List<OperationDataModel> temporaryHolidays) {
 }
 
 /// 주어진 OperationTimeDetailModel 리스트를 startTime과 endTime 값에 따라 그룹화.
-List<List<OperationDataModel>> groupByStartAndEndTime(List<OperationDataModel> data, List<OperationDataModel> regularHolidays) {
-  List<List<OperationDataModel>> result = [];
-  List<OperationDataModel> currentGroup = [];
+List<List<OperationTimeDetailModel>> groupByStartAndEndTime(List<OperationTimeDetailModel> data, List<OperationTimeDetailModel> regularHolidays) {
+  List<List<OperationTimeDetailModel>> result = [];
+  List<OperationTimeDetailModel> currentGroup = [];
 
   for (var i = 0; i < data.length; i++) {
     var isHoliday = regularHolidays.any((regularHoliday) => (regularHoliday.day == data[i].day) && regularHoliday.isWeekCycleHoliday());
@@ -409,7 +411,7 @@ List<List<OperationDataModel>> groupByStartAndEndTime(List<OperationDataModel> d
 }
 
 /// 주어진 요일별 영업시간 데이터에서 누락된 요일을 채워주는 함수.
-List<OperationDataModel> fillMissingDays(List<OperationDataModel> data) {
+List<OperationTimeDetailModel> fillMissingDays(List<OperationTimeDetailModel> data) {
   const List<String> daysOfWeek = ['월', '화', '수', '목', '금', '토', '일'];
 
   // 입력 데이터를 Map으로 변환 (요일을 키로 사용)
@@ -417,14 +419,14 @@ List<OperationDataModel> fillMissingDays(List<OperationDataModel> data) {
 
   // 모든 요일을 포함하도록 데이터 생성
   final completeData = daysOfWeek.map((day) {
-    return existingData[day] ?? OperationDataModel(day: day, startTime: "00:00", endTime: "00:00");
+    return existingData[day] ?? OperationTimeDetailModel(day: day, startTime: "00:00", endTime: "00:00");
   }).toList();
 
   return completeData;
 }
 
 /// 정기 휴무일 표기용 레이블 생성 함수
-List<String> groupRegularHolidaysByCycle(List<OperationDataModel> regularHolidays) {
+List<String> groupRegularHolidaysByCycle(List<OperationTimeDetailModel> regularHolidays) {
   // 요일 순서를 정의 (월요일부터 일요일까지)
   const List<String> dayOrder = ["월", "화", "수", "목", "금", "토", "일"];
 

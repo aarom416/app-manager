@@ -12,6 +12,8 @@ part 'provider.freezed.dart';
 
 part 'provider.g.dart';
 
+
+/// network provider
 @Riverpod(keepAlive: true)
 class OperationNotifier extends _$OperationNotifier {
   @override
@@ -24,16 +26,16 @@ class OperationNotifier extends _$OperationNotifier {
     final response = await ref.read(operationServiceProvider).getOperationInfo(storeId: UserHive.getBox(key: UserKey.storeId));
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);
-      final operationStateModel = OperationStateModel.fromJson(result.data);
+      final operationDataModel = OperationDataModel.fromJson(result.data);
       state = state.copyWith(
           dataRetrieveStatus: DataRetrieveStatus.success,
-          operationStateModel: operationStateModel,
-          deliveryStatus: operationStateModel.deliveryStatus,
-          takeOutStatus: operationStateModel.takeOutStatus,
-          operationTimeDetailDTOList: operationStateModel.operationTimeDetailDTOList,
-          breakTimeDetailDTOList: operationStateModel.breakTimeDetailDTOList,
-          holidayDetailDTOList: operationStateModel.holidayDetailDTOList,
-          holidayStatus: operationStateModel.holidayStatus,
+          operationDataModel: operationDataModel,
+          deliveryStatus: operationDataModel.deliveryStatus,
+          takeOutStatus: operationDataModel.takeOutStatus,
+          operationTimeDetailDTOList: operationDataModel.operationTimeDetailDTOList,
+          breakTimeDetailDTOList: operationDataModel.breakTimeDetailDTOList,
+          holidayDetailDTOList: operationDataModel.holidayDetailDTOList,
+          holidayStatus: operationDataModel.holidayStatus,
           error: const ResultFailResponseModel());
     } else {
       state = state.copyWith(dataRetrieveStatus: DataRetrieveStatus.error, error: ResultFailResponseModel.fromJson(response.data));
@@ -61,7 +63,7 @@ class OperationNotifier extends _$OperationNotifier {
   }
 
   /// POST - 가게 영업 시간 변경
-  void updateOperationTime(List<OperationDataModel> operationTimeDetails) async {
+  void updateOperationTime(List<OperationTimeDetailModel> operationTimeDetails) async {
     final response = await ref.read(operationServiceProvider).updateOperationTime(storeId: UserHive.getBox(key: UserKey.storeId), operationTimeDetails: operationTimeDetails);
     if (response.statusCode == 200) {
       state = state.copyWith(error: const ResultFailResponseModel(), operationTimeDetailDTOList: operationTimeDetails);
@@ -71,7 +73,7 @@ class OperationNotifier extends _$OperationNotifier {
   }
 
   /// POST - 가게 휴게 시간 변경
-  void updateBreakTime(List<OperationDataModel> breakTimeDetails) async {
+  void updateBreakTime(List<OperationTimeDetailModel> breakTimeDetails) async {
     final response = await ref.read(operationServiceProvider).updateBreakTime(storeId: UserHive.getBox(key: UserKey.storeId), breakTimeDetails: breakTimeDetails);
     if (response.statusCode == 200) {
       state = state.copyWith(error: const ResultFailResponseModel(), breakTimeDetailDTOList: breakTimeDetails);
@@ -81,7 +83,7 @@ class OperationNotifier extends _$OperationNotifier {
   }
 
   /// POST - 가게 휴무일 변경
-  void updateHolidayDetail(int holidayStatus, List<OperationDataModel> regularHolidays, List<OperationDataModel> temporaryHolidays) async {
+  void updateHolidayDetail(int holidayStatus, List<OperationTimeDetailModel> regularHolidays, List<OperationTimeDetailModel> temporaryHolidays) async {
     final response = await ref
         .read(operationServiceProvider)
         .updateHolidayDetail(storeId: UserHive.getBox(key: UserKey.storeId), holidayStatus: holidayStatus, regularHolidays: regularHolidays, temporaryHolidays: temporaryHolidays);
@@ -93,16 +95,17 @@ class OperationNotifier extends _$OperationNotifier {
   }
 }
 
+/// state provider
 @freezed
 abstract class OperationState with _$OperationState {
   const factory OperationState({
     @Default(DataRetrieveStatus.init) DataRetrieveStatus dataRetrieveStatus,
-    @Default(OperationStateModel()) OperationStateModel operationStateModel,
+    @Default(OperationDataModel()) OperationDataModel operationDataModel,
     @Default(0) int deliveryStatus,
     @Default(0) int takeOutStatus,
-    @Default(<OperationDataModel>[]) List<OperationDataModel> operationTimeDetailDTOList,
-    @Default(<OperationDataModel>[]) List<OperationDataModel> breakTimeDetailDTOList,
-    @Default(<OperationDataModel>[]) List<OperationDataModel> holidayDetailDTOList,
+    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> operationTimeDetailDTOList,
+    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> breakTimeDetailDTOList,
+    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> holidayDetailDTOList,
     @Default(0) int holidayStatus,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
   }) = _OperationState;

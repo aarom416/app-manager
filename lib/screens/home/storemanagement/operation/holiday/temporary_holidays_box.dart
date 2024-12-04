@@ -14,8 +14,8 @@ import '../../../../common/common_widgets.dart';
 import '../model.dart';
 
 class TemporaryHolidayBox extends StatefulWidget {
-  final List<OperationDataModel> temporaryHolidays;
-  final Function(List<OperationDataModel>) onEditFunction;
+  final List<OperationTimeDetailModel> temporaryHolidays;
+  final Function(List<OperationTimeDetailModel>) onEditFunction;
 
   const TemporaryHolidayBox({
     super.key,
@@ -68,7 +68,7 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
                     .entries
                     .map((entry) {
                       int index = entry.key;
-                      OperationDataModel temporaryHoliday = entry.value;
+                      OperationTimeDetailModel temporaryHoliday = entry.value;
                       DateRange dateRange = temporaryHoliday.toDateRange();
                       var textEditingController = textEditingControllers[index];
 
@@ -85,7 +85,7 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
                                   showDefaultSnackBar(context, '시작 날짜는 종료 날짜보다 빨라야 합니다.', seconds: 4);
                                   widget.onEditFunction(widget.temporaryHolidays);
                                 } else {
-                                  final updatedHolidays = List<OperationDataModel>.from(widget.temporaryHolidays);
+                                  final updatedHolidays = List<OperationTimeDetailModel>.from(widget.temporaryHolidays);
                                   updatedHolidays[index] = temporaryHoliday.copyWith(startDate: DateFormat('yyyy.MM.dd').format(startDate));
                                   widget.onEditFunction(updatedHolidays);
                                 }
@@ -97,7 +97,7 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
                                   showDefaultSnackBar(context, '종료 날짜는 시작 날짜보다 늦어야 합니다.', seconds: 4);
                                   widget.onEditFunction(widget.temporaryHolidays);
                                 } else {
-                                  final updatedHolidays = List<OperationDataModel>.from(widget.temporaryHolidays);
+                                  final updatedHolidays = List<OperationTimeDetailModel>.from(widget.temporaryHolidays);
                                   updatedHolidays[index] = temporaryHoliday.copyWith(endDate: DateFormat('yyyy.MM.dd').format(endDate));
                                   widget.onEditFunction(updatedHolidays);
                                 }
@@ -107,7 +107,7 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
                           SizedBox(width: SGSpacing.p3),
                           GestureDetector(
                             onTap: () {
-                              final updatedHolidays = List<OperationDataModel>.from(widget.temporaryHolidays);
+                              final updatedHolidays = List<OperationTimeDetailModel>.from(widget.temporaryHolidays);
                               updatedHolidays.removeAt(index);
                               widget.onEditFunction(updatedHolidays);
                             },
@@ -137,7 +137,7 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
                                 ],
                                 onChanged: (inputValue) {
                                   // print("onChanged $inputValue");
-                                  final updatedHolidays = List<OperationDataModel>.from(widget.temporaryHolidays);
+                                  final updatedHolidays = List<OperationTimeDetailModel>.from(widget.temporaryHolidays);
                                   updatedHolidays[index] = temporaryHoliday.copyWith(ment: inputValue);
                                   widget.onEditFunction(updatedHolidays);
                                 },
@@ -173,7 +173,7 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
                       var dateRange = DateRange(id: DateTime.now().millisecondsSinceEpoch, start: DateTime.now(), end: DateTime.now().add(const Duration(days: 30)));
                       // print("dateRange ${dateRange.start} ${dateRange.end}");
                       final newHoliday = dateRange.toOperationTimeDetailModel();
-                      final updatedHolidays = List<OperationDataModel>.from(widget.temporaryHolidays);
+                      final updatedHolidays = List<OperationTimeDetailModel>.from(widget.temporaryHolidays);
                       updatedHolidays.add(newHoliday);
                       widget.onEditFunction(updatedHolidays);
                     }
@@ -189,14 +189,14 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
 
 /// DateRange 에서 OperationTimeDetailModel 를 만드는 확장함수
 extension DateRangeExtensions on DateRange {
-  OperationDataModel toOperationTimeDetailModel() {
+  OperationTimeDetailModel toOperationTimeDetailModel() {
     final dateFormat = DateFormat("yyyy.MM.dd");
-    return OperationDataModel(holidayType: 1, startDate: dateFormat.format(start), endDate: dateFormat.format(end));
+    return OperationTimeDetailModel(holidayType: 1, startDate: dateFormat.format(start), endDate: dateFormat.format(end));
   }
 }
 
 /// temporaryHolidays 중복 확인
-bool hasDuplicateTemporaryHolidays(List<OperationDataModel> data) {
+bool hasDuplicateTemporaryHolidays(List<OperationTimeDetailModel> data) {
   final seen = <String>{};
   for (var item in data) {
     final key = "${item.holidayType}-${item.startDate}-${item.endDate}";
@@ -209,7 +209,7 @@ bool hasDuplicateTemporaryHolidays(List<OperationDataModel> data) {
 }
 
 /// temporaryHolidays 서로 겹치는 날짜가 있는지 확인
-bool hasOverlappingDateRanges(List<OperationDataModel> temporaryHolidays) {
+bool hasOverlappingDateRanges(List<OperationTimeDetailModel> temporaryHolidays) {
   // 날짜 형식을 정의
   final dateFormat = DateFormat("yyyy.MM.dd");
 

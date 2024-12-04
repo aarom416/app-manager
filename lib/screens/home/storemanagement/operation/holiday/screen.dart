@@ -16,9 +16,9 @@ import '../model.dart';
 
 class HolidayScreen extends StatefulWidget {
   final int holidayStatus;
-  final List<OperationDataModel> regularHolidays;
-  final List<OperationDataModel> temporaryHolidays;
-  final Function(int, List<OperationDataModel>, List<OperationDataModel>) onSaveFunction;
+  final List<OperationTimeDetailModel> regularHolidays;
+  final List<OperationTimeDetailModel> temporaryHolidays;
+  final Function(int, List<OperationTimeDetailModel>, List<OperationTimeDetailModel>) onSaveFunction;
 
   const HolidayScreen({super.key, required this.holidayStatus, required this.regularHolidays, required this.temporaryHolidays, required this.onSaveFunction});
 
@@ -28,8 +28,8 @@ class HolidayScreen extends StatefulWidget {
 
 class _HolidayScreenState extends State<HolidayScreen> {
   late int holidayStatus;
-  late List<OperationDataModel> regularHolidays;
-  late List<OperationDataModel> temporaryHolidays;
+  late List<OperationTimeDetailModel> regularHolidays;
+  late List<OperationTimeDetailModel> temporaryHolidays;
 
   @override
   void initState() {

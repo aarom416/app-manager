@@ -64,7 +64,7 @@ class OperationService {
   }
 
   /// POST - 가게 영업 시간 변경
-  Future<Response<dynamic>> updateOperationTime({required String storeId, required List<OperationDataModel> operationTimeDetails}) async {
+  Future<Response<dynamic>> updateOperationTime({required String storeId, required List<OperationTimeDetailModel> operationTimeDetails}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateOperationTime,
@@ -91,7 +91,7 @@ class OperationService {
   }
 
   /// POST - 가게 휴게 시간 변경
-  Future<Response<dynamic>> updateBreakTime({required String storeId, required List<OperationDataModel> breakTimeDetails}) async {
+  Future<Response<dynamic>> updateBreakTime({required String storeId, required List<OperationTimeDetailModel> breakTimeDetails}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateBreakTime,
@@ -121,8 +121,8 @@ class OperationService {
   Future<Response<dynamic>> updateHolidayDetail({
     required String storeId,
     required int holidayStatus,
-    required List<OperationDataModel> regularHolidays,
-    required List<OperationDataModel> temporaryHolidays,
+    required List<OperationTimeDetailModel> regularHolidays,
+    required List<OperationTimeDetailModel> temporaryHolidays,
   }) async {
     try {
       return await ref.read(requestApiProvider).post(

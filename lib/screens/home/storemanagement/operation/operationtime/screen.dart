@@ -15,9 +15,9 @@ import '../../../../../utils/time_utils.dart';
 import '../model.dart';
 
 class OperationTimeScreen extends StatefulWidget {
-  final List<OperationDataModel> operationTimeDetailDTOList;
-  final List<OperationDataModel> regularHolidays;
-  final Function(List<OperationDataModel>) onSaveFunction;
+  final List<OperationTimeDetailModel> operationTimeDetailDTOList;
+  final List<OperationTimeDetailModel> regularHolidays;
+  final Function(List<OperationTimeDetailModel>) onSaveFunction;
 
   const OperationTimeScreen({super.key, required this.operationTimeDetailDTOList, required this.regularHolidays, required this.onSaveFunction});
 
@@ -26,8 +26,8 @@ class OperationTimeScreen extends StatefulWidget {
 }
 
 class _OperationTimeScreenState extends State<OperationTimeScreen> {
-  late List<OperationDataModel> operationTimeDetailDTOList;
-  late List<OperationDataModel> regularHolidays;
+  late List<OperationTimeDetailModel> operationTimeDetailDTOList;
+  late List<OperationTimeDetailModel> regularHolidays;
 
   @override
   void initState() {
@@ -50,7 +50,7 @@ class _OperationTimeScreenState extends State<OperationTimeScreen> {
                   .entries
                   .map((entry) {
                     int index = entry.key;
-                    OperationDataModel operationTimeDetailDTO = entry.value;
+                    OperationTimeDetailModel operationTimeDetailDTO = entry.value;
                     var isHoliday = regularHolidays.any((regularHoliday) => (regularHoliday.day == operationTimeDetailDTO.day) && regularHoliday.isWeekCycleHoliday());
                     return isHoliday
                         ? [
@@ -91,7 +91,7 @@ class _OperationTimeScreenState extends State<OperationTimeScreen> {
 }
 
 class __OperationRegularHolidayCard extends StatelessWidget {
-  final OperationDataModel operationTimeDetailDTO;
+  final OperationTimeDetailModel operationTimeDetailDTO;
 
   const __OperationRegularHolidayCard({
     super.key,
@@ -124,8 +124,8 @@ class __OperationRegularHolidayCard extends StatelessWidget {
 }
 
 class __OperationTimeCard extends StatelessWidget {
-  final OperationDataModel operationTimeDetailDTO;
-  final Function(OperationDataModel) onEditFunction;
+  final OperationTimeDetailModel operationTimeDetailDTO;
+  final Function(OperationTimeDetailModel) onEditFunction;
 
   __OperationTimeCard({
     super.key,
