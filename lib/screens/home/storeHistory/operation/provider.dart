@@ -2,7 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
-import 'package:singleeat/office/models/result_response_model.dart';
+import 'package:singleeat/office/models/result_response_list_model.dart';
 import 'package:singleeat/screens/home/storeHistory/operation/service.dart';
 
 import 'model.dart';
@@ -27,11 +27,17 @@ class StoreHistoryNotifier extends _$StoreHistoryNotifier {
             filter: '0');
 
     if (response.statusCode == 200) {
-      final result = ResultResponseModel.fromJson(response.data);
-      final storeHistory = StoreHistoryModel.fromJson(result.data);
+      final result = ResultResponseListModel.fromJson(response.data);
+      List<StoreHistoryModel> storeHistoryList = [];
+
+      for (var item in result.data) {
+        StoreHistoryModel storeHistoryModel = StoreHistoryModel.fromJson(item);
+        storeHistoryList.add(storeHistoryModel);
+      }
+      //final storeHistory = StoreHistoryModel.fromJson(result.data);
       state = state.copyWith(
           status: StoreHistoryStatus.success,
-          storeHistory: storeHistory,
+          storeHistoryList: storeHistoryList,
           error: const ResultFailResponseModel());
     } else {
       state = state.copyWith(
@@ -51,7 +57,7 @@ enum StoreHistoryStatus {
 abstract class StoreHistoryState with _$StoreHistoryState {
   const factory StoreHistoryState({
     @Default(StoreHistoryStatus.init) StoreHistoryStatus status,
-    @Default(StoreHistoryModel()) StoreHistoryModel storeHistory,
+    @Default([]) List<StoreHistoryModel> storeHistoryList,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
   }) = _StoreHistoryState;
 

@@ -7,8 +7,8 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/office/providers/notification_configuration_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
+import 'package:singleeat/screens/bottom/myinfo/alarmstatus/notification_configuration_provider.dart';
 
 class BusinessNotificationConfigurationScreen extends ConsumerStatefulWidget {
   const BusinessNotificationConfigurationScreen({super.key});

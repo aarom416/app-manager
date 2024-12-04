@@ -4,13 +4,12 @@ import 'package:singleeat/core/networks/request_api.dart';
 import 'package:singleeat/core/networks/rest_api.dart';
 import 'package:singleeat/main.dart';
 
-class StoreHistoryService {
+class MyInfoOrderHistoryService {
   final Ref ref;
 
-  StoreHistoryService(this.ref);
+  MyInfoOrderHistoryService(this.ref);
 
-  /// GET - 사업자 이력 정보를 조회
-  Future<Response<dynamic>> getStoreHistory(
+  Future<Response<dynamic>> getOrderHistory(
       {required String storeId,
       required String page,
       required String filter}) async {
@@ -21,19 +20,15 @@ class StoreHistoryService {
         "{filter}": filter,
       };
 
-      String apiPath = RestApiUri.getStoreHistory;
+      String apiPath = RestApiUri.getOrderHistory;
       // 치환 작업 수행
       replacements.forEach((key, value) {
         apiPath = apiPath.replaceAll(key, value);
       });
 
       final response = ref.read(requestApiProvider).get(
-        path: apiPath,
-        queryParameters: {
-          'startDate': '2024-11-08',
-          'endDate': '2024-12-04',
-        },
-      );
+            path: apiPath,
+          );
 
       return response;
     } on DioException catch (e) {
@@ -46,5 +41,5 @@ class StoreHistoryService {
   }
 }
 
-final storeHistoryServiceProvider =
-    Provider<StoreHistoryService>((ref) => StoreHistoryService(ref));
+final myInfoOrderHistoryServiceProvider = Provider<MyInfoOrderHistoryService>(
+    (ref) => MyInfoOrderHistoryService(ref));

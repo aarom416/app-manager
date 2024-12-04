@@ -10,6 +10,7 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileDeleteSessionScreen extends ConsumerStatefulWidget {
   const ProfileDeleteSessionScreen({super.key});
@@ -136,8 +137,11 @@ class _ProfileDeleteSessionScreenState
                           Row(children: [
                             Expanded(
                               child: GestureDetector(
-                                onTap: () {
+                                onTap: () async {
                                   Navigator.of(ctx).pop();
+                                  launchUrl(Uri.parse(
+                                    'tel://1600-7723',
+                                  ));
                                 },
                                 child: SGContainer(
                                   color: SGColors.primary,

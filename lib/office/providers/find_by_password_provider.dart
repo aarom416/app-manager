@@ -1,10 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/services/find_by_password_service.dart';
 
 part 'find_by_password_provider.freezed.dart';
-
 part 'find_by_password_provider.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -49,10 +49,16 @@ class FindByPasswordNotifier extends _$FindByPasswordNotifier {
     state = state.copyWith(loginId: loginId);
   }
 
-  void updatePassword() async {
+  Future<void> updatePassword() async {
+    String loginId = '';
+    if (state.loginId.isEmpty) {
+      loginId = UserHive.get().loginId;
+    } else {
+      loginId = state.loginId;
+    }
     final response =
         await ref.read(findByPasswordServiceProvider).updatePassword(
-              loginId: state.loginId,
+              loginId: loginId,
               password: state.password,
             );
 

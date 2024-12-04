@@ -11,7 +11,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
-import 'package:singleeat/office/providers/notification_configuration_provider.dart';
+import 'package:singleeat/screens/bottom/myinfo/alarmstatus/notification_configuration_provider.dart';
 
 class NotificationConfigurationScreen extends ConsumerStatefulWidget {
   const NotificationConfigurationScreen({super.key});
