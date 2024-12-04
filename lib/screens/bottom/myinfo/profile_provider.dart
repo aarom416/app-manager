@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
-import 'package:singleeat/office/services/profile_service.dart';
+import 'package:singleeat/screens/bottom/myinfo/profile_service.dart';
 
 part 'profile_provider.freezed.dart';
 part 'profile_provider.g.dart';

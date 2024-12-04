@@ -11,6 +11,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
+import 'package:singleeat/screens/bottom/myinfo/accountstatus/checkpassword/provider.dart';
 
 class CheckPasswordScreen extends ConsumerStatefulWidget {
   String title;
@@ -36,6 +37,8 @@ class _CheckPasswordScreenState extends ConsumerState<CheckPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = ref.read(myInfoCheckPasswordNotifierProvider.notifier);
+    final state = ref.watch(myInfoCheckPasswordNotifierProvider);
     return Scaffold(
         appBar: AppBarWithLeftArrow(
             title: widget.title,
@@ -47,12 +50,16 @@ class _CheckPasswordScreenState extends ConsumerState<CheckPasswordScreen> {
                 maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
                 maxHeight: 58),
             child: SGActionButton(
-                onPressed: () {
-                  if (isPasswordValid) {
+                onPressed: () async {
+                  await provider.checkPassword(password);
+
+                  if (!state.success) {
                     showFailDialogWithImage(
                         ref: ref,
                         mainTitle: "비밀번호 인증 실패",
                         subTitle: "입력하신 비밀번호가 올바르지 않습니다.\n다시 확인해주세요.");
+                  } else {
+                    ref.read(goRouterProvider).push(AppRoutes.changePassword);
                   }
                 },
                 disabled: !isPasswordValid,
@@ -148,7 +155,8 @@ class _CheckPasswordScreenState extends ConsumerState<CheckPasswordScreen> {
               SizedBox(height: SGSpacing.p6),
               GestureDetector(
                 onTap: () {
-                  ref.read(goRouterProvider).push(AppRoutes.changePassword);
+                  //ref.read(goRouterProvider).push(AppRoutes.changePassword);
+                  Navigator.pop(context);
                 },
                 child: SGContainer(
                   color: SGColors.primary,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
@@ -8,19 +9,21 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/screens/bottom/myinfo/operationstatus/provider.dart';
 
-class TemporaryClosedScreen extends StatefulWidget {
+class TemporaryClosedScreen extends ConsumerStatefulWidget {
   const TemporaryClosedScreen({super.key});
 
   @override
-  State<TemporaryClosedScreen> createState() => _TemporaryClosedScreenState();
+  ConsumerState<TemporaryClosedScreen> createState() =>
+      _TemporaryClosedScreenState();
 }
 
-class _TemporaryClosedScreenState extends State<TemporaryClosedScreen> {
-  bool _isClosed = false;
-
+class _TemporaryClosedScreenState extends ConsumerState<TemporaryClosedScreen> {
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(myInfoOperationNotifierProvider);
+    final provider = ref.read(myInfoOperationNotifierProvider.notifier);
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: "영업 임시중지"),
       body: SGContainer(
@@ -42,13 +45,13 @@ class _TemporaryClosedScreenState extends State<TemporaryClosedScreen> {
                   SGTypography.body("영업 임시중지",
                       size: FontSize.normal, weight: FontWeight.w500),
                   SGSwitch(
-                      value: _isClosed,
+                      value: state.operationStatus == 1 ? true : false,
                       onChanged: (value) {
                         setState(() {
-                          if (_isClosed) {
-                            _isClosed = !_isClosed;
+                          if (state.operationStatus == 1) {
+                            provider.onChangeStatus(0);
                           } else {
-                            showDialog(context: context);
+                            showDialog(context: context, provider: provider);
                           }
                         });
                       })
@@ -105,7 +108,9 @@ class _TemporaryClosedScreenState extends State<TemporaryClosedScreen> {
     );
   }
 
-  void showDialog({required BuildContext context}) {
+  void showDialog(
+      {required BuildContext context,
+      required MyInfoOperationNotifier provider}) {
     showSGDialog(
         context: context,
         childrenBuilder: (ctx) => [
@@ -142,10 +147,8 @@ class _TemporaryClosedScreenState extends State<TemporaryClosedScreen> {
                     flex: 2,
                     child: GestureDetector(
                       onTap: () {
+                        provider.operationStatus(0);
                         Navigator.of(ctx).pop();
-                        setState(() {
-                          _isClosed = true;
-                        });
                       },
                       child: SGContainer(
                         width: double.infinity,

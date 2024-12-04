@@ -256,9 +256,14 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                 maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
                 maxHeight: 58),
             child: SGActionButton(
-                onPressed: () {
+                onPressed: () async {
                   if (isPasswordValid) {
-                    provider.updatePassword();
+                    await provider.updatePassword();
+                    if (state.status == FindByPasswordStatus.step4) {
+                      ref
+                          .read(goRouterProvider)
+                          .push(AppRoutes.successChangePassword);
+                    }
                   }
 
                   //
