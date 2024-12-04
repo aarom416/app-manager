@@ -12,8 +12,10 @@ enum StoreHistoryStatus {
 @freezed
 abstract class StoreHistoryModel with _$StoreHistoryModel {
   const factory StoreHistoryModel({
-    @Default('') String ownerPhoneNumber, // 휴대폰 번호
-    @Default('') String ownerEmail, // 이메일
+    @Default(0) int type,
+    @Default('') String content,
+    @Default('') String previousDate,
+    @Default('') String createdDate,
   }) = _StoreHistoryModel;
 
   factory StoreHistoryModel.fromJson(Map<String, dynamic> json) =>

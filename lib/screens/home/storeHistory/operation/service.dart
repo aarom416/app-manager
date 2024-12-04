@@ -31,7 +31,7 @@ class StoreHistoryService {
         path: apiPath,
         queryParameters: {
           'startDate': '2024-11-08',
-          'endDate': '2024-11-09',
+          'endDate': '2024-12-04',
         },
       );
 
