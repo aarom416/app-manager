@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -16,8 +17,25 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/utils/formatter.dart';
+import 'package:singleeat/screens/home/storemanagement/delivery/provider.dart';
+import 'package:singleeat/screens/home/storemanagement/delivery/service.dart';
 
-class StoreManagementDeliveryTipScreen extends StatelessWidget {
+class DeliveryScreen extends ConsumerStatefulWidget {
+  const DeliveryScreen({super.key});
+
+  @override
+  ConsumerState<DeliveryScreen> createState() => _DeliveryScreenState();
+}
+
+class _DeliveryScreenState extends ConsumerState<DeliveryScreen> {
+
+  @override
+  void initState() {
+    Future.microtask(() {
+      ref.read(deliveryNotifierProvider.notifier).getDeliveryTakeoutInfo();
+    });
+  }
+
   List<(String, String)> baseDeliveryTip = [('주문 금액', '배달팁'), ('3,000원 이상', '4,000원')];
 
   List<(String, String)> additionalDeliveryTip = [
@@ -26,10 +44,12 @@ class StoreManagementDeliveryTipScreen extends StatelessWidget {
     ('50,000원 이상', '0원'),
   ];
 
-  StoreManagementDeliveryTipScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
+    final DeliveryState state = ref.watch(deliveryNotifierProvider);
+
+    final DeliveryNotifier provider = ref.read(deliveryNotifierProvider.notifier);
+
     return SingleChildScrollView(
       child: Container(
         child: Column(

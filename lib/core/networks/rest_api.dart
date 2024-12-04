@@ -82,7 +82,7 @@ class RestApiUri {
   static const String getOperationInfo = '/api/v1/owner/store-info/operation-info/{storeId}';
   // GET - 메뉴/옵션 정보 조회 TODO
   static const String getMenuOptionInfo = '/api/v1/owner/store-info/menu-option-info/{storeId}';
-  // GET - 배달/포장 정보 조회 TODO
+  // GET - 배달/포장 정보 조회
   static const String getDeliveryTakeoutInfo = '/api/v1/owner/store-info/delivery-takeout-info/{storeId}';
 
   /// Barogo

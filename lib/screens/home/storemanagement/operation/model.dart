@@ -8,6 +8,35 @@ part 'model.freezed.dart';
 part 'model.g.dart';
 
 /// data retrieve model. api response 형상에 맞춤.
+/*
+    "deliveryStatus": 1,
+    "takeOutStatus": 1,
+    "operationTimeDetailDTOList": [
+      {
+        "day": "월",
+        "startTime": "08:00",
+        "endTime": "21:00"
+      }
+    ],
+    "breakTimeDetailDTOList": [
+      {
+        "day": "월",
+        "startTime": "08:00",
+        "endTime": "21:00"
+      }
+    ],
+    "holidayDetailDTOList": [
+      {
+        "holidayType": 0,
+        "cycle": 7,
+        "day": "월",
+        "startDate": "2024.03.04",
+        "endDate": "2024.03.05",
+        "ment": "3월 4일부터 3월 5일까지 리모델링으로 인해 임시 휴업합니다."
+      }
+    ],
+    "holidayStatus": 1
+ */
 @freezed
 abstract class OperationDataModel with _$OperationDataModel {
   const factory OperationDataModel({
@@ -25,16 +54,6 @@ abstract class OperationDataModel with _$OperationDataModel {
 @freezed
 abstract class OperationTimeDetailModel with _$OperationTimeDetailModel {
   const factory OperationTimeDetailModel({
-    /*
-        "holidayType": 0,
-        "cycle": 7,
-        "day": "월",
-        "startDate": "2024.03.04",
-        "endDate": "2024.03.05",
-        "ment": "3월 4일부터 3월 5일까지 리모델링으로 인해 임시 휴업합니다."
-        "startTime": "08:00",
-        "endTime": "21:00"
-     */
     @Default(0) int holidayType,
     @Default(0) int cycle,
     @Default('') String day,

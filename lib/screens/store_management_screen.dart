@@ -71,7 +71,7 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                       children: [
                         const StoreManagementBasicInfoScreen(),
                         const OperationScreen(),
-                        StoreManagementDeliveryTipScreen(),
+                        DeliveryScreen(),
                         StoreManangementCuisineManagementScreen(),
                       ],
                     )))));
