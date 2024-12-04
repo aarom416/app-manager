@@ -69,7 +69,7 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
                     .map((entry) {
                       int index = entry.key;
                       OperationTimeDetailModel temporaryHoliday = entry.value;
-                      DateRange dateRange = temporaryHoliday.toDateRange();
+                      DateRange dateRange = temporaryHoliday.toDateRange;
                       var textEditingController = textEditingControllers[index];
 
                       return [
@@ -107,6 +107,7 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
                           SizedBox(width: SGSpacing.p3),
                           GestureDetector(
                             onTap: () {
+                              textEditingControllers.removeAt(index).dispose();
                               final updatedHolidays = List<OperationTimeDetailModel>.from(widget.temporaryHolidays);
                               updatedHolidays.removeAt(index);
                               widget.onEditFunction(updatedHolidays);
@@ -168,11 +169,11 @@ class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
                     } else if (hasOverlappingDateRanges(widget.temporaryHolidays)) {
                       showDefaultSnackBar(context, '날짜가 겹치는 임시휴무일이 있습니다.');
                     } else {
-                      textEditingControllers.add(TextEditingController());
                       // 새로운 임시 휴무 추가
                       var dateRange = DateRange(id: DateTime.now().millisecondsSinceEpoch, start: DateTime.now(), end: DateTime.now().add(const Duration(days: 30)));
                       // print("dateRange ${dateRange.start} ${dateRange.end}");
                       final newHoliday = dateRange.toOperationTimeDetailModel();
+                      textEditingControllers.add(TextEditingController(text: newHoliday.ment));
                       final updatedHolidays = List<OperationTimeDetailModel>.from(widget.temporaryHolidays);
                       updatedHolidays.add(newHoliday);
                       widget.onEditFunction(updatedHolidays);

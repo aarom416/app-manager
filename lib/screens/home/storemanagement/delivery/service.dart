@@ -24,6 +24,38 @@ class DeliveryService {
       return Future.error(e);
     }
   }
+
+  /// POST - 배달 예상 시간 수정
+  Future<Response<dynamic>> updateDeliveryTime({required String storeId, required int minDeliveryTime, required int maxDeliveryTime}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateOperationTime,
+        data: {'storeId': UserHive.getBox(key: UserKey.storeId), 'minTime': minDeliveryTime, 'maxTime': maxDeliveryTime},
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 포장 예상 시간 수정
+  Future<Response<dynamic>> updatePickupTime({required String storeId, required int minTakeOutTime, required int maxTakeOutTime}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updatePickupTime,
+        data: {'storeId': UserHive.getBox(key: UserKey.storeId), 'minTime': minTakeOutTime, 'maxTime': maxTakeOutTime},
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final deliveryServiceProvider = Provider<DeliveryService>((ref) => DeliveryService(ref));

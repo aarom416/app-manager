@@ -174,7 +174,7 @@ class __BreakTimeCard extends StatelessWidget {
               SGSwitch(
                 value: breakTimeDetailDTO.isNoBreak(),
                 onChanged: (noBreak) {
-                  onEditFunction(noBreak ? breakTimeDetailDTO.toNoBreak() : breakTimeDetailDTO.toDefaultBreakHour());
+                  onEditFunction(noBreak ? breakTimeDetailDTO.toNoBreak : breakTimeDetailDTO.toDefaultBreakHour);
                 },
               ),
             ],

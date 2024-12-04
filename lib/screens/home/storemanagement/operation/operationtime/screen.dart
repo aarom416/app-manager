@@ -183,9 +183,9 @@ class __OperationTimeCard extends StatelessWidget {
                 value: operationTimeDetailDTO.is24OperationHour(),
                 onChanged: (value) {
                   if (value) {
-                    onEditFunction(operationTimeDetailDTO.to24OperationHour());
+                    onEditFunction(operationTimeDetailDTO.to24OperationHour);
                   } else {
-                    onEditFunction(operationTimeDetailDTO.toDefaultOperationHour());
+                    onEditFunction(operationTimeDetailDTO.toDefaultOperationHour);
                   }
                 },
               ),

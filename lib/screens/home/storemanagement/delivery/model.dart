@@ -31,6 +31,9 @@ abstract class DeliveryDataModel with _$DeliveryDataModel {
     @Default(0) int maxDeliveryTime,
     @Default(0) int minTakeOutTime,
     @Default(0) int maxTakeOutTime,
+    @Default(4000) int baseDeliveryTip, // 기본 배달팁. figma 상 존재하나, api 규격에 존재하지 않음.
+    @Default(5000) int baseDeliveryTipMax, // 기본 배달팁 최대금액. figma 상 존재하나, api 규격에 존재하지 않음.
+    @Default(16000) int minimumOrderPrice, // 최소 주문 금액. figma 상 존재하나, api 규격에 존재하지 않음.
     @Default(<DeliveryTipModel>[]) List<DeliveryTipModel> storeDeliveryTipDTOList,
     @Default('') String deliveryAddress,
   }) = _DeliveryDataModel;

@@ -82,7 +82,7 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
   }
 
   /// OperationTimeDetailModel 에서 DateRange 를 생성
-  DateRange toDateRange() {
+  DateRange get toDateRange {
     final dateFormat = DateFormat("yyyy.MM.dd");
     int uniqueId = DateTime.now().millisecondsSinceEpoch;
     DateTime startDate = dateFormat.parse(this.startDate);
@@ -96,12 +96,12 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
   }
 
   /// 24시간 영업으로 변경
-  OperationTimeDetailModel to24OperationHour() {
+  OperationTimeDetailModel get to24OperationHour {
     return copyWith(startTime: "00:00", endTime: "24:00");
   }
 
   /// 기본 영업시간으로 변경
-  OperationTimeDetailModel toDefaultOperationHour() {
+  OperationTimeDetailModel get toDefaultOperationHour {
     return copyWith(startTime: "09:00", endTime: "21:00");
   }
 
@@ -111,12 +111,12 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
   }
 
   /// 휴게시간 없음으로 변경
-  OperationTimeDetailModel toNoBreak() {
+  OperationTimeDetailModel get toNoBreak {
     return copyWith(startTime: "00:00", endTime: "00:00");
   }
 
   /// 기본 휴게시간으로 변경
-  OperationTimeDetailModel toDefaultBreakHour() {
+  OperationTimeDetailModel get toDefaultBreakHour {
     return copyWith(startTime: "15:00", endTime: "17:00");
   }
 

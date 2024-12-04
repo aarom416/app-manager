@@ -12,7 +12,6 @@ part 'provider.freezed.dart';
 
 part 'provider.g.dart';
 
-
 /// network provider
 @Riverpod(keepAlive: true)
 class DeliveryNotifier extends _$DeliveryNotifier {
@@ -34,6 +33,9 @@ class DeliveryNotifier extends _$DeliveryNotifier {
           maxDeliveryTime: deliveryDataModel.maxDeliveryTime,
           minTakeOutTime: deliveryDataModel.minTakeOutTime,
           maxTakeOutTime: deliveryDataModel.maxTakeOutTime,
+          baseDeliveryTip: deliveryDataModel.baseDeliveryTip, // 기본 배달팁. figma 상 존재하나, api 규격에 존재하지 않음.
+          baseDeliveryTipMax: deliveryDataModel.baseDeliveryTipMax, // 기본 배달팁. figma 상 존재하나, api 규격에 존재하지 않음.
+          minimumOrderPrice: deliveryDataModel.minimumOrderPrice, // 최소 주문 금액. figma 상 존재하나, api 규격에 존재하지 않음.
           storeDeliveryTipDTOList: deliveryDataModel.storeDeliveryTipDTOList,
           deliveryAddress: deliveryDataModel.deliveryAddress,
           error: const ResultFailResponseModel());
@@ -42,6 +44,25 @@ class DeliveryNotifier extends _$DeliveryNotifier {
     }
   }
 
+  /// POST - 배달 예상 시간 수정
+  void updateDeliveryTime(int minDeliveryTime, int maxDeliveryTime) async {
+    final response = await ref.read(deliveryServiceProvider).updateDeliveryTime(storeId: UserHive.getBox(key: UserKey.storeId), minDeliveryTime: minDeliveryTime, maxDeliveryTime: maxDeliveryTime);
+    if (response.statusCode == 200) {
+      state = state.copyWith(error: const ResultFailResponseModel(), minDeliveryTime: minDeliveryTime, maxDeliveryTime: maxDeliveryTime);
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
+
+  /// POST - 포장 예상 시간 수정
+  void updatePickupTime(int minTakeOutTime, int maxTakeOutTime) async {
+    final response = await ref.read(deliveryServiceProvider).updatePickupTime(storeId: UserHive.getBox(key: UserKey.storeId), minTakeOutTime: minTakeOutTime, maxTakeOutTime: maxTakeOutTime);
+    if (response.statusCode == 200) {
+      state = state.copyWith(error: const ResultFailResponseModel(), minTakeOutTime: minTakeOutTime, maxTakeOutTime: maxTakeOutTime);
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
 }
 
 /// state provider
@@ -54,6 +75,9 @@ abstract class DeliveryState with _$DeliveryState {
     @Default(0) int maxDeliveryTime,
     @Default(0) int minTakeOutTime,
     @Default(0) int maxTakeOutTime,
+    @Default(0) int baseDeliveryTip, // 기본 배달팁. figma 상 존재하나, api 규격에 존재하지 않음.
+    @Default(0) int baseDeliveryTipMax, // 기본 배달팁 최대금액. figma 상 존재하나, api 규격에 존재하지 않음.
+    @Default(0) int minimumOrderPrice, // 최소 주문 금액. figma 상 존재하나, api 규격에 존재하지 않음.
     @Default(<DeliveryTipModel>[]) List<DeliveryTipModel> storeDeliveryTipDTOList,
     @Default('') String deliveryAddress,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
