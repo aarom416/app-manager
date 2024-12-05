@@ -11,7 +11,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/screens/home/storemanagement/operation/holiday/screen.dart';
 
-import '../../../../utils/time_utils.dart';
+import '../../../../core/utils/time_utils.dart';
 import 'breaktime/screen.dart';
 import 'model.dart';
 import 'operationtime/screen.dart';

@@ -11,7 +11,7 @@ import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
-import '../../../../../utils/time_utils.dart';
+import '../../../../../core/utils/time_utils.dart';
 import '../model.dart';
 
 class BreakTimeScreen extends StatefulWidget {

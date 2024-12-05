@@ -1,49 +1,42 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
-import 'package:singleeat/core/components/selection_bottom_sheet.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
-import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
-import 'package:singleeat/utils/string.dart';
 
 import '../../../../../core/components/dialog.dart';
 import '../../../../../core/components/multiple_information_box.dart';
-import '../../../../../core/utils/formatter.dart';
-import '../../../../../utils/time_utils.dart';
+import '../../../../common/components/numeric_textfield.dart';
 import '../model.dart';
 import 'delivery_tip_box.dart';
 
 class DeliveryTipScreen extends StatefulWidget {
   final int baseDeliveryTip;
-  final int baseDeliveryTipMax;
+  final int deliveryTipMax;
   final int minimumOrderPrice;
   final List<DeliveryTipModel> storeDeliveryTipDTOList;
+  final String deliveryTipInfo;
   final Function(int, int, List<DeliveryTipModel>) onSaveFunction;
 
-  const DeliveryTipScreen({super.key, required this.baseDeliveryTip, required this.baseDeliveryTipMax, required this.minimumOrderPrice, required this.storeDeliveryTipDTOList, required this.onSaveFunction});
+  const DeliveryTipScreen(
+      {super.key,
+      required this.baseDeliveryTip,
+      required this.deliveryTipMax,
+      required this.minimumOrderPrice,
+      required this.storeDeliveryTipDTOList,
+      required this.deliveryTipInfo,
+      required this.onSaveFunction});
 
   @override
   State<DeliveryTipScreen> createState() => _DeliveryTipScreenState();
 }
 
 class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
-  int minOrderPrice = 0;
-  int maxOrderPrice = 12000;
-  int orderDeliveryTip = 3000;
-  late TextEditingController minOrderPriceController;
-  late TextEditingController maxOrderPriceController;
-  late TextEditingController orderDeliveryTipController;
-  List<AdditionalDeliveryTip> additionalDeliveryTips = [];
-  bool isButtonEnabled = true;
-
   late int baseDeliveryTip;
   late int minimumOrderPrice;
   late List<DeliveryTipModel> storeDeliveryTipDTOList;
@@ -119,18 +112,26 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
       floatingActionButton: Container(
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
           child: SGActionButton(
-              disabled: false,
-              onPressed: () {
-                FocusScope.of(context).unfocus();
-                if (baseDeliveryTip > widget.baseDeliveryTipMax) {
-                  // todo 모든 배달팁에 적용되는듯
-                  showFailDialogWithImage(mainTitle: "배달팁 등록 실패", subTitle: "배달팁은 ${widget.baseDeliveryTipMax.toKoreanCurrency}원 이하만 설정 가능합니다.");
-                } else {
-                  widget.onSaveFunction(baseDeliveryTip, minimumOrderPrice, storeDeliveryTipDTOList);
-                  Navigator.of(context).pop();
-                }
-              },
-              label: "변경하기")),
+            onPressed: () {
+              FocusScope.of(context).unfocus();
+              if (baseDeliveryTip > widget.deliveryTipMax || storeDeliveryTipDTOList.any((deliveryTipModel) => deliveryTipModel.deliveryTip > widget.deliveryTipMax)) {
+                showFailDialogWithImage(mainTitle: "배달팁 등록 실패", subTitle: "배달팁은 ${widget.deliveryTipMax.toKoreanCurrency}원 이하만 설정 가능합니다.");
+              } else {
+                /*
+                    todo storeDeliveryTipDTOList 의 입력값 validation 필요
+                    가게 배달팁을 변경합니다.
+                    현재 최대 가격 금액이 다음 설정하려는 최소 주문 금액과 같아야 합니다. 예를 들어 '8000원 이상 10000원 이하' -> '10000원 이상 30000원 이하'
+                    '8000원 이상' 인 경우 최소 가격은 8000원, 최대 가격은 null 입니다.
+                    배달팁 내용, 최소 가격, 최대 가겨, 배달 팁 리스트의 크기는 모두 같고 인덱스 순으로 같은 배달팁입니다.
+                    배달팁 변경 페이지에 존재하는 배달팁에 대한 정보를 전송해야 합니다. (기존에 설정되어 있는 배달팁 포함)
+                 */
+                widget.onSaveFunction(baseDeliveryTip, minimumOrderPrice, storeDeliveryTipDTOList);
+                Navigator.of(context).pop();
+              }
+            },
+            label: "변경하기",
+            disabled: widget.minimumOrderPrice == minimumOrderPrice && widget.baseDeliveryTip == baseDeliveryTip && widget.storeDeliveryTipDTOList.isEqualTo(storeDeliveryTipDTOList),
+          )),
       body: SGContainer(
           color: const Color(0xFFFAFAFA),
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
@@ -147,19 +148,13 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
                       child: Row(
                     children: [
                       Expanded(
-                        child: TextField(
+                        child: NumericTextField(
                           controller: minimumOrderPriceController,
-                          style: TextStyle(color: SGColors.black, fontSize: FontSize.small, fontWeight: FontWeight.w500),
-                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), comparableNumericInputFormatter(1000000000)],
-                          decoration: InputDecoration(
-                            hintStyle: TextStyle(color: SGColors.gray4),
-                            contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
-                            border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                          ),
-                          onChanged: (minimumOrderPrice) {
+                          onValueChanged: (minimumOrderPrice) {
                             setState(() {
-                              this.minimumOrderPrice = minimumOrderPrice.toIntFromCurrency;
+                              this.minimumOrderPrice = minimumOrderPrice;
                             });
+                            // print("Updated minimumOrderPrice tip: $minimumOrderPrice");
                           },
                         ),
                       ),
@@ -173,19 +168,13 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
                       child: Row(
                     children: [
                       Expanded(
-                        child: TextField(
+                        child: NumericTextField(
                           controller: baseDeliveryTipController,
-                          style: TextStyle(color: SGColors.black, fontSize: FontSize.small, fontWeight: FontWeight.w500),
-                          inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), comparableNumericInputFormatter(1000000000)],
-                          decoration: InputDecoration(
-                            hintStyle: TextStyle(color: SGColors.gray4),
-                            contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
-                            border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                          ),
-                          onChanged: (baseDeliveryTip) {
+                          onValueChanged: (baseDeliveryTip) {
                             setState(() {
-                              this.baseDeliveryTip = baseDeliveryTip.toIntFromCurrency;
+                              this.baseDeliveryTip = baseDeliveryTip;
                             });
+                            // print("Updated delivery tip: $baseDeliveryTip");
                           },
                         ),
                       ),
@@ -204,7 +193,7 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
             DeliveryTipBox(
               storeDeliveryTipDTOList: storeDeliveryTipDTOList,
               onEditFunction: (storeDeliveryTipDTOList) {
-                // print("onEditFunction storeDeliveryTipDTOList storeDeliveryTipDTOList");
+                print("onEditFunction storeDeliveryTipDTOList $storeDeliveryTipDTOList");
                 setState(() {
                   this.storeDeliveryTipDTOList = storeDeliveryTipDTOList;
                 });
@@ -213,205 +202,13 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
 
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
 
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [SGTypography.body("*", color: SGColors.gray3, lineHeight: 1.25), SizedBox(width: SGSpacing.p1), SGTypography.body("30,000원 이상, 0원 미만으로 설정하시면 30,000원 이상부터는  동일한 배달팁이 적용돼요", color: SGColors.gray3, lineHeight: 1.25)]),
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SGTypography.body("*", color: SGColors.gray3, lineHeight: 1.25),
+              SizedBox(width: SGSpacing.p1),
+              SGTypography.body(widget.deliveryTipInfo, color: SGColors.gray3, lineHeight: 1.25)
+            ]),
             SizedBox(height: SGSpacing.p20),
           ])),
     );
-  }
-}
-
-class AdditionalDeliveryTip {
-  final int id;
-  final int minPrice;
-  final int maxPrice;
-  final int deliveryTip;
-
-  AdditionalDeliveryTip({required this.id, required this.minPrice, required this.maxPrice, required this.deliveryTip});
-
-  AdditionalDeliveryTip copyWith({int? minimumPrice, int? maximumPrice, int? tip}) {
-    return AdditionalDeliveryTip(
-      id: id,
-      minPrice: minimumPrice ?? this.minPrice,
-      maxPrice: maximumPrice ?? this.maxPrice,
-      deliveryTip: tip ?? this.deliveryTip,
-    );
-  }
-}
-
-class _DeliveryTipBox extends StatefulWidget {
-  final List<AdditionalDeliveryTip> additionalDeliveryTips;
-  final int minimumPrice;
-  final Function(List<AdditionalDeliveryTip>) onAdditionalDeliveryTipsChanged;
-
-  const _DeliveryTipBox({super.key, required this.minimumPrice, required this.additionalDeliveryTips, required this.onAdditionalDeliveryTipsChanged});
-
-  @override
-  State<_DeliveryTipBox> createState() => _DeliveryTipBoxState();
-}
-
-class _DeliveryTipBoxState extends State<_DeliveryTipBox> {
-  bool isEditing = false;
-
-  late List<TextEditingController> minimumPriceControllers;
-  late List<TextEditingController> maximumPriceControllers;
-  late List<TextEditingController> tipControllers;
-
-  late List<AdditionalDeliveryTip> additionalDeliveryTips;
-
-  @override
-  void initState() {
-    super.initState();
-    minimumPriceControllers = widget.additionalDeliveryTips.map((tip) => TextEditingController(text: tip.minPrice.toKoreanCurrency)).toList();
-    maximumPriceControllers = widget.additionalDeliveryTips.map((tip) => TextEditingController(text: tip.maxPrice.toKoreanCurrency)).toList();
-    tipControllers = widget.additionalDeliveryTips.map((tip) => TextEditingController(text: tip.deliveryTip.toKoreanCurrency)).toList();
-    additionalDeliveryTips = widget.additionalDeliveryTips;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MultipleInformationBox(children: [
-      ...additionalDeliveryTips.mapIndexed((index, tip) => Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SGTypography.body("주문 금액", color: SGColors.gray4, weight: FontWeight.w600),
-            SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-            Row(children: [
-              Expanded(
-                child: SGTextFieldWrapper(
-                    child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        readOnly: isEditing,
-                        controller: minimumPriceControllers[index],
-                        style: TextStyle(color: SGColors.black, fontSize: FontSize.small, fontWeight: FontWeight.w500),
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), comparableNumericInputFormatter(1000000000)],
-                        decoration: InputDecoration(
-                          hintStyle: TextStyle(color: SGColors.gray4),
-                          contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
-                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                        ),
-                        onChanged: (value) {
-                          value = value.replaceAll(",", "");
-                          setState(() {
-                            additionalDeliveryTips[index] = tip.copyWith(minimumPrice: int.parse(value));
-                          });
-                        },
-                      ),
-                    ),
-                    SGContainer(padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4), child: SGTypography.body("원 이상", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500)),
-                  ],
-                )),
-              ),
-              SizedBox(width: SGSpacing.p2),
-              Expanded(
-                child: SGTextFieldWrapper(
-                    child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        readOnly: isEditing,
-                        controller: maximumPriceControllers[index],
-                        style: TextStyle(color: SGColors.black, fontSize: FontSize.small, fontWeight: FontWeight.w500),
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), comparableNumericInputFormatter(1000000000)],
-                        decoration: InputDecoration(
-                          hintStyle: TextStyle(color: SGColors.gray3),
-                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            additionalDeliveryTips[index] = tip.copyWith(maximumPrice: int.parse(value.replaceAll(",", "")));
-                          });
-                        },
-                      ),
-                    ),
-                    SGContainer(padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4), child: SGTypography.body("원 미만", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500)),
-                  ],
-                )),
-              ),
-              SizedBox(width: SGSpacing.p2),
-              SGContainer(
-                  width: SGSpacing.p5,
-                  height: SGSpacing.p5,
-                  borderRadius: BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
-                  color: SGColors.warningRed,
-                  child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          additionalDeliveryTips = [...additionalDeliveryTips.sublist(0, index), ...additionalDeliveryTips.sublist(index + 1)];
-                          minimumPriceControllers = [...minimumPriceControllers.sublist(0, index), ...minimumPriceControllers.sublist(index + 1)];
-                          maximumPriceControllers = [...maximumPriceControllers.sublist(0, index), ...maximumPriceControllers.sublist(index + 1)];
-                          tipControllers = [...tipControllers.sublist(0, index), ...tipControllers.sublist(index + 1)];
-                        });
-                      },
-                      child: Center(
-                        child: Image.asset('assets/images/minus-white.png', width: 16, height: 16),
-                      ))),
-            ]),
-            SizedBox(height: SGSpacing.p4),
-            SGTypography.body("배달팁", color: SGColors.gray4, weight: FontWeight.w600),
-            SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-            Row(children: [
-              Expanded(
-                child: SGTextFieldWrapper(
-                    child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        readOnly: isEditing,
-                        controller: tipControllers[index],
-                        style: TextStyle(color: SGColors.black, fontSize: FontSize.small, fontWeight: FontWeight.w500),
-                        inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), comparableNumericInputFormatter(1000000000)],
-                        decoration: InputDecoration(
-                          hintStyle: TextStyle(color: SGColors.gray4),
-                          contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
-                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                        ),
-                        onChanged: (value) {
-                          value = value.replaceAll(",", "");
-                          setState(() {
-                            additionalDeliveryTips[index] = tip.copyWith(tip: int.parse(value));
-                          });
-                        },
-                      ),
-                    ),
-                    SGContainer(padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4), child: SGTypography.body("원", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500)),
-                  ],
-                )),
-              ),
-            ]),
-            SizedBox(height: SGSpacing.p5),
-          ])),
-      if (!isEditing) ...[
-        GestureDetector(
-          onTap: () {},
-          child: Row(
-            children: [
-              GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isEditing = true;
-
-                      if (isEditing) {
-                        final newAdditionalDeliveryTip = AdditionalDeliveryTip(id: DateTime.now().millisecondsSinceEpoch, minPrice: widget.minimumPrice, maxPrice: 0, deliveryTip: 3000);
-                        additionalDeliveryTips = [...additionalDeliveryTips, newAdditionalDeliveryTip];
-
-                        minimumPriceControllers = [...minimumPriceControllers, TextEditingController(text: widget.minimumPrice.toKoreanCurrency)];
-
-                        maximumPriceControllers = [...maximumPriceControllers, TextEditingController(text: newAdditionalDeliveryTip.maxPrice.toKoreanCurrency)];
-
-                        tipControllers = [...tipControllers, TextEditingController(text: newAdditionalDeliveryTip.deliveryTip.toKoreanCurrency)];
-                        widget.onAdditionalDeliveryTipsChanged(additionalDeliveryTips);
-                      }
-                    });
-                  },
-                  child: Image.asset("assets/images/accumulative.png", width: 24, height: 24)),
-              SizedBox(width: SGSpacing.p1),
-              SGTypography.body("배달팁 추가하기", color: SGColors.black, size: FontSize.small, weight: FontWeight.w600),
-            ],
-          ),
-        )
-      ],
-    ]);
   }
 }

@@ -52,7 +52,7 @@ class RestApiUri {
   static const String updatePickupTime = '/api/v1/owner/store-info/expected-pickup-time';
   // POST - 배달 예상 시간 수정
   static const String updateDeliveryTime = '/api/v1/owner/store-info/expected-delivery-time';
-  // POST - 가게 배달팁 변경 TODO
+  // POST - 가게 배달팁 변경
   static const String updateDeliveryTip = '/api/v1/owner/store-info/delivery-tip';
   // POST - 배달 상태 수정
   static const String updateDeliveryStatus = '/api/v1/owner/store-info/delivery-status';

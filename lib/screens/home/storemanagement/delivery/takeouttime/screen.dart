@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
@@ -6,14 +5,11 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/selection_bottom_sheet.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
-import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
 import '../../../../../core/components/multiple_information_box.dart';
-import '../../../../../utils/time_utils.dart';
-import '../model.dart';
 
 class TakeOutTimeScreen extends StatefulWidget {
   final int minTakeOutTime;
@@ -27,7 +23,6 @@ class TakeOutTimeScreen extends StatefulWidget {
 }
 
 class _TakeOutTimeScreenState extends State<TakeOutTimeScreen> {
-
   late int minTakeOutTime;
   late int maxTakeOutTime;
 
@@ -43,9 +38,7 @@ class _TakeOutTimeScreenState extends State<TakeOutTimeScreen> {
 
   List<SelectionOption<int>> getAvailableMaxOptions(int minTakeOutTime) {
     int minIndex = minuteOptions.indexWhere((option) => option.value == minTakeOutTime);
-    return (minIndex != -1 && minIndex + 1 < minuteOptions.length)
-        ? minuteOptions.sublist(minIndex + 1)
-        : [];
+    return (minIndex != -1 && minIndex + 1 < minuteOptions.length) ? minuteOptions.sublist(minIndex + 1) : [];
   }
 
   @override

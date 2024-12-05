@@ -1,24 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:singleeat/core/components/action_button.dart';
-import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
-import 'package:singleeat/core/components/selection_bottom_sheet.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
-import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
-import 'package:singleeat/utils/int.dart';
-import 'package:singleeat/utils/string.dart';
 
-import '../../../../../core/components/dialog.dart';
 import '../../../../../core/components/multiple_information_box.dart';
-import '../../../../../core/utils/formatter.dart';
-import '../../../../../utils/time_utils.dart';
+import '../../../../common/components/numeric_textfield.dart';
 import '../model.dart';
 
 class DeliveryTipBox extends StatefulWidget {
@@ -74,29 +65,11 @@ class _DeliveryTipBoxState extends State<DeliveryTipBox> {
                     child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
+                      child: NumericTextField(
                         controller: minPriceControllers[index],
-                        style: TextStyle(color: SGColors.black, fontSize: FontSize.small, fontWeight: FontWeight.w500),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(10),
-                        ],
-                        decoration: InputDecoration(
-                          hintStyle: TextStyle(color: SGColors.gray4),
-                          contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
-                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                        ),
-                        onChanged: (minPrice) {
-                          String numericValue = minPrice.replaceAll(',', '');
-                          if (numericValue.startsWith('0')) {
-                            numericValue = numericValue.substring(1);
-                          }
-                          String formattedValue = int.tryParse(numericValue)?.toStringAsCurrency ?? '';
-                          minPriceControllers[index].text = formattedValue;
-                          minPriceControllers[index].selection = TextSelection.collapsed(offset: formattedValue.length);
+                        onValueChanged: (minPrice) {
                           final updatedStoreDeliveryTipDTOList = List<DeliveryTipModel>.from(widget.storeDeliveryTipDTOList);
-                          updatedStoreDeliveryTipDTOList[index] = deliveryTipModel.copyWith(minPrice: numericValue.toIntFromCurrency);
+                          updatedStoreDeliveryTipDTOList[index] = deliveryTipModel.copyWith(minPrice: minPrice);
                           widget.onEditFunction(updatedStoreDeliveryTipDTOList);
                         },
                       ),
@@ -111,29 +84,11 @@ class _DeliveryTipBoxState extends State<DeliveryTipBox> {
                     child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
+                      child: NumericTextField(
                         controller: maxPriceControllers[index],
-                        style: TextStyle(color: SGColors.black, fontSize: FontSize.small, fontWeight: FontWeight.w500),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(10),
-                        ],
-                        decoration: InputDecoration(
-                          hintStyle: TextStyle(color: SGColors.gray4),
-                          contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
-                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                        ),
-                        onChanged: (maxPrice) {
-                          String numericValue = maxPrice.replaceAll(',', '');
-                          if (numericValue.startsWith('0')) {
-                            numericValue = numericValue.substring(1);
-                          }
-                          String formattedValue = int.tryParse(numericValue)?.toStringAsCurrency ?? '';
-                          maxPriceControllers[index].text = formattedValue;
-                          maxPriceControllers[index].selection = TextSelection.collapsed(offset: formattedValue.length);
+                        onValueChanged: (maxPrice) {
                           final updatedStoreDeliveryTipDTOList = List<DeliveryTipModel>.from(widget.storeDeliveryTipDTOList);
-                          updatedStoreDeliveryTipDTOList[index] = deliveryTipModel.copyWith(maxPrice: numericValue.toIntFromCurrency);
+                          updatedStoreDeliveryTipDTOList[index] = deliveryTipModel.copyWith(maxPrice: maxPrice);
                           widget.onEditFunction(updatedStoreDeliveryTipDTOList);
                         },
                       ),
@@ -170,29 +125,11 @@ class _DeliveryTipBoxState extends State<DeliveryTipBox> {
                     child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
+                      child: NumericTextField(
                         controller: deliveryTipControllers[index],
-                        style: TextStyle(color: SGColors.black, fontSize: FontSize.small, fontWeight: FontWeight.w500),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(10),
-                        ],
-                        decoration: InputDecoration(
-                          hintStyle: TextStyle(color: SGColors.gray4),
-                          contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
-                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                        ),
-                        onChanged: (deliveryTip) {
-                          String numericValue = deliveryTip.replaceAll(',', '');
-                          if (numericValue.startsWith('0')) {
-                            numericValue = numericValue.substring(1);
-                          }
-                          String formattedValue = int.tryParse(numericValue)?.toStringAsCurrency ?? '';
-                          deliveryTipControllers[index].text = formattedValue;
-                          deliveryTipControllers[index].selection = TextSelection.collapsed(offset: formattedValue.length);
+                        onValueChanged: (deliveryTip) {
                           final updatedStoreDeliveryTipDTOList = List<DeliveryTipModel>.from(widget.storeDeliveryTipDTOList);
-                          updatedStoreDeliveryTipDTOList[index] = deliveryTipModel.copyWith(deliveryTip: numericValue.toIntFromCurrency);
+                          updatedStoreDeliveryTipDTOList[index] = deliveryTipModel.copyWith(deliveryTip: deliveryTip);
                           widget.onEditFunction(updatedStoreDeliveryTipDTOList);
                         },
                       ),

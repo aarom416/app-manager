@@ -9,7 +9,6 @@ import '../../../common/emuns.dart';
 import 'model.dart';
 
 part 'provider.freezed.dart';
-
 part 'provider.g.dart';
 
 /// network provider
@@ -33,9 +32,12 @@ class DeliveryNotifier extends _$DeliveryNotifier {
           maxDeliveryTime: deliveryDataModel.maxDeliveryTime,
           minTakeOutTime: deliveryDataModel.minTakeOutTime,
           maxTakeOutTime: deliveryDataModel.maxTakeOutTime,
-          baseDeliveryTip: deliveryDataModel.baseDeliveryTip, // 기본 배달팁. figma 상 존재하나, api 규격에 존재하지 않음.
-          baseDeliveryTipMax: deliveryDataModel.baseDeliveryTipMax, // 기본 배달팁. figma 상 존재하나, api 규격에 존재하지 않음.
-          minimumOrderPrice: deliveryDataModel.minimumOrderPrice, // 최소 주문 금액. figma 상 존재하나, api 규격에 존재하지 않음.
+          baseDeliveryTip: deliveryDataModel.baseDeliveryTip,
+          // 기본 배달팁. figma 상 존재하나, api 규격에 존재하지 않음.
+          deliveryTipMax: deliveryDataModel.deliveryTipMax,
+          // 기본 배달팁. figma 상 존재하나, api 규격에 존재하지 않음.
+          minimumOrderPrice: deliveryDataModel.minimumOrderPrice,
+          // 최소 주문 금액. figma 상 존재하나, api 규격에 존재하지 않음.
           storeDeliveryTipDTOList: deliveryDataModel.storeDeliveryTipDTOList,
           deliveryAddress: deliveryDataModel.deliveryAddress,
           error: const ResultFailResponseModel());
@@ -63,6 +65,18 @@ class DeliveryNotifier extends _$DeliveryNotifier {
       state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
     }
   }
+
+  /// POST - 가게 배달팁 변경
+  void updateDeliveryTip(int baseDeliveryTip, int minimumOrderPrice, List<DeliveryTipModel> storeDeliveryTipDTOList) async {
+    final response = await ref
+        .read(deliveryServiceProvider)
+        .updateDeliveryTip(storeId: UserHive.getBox(key: UserKey.storeId), baseDeliveryTip: baseDeliveryTip, minimumOrderPrice: minimumOrderPrice, storeDeliveryTipDTOList: storeDeliveryTipDTOList);
+    if (response.statusCode == 200) {
+      state = state.copyWith(error: const ResultFailResponseModel(), baseDeliveryTip: baseDeliveryTip, minimumOrderPrice: minimumOrderPrice, storeDeliveryTipDTOList: storeDeliveryTipDTOList);
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
 }
 
 /// state provider
@@ -76,7 +90,7 @@ abstract class DeliveryState with _$DeliveryState {
     @Default(0) int minTakeOutTime,
     @Default(0) int maxTakeOutTime,
     @Default(0) int baseDeliveryTip, // 기본 배달팁. figma 상 존재하나, api 규격에 존재하지 않음.
-    @Default(0) int baseDeliveryTipMax, // 기본 배달팁 최대금액. figma 상 존재하나, api 규격에 존재하지 않음.
+    @Default(0) int deliveryTipMax, // 기본 배달팁 최대금액. figma 상 존재하나, api 규격에 존재하지 않음.
     @Default(0) int minimumOrderPrice, // 최소 주문 금액. figma 상 존재하나, api 규격에 존재하지 않음.
     @Default(<DeliveryTipModel>[]) List<DeliveryTipModel> storeDeliveryTipDTOList,
     @Default('') String deliveryAddress,
