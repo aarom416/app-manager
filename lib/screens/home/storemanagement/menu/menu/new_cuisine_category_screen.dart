@@ -12,7 +12,7 @@ import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/office/components/cuisine_selection_bottom_sheet.dart';
 import 'package:singleeat/office/models/cuisine_model.dart';
 
-import '../core/components/dialog.dart';
+import '../../../../../core/components/dialog.dart';
 
 class NewCuisineCategoryScreen extends StatefulWidget {
   const NewCuisineCategoryScreen({super.key});

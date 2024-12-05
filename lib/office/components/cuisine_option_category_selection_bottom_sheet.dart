@@ -7,8 +7,8 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/office/models/cuisine_model.dart';
-import 'package:singleeat/screens/new_cuisine_option_category_screen.dart';
-import 'package:singleeat/screens/new_cuisine_screen.dart';
+import 'package:singleeat/screens/home/storemanagement/menu/options/new_cuisine_option_category_screen.dart';
+import 'package:singleeat/screens/home/storemanagement/menu/menu/new_cuisine_screen.dart';
 
 void showCuisineOptionCategorySelectionBottomSheet({
   required BuildContext context,

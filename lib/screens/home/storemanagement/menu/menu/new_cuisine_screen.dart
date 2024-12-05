@@ -19,7 +19,7 @@ import 'package:singleeat/core/utils/formatter.dart';
 import 'package:singleeat/office/components/cuisine_option_category_selection_bottom_sheet.dart';
 import 'package:singleeat/office/components/nutrition_card.dart';
 import 'package:singleeat/office/models/cuisine_model.dart';
-import 'package:singleeat/screens/new_cuisine_category_screen.dart';
+import 'package:singleeat/screens/home/storemanagement/menu/menu/new_cuisine_category_screen.dart';
 import 'package:singleeat/screens/nutrition_form.dart';
 
 class NewCuisineScreen extends StatefulWidget {

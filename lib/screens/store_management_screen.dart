@@ -72,7 +72,7 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                         const StoreManagementBasicInfoScreen(),
                         const OperationScreen(),
                         DeliveryScreen(),
-                        StoreManangementCuisineManagementScreen(),
+                        MenuOptionScreen(),
                       ],
                     )))));
   }
