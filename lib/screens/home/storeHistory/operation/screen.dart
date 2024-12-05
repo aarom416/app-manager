@@ -12,6 +12,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
+import 'package:singleeat/screens/home/storeHistory/operation/model.dart';
 import 'package:singleeat/screens/home/storeHistory/operation/provider.dart';
 
 class Event {
@@ -45,62 +46,10 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
   late DateRange dateRange;
   late String currentTab;
 
-  Map<String, List<Event>> events = {
-    "가게": [
-      Event(
-          id: 1,
-          title: "가게 이름 변경",
-          datetime: DateTime.now(),
-          modifiedBy: "김매니저",
-          modifiedAt: DateTime.now(),
-          reason: "가게 이름 변경",
-          beforeModifiedAt: DateTime.now()),
-      Event(
-          id: 2,
-          title: "가게 이름 변경",
-          datetime: DateTime.now(),
-          modifiedBy: "김매니저",
-          modifiedAt: DateTime.now(),
-          reason: "가게 이름 변경",
-          beforeModifiedAt: DateTime.now()),
-      Event(
-          id: 3,
-          title: "가게 이름 변경",
-          datetime: DateTime.now(),
-          modifiedBy: "김매니저",
-          modifiedAt: DateTime.now(),
-          reason: "가게 이름 변경",
-          beforeModifiedAt: DateTime.now()),
-    ],
-    "메뉴": [
-      Event(
-          id: 4,
-          title: "메뉴 이름 변경",
-          datetime: DateTime.now(),
-          modifiedBy: "김매니저",
-          modifiedAt: DateTime.now(),
-          reason: "메뉴 이름 변경",
-          beforeModifiedAt: DateTime.now()),
-      Event(
-          id: 5,
-          title: "메뉴 이름 변경",
-          datetime: DateTime.now(),
-          modifiedBy: "김매니저",
-          modifiedAt: DateTime.now(),
-          reason: "메뉴 이름 변경",
-          beforeModifiedAt: DateTime.now()),
-      Event(
-          id: 6,
-          title: "메뉴 이름 변경",
-          datetime: DateTime.now(),
-          modifiedBy: "김매니저",
-          modifiedAt: DateTime.now(),
-          reason: "메뉴 이름 변경",
-          beforeModifiedAt: DateTime.now()),
-    ],
-  };
+  Map<String, List<StoreHistoryModel>> events = {};
 
-  List<Event> get currentEvents => events[currentTab] ?? [];
+  //List<Event> get currentEvents => events[currentTab] ?? [];
+  List<StoreHistoryModel> currentEvents = [];
 
   @override
   void initState() {
@@ -144,14 +93,19 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
                       ),
                       SizedBox(height: SGSpacing.p4),
                       SGContainer(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
                         width: double.infinity,
                         color: SGColors.primary,
                         borderRadius: BorderRadius.circular(SGSpacing.p2),
                         child: SGActionButton(
                             onPressed: () {
-                              provider.getStoreHistory();
+                              provider.getStoreHistory(
+                                  '0',
+                                  currentTab,
+                                  dateRange
+                                      .start.toShortDateStringWithZeroPadding,
+                                  dateRange
+                                      .end.toShortDateStringWithZeroPadding);
                             },
                             label: "조회"),
                       ),
@@ -162,6 +116,13 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
                           onTabChanged: (String tab) {
                             setState(() {
                               currentTab = tab;
+                              provider.getStoreHistory(
+                                  '0',
+                                  currentTab,
+                                  dateRange
+                                      .start.toShortDateStringWithZeroPadding,
+                                  dateRange
+                                      .end.toShortDateStringWithZeroPadding);
                             });
                           }),
                     ])),
@@ -173,9 +134,9 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ...currentEvents.map((Event event) {
+                      ...state.storeHistoryList.map((StoreHistoryModel event) {
                         return _EventCard(
-                            key: Key("${event.id}"), event: event);
+                            key: Key(event.hashCode.toString()), event: event);
                       }),
                     ]))
           ]),
@@ -185,7 +146,7 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
 
 class _EventCard extends StatefulWidget {
   _EventCard({super.key, required this.event});
-  Event event;
+  StoreHistoryModel event;
 
   @override
   State<_EventCard> createState() => _EventCardState();
@@ -232,13 +193,12 @@ class _EventCardState extends State<_EventCard> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SGTypography.body(
-                              formatDateTime(widget.event.datetime),
+                          SGTypography.body(widget.event.createdDate,
                               color: SGColors.gray4,
                               size: FontSize.small,
                               weight: FontWeight.w500),
                           SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                          SGTypography.body(widget.event.title,
+                          SGTypography.body(widget.event.content,
                               weight: FontWeight.w700, size: FontSize.normal),
                         ]),
                     Icon(collapsed
@@ -253,8 +213,8 @@ class _EventCardState extends State<_EventCard> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     ...[
-                      ["작업자", widget.event.modifiedBy],
-                      ["변경 시간", "${formatDateTime(widget.event.modifiedAt)}"],
+                      ["작업자", "None"],
+                      ["변경 시간", widget.event.createdDate],
                     ].map((List<String> pair) {
                       return [
                         DataTableRow(left: pair[0], right: pair[1]),
@@ -262,9 +222,7 @@ class _EventCardState extends State<_EventCard> {
                       ];
                     }).flattened,
                   ]),
-              DataTableRow(
-                  left: "변경 전",
-                  right: "${formatDateTime(widget.event.beforeModifiedAt)}"),
+              DataTableRow(left: "변경 전", right: widget.event.previousDate),
             ],
           ],
         )));

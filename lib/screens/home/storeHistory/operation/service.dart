@@ -13,7 +13,9 @@ class StoreHistoryService {
   Future<Response<dynamic>> getStoreHistory(
       {required String storeId,
       required String page,
-      required String filter}) async {
+      required String filter,
+      required startDate,
+      required endDate}) async {
     try {
       Map<String, String> replacements = {
         "{storeId}": storeId,
@@ -30,8 +32,8 @@ class StoreHistoryService {
       final response = ref.read(requestApiProvider).get(
         path: apiPath,
         queryParameters: {
-          'startDate': '2024-11-08',
-          'endDate': '2024-12-04',
+          'startDate': startDate,
+          'endDate': endDate,
         },
       );
 

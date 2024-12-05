@@ -18,13 +18,16 @@ class StoreHistoryNotifier extends _$StoreHistoryNotifier {
   }
 
   /// GET - 영업 정보 조회
-  void getStoreHistory() async {
+  void getStoreHistory(
+      String page, String filter, String startDate, String endDate) async {
     final response = await ref
         .read(storeHistoryServiceProvider)
         .getStoreHistory(
             storeId: UserHive.getBox(key: UserKey.storeId),
-            page: '0',
-            filter: '0');
+            page: page,
+            filter: filter == '가게' ? '0' : '1',
+            startDate: startDate,
+            endDate: endDate);
 
     if (response.statusCode == 200) {
       final result = ResultResponseListModel.fromJson(response.data);
