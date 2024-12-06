@@ -14,6 +14,7 @@ class AppRoutes {
   static const String storeRegistrationForm = '/store/registration/form';
   static const String notification = '/notification';
   static const String statistics = '/statistics';
+  static const String settlement = '/settlement';
   static const String notificationConfiguration = '/notification/configuration';
   static const String businessNotificationConfiguration =
       '/business/notification/configuration';
