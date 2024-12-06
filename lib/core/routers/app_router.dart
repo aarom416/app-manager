@@ -25,7 +25,7 @@ import 'package:singleeat/screens/register_delivery_agency_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/signup_screen.dart';
 import 'package:singleeat/screens/signup_webview_screen.dart';
-import 'package:singleeat/screens/store_management_screen.dart';
+import 'package:singleeat/screens/home/storemanagement/menuoptions/store_management_screen.dart';
 import 'package:singleeat/screens/store_registration_form_screen.dart';
 import 'package:singleeat/screens/success_change_password_screen.dart';
 

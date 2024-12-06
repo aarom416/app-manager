@@ -12,21 +12,21 @@ import '../../../../../core/components/multiple_information_box.dart';
 import '../../../../common/components/numeric_textfield.dart';
 import '../model.dart';
 
-class DeliveryTipBox extends StatefulWidget {
+class DeliveryTipCard extends StatefulWidget {
   final List<DeliveryTipModel> storeDeliveryTipDTOList;
   final Function(List<DeliveryTipModel>) onEditFunction;
 
-  const DeliveryTipBox({
+  const DeliveryTipCard({
     super.key,
     required this.storeDeliveryTipDTOList,
     required this.onEditFunction,
   });
 
   @override
-  State<DeliveryTipBox> createState() => _DeliveryTipBoxState();
+  State<DeliveryTipCard> createState() => _DeliveryTipCardState();
 }
 
-class _DeliveryTipBoxState extends State<DeliveryTipBox> {
+class _DeliveryTipCardState extends State<DeliveryTipCard> {
   late List<TextEditingController> minPriceControllers;
   late List<TextEditingController> maxPriceControllers;
   late List<TextEditingController> deliveryTipControllers;

@@ -8,7 +8,7 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/screens/home/storemanagement/infomation/screen.dart';
 import 'package:singleeat/screens/home/storemanagement/operation/screen.dart';
 import 'package:singleeat/screens/home/storemanagement/delivery/screen.dart';
-import 'package:singleeat/screens/home/storemanagement/menu/screen.dart';
+import 'package:singleeat/screens/home/storemanagement/menuoptions/screen.dart';
 
 class StoreManagementScreen extends StatefulWidget {
   const StoreManagementScreen({super.key});
@@ -72,7 +72,7 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                         const StoreManagementBasicInfoScreen(),
                         const OperationScreen(),
                         DeliveryScreen(),
-                        MenuOptionScreen(),
+                        MenuOptionsScreen(),
                       ],
                     )))));
   }

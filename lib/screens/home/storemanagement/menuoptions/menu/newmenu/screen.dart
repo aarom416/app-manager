@@ -16,20 +16,21 @@ import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/image_upload_screen.dart';
 import 'package:singleeat/core/screens/textarea_screen.dart';
 import 'package:singleeat/core/utils/formatter.dart';
-import 'package:singleeat/office/components/cuisine_option_category_selection_bottom_sheet.dart';
-import 'package:singleeat/office/components/nutrition_card.dart';
-import 'package:singleeat/office/models/cuisine_model.dart';
-import 'package:singleeat/screens/home/storemanagement/menu/menu/new_cuisine_category_screen.dart';
-import 'package:singleeat/screens/nutrition_form.dart';
 
-class NewCuisineScreen extends StatefulWidget {
-  const NewCuisineScreen({super.key});
+import '../../model.dart';
+import '../../nutrition_card.dart';
+import '../../nutrition_form.dart';
+import '../../cuisine_option_category_selection_bottom_sheet.dart';
+import '../newmenucategory/screen.dart';
+
+class NewMenuScreen extends StatefulWidget {
+  const NewMenuScreen({super.key});
 
   @override
-  State<NewCuisineScreen> createState() => _NewCuisineScreenState();
+  State<NewMenuScreen> createState() => _NewMenuScreenState();
 }
 
-class _NewCuisineScreenState extends State<NewCuisineScreen> {
+class _NewMenuScreenState extends State<NewMenuScreen> {
   PageController pageController = PageController();
 
   void animateToPage(int index) => pageController.animateToPage(
@@ -41,24 +42,24 @@ class _NewCuisineScreenState extends State<NewCuisineScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(controller: pageController, physics: NeverScrollableScrollPhysics(), children: [
-        _NewCuisineNameStepScreen(
+      body: PageView(controller: pageController, physics: const NeverScrollableScrollPhysics(), children: [
+        _NewMenuNameStepScreen(
           onNext: () => animateToPage(1),
           onPrev: () => Navigator.pop(context),
         ),
-        _NewCuisineCategoryStepScreen(
+        _NewMenuCategoryStepScreen(
           onNext: () => animateToPage(2),
           onPrev: () => animateToPage(0),
         ),
-        _NewCuisinePriceStepScreen(
+        _NewMenuPriceStepScreen(
           onNext: () => animateToPage(3),
           onPrev: () => animateToPage(1),
         ),
-        _NewCuisineNutritionStepScreen(
+        _NewMenuNutritionStepScreen(
           onNext: () => animateToPage(4),
           onPrev: () => animateToPage(2),
         ),
-        _NewCuisineRegistrationStepScreen(
+        _NewMenuRegistrationStepScreen(
           onNext: () => Navigator.of(context).pop(),
           onPrev: () => animateToPage(3),
         ),
@@ -67,16 +68,17 @@ class _NewCuisineScreenState extends State<NewCuisineScreen> {
   }
 }
 
-class _NewCuisineNameStepScreen extends StatefulWidget {
+class _NewMenuNameStepScreen extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrev;
-  _NewCuisineNameStepScreen({super.key, required this.onNext, required this.onPrev});
+
+  _NewMenuNameStepScreen({super.key, required this.onNext, required this.onPrev});
 
   @override
-  State<_NewCuisineNameStepScreen> createState() => _NewCuisineNameStepScreenState();
+  State<_NewMenuNameStepScreen> createState() => _NewMenuNameStepScreenState();
 }
 
-class _NewCuisineNameStepScreenState extends State<_NewCuisineNameStepScreen> {
+class _NewMenuNameStepScreenState extends State<_NewMenuNameStepScreen> {
   String menuName = "";
 
   @override
@@ -113,8 +115,7 @@ class _NewCuisineNameStepScreenState extends State<_NewCuisineNameStepScreen> {
                       decoration: InputDecoration(
                         isDense: true,
                         isCollapsed: true,
-                        hintStyle:
-                            TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                        hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
                         hintText: "Ex) 바베큐 샐러드",
                         border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
                       )),
@@ -124,17 +125,17 @@ class _NewCuisineNameStepScreenState extends State<_NewCuisineNameStepScreen> {
   }
 }
 
-class _NewCuisineCategoryStepScreen extends StatefulWidget {
+class _NewMenuCategoryStepScreen extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrev;
 
-  _NewCuisineCategoryStepScreen({super.key, required this.onNext, required this.onPrev});
+  _NewMenuCategoryStepScreen({super.key, required this.onNext, required this.onPrev});
 
   @override
-  State<_NewCuisineCategoryStepScreen> createState() => _NewCuisineCategoryStepScreenState();
+  State<_NewMenuCategoryStepScreen> createState() => _NewMenuCategoryStepScreenState();
 }
 
-class _NewCuisineCategoryStepScreenState extends State<_NewCuisineCategoryStepScreen> {
+class _NewMenuCategoryStepScreenState extends State<_NewMenuCategoryStepScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,9 +153,7 @@ class _NewCuisineCategoryStepScreenState extends State<_NewCuisineCategoryStepSc
                       color: SGColors.gray3,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("이전",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
@@ -166,9 +165,7 @@ class _NewCuisineCategoryStepScreenState extends State<_NewCuisineCategoryStepSc
                       color: SGColors.primary,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("다음",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("다음", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
               ],
             )),
@@ -208,11 +205,7 @@ class _NewCuisineCategoryStepScreenState extends State<_NewCuisineCategoryStepSc
                           child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SGTypography.body("추가하실 카테고리를 선택해주세요.", size: FontSize.normal, color: SGColors.gray3),
-                                Image.asset("assets/images/dropdown-arrow.png",
-                                    width: SGSpacing.p5, height: SGSpacing.p5)
-                              ]))),
+                              children: [SGTypography.body("추가하실 카테고리를 선택해주세요.", size: FontSize.normal, color: SGColors.gray3), Image.asset("assets/images/dropdown-arrow.png", width: SGSpacing.p5, height: SGSpacing.p5)]))),
                 ),
               ],
             )));
@@ -262,13 +255,12 @@ class __CategorySelectionDialogBodyState extends State<__CategorySelectionDialog
                         selectedCategories = [option];
                       });
                     },
-                    child: __CategoryOptionRadioButton(
-                        category: option, isSelected: selectedCategories.contains(option)))),
+                    child: __CategoryOptionRadioButton(category: option, isSelected: selectedCategories.contains(option)))),
               ])),
           SizedBox(height: SGSpacing.p4),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewCuisineCategoryScreen()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewMenuCategoryScreen()));
             },
             child: SGContainer(
                 color: SGColors.white,
@@ -279,8 +271,7 @@ class __CategorySelectionDialogBodyState extends State<__CategorySelectionDialog
                     child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3),
                   SizedBox(width: SGSpacing.p2),
-                  SGTypography.body("메뉴 카테고리 추가",
-                      size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)
+                  SGTypography.body("메뉴 카테고리 추가", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)
                 ]))),
           ),
           SizedBox(height: SGSpacing.p4),
@@ -324,6 +315,7 @@ class __CategoryMultipleSelectionDialogBodyState extends State<__CategoryMultipl
   ];
 
   List<String> selectedCategories = [];
+
   @override
   Widget build(BuildContext context) {
     return Column(children: [
@@ -352,8 +344,7 @@ class __CategoryMultipleSelectionDialogBodyState extends State<__CategoryMultipl
                         }
                       });
                     },
-                    child: __CategoryOptionRadioButton(
-                        category: option, isSelected: selectedCategories.contains(option)))),
+                    child: __CategoryOptionRadioButton(category: option, isSelected: selectedCategories.contains(option)))),
               ])),
           SizedBox(height: SGSpacing.p4),
           GestureDetector(
@@ -390,13 +381,9 @@ class __CategoryOptionRadioButton extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: SGSpacing.p4 + SGSpacing.p05),
                 child: Row(
                   children: [
-                    Image.asset("assets/images/radio-${isSelected ? "on" : "off"}.png",
-                        width: SGSpacing.p5, height: SGSpacing.p5),
+                    Image.asset("assets/images/radio-${isSelected ? "on" : "off"}.png", width: SGSpacing.p5, height: SGSpacing.p5),
                     SizedBox(width: SGSpacing.p1 + SGSpacing.p05),
-                    SGTypography.body(category,
-                        size: FontSize.normal,
-                        color: isSelected ? SGColors.primary : SGColors.gray5,
-                        weight: FontWeight.w500),
+                    SGTypography.body(category, size: FontSize.normal, color: isSelected ? SGColors.primary : SGColors.gray5, weight: FontWeight.w500),
                   ],
                 )),
           ],
@@ -407,16 +394,17 @@ class __CategoryOptionRadioButton extends StatelessWidget {
   }
 }
 
-class _NewCuisinePriceStepScreen extends StatefulWidget {
+class _NewMenuPriceStepScreen extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrev;
-  _NewCuisinePriceStepScreen({super.key, required this.onNext, required this.onPrev});
+
+  _NewMenuPriceStepScreen({super.key, required this.onNext, required this.onPrev});
 
   @override
-  State<_NewCuisinePriceStepScreen> createState() => _NewCuisinePriceStepScreenState();
+  State<_NewMenuPriceStepScreen> createState() => _NewMenuPriceStepScreenState();
 }
 
-class _NewCuisinePriceStepScreenState extends State<_NewCuisinePriceStepScreen> {
+class _NewMenuPriceStepScreenState extends State<_NewMenuPriceStepScreen> {
   String menuPrice = "";
 
   @override
@@ -436,9 +424,7 @@ class _NewCuisinePriceStepScreenState extends State<_NewCuisinePriceStepScreen> 
                       color: SGColors.gray3,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("이전",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
@@ -451,9 +437,7 @@ class _NewCuisinePriceStepScreenState extends State<_NewCuisinePriceStepScreen> 
                       color: SGColors.primary,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("다음",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("다음", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
               ],
             )),
@@ -478,18 +462,13 @@ class _NewCuisinePriceStepScreenState extends State<_NewCuisinePriceStepScreen> 
                               });
                             },
                             style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                              comparableNumericInputFormatter(1000000000)
-                            ],
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), comparableNumericInputFormatter(1000000000)],
                             decoration: InputDecoration(
                               isDense: true,
                               isCollapsed: true,
-                              hintStyle: TextStyle(
-                                  color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                              hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
                               hintText: "0",
-                              border: const OutlineInputBorder(
-                                  borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                              border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
                             )),
                       ),
                       SGTypography.body("원", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
@@ -501,23 +480,22 @@ class _NewCuisinePriceStepScreenState extends State<_NewCuisinePriceStepScreen> 
   }
 }
 
-class _NewCuisineNutritionStepScreen extends StatefulWidget {
+class _NewMenuNutritionStepScreen extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrev;
 
-  const _NewCuisineNutritionStepScreen({
+  const _NewMenuNutritionStepScreen({
     super.key,
     required this.onNext,
     required this.onPrev,
   });
 
   @override
-  State<_NewCuisineNutritionStepScreen> createState() => _NewCuisineNutritionStepScreenState();
+  State<_NewMenuNutritionStepScreen> createState() => _NewMenuNutritionStepScreenState();
 }
 
-class _NewCuisineNutritionStepScreenState extends State<_NewCuisineNutritionStepScreen> {
-  Nutrition nutrition =
-      Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
+class _NewMenuNutritionStepScreenState extends State<_NewMenuNutritionStepScreen> {
+  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
 
   @override
   Widget build(BuildContext context) {
@@ -536,9 +514,7 @@ class _NewCuisineNutritionStepScreenState extends State<_NewCuisineNutritionStep
                       color: SGColors.gray3,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("이전",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
@@ -550,9 +526,7 @@ class _NewCuisineNutritionStepScreenState extends State<_NewCuisineNutritionStep
                       color: SGColors.primary,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("다음",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("다음", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
               ],
             )),
@@ -599,17 +573,17 @@ class _NutritionInputScreenState extends State<_NutritionInputScreen> {
   }
 }
 
-class _NewCuisineRegistrationStepScreen extends StatefulWidget {
+class _NewMenuRegistrationStepScreen extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrev;
 
-  const _NewCuisineRegistrationStepScreen({super.key, required this.onNext, required this.onPrev});
+  const _NewMenuRegistrationStepScreen({super.key, required this.onNext, required this.onPrev});
 
   @override
-  State<_NewCuisineRegistrationStepScreen> createState() => _NewCuisineRegistrationStepScreenState();
+  State<_NewMenuRegistrationStepScreen> createState() => _NewMenuRegistrationStepScreenState();
 }
 
-class _NewCuisineRegistrationStepScreenState extends State<_NewCuisineRegistrationStepScreen> {
+class _NewMenuRegistrationStepScreenState extends State<_NewMenuRegistrationStepScreen> {
   String intro = "연어 500g + 곡물밥 300g";
   String description = "연어와 곡물 베이스 조화의 오븐에 바싹 구운 연어를 올린 단백질 듬뿍 샐러드";
 
@@ -620,66 +594,42 @@ class _NewCuisineRegistrationStepScreenState extends State<_NewCuisineRegistrati
     showSGDialogWithImage(
         context: context,
         childrenBuilder: (ctx) => [
-          if (subTitle.isEmpty) ...[
-            Center(
-                child: SGTypography.body(mainTitle,
-                    size: FontSize.medium,
-                    weight: FontWeight.w700,
-                    lineHeight: 1.25,
-                    align: TextAlign.center)),
-            SizedBox(height: SGSpacing.p6),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(ctx);
-              },
-              child: SGContainer(
-                color: SGColors.primary,
-                width: double.infinity,
-                borderColor: SGColors.primary,
-                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                borderRadius: BorderRadius.circular(SGSpacing.p3),
-                child: Center(
-                    child: SGTypography.body("확인",
-                        color: SGColors.white,
-                        weight: FontWeight.w700,
-                        size: FontSize.normal)),
-              ),
-            )
-          ] else ...[
-            Center(
-                child: SGTypography.body(mainTitle,
-                    size: FontSize.medium,
-                    weight: FontWeight.w700,
-                    lineHeight: 1.25,
-                    align: TextAlign.center)),
-            SizedBox(height: SGSpacing.p4),
-            Center(
-                child: SGTypography.body(subTitle,
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w700,
-                    lineHeight: 1.25,
-                    align: TextAlign.center)),
-            SizedBox(height: SGSpacing.p6),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(ctx);
-              },
-              child: SGContainer(
-                color: SGColors.primary,
-                width: double.infinity,
-                borderColor: SGColors.primary,
-                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                borderRadius: BorderRadius.circular(SGSpacing.p3),
-                child: Center(
-                    child: SGTypography.body("확인",
-                        color: SGColors.white,
-                        weight: FontWeight.w700,
-                        size: FontSize.normal)),
-              ),
-            )
-          ]
-        ]);
+              if (subTitle.isEmpty) ...[
+                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
+                SizedBox(height: SGSpacing.p6),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(ctx);
+                  },
+                  child: SGContainer(
+                    color: SGColors.primary,
+                    width: double.infinity,
+                    borderColor: SGColors.primary,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
+                  ),
+                )
+              ] else ...[
+                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
+                SizedBox(height: SGSpacing.p4),
+                Center(child: SGTypography.body(subTitle, color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
+                SizedBox(height: SGSpacing.p6),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(ctx);
+                  },
+                  child: SGContainer(
+                    color: SGColors.primary,
+                    width: double.infinity,
+                    borderColor: SGColors.primary,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
+                  ),
+                )
+              ]
+            ]);
   }
 
   @override
@@ -699,24 +649,20 @@ class _NewCuisineRegistrationStepScreenState extends State<_NewCuisineRegistrati
                       color: SGColors.gray3,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("이전",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
-                        child: GestureDetector(
-                      onTap: () {
-                        widget.onNext();
-                        showFailDialogWithImage(mainTitle: "메뉴 추가 실패", subTitle: "이미 동일한 메뉴가 등록되어있습니다.\n다시 한번 확인해주세요.");
-                      },
+                    child: GestureDetector(
+                  onTap: () {
+                    widget.onNext();
+                    showFailDialogWithImage(mainTitle: "메뉴 추가 실패", subTitle: "이미 동일한 메뉴가 등록되어있습니다.\n다시 한번 확인해주세요.");
+                  },
                   child: SGContainer(
                       color: SGColors.primary,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("등록",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("등록", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
               ],
             )),
@@ -748,10 +694,7 @@ class _NewCuisineRegistrationStepScreenState extends State<_NewCuisineRegistrati
                           color: SGColors.white,
                           borderRadius: BorderRadius.circular(SGSpacing.p2),
                           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                            ColorFiltered(
-                                colorFilter: ColorFilter.mode(Colors.black, BlendMode.modulate),
-                                child:
-                                    Image.asset("assets/images/plus.png", width: SGSpacing.p6, height: SGSpacing.p6)),
+                            ColorFiltered(colorFilter: ColorFilter.mode(Colors.black, BlendMode.modulate), child: Image.asset("assets/images/plus.png", width: SGSpacing.p6, height: SGSpacing.p6)),
                             SizedBox(height: SGSpacing.p2),
                             SGTypography.body("이미지 등록", weight: FontWeight.w600, color: SGColors.gray5)
                           ])),
@@ -826,8 +769,7 @@ class _NewCuisineRegistrationStepScreenState extends State<_NewCuisineRegistrati
                 MultipleInformationBox(children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) => _SelectCuisionOptionCategoryScreen()));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => _SelectCuisionOptionCategoryScreen()));
                     },
                     child: Row(
                       children: [
@@ -838,8 +780,7 @@ class _NewCuisineRegistrationStepScreenState extends State<_NewCuisineRegistrati
                     ),
                   ),
                   SizedBox(height: SGSpacing.p5),
-                  SGTypography.body("등록된 내용이 없어요.",
-                      color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500, lineHeight: 1.25),
+                  SGTypography.body("등록된 내용이 없어요.", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500, lineHeight: 1.25),
                 ]),
                 SizedBox(height: SGSpacing.p32),
               ],
@@ -854,25 +795,22 @@ class _SelectCuisionOptionCategoryScreen extends StatefulWidget {
   State<_SelectCuisionOptionCategoryScreen> createState() => _SelectCuisionOptionCategoryScreenState();
 }
 
-List<CuisineOptionCategory> categories = [
-  CuisineOptionCategory(
-      id: 1,
-      name: "토핑 선택",
-      options: [CuisineOption(name: "연어 토핑", price: 3000), CuisineOption(name: "훈제 오리 토핑", price: 3000)]),
-  CuisineOptionCategory(
-    id: 2,
-    name: "추가 선택",
-    options: [CuisineOption(name: "참치 토핑", price: 3000), CuisineOption(name: "불고기 토핑", price: 3000)],
+List<MenuOptionCategoryModel> categories = [
+  MenuOptionCategoryModel(menuOptionCategoryId: 1, menuOptionCategoryName: "토핑 선택", menuOptions: [MenuOptionModel(optionContent: "연어 토핑", price: 3000), MenuOptionModel(optionContent: "훈제 오리 토핑", price: 3000)]),
+  MenuOptionCategoryModel(
+    menuOptionCategoryId: 2,
+    menuOptionCategoryName: "추가 선택",
+    menuOptions: [MenuOptionModel(optionContent: "참치 토핑", price: 3000), MenuOptionModel(optionContent: "불고기 토핑", price: 3000)],
   ),
-  CuisineOptionCategory(
-    id: 3,
-    name: "곡물 베이스 선택",
-    options: [CuisineOption(name: "곡물 베이스", price: 3000), CuisineOption(name: "야채만", price: 3000)],
+  MenuOptionCategoryModel(
+    menuOptionCategoryId: 3,
+    menuOptionCategoryName: "곡물 베이스 선택",
+    menuOptions: [MenuOptionModel(optionContent: "곡물 베이스", price: 3000), MenuOptionModel(optionContent: "야채만", price: 3000)],
   ),
 ];
 
 class _SelectCuisionOptionCategoryScreenState extends State<_SelectCuisionOptionCategoryScreen> {
-  List<CuisineOptionCategory> selectedCategories = [];
+  List<MenuOptionCategoryModel> selectedCategories = [];
 
   @override
   Widget build(BuildContext context) {
@@ -900,13 +838,10 @@ class _SelectCuisionOptionCategoryScreenState extends State<_SelectCuisionOption
               ...selectedCategories
                   .mapIndexed((index, category) => [
                         SizedBox(height: SGSpacing.p3),
-                        __CuisineOptionCataegoryCard(
+                        __MenuOptionCataegoryCard(
                           category: category,
                           onRemove: (target) {
-                            final result = [
-                              ...selectedCategories.sublist(0, index),
-                              ...selectedCategories.sublist(index + 1)
-                            ];
+                            final result = [...selectedCategories.sublist(0, index), ...selectedCategories.sublist(index + 1)];
                             setState(() {
                               selectedCategories = result;
                             });
@@ -922,9 +857,9 @@ class _SelectCuisionOptionCategoryScreenState extends State<_SelectCuisionOption
                       title: "옵션 카테고리 추가",
                       cuisineOptionCategories: categories,
                       onSelect: (result) {
-                        final sortedCategories = result..sort((a, b) => a.id!.compareTo(b.id!));
+                        //   final sortedCategories = result..sort((a, b) => a.menuOptionCategoryId!.compareTo(b.menuOptionCategoryId!));
                         setState(() {
-                          selectedCategories = sortedCategories;
+                          //    selectedCategories = sortedCategories;
                         });
                       },
                       selectedCuisineOptionCatagories: selectedCategories);
@@ -945,11 +880,11 @@ class _SelectCuisionOptionCategoryScreenState extends State<_SelectCuisionOption
   }
 }
 
-class __CuisineOptionCataegoryCard extends StatelessWidget {
-  final CuisineOptionCategory category;
-  final Function(CuisineOptionCategory) onRemove;
+class __MenuOptionCataegoryCard extends StatelessWidget {
+  final MenuOptionCategoryModel category;
+  final Function(MenuOptionCategoryModel) onRemove;
 
-  __CuisineOptionCataegoryCard({
+  __MenuOptionCataegoryCard({
     super.key,
     required this.category,
     required this.onRemove,
@@ -972,13 +907,12 @@ class __CuisineOptionCataegoryCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SGTypography.body(category.name, size: FontSize.normal, weight: FontWeight.w700),
+                    SGTypography.body(category.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w700),
                     SizedBox(height: SGSpacing.p1),
-                    ...category.options
+                    ...category.menuOptions
                         .map((option) => [
                               SizedBox(height: SGSpacing.p2),
-                              SGTypography.body("${option.name} : ${option.price!.toKoreanCurrency}원",
-                                  size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
+                              SGTypography.body("${option.optionContent} : ${option.price!.toKoreanCurrency}원", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4),
                             ])
                         .flattened
                   ],

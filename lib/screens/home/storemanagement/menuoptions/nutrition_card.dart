@@ -5,7 +5,8 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
-import 'package:singleeat/office/models/cuisine_model.dart';
+
+import 'model.dart';
 
 class NutritionCard extends StatelessWidget {
   const NutritionCard({

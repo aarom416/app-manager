@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -8,8 +9,8 @@ import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/screens/home/storemanagement/operation/holiday/regular_holidays_box.dart';
-import 'package:singleeat/screens/home/storemanagement/operation/holiday/temporary_holidays_box.dart';
+import 'package:singleeat/screens/home/storemanagement/operation/holiday/regular_holidays_card.dart';
+import 'package:singleeat/screens/home/storemanagement/operation/holiday/temporary_holidays_card.dart';
 
 import '../../../../common/common_widgets.dart';
 import '../model.dart';
@@ -59,7 +60,7 @@ class _HolidayScreenState extends State<HolidayScreen> {
                 }
               },
               label: "변경하기",
-              disabled: holidayStatus == widget.holidayStatus && widget.regularHolidays.isEqualTo(regularHolidays) && widget.temporaryHolidays.isEqualTo(temporaryHolidays))),
+              disabled: holidayStatus == widget.holidayStatus && const DeepCollectionEquality().equals(widget.regularHolidays, regularHolidays) && const DeepCollectionEquality().equals(widget.regularHolidays, regularHolidays))),
       body: SGContainer(
           color: const Color(0xFFFAFAFA),
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
@@ -91,7 +92,7 @@ class _HolidayScreenState extends State<HolidayScreen> {
             SizedBox(height: SGSpacing.p3),
 
             // --------------------------- 정기휴무 ---------------------------
-            RegularHolidayBox(
+            RegularHolidayCard(
               regularHolidays: regularHolidays,
               onEditFunction: (regularHolidays) {
                 // print("onEditFunction regularHolidays $regularHolidays");
@@ -104,7 +105,7 @@ class _HolidayScreenState extends State<HolidayScreen> {
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
 
             // --------------------------- 임시휴무 ---------------------------
-            TemporaryHolidayBox(
+            TemporaryHolidayCard(
               temporaryHolidays: temporaryHolidays,
               onEditFunction: (temporaryHolidays) {
                 // print("onEditFunction temporaryHolidays $temporaryHolidays");

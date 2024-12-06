@@ -83,7 +83,7 @@ class _BreakTimeScreenState extends State<BreakTimeScreen> {
                     Navigator.of(context).pop();
                   },
                   label: "변경하기",
-                  disabled: widget.breakTimeDetailDTOList.isEqualTo(breakTimeDetailDTOList))
+                  disabled: const DeepCollectionEquality().equals(widget.breakTimeDetailDTOList, breakTimeDetailDTOList))
             ],
           ),
         ));

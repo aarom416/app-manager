@@ -83,7 +83,7 @@ class _OperationTimeScreenState extends State<OperationTimeScreen> {
                     Navigator.of(context).pop();
                   },
                   label: "변경하기",
-                  disabled: widget.operationTimeDetailDTOList.isEqualTo(operationTimeDetailDTOList))
+                  disabled: const DeepCollectionEquality().equals(widget.operationTimeDetailDTOList, operationTimeDetailDTOList))
             ],
           ),
         ));

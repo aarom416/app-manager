@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -10,13 +10,13 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 import 'package:singleeat/core/screens/textarea_edit_screen.dart';
-import 'package:singleeat/office/components/cuisine_option_category_card.dart';
-import 'package:singleeat/office/components/nutrition_card.dart';
-import 'package:singleeat/office/models/cuisine_model.dart';
-import 'package:singleeat/screens/nutrition_form.dart';
+
+import 'cuisine_option_category_card.dart';
+import 'model.dart';
+import 'nutrition_card.dart';
+import 'nutrition_form.dart';
 
 class CuisineScreen extends StatefulWidget {
   const CuisineScreen({super.key});
@@ -25,18 +25,18 @@ class CuisineScreen extends StatefulWidget {
   State<CuisineScreen> createState() => _CuisineScreenState();
 }
 
-List<CuisineOptionCategory> categoryOptions = [
-  CuisineOptionCategory(
-      name: "곡물 베이스 선택",
-      options: [
-        CuisineOption(name: "곡물 베이스 선택", price: 0),
-        CuisineOption(name: "오곡 베이스", price: 0),
+List<MenuOptionCategoryModel> categoryOptions = [
+  MenuOptionCategoryModel(
+      menuOptionCategoryName: "곡물 베이스 선택",
+      menuOptions: [
+        MenuOptionModel(optionContent: "곡물 베이스 선택", price: 0),
+        MenuOptionModel(optionContent: "오곡 베이스", price: 0),
       ],
-      isEssential: true),
-  CuisineOptionCategory(name: "토핑 선택", options: [
-    CuisineOption(name: "훈제오리 토핑", price: 0),
-    CuisineOption(name: "연어 토핑", price: 500),
-    CuisineOption(name: "우삼겹 토핑", price: 3000),
+      essentialStatus: 1),
+  MenuOptionCategoryModel(menuOptionCategoryName: "토핑 선택", menuOptions: [
+    MenuOptionModel(optionContent: "훈제오리 토핑", price: 0),
+    MenuOptionModel(optionContent: "연어 토핑", price: 500),
+    MenuOptionModel(optionContent: "우삼겹 토핑", price: 3000),
   ]),
 ];
 

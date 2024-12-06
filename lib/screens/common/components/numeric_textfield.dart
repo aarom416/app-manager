@@ -9,7 +9,7 @@ import '../../../core/components/sizing.dart';
 import '../../../core/components/spacing.dart';
 import '../../../core/constants/colors.dart';
 
-/// 금액 입력 필드
+/// 금액 입력 필드. 입력시 자동 콤마 추가.
 class NumericTextField extends StatelessWidget {
   final TextEditingController controller;
   final void Function(int) onValueChanged;

@@ -50,25 +50,3 @@ abstract class DeliveryTipModel with _$DeliveryTipModel {
   factory DeliveryTipModel.fromJson(Map<String, dynamic> json) => _$DeliveryTipModelFromJson(json);
 }
 
-/// DeliveryTipModel 확장함수
-extension DeliveryTipModelExtensions on DeliveryTipModel {
-  /// 두 DeliveryTipModel 객체를 비교
-  bool isEqualTo(DeliveryTipModel other) {
-    return content == other.content && minPrice == other.minPrice && maxPrice == other.maxPrice && deliveryTip == other.deliveryTip;
-  }
-}
-
-/// 두 List<DeliveryTipModel> 이 동일한지 비교하는 확장함수
-extension DeliveryTipModelListExtensions on List<DeliveryTipModel> {
-  bool isEqualTo(List<DeliveryTipModel> other) {
-    if (length != other.length) {
-      return false;
-    }
-    for (int i = 0; i < length; i++) {
-      if (!this[i].isEqualTo(other[i])) {
-        return false;
-      }
-    }
-    return true;
-  }
-}

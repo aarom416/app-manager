@@ -1,21 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
-import 'package:singleeat/office/models/cuisine_model.dart';
-import 'package:singleeat/screens/home/storemanagement/menu/options/new_cuisine_option_category_screen.dart';
-import 'package:singleeat/screens/home/storemanagement/menu/menu/new_cuisine_screen.dart';
+
+import 'model.dart';
+import 'options/new_cuisine_option_category_screen.dart';
 
 void showCuisineOptionCategorySelectionBottomSheet({
   required BuildContext context,
   required String title,
-  required List<CuisineOptionCategory> cuisineOptionCategories,
-  required void Function(List<CuisineOptionCategory>) onSelect,
-  required List<CuisineOptionCategory> selectedCuisineOptionCatagories,
+  required List<MenuOptionCategoryModel> cuisineOptionCategories,
+  required void Function(List<MenuOptionCategoryModel>) onSelect,
+  required List<MenuOptionCategoryModel> selectedCuisineOptionCatagories,
 }) {
   showModalBottomSheet(
     context: context,
@@ -34,9 +34,9 @@ void showCuisineOptionCategorySelectionBottomSheet({
 
 class _CuisineOptionCategorySelectionBottomSheet extends StatefulWidget {
   final String title;
-  final List<CuisineOptionCategory> cuisineOptionCategories;
-  final void Function(List<CuisineOptionCategory>) onSelect;
-  final List<CuisineOptionCategory> selectedCuisineOptionCatagories;
+  final List<MenuOptionCategoryModel> cuisineOptionCategories;
+  final void Function(List<MenuOptionCategoryModel>) onSelect;
+  final List<MenuOptionCategoryModel> selectedCuisineOptionCatagories;
 
   const _CuisineOptionCategorySelectionBottomSheet({
     super.key,
@@ -51,9 +51,9 @@ class _CuisineOptionCategorySelectionBottomSheet extends StatefulWidget {
 }
 
 class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOptionCategorySelectionBottomSheet> {
-  late List<CuisineOptionCategory> selectedCuisineOptionCatagories;
+  late List<MenuOptionCategoryModel> selectedCuisineOptionCatagories;
 
-  List<int?> get selectedCuisineOptionCategoryIds => selectedCuisineOptionCatagories.map((e) => e.id).toList();
+  List<int?> get selectedCuisineOptionCategoryIds => selectedCuisineOptionCatagories.map((e) => e.menuOptionCategoryId).toList();
 
   @override
   void initState() {
@@ -120,7 +120,7 @@ class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOpti
                     onTap: () {
                       // onSelect(options[idx].value);
                       // Navigator.of(context).pop();
-                      if (selectedCuisineOptionCategoryIds.contains(widget.cuisineOptionCategories[idx].id)) {
+                      if (selectedCuisineOptionCategoryIds.contains(widget.cuisineOptionCategories[idx].menuOptionCategoryId)) {
                         setState(() {
                           selectedCuisineOptionCatagories.remove(widget.cuisineOptionCategories[idx]);
                         });
@@ -145,13 +145,13 @@ class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOpti
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SGTypography.body(widget.cuisineOptionCategories[idx].name,
+                                  SGTypography.body(widget.cuisineOptionCategories[idx].menuOptionCategoryName,
                                       color: SGColors.black, size: FontSize.normal, weight: FontWeight.w700),
                                   SizedBox(height: SGSpacing.p1),
-                                  ...widget.cuisineOptionCategories[idx].options
+                                  ...widget.cuisineOptionCategories[idx].menuOptions
                                       .map((e) => [
                                             SizedBox(height: SGSpacing.p2),
-                                            SGTypography.body("${e.name} : ${e.price!.toKoreanCurrency}원",
+                                            SGTypography.body("${e.optionContent} : ${e.price!.toKoreanCurrency}원",
                                                 color: SGColors.gray4, size: FontSize.small)
                                           ])
                                       .flattened
@@ -160,7 +160,7 @@ class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOpti
                               ),
                             ],
                           ),
-                          if (selectedCuisineOptionCategoryIds.contains(widget.cuisineOptionCategories[idx].id))
+                          if (selectedCuisineOptionCategoryIds.contains(widget.cuisineOptionCategories[idx].menuOptionCategoryId))
                             Image.asset("assets/images/checkbox-on.png", width: 24, height: 24)
                           else
                             Image.asset("assets/images/checkbox-off.png", width: 24, height: 24)

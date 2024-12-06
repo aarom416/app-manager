@@ -8,10 +8,12 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/office/models/cuisine_model.dart';
+
+import 'model.dart';
+
 
 class UpdateCuisineCategoryScreen extends StatefulWidget {
-  final CuisineCategory category;
+  final MenuCategoryModel category;
   const UpdateCuisineCategoryScreen({super.key, required this.category});
 
   @override
@@ -22,8 +24,8 @@ class _UpdateCuisineCategoryScreenState extends State<UpdateCuisineCategoryScree
   late TextEditingController nameController;
   late TextEditingController descriptionController;
 
-  late String name = widget.category.name;
-  late String description = widget.category.description;
+  late String name = widget.category.menuCategoryName;
+  late String description = widget.category.menuDescription;
 
 
   TextEditingController controller = TextEditingController();
@@ -35,8 +37,8 @@ class _UpdateCuisineCategoryScreenState extends State<UpdateCuisineCategoryScree
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(text: widget.category.name);
-    descriptionController = TextEditingController(text: widget.category.description);
+    nameController = TextEditingController(text: widget.category.menuCategoryName);
+    descriptionController = TextEditingController(text: widget.category.menuDescription);
   }
 
   @override

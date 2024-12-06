@@ -9,57 +9,57 @@ import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
-import 'package:singleeat/office/components/cuisine_selection_bottom_sheet.dart';
-import 'package:singleeat/office/models/cuisine_model.dart';
 
-import '../../../../../core/components/dialog.dart';
+import '../../../../../../core/components/dialog.dart';
+import '../../cuisine_selection_bottom_sheet.dart';
+import '../../model.dart';
 
-class NewCuisineCategoryScreen extends StatefulWidget {
-  const NewCuisineCategoryScreen({super.key});
+class NewMenuCategoryScreen extends StatefulWidget {
+  const NewMenuCategoryScreen({super.key});
 
   @override
-  State<NewCuisineCategoryScreen> createState() => _NewCuisineCategoryScreenState();
+  State<NewMenuCategoryScreen> createState() => _NewMenuCategoryScreenState();
 }
 
 final cuisines = [
-  Cuisine(
-    id: 1,
-    name: "김치찌개",
+  MenuModel(
+    menuId: 1,
+    menuName: "김치찌개",
     price: 8000,
-    description: "맛있는 김치찌개",
-    image: "https://via.placeholder.com/150",
+    menuDescription: "맛있는 김치찌개",
+    menuPictureURL: "https://via.placeholder.com/150",
   ),
-  Cuisine(
-    id: 2,
-    name: "된장찌개",
+  MenuModel(
+    menuId: 2,
+    menuName: "된장찌개",
     price: 8000,
-    description: "맛있는 된장찌개",
-    image: "https://via.placeholder.com/150",
+    menuDescription: "맛있는 된장찌개",
+    menuPictureURL: "https://via.placeholder.com/150",
   ),
-  Cuisine(
-    id: 3,
-    name: "부대찌개",
+  MenuModel(
+    menuId: 3,
+    menuName: "부대찌개",
     price: 8000,
-    description: "맛있는 부대찌개",
-    image: "https://via.placeholder.com/150",
+    menuDescription: "맛있는 부대찌개",
+    menuPictureURL: "https://via.placeholder.com/150",
   ),
-  Cuisine(
-    id: 4,
-    name: "김치찌개",
+  MenuModel(
+    menuId: 4,
+    menuName: "김치찌개",
     price: 8000,
-    description: "맛있는 김치찌개",
-    image: "https://via.placeholder.com/150",
+    menuDescription: "맛있는 김치찌개",
+    menuPictureURL: "https://via.placeholder.com/150",
   ),
 ];
 
-class _NewCuisineCategoryScreenState extends State<NewCuisineCategoryScreen> {
-  CuisineCategory category = CuisineCategory(
-    name: "",
-    description: "",
-    cuisines: [],
+class _NewMenuCategoryScreenState extends State<NewMenuCategoryScreen> {
+  MenuCategoryModel category = MenuCategoryModel(
+    menuCategoryName: "",
+    menuDescription: "",
+    menuList: [],
   );
 
-  bool get isCuisineSelected => category.cuisines.isNotEmpty;
+  bool get isCuisineSelected => category.menuList.isNotEmpty;
 
   TextEditingController controller = TextEditingController();
   String value = '';
@@ -233,21 +233,21 @@ class _NewCuisineCategoryScreenState extends State<NewCuisineCategoryScreen> {
               children: [
                 SGTypography.body("메뉴", size: FontSize.normal, weight: FontWeight.w700),
                 SizedBox(width: SGSpacing.p1),
-                SGTypography.body("${category.cuisines.length}",
+                SGTypography.body("${category.menuList.length}",
                     size: FontSize.small, weight: FontWeight.w700, color: SGColors.gray3),
               ],
             ),
             SizedBox(height: SGSpacing.p3),
             ...[
-              ...category.cuisines.map((cuisine) {
+              ...category.menuList.map((cuisine) {
                 return [
                   _SelectedCuisineCard(
                     cuisine: cuisine,
                     onRemove: () {
-                      setState(() {
-                        category =
-                            category.copyWith(cuisines: category.cuisines.where((c) => c.id != cuisine.id).toList());
-                      });
+                      // setState(() {
+                      //   category =
+                      //       category.copyWith(cuisines: category.menuList.where((c) => c.menuId != cuisine.menuId).toList());
+                      // });
                     },
                   ),
                   SizedBox(height: SGSpacing.p3)
@@ -262,12 +262,12 @@ class _NewCuisineCategoryScreenState extends State<NewCuisineCategoryScreen> {
                     title: "메뉴 추가",
                     cuisines: cuisines,
                     onSelect: (selectedCuisines) {
-                      final sortedCuisines = selectedCuisines.toList()..sort((a, b) => a.id!.compareTo(b.id!));
-                      setState(() {
-                        category = category.copyWith(cuisines: sortedCuisines);
-                      });
+                      // final sortedCuisines = selectedCuisines.toList()..sort((a, b) => a.menuId!.compareTo(b.menuId!));
+                      // setState(() {
+                      //   category = category.copyWith(cuisines: sortedCuisines);
+                      // });
                     },
-                    selectedCuisines: category.cuisines);
+                    selectedCuisines: category.menuList);
               },
               child: SGContainer(
                   color: !isCuisineSelected ? SGColors.primary : SGColors.white,
@@ -298,7 +298,7 @@ class _NewCuisineCategoryScreenState extends State<NewCuisineCategoryScreen> {
 }
 
 class _SelectedCuisineCard extends StatelessWidget {
-  final Cuisine cuisine;
+  final MenuModel cuisine;
   final VoidCallback onRemove;
 
   const _SelectedCuisineCard({Key? key, required this.cuisine, required this.onRemove}) : super(key: key);
@@ -318,12 +318,12 @@ class _SelectedCuisineCard extends StatelessWidget {
             children: [
               ClipRRect(
                   borderRadius: BorderRadius.circular(SGSpacing.p4),
-                  child: Image.network(cuisine.image, width: SGSpacing.p18, height: SGSpacing.p18)),
+                  child: Image.network(cuisine.menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18)),
               SizedBox(width: SGSpacing.p3),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SGTypography.body(cuisine.name,
+                  SGTypography.body(cuisine.menuName,
                       color: SGColors.black, size: FontSize.normal, weight: FontWeight.w700),
                   SizedBox(height: SGSpacing.p2),
                   SGTypography.body("${cuisine.price.toKoreanCurrency}원",
