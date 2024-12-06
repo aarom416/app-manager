@@ -31,6 +31,48 @@ class StoreStatisticsService {
       return Future.error(e);
     }
   }
+
+  Future<Response<dynamic>> loadStatisticsWeekByStoreId(
+      {required String storeId}) async {
+    try {
+      final response = ref.read(requestApiProvider).get(
+        path: RestApiUri.loadStatisticsWeekByStoreId
+            .replaceAll('{storeId}', storeId),
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+        },
+      );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  Future<Response<dynamic>> loadStatisticsMonthByStoreId(
+      {required String storeId}) async {
+    try {
+      final response = ref.read(requestApiProvider).get(
+        path: RestApiUri.loadStatisticsMonthByStoreId
+            .replaceAll('{storeId}', storeId),
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+        },
+      );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final storeStatisticsServiceProvider =

@@ -9,8 +9,6 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/routers/app_router.dart';
-import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/screens/bottom/myinfo/accountstatus/checkpassword/provider.dart';
 
 class CheckPasswordScreen extends ConsumerStatefulWidget {
@@ -50,17 +48,15 @@ class _CheckPasswordScreenState extends ConsumerState<CheckPasswordScreen> {
                 maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
                 maxHeight: 58),
             child: SGActionButton(
-                onPressed: () async {
-                  await provider.checkPassword(password);
-
-                  if (!state.success) {
-                    showFailDialogWithImage(
-                        ref: ref,
-                        mainTitle: "비밀번호 인증 실패",
-                        subTitle: "입력하신 비밀번호가 올바르지 않습니다.\n다시 확인해주세요.");
-                  } else {
-                    ref.read(goRouterProvider).push(AppRoutes.changePassword);
-                  }
+                onPressed: () {
+                  provider.checkPassword(password).then((value) {
+                    if (!value) {
+                      showFailDialogWithImage(
+                          ref: ref,
+                          mainTitle: "비밀번호 인증 실패",
+                          subTitle: "입력하신 비밀번호가 올바르지 않습니다.\n다시 확인해주세요.");
+                    }
+                  });
                 },
                 disabled: !isPasswordValid,
                 label: "다음")),

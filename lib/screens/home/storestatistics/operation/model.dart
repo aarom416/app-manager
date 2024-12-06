@@ -36,12 +36,33 @@ class OrderInformationStatisticsDTO with _$OrderInformationStatisticsDTO {
 abstract class StoreStatisticsModel with _$StoreStatisticsModel {
   const factory StoreStatisticsModel({
     @Default([])
-    List<MenuRecommendStatisticsDTO> menuRecommendStatisticsDTOList, // 대표자 구분
+    List<MenuRecommendStatisticsDTO> menuRecommendStatisticsDTOList,
     @Default([])
-    List<OrderInformationStatisticsDTO>
-        orderInformationStatisticsDTOList, // 사업자 이름
+    List<OrderInformationStatisticsDTO> orderInformationStatisticsDTOList,
   }) = _StoreStatisticsModel;
 
   factory StoreStatisticsModel.fromJson(Map<String, dynamic> json) =>
       _$StoreStatisticsModelFromJson(json);
+}
+
+@freezed
+abstract class StoreStatisticsWeekModel with _$StoreStatisticsWeekModel {
+  const factory StoreStatisticsWeekModel({
+    @Default('') String weekName,
+    @Default(0) int count,
+  }) = _StoreStatisticsWeekModel;
+
+  factory StoreStatisticsWeekModel.fromJson(Map<String, dynamic> json) =>
+      _$StoreStatisticsWeekModelFromJson(json);
+}
+
+@freezed
+abstract class StoreStatisticsMonthModel with _$StoreStatisticsMonthModel {
+  const factory StoreStatisticsMonthModel({
+    @Default('') String monthName,
+    @Default(0) int count,
+  }) = _StoreStatisticsMonthModel;
+
+  factory StoreStatisticsMonthModel.fromJson(Map<String, dynamic> json) =>
+      _$StoreStatisticsMonthModelFromJson(json);
 }

@@ -17,12 +17,15 @@ class MyInfoOrderHistoryNotifier extends _$MyInfoOrderHistoryNotifier {
     return const MyInfoOrderHistoryState();
   }
 
-  void getOrderHistory(String page, String filter) async {
+  void getOrderHistory() async {
     final storeId = UserHive.getBox(key: UserKey.storeId);
 
     final response = await ref
         .read(myInfoOrderHistoryServiceProvider)
-        .getOrderHistory(storeId: storeId, page: page, filter: filter);
+        .getOrderHistory(
+            storeId: storeId,
+            page: state.pageNumber.toString(),
+            filter: state.filter);
 
     if (response.statusCode == 200) {
       final result = ResultResponseListModel.fromJson(response.data);
@@ -40,6 +43,16 @@ class MyInfoOrderHistoryNotifier extends _$MyInfoOrderHistoryNotifier {
           error: ResultFailResponseModel.fromJson(response.data));
     }
   }
+
+  Future<void> onChangePageNumber({required int pageNumber}) async {
+    state = state.copyWith(pageNumber: pageNumber);
+    getOrderHistory();
+  }
+
+  Future<void> onChangeFilter({required String filter}) async {
+    state = state.copyWith(filter: filter);
+    getOrderHistory();
+  }
 }
 
 enum MyInfoOrderHistoryStatus {
@@ -53,6 +66,8 @@ abstract class MyInfoOrderHistoryState with _$MyInfoOrderHistoryState {
   const factory MyInfoOrderHistoryState({
     @Default(MyInfoOrderHistoryStatus.init) MyInfoOrderHistoryStatus status,
     @Default([]) List<MyInfoOrderHistoryModel> orderHistory,
+    @Default(0) int pageNumber,
+    @Default('0') String filter,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
   }) = _MyInfoOrderHistoryState;
 

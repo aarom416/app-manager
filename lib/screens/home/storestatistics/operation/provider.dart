@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
+import 'package:singleeat/office/models/result_response_list_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/screens/home/storestatistics/operation/service.dart';
 
@@ -75,7 +76,7 @@ class StoreStatisticsNotifier extends _$StoreStatisticsNotifier {
     return takeoutList;
   }
 
-  /// GET - 영업 정보 조회
+  /// GET - 전체 통계 조회
   void loadStatisticsByStoreId() async {
     final response = await ref
         .read(storeStatisticsServiceProvider)
@@ -115,6 +116,62 @@ class StoreStatisticsNotifier extends _$StoreStatisticsNotifier {
           error: ResultFailResponseModel.fromJson(response.data));
     }
   }
+
+  /// GET - 주간 통계 조회
+  void loadStatisticsWeekByStoreId() async {
+    final response = await ref
+        .read(storeStatisticsServiceProvider)
+        .loadStatisticsWeekByStoreId(
+            storeId: UserHive.getBox(key: UserKey.storeId));
+
+    if (response.statusCode == 200) {
+      final result = ResultResponseListModel.fromJson(response.data);
+
+      List<StoreStatisticsWeekModel> list = [];
+      for (var item in result.data) {
+        StoreStatisticsWeekModel model =
+            StoreStatisticsWeekModel.fromJson(item);
+        list.add(model);
+      }
+
+      state = state.copyWith(
+          status: StoreStatisticsStatus.success,
+          storeStatisticsWeekList: list,
+          error: const ResultFailResponseModel());
+    } else {
+      state = state.copyWith(
+          status: StoreStatisticsStatus.error,
+          error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
+
+  /// 월간 통계 조회
+  void loadStatisticsMonthByStoreId() async {
+    final response = await ref
+        .read(storeStatisticsServiceProvider)
+        .loadStatisticsMonthByStoreId(
+            storeId: UserHive.getBox(key: UserKey.storeId));
+
+    if (response.statusCode == 200) {
+      final result = ResultResponseListModel.fromJson(response.data);
+
+      List<StoreStatisticsMonthModel> list = [];
+      for (var item in result.data) {
+        StoreStatisticsMonthModel model =
+            StoreStatisticsMonthModel.fromJson(item);
+        list.add(model);
+      }
+
+      state = state.copyWith(
+          status: StoreStatisticsStatus.success,
+          storeStatisticsMonthList: list,
+          error: const ResultFailResponseModel());
+    } else {
+      state = state.copyWith(
+          status: StoreStatisticsStatus.error,
+          error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
 }
 
 enum StoreStatisticsStatus {
@@ -138,6 +195,10 @@ abstract class StoreStatisticsState with _$StoreStatisticsState {
     @Default([]) List<String> totalCharLabelDaily,
     @Default([]) List<String> totalCharLabelMonthly,
     @Default([]) List<String> totalCharLabelWeekly,
+    @Default(<StoreStatisticsWeekModel>[])
+    List<StoreStatisticsWeekModel> storeStatisticsWeekList,
+    @Default(<StoreStatisticsMonthModel>[])
+    List<StoreStatisticsMonthModel> storeStatisticsMonthList,
   }) = _StoreStatisticsState;
 
   factory StoreStatisticsState.fromJson(Map<String, dynamic> json) =>

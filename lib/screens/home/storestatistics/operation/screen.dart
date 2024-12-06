@@ -120,114 +120,6 @@ class StatisticsScreen extends ConsumerStatefulWidget {
 }
 
 class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
-  BarChartItemData totalData = BarChartItemData(
-    labels: ['10일', '11일', '12일', '13일', '14일', '15일', '16일'],
-    items: [
-      [
-        BarChartItem(value: 5, itemType: "추천"),
-      ],
-      [
-        BarChartItem(value: 10, itemType: "추천"),
-      ],
-      [
-        BarChartItem(value: 3, itemType: "추천"),
-      ],
-      [
-        BarChartItem(value: 9, itemType: "추천"),
-      ],
-      [
-        BarChartItem(value: 5, itemType: "추천"),
-      ],
-      [
-        BarChartItem(value: 4, itemType: "추천"),
-      ],
-      [
-        BarChartItem(value: 8, itemType: "추천"),
-      ],
-    ],
-  );
-
-  BarChartItemData segmentedData = BarChartItemData(
-    labels: ['10일', '11일', '12일', '13일', '14일', '15일', '16일'],
-    items: [
-      [
-        BarChartItem(value: 4, itemType: "배달"),
-        BarChartItem(value: 1, itemType: "포장"),
-      ],
-      [
-        BarChartItem(value: 9, itemType: "배달"),
-        BarChartItem(value: 1, itemType: "포장"),
-      ],
-      [
-        BarChartItem(value: 2, itemType: "배달"),
-        BarChartItem(value: 1, itemType: "포장"),
-      ],
-      [
-        BarChartItem(value: 8, itemType: "배달"),
-        BarChartItem(value: 1, itemType: "포장"),
-      ],
-      [
-        BarChartItem(value: 4, itemType: "배달"),
-        BarChartItem(value: 1, itemType: "포장"),
-      ],
-      [
-        BarChartItem(value: 3, itemType: "배달"),
-        BarChartItem(value: 1, itemType: "포장"),
-      ],
-      [
-        BarChartItem(value: 1, itemType: "배달"),
-        BarChartItem(value: 1, itemType: "포장"),
-      ],
-    ],
-  );
-
-  SplineChartItemData splineData = SplineChartItemData(labels: [
-    '10일',
-    '11일',
-    '12일',
-    '13일',
-    '14일',
-    '15일',
-    '16일'
-  ], items: [
-    FlSpot(0, 25),
-    FlSpot(0.1, 35),
-    // FlSpot(0.2, 35),
-    FlSpot(0.2, 50),
-    FlSpot(0.3, 58),
-    // d''(x) < 0
-    FlSpot(0.5, 60),
-
-    // d''(x) > 1
-    FlSpot(1, 40),
-    FlSpot(2, 120),
-    FlSpot(3, 80),
-    FlSpot(4, 97),
-    FlSpot(5, 60),
-    FlSpot(5.5, 40),
-    FlSpot(6.0, 30),
-  ]);
-
-  LineChartItemData weeklyLineChartData = LineChartItemData(
-    labels: ["8월 1주", "8월 2주", "8월 3주", "8월 4주"],
-    items: [
-      FlSpot(0, 25),
-      FlSpot(1, 60),
-      FlSpot(2, 97),
-      FlSpot(3, 25),
-    ],
-  );
-
-  LineChartItemData monthlyLineChartData = LineChartItemData(labels: [
-    "7월",
-    "8월",
-    "9월"
-  ], items: [
-    FlSpot(0, 50),
-    FlSpot(1, 97),
-    FlSpot(2, 50),
-  ]);
-
   final orderStatisticsLabels = ['전체', '자세히'];
   final orderStatisticsPeriodLabels = ['최근 7일', '주간', '월간'];
 
@@ -248,7 +140,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(storeStatisticsNotifierProvider);
-
+    final provider = ref.read(storeStatisticsNotifierProvider.notifier);
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "통계"),
         body: SGContainer(
@@ -562,15 +454,78 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                       onTap: (label) {
                         setState(() {
                           selectedOrderStatisticsPeriodLabel = label;
+                          if (label == '주간') {
+                            provider.loadStatisticsWeekByStoreId();
+                          } else if (label == '월간') {
+                            provider.loadStatisticsMonthByStoreId();
+                          }
                         });
                       }),
                   SizedBox(height: SGSpacing.p4),
                   if (selectedOrderStatisticsPeriodLabel == '최근 7일')
-                    SplineChart(data: splineData)
+                    SplineChart(
+                        data: SplineChartItemData(
+                            labels: state.totalCharLabelDaily,
+                            items: [
+                          // d''(x) > 1
+                          FlSpot(
+                              0,
+                              state.deliveryDailyCount[0].toDouble() +
+                                  state.takeoutDailyCount[0].toDouble()),
+                          FlSpot(
+                              1,
+                              state.deliveryDailyCount[1].toDouble() +
+                                  state.takeoutDailyCount[1].toDouble()),
+                          FlSpot(
+                              2,
+                              state.deliveryDailyCount[2].toDouble() +
+                                  state.takeoutDailyCount[2].toDouble()),
+                          FlSpot(
+                              3,
+                              state.deliveryDailyCount[3].toDouble() +
+                                  state.takeoutDailyCount[3].toDouble()),
+                          FlSpot(
+                              4,
+                              state.deliveryDailyCount[4].toDouble() +
+                                  state.takeoutDailyCount[4].toDouble()),
+                          FlSpot(
+                              5,
+                              state.deliveryDailyCount[5].toDouble() +
+                                  state.takeoutDailyCount[5].toDouble()),
+                          FlSpot(
+                              6,
+                              state.deliveryDailyCount[6].toDouble() +
+                                  state.takeoutDailyCount[6].toDouble()),
+                        ]))
                   else if (selectedOrderStatisticsPeriodLabel == '주간')
-                    SolidLineChart(data: weeklyLineChartData)
+                    SolidLineChart(
+                        data: LineChartItemData(
+                      labels: [
+                        ...state.storeStatisticsWeekList.map((e) => e.weekName)
+                      ],
+                      items: [
+                        FlSpot(0,
+                            state.storeStatisticsWeekList[0].count.toDouble()),
+                        FlSpot(1,
+                            state.storeStatisticsWeekList[1].count.toDouble()),
+                        FlSpot(2,
+                            state.storeStatisticsWeekList[2].count.toDouble()),
+                        FlSpot(3,
+                            state.storeStatisticsWeekList[3].count.toDouble()),
+                      ],
+                    ))
                   else
-                    SolidLineChart(data: monthlyLineChartData),
+                    SolidLineChart(
+                        data: LineChartItemData(labels: [
+                      ...state.storeStatisticsMonthList.map((e) => e.monthName)
+                    ], items: [
+                      FlSpot(0,
+                          state.storeStatisticsMonthList[0].count.toDouble()),
+                      FlSpot(1,
+                          state.storeStatisticsMonthList[1].count.toDouble()),
+                      FlSpot(2,
+                          state.storeStatisticsMonthList[2].count.toDouble()),
+                    ])),
                 ],
                 SizedBox(height: SGSpacing.p5),
                 Row(children: [

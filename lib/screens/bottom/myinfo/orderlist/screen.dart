@@ -40,9 +40,7 @@ class _ReceiptListScreenState extends ConsumerState<ReceiptListScreen>
     super.initState();
 
     Future.microtask(() {
-      ref
-          .read(myInfoOrderHistoryNotifierProvider.notifier)
-          .getOrderHistory('0', '0');
+      ref.read(myInfoOrderHistoryNotifierProvider.notifier).getOrderHistory();
     });
 
     _tabController = TabController(length: 3, vsync: this);
@@ -55,19 +53,19 @@ class _ReceiptListScreenState extends ConsumerState<ReceiptListScreen>
               tab = "오늘";
               ref
                   .read(myInfoOrderHistoryNotifierProvider.notifier)
-                  .getOrderHistory('0', '0');
+                  .onChangeFilter(filter: '0');
               break;
             case 1:
               tab = "어제";
               ref
                   .read(myInfoOrderHistoryNotifierProvider.notifier)
-                  .getOrderHistory('0', '1');
+                  .onChangeFilter(filter: '1');
               break;
             case 2:
               tab = "일주일";
               ref
                   .read(myInfoOrderHistoryNotifierProvider.notifier)
-                  .getOrderHistory('0', '2');
+                  .onChangeFilter(filter: '2');
               break;
           }
         });
@@ -79,6 +77,13 @@ class _ReceiptListScreenState extends ConsumerState<ReceiptListScreen>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> loadMoreData() async {
+    final state = ref.read(myInfoOrderHistoryNotifierProvider);
+    ref
+        .read(myInfoOrderHistoryNotifierProvider.notifier)
+        .onChangePageNumber(pageNumber: state.pageNumber + 1);
   }
 
   @override

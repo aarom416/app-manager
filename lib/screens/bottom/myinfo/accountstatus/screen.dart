@@ -68,8 +68,9 @@ class _ProfileDeleteSessionScreenState
                                 onTap: () {
                                   ref
                                       .read(loginNotifierProvider.notifier)
-                                      .logout()
-                                      .then((value) {
+                                      .logout();
+                                  // JSS 2024.12.05
+                                  /*then((value) {
                                     if (value) {
                                       ref.read(goRouterProvider).go(
                                           AppRoutes.login,
@@ -78,7 +79,7 @@ class _ProfileDeleteSessionScreenState
                                       showFailDialogWithImage("로그아웃 실패",
                                           "현재 가게가 영업 중이거나 진행 중인 주문이 있어\n로그아웃을 진행할 수 없습니다.");
                                     }
-                                  });
+                                  }*/
                                 },
                                 child: SGContainer(
                                   color: SGColors.primary,
