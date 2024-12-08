@@ -14,6 +14,7 @@ import 'package:singleeat/screens/find_account_screen.dart';
 import 'package:singleeat/screens/find_account_webview_screen.dart';
 import 'package:singleeat/screens/find_by_password_screen.dart';
 import 'package:singleeat/screens/find_by_password_webview_screen.dart';
+import 'package:singleeat/screens/home/storeVat/operation/screen.dart';
 import 'package:singleeat/screens/home/storeinformation/operation/screen.dart';
 import 'package:singleeat/screens/home/storeorderhistory/operation/screen.dart';
 import 'package:singleeat/screens/home/storesettlement/operation/screen.dart';
@@ -182,6 +183,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.settlement,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: SettlementScreen())),
+      GoRoute(
+          path: AppRoutes.vat,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: TaxesScreen())),
       GoRoute(
           path: AppRoutes.storeManagement,
           pageBuilder: (context, state) =>
