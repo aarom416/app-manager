@@ -64,37 +64,6 @@ class _EmailEditScreenState extends ConsumerState<EmailEditScreen> {
     //controller.text = widget.value;
   }
 
-  void showDialog(String message) {
-    showSGDialog(
-        context: context,
-        childrenBuilder: (ctx) => [
-              Center(
-                  child: SGTypography.body(message,
-                      size: FontSize.medium,
-                      weight: FontWeight.w700,
-                      lineHeight: 1.25,
-                      align: TextAlign.center)),
-              SizedBox(height: SGSpacing.p8),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(ctx);
-                },
-                child: SGContainer(
-                  color: SGColors.primary,
-                  width: double.infinity,
-                  borderColor: SGColors.primary,
-                  padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                  borderRadius: BorderRadius.circular(SGSpacing.p3),
-                  child: Center(
-                      child: SGTypography.body("확인",
-                          color: SGColors.white,
-                          weight: FontWeight.w700,
-                          size: FontSize.normal)),
-                ),
-              )
-            ]);
-  }
-
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(storeInformationNotifierProvider);
@@ -328,7 +297,7 @@ class _EmailEditScreenState extends ConsumerState<EmailEditScreen> {
                       isVerify = true;
                     });
                   } else {
-                    showDialog("인증에 실패하였습니다.\n잠시후 다시 시도해주세요");
+                    showFailDialogWithImage("인증에 실패하였습니다.\n잠시후 다시 시도해주세요");
                   }
                 },
                 child: SGContainer(
@@ -370,5 +339,68 @@ class _EmailEditScreenState extends ConsumerState<EmailEditScreen> {
             ],
           ])),
     );
+  }
+
+  void showDialog(String message) {
+    showSGDialog(
+        context: context,
+        childrenBuilder: (ctx) => [
+              Center(
+                  child: SGTypography.body(message,
+                      size: FontSize.medium,
+                      weight: FontWeight.w700,
+                      lineHeight: 1.25,
+                      align: TextAlign.center)),
+              SizedBox(height: SGSpacing.p8),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(ctx);
+                },
+                child: SGContainer(
+                  color: SGColors.primary,
+                  width: double.infinity,
+                  borderColor: SGColors.primary,
+                  padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                  child: Center(
+                      child: SGTypography.body("확인",
+                          color: SGColors.white,
+                          weight: FontWeight.w700,
+                          size: FontSize.normal)),
+                ),
+              )
+            ]);
+  }
+
+  void showFailDialogWithImage(String subTitle) {
+    showSGDialogWithImage(
+        context: context,
+        childrenBuilder: (ctx) => [
+              Center(
+                  child: SGTypography.body(subTitle,
+                      color: SGColors.gray4,
+                      size: FontSize.small,
+                      weight: FontWeight.w700,
+                      lineHeight: 1.25,
+                      align: TextAlign.center)),
+              SizedBox(height: SGSpacing.p6),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(ctx);
+                },
+                child: SGContainer(
+                  color: SGColors.primary,
+                  width: double.infinity,
+                  borderColor: SGColors.primary,
+                  padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                  child: Center(
+                      child: SGTypography.body("확인",
+                          color: SGColors.white,
+                          weight: FontWeight.w700,
+                          size: FontSize.normal)),
+                ),
+              )
+            ]);
   }
 }

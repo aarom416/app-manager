@@ -35,20 +35,20 @@ class StoreOrderHistoryNotifier extends _$StoreOrderHistoryNotifier {
         storeOrderHistory: storeOrderHistory,
       );
     } else {
-      /* state = state.copyWith(
-          error: ResultFailResponseModel.fromJson(response.data));*/
+      state = state.copyWith(
+          error: ResultFailResponseModel.fromJson(response.data));
     }
   }
 
   /*Future<void> onChangePageNumber({required int pageNumber}) async {
     state = state.copyWith(pageNumber: pageNumber);
     getOrderHistory();
-  }
+  }*/
 
   Future<void> onChangeFilter({required String filter}) async {
     state = state.copyWith(filter: filter);
-    getOrderHistory();
-  }*/
+    getOrderHistoryByFilter();
+  }
 }
 
 enum StoreOrderHistoryStatus {
@@ -64,6 +64,8 @@ abstract class StoreOrderHistoryState with _$StoreOrderHistoryState {
     @Default(StoreOrderHistoryModel()) StoreOrderHistoryModel storeOrderHistory,
     @Default(0) int pageNumber,
     @Default('0') String filter,
+    @Default(0) int totalOrderCount,
+    @Default(0) int totalOrderAmount,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
   }) = _StoreOrderHistoryState;
 

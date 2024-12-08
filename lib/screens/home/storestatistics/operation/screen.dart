@@ -184,55 +184,78 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                 ])),
                 Histogram(
                     data: BarChartItemData(
-                  labels: state.totalCharLabelDaily,
+                  labels: state.totalCharLabelDaily.isNotEmpty
+                      ? state.totalCharLabelDaily
+                      : ['', '', '', '', '', '', ''],
                   items: [
                     [
                       BarChartItem(
                           value: state.storeStatistics
-                              .menuRecommendStatisticsDTOList[0].count
-                              .toDouble(),
+                                  .menuRecommendStatisticsDTOList.isNotEmpty
+                              ? state.storeStatistics
+                                  .menuRecommendStatisticsDTOList[0].count
+                                  .toDouble()
+                              : 0.0,
                           itemType: "추천"),
                     ],
                     [
                       BarChartItem(
                           value: state.storeStatistics
-                              .menuRecommendStatisticsDTOList[1].count
-                              .toDouble(),
+                                  .menuRecommendStatisticsDTOList.isNotEmpty
+                              ? state.storeStatistics
+                                  .menuRecommendStatisticsDTOList[1].count
+                                  .toDouble()
+                              : 0.0,
                           itemType: "추천"),
                     ],
                     [
                       BarChartItem(
                           value: state.storeStatistics
-                              .menuRecommendStatisticsDTOList[2].count
-                              .toDouble(),
+                                  .menuRecommendStatisticsDTOList.isNotEmpty
+                              ? state.storeStatistics
+                                  .menuRecommendStatisticsDTOList[2].count
+                                  .toDouble()
+                              : 0.0,
                           itemType: "추천"),
                     ],
                     [
                       BarChartItem(
                           value: state.storeStatistics
-                              .menuRecommendStatisticsDTOList[3].count
-                              .toDouble(),
+                                  .menuRecommendStatisticsDTOList.isNotEmpty
+                              ? state.storeStatistics
+                                  .menuRecommendStatisticsDTOList[3].count
+                                  .toDouble()
+                              : 0.0,
                           itemType: "추천"),
                     ],
                     [
                       BarChartItem(
                           value: state.storeStatistics
-                              .menuRecommendStatisticsDTOList[4].count
-                              .toDouble(),
+                                  .menuRecommendStatisticsDTOList.isNotEmpty
+                              ? state.storeStatistics
+                                  .menuRecommendStatisticsDTOList[4].count
+                                  .toDouble()
+                              : 0.0,
                           itemType: "추천"),
                     ],
                     [
                       BarChartItem(
                           value: state.storeStatistics
-                              .menuRecommendStatisticsDTOList[5].count
-                              .toDouble(),
+                                  .menuRecommendStatisticsDTOList.isNotEmpty
+                              ? state.storeStatistics
+                                  .menuRecommendStatisticsDTOList[5].count
+                                  .toDouble()
+                              : 0.0,
                           itemType: "추천"),
                     ],
                     [
                       BarChartItem(
                           value: state.storeStatistics
-                              .menuRecommendStatisticsDTOList[6].count
-                              .toDouble(),
+                                  .menuRecommendStatisticsDTOList.isNotEmpty
+                              ? state.storeStatistics
+                                  .menuRecommendStatisticsDTOList[6].count
+                                  .toDouble()
+                              : 0.0,
                           itemType: "추천"),
                     ],
                   ],
@@ -286,48 +309,64 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                 if (selectedOrderStatisticsLabel == '전체')
                   Histogram(
                       data: BarChartItemData(
-                    labels: state.totalCharLabelDaily,
+                    labels: state.totalCharLabelDaily.isNotEmpty
+                        ? state.totalCharLabelDaily
+                        : ['', '', '', '', '', '', ''],
                     items: [
                       [
                         BarChartItem(
-                            value: state.deliveryDailyCount[0].toDouble() +
-                                state.takeoutDailyCount[0].toDouble(),
+                            value: state.deliveryDailyCount.isNotEmpty
+                                ? state.deliveryDailyCount[0].toDouble() +
+                                    state.takeoutDailyCount[0].toDouble()
+                                : 0.0,
                             itemType: "추천"),
                       ],
                       [
                         BarChartItem(
-                            value: state.deliveryDailyCount[1].toDouble() +
-                                state.takeoutDailyCount[1].toDouble(),
+                            value: state.deliveryDailyCount.isNotEmpty
+                                ? state.deliveryDailyCount[1].toDouble() +
+                                    state.takeoutDailyCount[1].toDouble()
+                                : 0.0,
                             itemType: "추천"),
                       ],
                       [
                         BarChartItem(
-                            value: state.deliveryDailyCount[2].toDouble() +
-                                state.takeoutDailyCount[2].toDouble(),
+                            value: state.deliveryDailyCount.isNotEmpty
+                                ? state.deliveryDailyCount[2].toDouble() +
+                                    state.takeoutDailyCount[2].toDouble()
+                                : 0.0,
                             itemType: "추천"),
                       ],
                       [
                         BarChartItem(
-                            value: state.deliveryDailyCount[3].toDouble() +
-                                state.takeoutDailyCount[3].toDouble(),
+                            value: state.deliveryDailyCount.isNotEmpty
+                                ? state.deliveryDailyCount[3].toDouble() +
+                                    state.takeoutDailyCount[3].toDouble()
+                                : 0.0,
                             itemType: "추천"),
                       ],
                       [
                         BarChartItem(
-                            value: state.deliveryDailyCount[4].toDouble() +
-                                state.takeoutDailyCount[4].toDouble(),
+                            value: state.deliveryDailyCount.isNotEmpty
+                                ? state.deliveryDailyCount[4].toDouble() +
+                                    state.takeoutDailyCount[4].toDouble()
+                                : 0.0,
                             itemType: "추천"),
                       ],
                       [
                         BarChartItem(
-                            value: state.deliveryDailyCount[5].toDouble() +
-                                state.takeoutDailyCount[5].toDouble(),
+                            value: state.deliveryDailyCount.isNotEmpty
+                                ? state.deliveryDailyCount[5].toDouble() +
+                                    state.takeoutDailyCount[5].toDouble()
+                                : 0.0,
                             itemType: "추천"),
                       ],
                       [
                         BarChartItem(
-                            value: state.deliveryDailyCount[6].toDouble() +
-                                state.takeoutDailyCount[6].toDouble(),
+                            value: state.deliveryDailyCount.isNotEmpty
+                                ? state.deliveryDailyCount[6].toDouble() +
+                                    state.takeoutDailyCount[6].toDouble()
+                                : 0.0,
                             itemType: "추천"),
                       ],
                     ],
@@ -610,9 +649,7 @@ class BarChartItemData {
   List<String> labels;
   List<List<BarChartItem>> items;
 
-  BarChartItemData({required this.labels, required this.items}) {
-    assert(labels.length == items.length);
-  }
+  BarChartItemData({required this.labels, required this.items}) {}
 }
 
 class SplineChartItemData {
@@ -925,21 +962,6 @@ class _SplineChartState extends State<SplineChart> {
                 ],
                 textAlign: TextAlign.start,
               );
-              if (flSpot.x == 0 ||
-                  flSpot.x == 0.1 ||
-                  flSpot.x == 0.2 ||
-                  flSpot.x == 0.3 ||
-                  flSpot.x == 0.5) {
-                return LineTooltipItem(
-                  "d''(x) > 0",
-                  TextStyle(color: SGColors.black, fontWeight: FontWeight.bold),
-                );
-              } else {
-                return LineTooltipItem(
-                  "d''(x) < 0",
-                  TextStyle(color: SGColors.black, fontWeight: FontWeight.bold),
-                );
-              }
             }).toList();
           },
           getTooltipColor: (value) {
@@ -1011,15 +1033,6 @@ class _SplineChartState extends State<SplineChart> {
           dotData: const FlDotData(
             show: false,
           ),
-          // aboveBarData: BarAreaDta(
-          //   show: true,
-          // ),
-          // belowBarData: BarAreaData(
-          //   show: true,
-          //   gradient: LinearGradient(
-          //     colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
-          //   ),
-          // ),
         ),
       ],
     );
@@ -1132,21 +1145,6 @@ class _SolidLineChartState extends State<SolidLineChart> {
                 ],
                 textAlign: TextAlign.start,
               );
-              if (flSpot.x == 0 ||
-                  flSpot.x == 0.1 ||
-                  flSpot.x == 0.2 ||
-                  flSpot.x == 0.3 ||
-                  flSpot.x == 0.5) {
-                return LineTooltipItem(
-                  "d''(x) > 0",
-                  TextStyle(color: SGColors.black, fontWeight: FontWeight.bold),
-                );
-              } else {
-                return LineTooltipItem(
-                  "d''(x) < 0",
-                  TextStyle(color: SGColors.black, fontWeight: FontWeight.bold),
-                );
-              }
             }).toList();
           },
           getTooltipColor: (value) {
@@ -1217,15 +1215,6 @@ class _SolidLineChartState extends State<SolidLineChart> {
           dotData: const FlDotData(
             show: false,
           ),
-          // aboveBarData: BarAreaDta(
-          //   show: true,
-          // ),
-          // belowBarData: BarAreaData(
-          //   show: true,
-          //   gradient: LinearGradient(
-          //     colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
-          //   ),
-          // ),
         ),
       ],
     );

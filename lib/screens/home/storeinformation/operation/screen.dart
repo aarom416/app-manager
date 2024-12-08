@@ -11,8 +11,8 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/screens/phone_edit_screen.dart';
-import 'package:singleeat/screens/home/storeinformation/operation/emailchange/email_edit_screen.dart';
+import 'package:singleeat/screens/home/storeinformation/operation/emailchange/screen.dart';
+import 'package:singleeat/screens/home/storeinformation/operation/phonechange/screen.dart';
 import 'package:singleeat/screens/home/storeinformation/operation/provider.dart';
 
 class StoreInformationScreen extends ConsumerStatefulWidget {
