@@ -8,7 +8,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/screens/home/storemanagement/menuoptions/cuisine_screen.dart';
-import 'package:singleeat/screens/home/storemanagement/menuoptions/update_cuisine_category_screen.dart';
+import 'package:singleeat/screens/home/storemanagement/menuoptions/menu/updatemenucategory/screen.dart';
 
 import '../model.dart';
 
@@ -24,7 +24,7 @@ class MenuCategoryCard extends StatelessWidget {
       MultipleInformationBox(children: [
         GestureDetector(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateCuisineCategoryScreen(category: menuCategory)));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateMenuCategoryScreen(menuCategoryModel: menuCategory)));
           },
           child: Row(mainAxisSize: MainAxisSize.max, children: [
             SGTypography.body(menuCategory.menuCategoryName, size: FontSize.normal, weight: FontWeight.w600),

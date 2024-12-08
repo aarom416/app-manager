@@ -95,6 +95,34 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
       state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
     }
   }
+
+  /// POST - 메뉴 카테고리 이름 및 설명 수정
+  void updateMenuCategoryName(MenuCategoryModel menuCategoryModel) async {
+    final response = await ref.read(menuOptionsServiceProvider).updateMenuCategoryName(storeId: UserHive.getBox(key: UserKey.storeId), menuCategoryModel: menuCategoryModel);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          storeMenuCategoryDTOList: state.menuOptionsDataModel.storeMenuCategoryDTOList.map((menuCategory) {
+        return menuCategory.storeMenuCategoryId == menuCategoryModel.storeMenuCategoryId ? menuCategoryModel : menuCategory;
+      }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
+
+  /// POST - 메뉴 카테고리 삭제
+  void deleteMenuCategory(MenuCategoryModel menuCategoryModel) async {
+    final response = await ref.read(menuOptionsServiceProvider).deleteMenuCategory(storeId: UserHive.getBox(key: UserKey.storeId), menuCategoryModel: menuCategoryModel);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel =
+          state.menuOptionsDataModel.copyWith(storeMenuCategoryDTOList: state.menuOptionsDataModel.storeMenuCategoryDTOList.where((menuCategory) => menuCategory.storeMenuCategoryId != menuCategoryModel.storeMenuCategoryId).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
 }
 
 /// state provider

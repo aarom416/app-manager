@@ -56,6 +56,62 @@ class MenuOptionsService {
       return Future.error(e);
     }
   }
+
+  /// POST - 메뉴 카테고리 이름 및 설명 수정
+  /*
+      {
+        "storeId": 1,
+        "storeMenuCategoryId": 11,
+        "menuCategoryName": "대표메뉴",
+        "menuDescription": "대표메뉴입니다!"
+      }
+   */
+  Future<Response<dynamic>> updateMenuCategoryName({required String storeId, required MenuCategoryModel menuCategoryModel}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuCategoryName,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeMenuCategoryId': menuCategoryModel.storeMenuCategoryId,
+          'menuCategoryName': menuCategoryModel.menuCategoryName,
+          'menuDescription': menuCategoryModel.menuDescription,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 카테고리 삭제
+  /*
+      {
+        "storeId": 1,
+        "menuCategoryId": 1,
+        "menuCategoryName": "1인 세트"
+      }
+   */
+  Future<Response<dynamic>> deleteMenuCategory({required String storeId, required MenuCategoryModel menuCategoryModel}) async {
+    try {
+      return await ref.read(requestApiProvider).delete(
+        RestApiUri.deleteMenuCategory,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'menuCategoryId': menuCategoryModel.storeMenuCategoryId,
+          'menuCategoryName': menuCategoryModel.menuCategoryName,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final menuOptionsServiceProvider = Provider<MenuOptionsService>((ref) => MenuOptionsService(ref));

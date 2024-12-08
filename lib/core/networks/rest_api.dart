@@ -131,7 +131,7 @@ class RestApiUri {
   /// 가게 메뉴 삭제 API
   // DELETE - 메뉴 삭제 TODO
   static const String deleteMenu = '/api/v1/owner/store-menu/menu';
-  // DELETE - 메뉴 카테고리 삭제 TODO
+  // DELETE - 메뉴 카테고리 삭제
   static const String deleteMenuCategory =
       '/api/v1/owner/store-menu/store-menu-category';
   // DELETE - 메뉴 옵션 삭제 TODO
@@ -330,7 +330,7 @@ class RestApiUri {
       '/api/v1/owner/store-menu/menu-introduction';
   // POST - 메뉴 정보 변경 TODO
   static const String updateMenuInfo = '/api/v1/owner/store-menu/menu-info';
-  // POST - 메뉴 카테고리 이름 및 설명 수정 TODO
+  // POST - 메뉴 카테고리 이름 및 설명 수정
   static const String updateMenuCategoryName =
       '/api/v1/owner/store-menu/menu-category/name';
   // POST - 메뉴 베스트 상태 변경 TODO

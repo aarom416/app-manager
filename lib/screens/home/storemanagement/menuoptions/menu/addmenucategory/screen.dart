@@ -23,37 +23,6 @@ class AddMenuCategoryScreen extends ConsumerStatefulWidget {
   ConsumerState<AddMenuCategoryScreen> createState() => _AddMenuCategoryScreenState();
 }
 
-// final storeMenuDTOList = [
-//   MenuModel(
-//     menuId: 1,
-//     menuName: "김치찌개",
-//     price: 8000,
-//     menuDescription: "맛있는 김치찌개",
-//     menuPictureURL: "https://via.placeholder.com/150",
-//   ),
-//   MenuModel(
-//     menuId: 2,
-//     menuName: "된장찌개",
-//     price: 8000,
-//     menuDescription: "맛있는 된장찌개",
-//     menuPictureURL: "https://via.placeholder.com/150",
-//   ),
-//   MenuModel(
-//     menuId: 3,
-//     menuName: "부대찌개",
-//     price: 8000,
-//     menuDescription: "맛있는 부대찌개",
-//     menuPictureURL: "https://via.placeholder.com/150",
-//   ),
-//   MenuModel(
-//     menuId: 4,
-//     menuName: "김치찌개",
-//     price: 8000,
-//     menuDescription: "맛있는 김치찌개",
-//     menuPictureURL: "https://via.placeholder.com/150",
-//   ),
-// ];
-
 class _AddMenuCategoryScreenState extends ConsumerState<AddMenuCategoryScreen> {
   List<MenuModel> selectedMenuList = [];
 
