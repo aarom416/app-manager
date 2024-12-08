@@ -21,8 +21,8 @@ abstract class MenuOptionsDataModel with _$MenuOptionsDataModel {
 @freezed
 abstract class MenuCategoryModel with _$MenuCategoryModel {
   const factory MenuCategoryModel({
-    @Default(0) int storeId,
-    @Default(0) int storeMenuCategoryId,
+    @Default(-1) int storeId,
+    @Default(-1) int storeMenuCategoryId,
     @Default('') String menuCategoryName,
     @Default('') String menuDescription, // categoryDescription 이어야 함.
     @Default(<MenuModel>[]) List<MenuModel> menuList,
@@ -34,8 +34,8 @@ abstract class MenuCategoryModel with _$MenuCategoryModel {
 @freezed
 abstract class MenuModel with _$MenuModel {
   const factory MenuModel({
-    @Default(0) int menuId,
-    @Default(0) int storeMenuCategoryId,
+    @Default(-1) int menuId,
+    @Default(-1) int storeMenuCategoryId,
     @Default(0) int popularityStatus,
     @Default(0) int bestStatus,
     @Default(0) int soldOutStatus,
@@ -52,7 +52,7 @@ abstract class MenuModel with _$MenuModel {
 @freezed
 abstract class MenuOptionCategoryModel with _$MenuOptionCategoryModel {
   const factory MenuOptionCategoryModel({
-    @Default(0) int menuOptionCategoryId,
+    @Default(-1) int menuOptionCategoryId,
     @Default('') String menuOptionCategoryName,
     @Default(0) int essentialStatus,
     @Default(0) int minChoice,
@@ -67,7 +67,7 @@ abstract class MenuOptionCategoryModel with _$MenuOptionCategoryModel {
 abstract class MenuOptionModel with _$MenuOptionModel {
   const factory MenuOptionModel({
     @Default(0) int menuOptionId,
-    @Default(0) int menuOptionCategoryId,
+    @Default(-1) int menuOptionCategoryId,
     @Default('') String optionContent,
     @Default(0) int price,
     @Default(0) int soldOutStatus,
@@ -79,9 +79,9 @@ abstract class MenuOptionModel with _$MenuOptionModel {
 @freezed
 abstract class MenuOptionRelationshipModel with _$MenuOptionRelationshipModel {
   const factory MenuOptionRelationshipModel({
-    @Default(0) int menuId,
-    @Default(0) int menuOptionCategoryId,
-    @Default(0) int menuOptionId,
+    @Default(-1) int menuId,
+    @Default(-1) int menuOptionCategoryId,
+    @Default(-1) int menuOptionId,
   }) = _MenuOptionRelationshipModel;
 
   factory MenuOptionRelationshipModel.fromJson(Map<String, dynamic> json) => _$MenuOptionRelationshipModelFromJson(json);
@@ -92,7 +92,6 @@ class Nutrition {
   int? protein;
   int? fat;
   int? carbohydrate;
-
   int? glucose;
   int? sodium;
   int? saturatedFat;
@@ -106,4 +105,24 @@ class Nutrition {
     required this.sodium,
     required this.saturatedFat,
   });
+
+  Nutrition copyWith({
+    int? calories,
+    int? protein,
+    int? fat,
+    int? carbohydrate,
+    int? glucose,
+    int? sodium,
+    int? saturatedFat,
+  }) {
+    return Nutrition(
+      calories: calories ?? this.calories,
+      protein: protein ?? this.protein,
+      fat: fat ?? this.fat,
+      carbohydrate: carbohydrate ?? this.carbohydrate,
+      glucose: glucose ?? this.glucose,
+      sodium: sodium ?? this.sodium,
+      saturatedFat: saturatedFat ?? this.saturatedFat,
+    );
+  }
 }

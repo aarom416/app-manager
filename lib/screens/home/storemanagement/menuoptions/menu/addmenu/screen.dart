@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/app_bar_with_step_indicator.dart';
@@ -15,23 +15,33 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/image_upload_screen.dart';
 import 'package:singleeat/core/screens/textarea_screen.dart';
-import 'package:singleeat/core/utils/formatter.dart';
 
+import '../../../../../../main.dart';
+import '../../../../../common/components/numeric_textfield.dart';
+import '../../cuisine_option_category_selection_bottom_sheet.dart';
 import '../../model.dart';
 import '../../nutrition_card.dart';
 import '../../nutrition_form.dart';
-import '../../cuisine_option_category_selection_bottom_sheet.dart';
+import '../../provider.dart';
 import '../addmenucategory/screen.dart';
 
-class NewMenuScreen extends StatefulWidget {
-  const NewMenuScreen({super.key});
+/// todo controller 해제
+class AddMenuScreen extends ConsumerStatefulWidget {
+  const AddMenuScreen({super.key});
 
   @override
-  State<NewMenuScreen> createState() => _NewMenuScreenState();
+  ConsumerState<AddMenuScreen> createState() => _AddMenuScreenState();
 }
 
-class _NewMenuScreenState extends State<NewMenuScreen> {
+class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
   PageController pageController = PageController();
+
+  String menuName = "";
+  MenuCategoryModel selectedMenuCategory = const MenuCategoryModel(storeMenuCategoryId: -1);
+  List<String> selectedUserMenuCategories = [];
+  int price = 0;
+  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
+  int supply = 430;
 
   void animateToPage(int index) => pageController.animateToPage(
         index,
@@ -41,25 +51,61 @@ class _NewMenuScreenState extends State<NewMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
+    final MenuOptionsNotifier provider = ref.read(menuOptionsNotifierProvider.notifier);
+
     return Scaffold(
       body: PageView(controller: pageController, physics: const NeverScrollableScrollPhysics(), children: [
-        _NewMenuNameStepScreen(
+        _Page_0_MenuName(
+          menuName: menuName,
           onNext: () => animateToPage(1),
           onPrev: () => Navigator.pop(context),
+          onEditFunction: (menuName) {
+            setState(() {
+              this.menuName = menuName;
+            });
+          },
         ),
-        _NewMenuCategoryStepScreen(
+        _Page_1_MenuCategory(
+          storeMenuCategoryDTOList: state.storeMenuCategoryDTOList,
+          selectedMenuCategory: selectedMenuCategory,
+          selectedUserMenuCategories: selectedUserMenuCategories,
           onNext: () => animateToPage(2),
           onPrev: () => animateToPage(0),
+          onEditMenuCategoryFunction: (selectedMenuCategory) {
+            setState(() {
+              this.selectedMenuCategory = selectedMenuCategory;
+            });
+          },
+          onEditUserMenuCategoryFunction: (selectedUserMenuCategories) {
+            setState(() {
+              this.selectedUserMenuCategories = selectedUserMenuCategories;
+            });
+          },
         ),
-        _NewMenuPriceStepScreen(
+        _Page_2_MenuPrice(
+          price: price,
           onNext: () => animateToPage(3),
           onPrev: () => animateToPage(1),
+          onEditFunction: (price) {
+            setState(() {
+              this.price = price;
+            });
+          },
         ),
-        _NewMenuNutritionStepScreen(
+        _Page_3_MenuNutrition(
+          nutrition: nutrition,
+          supply: supply,
           onNext: () => animateToPage(4),
           onPrev: () => animateToPage(2),
+          onEditFunction: (nutrition, supply) {
+            setState(() {
+              this.nutrition = nutrition;
+              this.supply = supply;
+            });
+          },
         ),
-        _NewMenuRegistrationStepScreen(
+        _Page_4_MenuRegistration(
           onNext: () => Navigator.of(context).pop(),
           onPrev: () => animateToPage(3),
         ),
@@ -68,18 +114,28 @@ class _NewMenuScreenState extends State<NewMenuScreen> {
   }
 }
 
-class _NewMenuNameStepScreen extends StatefulWidget {
+class _Page_0_MenuName extends StatefulWidget {
+  final String menuName;
   final VoidCallback onNext;
   final VoidCallback onPrev;
+  final Function(String) onEditFunction;
 
-  _NewMenuNameStepScreen({super.key, required this.onNext, required this.onPrev});
+  _Page_0_MenuName({required this.menuName, required this.onNext, required this.onPrev, required this.onEditFunction});
 
   @override
-  State<_NewMenuNameStepScreen> createState() => _NewMenuNameStepScreenState();
+  State<_Page_0_MenuName> createState() => _Page_0_MenuNameState();
 }
 
-class _NewMenuNameStepScreenState extends State<_NewMenuNameStepScreen> {
-  String menuName = "";
+class _Page_0_MenuNameState extends State<_Page_0_MenuName> {
+  late String menuName;
+  late TextEditingController menuNameController;
+
+  @override
+  void initState() {
+    super.initState();
+    menuName = widget.menuName;
+    menuNameController = TextEditingController(text: menuName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,12 +146,13 @@ class _NewMenuNameStepScreenState extends State<_NewMenuNameStepScreen> {
             child: SGActionButton(
                 disabled: menuName.isEmpty,
                 onPressed: () {
-                  widget.onNext();
+                  widget.onEditFunction(menuName);
                   FocusScope.of(context).unfocus();
+                  widget.onNext();
                 },
                 label: "추가하기")),
         body: SGContainer(
-            color: Color(0xFFFAFAFA),
+            color: const Color(0xFFFAFAFA),
             padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
             child: ListView(
               children: [
@@ -106,6 +163,7 @@ class _NewMenuNameStepScreenState extends State<_NewMenuNameStepScreen> {
                   padding: EdgeInsets.all(SGSpacing.p4),
                   width: double.infinity,
                   child: TextField(
+                      controller: menuNameController,
                       onChanged: (value) {
                         setState(() {
                           menuName = value;
@@ -125,17 +183,40 @@ class _NewMenuNameStepScreenState extends State<_NewMenuNameStepScreen> {
   }
 }
 
-class _NewMenuCategoryStepScreen extends StatefulWidget {
+class _Page_1_MenuCategory extends StatefulWidget {
+  final List<MenuCategoryModel> storeMenuCategoryDTOList;
+  final MenuCategoryModel selectedMenuCategory;
+  final List<String> selectedUserMenuCategories;
   final VoidCallback onNext;
   final VoidCallback onPrev;
+  final Function(MenuCategoryModel) onEditMenuCategoryFunction;
+  final Function(List<String>) onEditUserMenuCategoryFunction;
 
-  _NewMenuCategoryStepScreen({super.key, required this.onNext, required this.onPrev});
+  _Page_1_MenuCategory({
+    required this.storeMenuCategoryDTOList,
+    required this.selectedMenuCategory,
+    required this.selectedUserMenuCategories,
+    required this.onNext,
+    required this.onPrev,
+    required this.onEditMenuCategoryFunction,
+    required this.onEditUserMenuCategoryFunction,
+  });
 
   @override
-  State<_NewMenuCategoryStepScreen> createState() => _NewMenuCategoryStepScreenState();
+  State<_Page_1_MenuCategory> createState() => _Page_1_MenuCategoryState();
 }
 
-class _NewMenuCategoryStepScreenState extends State<_NewMenuCategoryStepScreen> {
+class _Page_1_MenuCategoryState extends State<_Page_1_MenuCategory> {
+  late MenuCategoryModel selectedMenuCategory;
+  late List<String> selectedUserMenuCategories;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedMenuCategory = widget.selectedMenuCategory;
+    selectedUserMenuCategories = widget.selectedUserMenuCategories;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,18 +240,26 @@ class _NewMenuCategoryStepScreenState extends State<_NewMenuCategoryStepScreen> 
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
-                    // widget.onNext();
+                    if (selectedMenuCategory.storeMenuCategoryId != -1) {
+                      widget.onNext();
+                    }
                   },
                   child: SGContainer(
-                      color: SGColors.primary,
+                      color: selectedMenuCategory.storeMenuCategoryId == -1 ? SGColors.gray2 : SGColors.primary,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(child: SGTypography.body("다음", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(
+                          child: SGTypography.body(
+                        "다음",
+                        size: FontSize.large,
+                        color: selectedMenuCategory.storeMenuCategoryId == -1 ? SGColors.gray5 : SGColors.white,
+                        weight: FontWeight.w700,
+                      ))),
                 )),
               ],
             )),
         body: SGContainer(
-            color: Color(0xFFFAFAFA),
+            color: const Color(0xFFFAFAFA),
             padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
             child: ListView(
               children: [
@@ -181,15 +270,20 @@ class _NewMenuCategoryStepScreenState extends State<_NewMenuCategoryStepScreen> 
                     showSGDialogWithCloseButton(
                         context: context,
                         childrenBuilder: (ctx) => [
-                              __CategorySelectionDialogBody(
-                                  dialogContext: ctx,
-                                  onConfirm: () {
+                              __SelectMenuCategoryDialog(
+                                  context: ctx,
+                                  selectedMenuCategory: widget.selectedMenuCategory,
+                                  onConfirm: (selectedMenuCategory) {
+                                    widget.onEditMenuCategoryFunction(selectedMenuCategory);
                                     showSGDialogWithCloseButton(
                                         context: context,
                                         childrenBuilder: (ctx) => [
-                                              __CategoryMultipleSelectionDialogBody(
-                                                dialogContext: ctx,
-                                                onConfirm: () {
+                                              __SelectUserMenuCategoryDialog(
+                                                context: ctx,
+                                                selectedUserMenuCategories: widget.selectedUserMenuCategories,
+                                                onConfirm: (selectedUserMenuCategories) {
+                                                  widget.onEditUserMenuCategoryFunction(selectedUserMenuCategories);
+                                                  FocusScope.of(context).unfocus();
                                                   Navigator.of(ctx).pop();
                                                   widget.onNext();
                                                 },
@@ -212,29 +306,30 @@ class _NewMenuCategoryStepScreenState extends State<_NewMenuCategoryStepScreen> 
   }
 }
 
-class __CategorySelectionDialogBody extends StatefulWidget {
-  BuildContext dialogContext;
-  VoidCallback onConfirm;
+class __SelectMenuCategoryDialog extends ConsumerStatefulWidget {
+  final BuildContext context;
+  final MenuCategoryModel selectedMenuCategory;
+  final ValueChanged<MenuCategoryModel> onConfirm;
 
-  __CategorySelectionDialogBody({super.key, required this.dialogContext, required this.onConfirm});
+  __SelectMenuCategoryDialog({required this.context, required this.selectedMenuCategory, required this.onConfirm});
 
   @override
-  State<__CategorySelectionDialogBody> createState() => __CategorySelectionDialogBodyState();
+  ConsumerState<__SelectMenuCategoryDialog> createState() => __SelectMenuCategoryDialogState();
 }
 
-class __CategorySelectionDialogBodyState extends State<__CategorySelectionDialogBody> {
-  List<String> categoryOptions = [
-    "혼밥 샐러드",
-    "2인 포케 세트",
-    "3인 포케 세트",
-    "사이드 메뉴",
-    "음료",
-  ];
+class __SelectMenuCategoryDialogState extends ConsumerState<__SelectMenuCategoryDialog> {
+  late MenuCategoryModel selectedMenuCategory;
 
-  List<String> selectedCategories = [];
+  @override
+  void initState() {
+    super.initState();
+    selectedMenuCategory = widget.selectedMenuCategory;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
+
     return Column(children: [
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -249,18 +344,18 @@ class __CategorySelectionDialogBodyState extends State<__CategorySelectionDialog
           Container(
               constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 2 / 5),
               child: ListView(shrinkWrap: true, children: [
-                ...categoryOptions.map((option) => GestureDetector(
+                ...state.storeMenuCategoryDTOList.map((menuCategory) => GestureDetector(
                     onTap: () {
                       setState(() {
-                        selectedCategories = [option];
+                        selectedMenuCategory = menuCategory;
                       });
                     },
-                    child: __CategoryOptionRadioButton(category: option, isSelected: selectedCategories.contains(option)))),
+                    child: __CategoryOptionRadioButton(category: menuCategory.menuCategoryName, isSelected: selectedMenuCategory.storeMenuCategoryId == menuCategory.storeMenuCategoryId))),
               ])),
           SizedBox(height: SGSpacing.p4),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddMenuCategoryScreen()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddMenuCategoryScreen()));
             },
             child: SGContainer(
                 color: SGColors.white,
@@ -277,16 +372,24 @@ class __CategorySelectionDialogBodyState extends State<__CategorySelectionDialog
           SizedBox(height: SGSpacing.p4),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).pop();
-              widget.onConfirm();
+              if (selectedMenuCategory.storeMenuCategoryId != -1) {
+                Navigator.of(context).pop();
+                widget.onConfirm(selectedMenuCategory);
+              }
             },
             child: SGContainer(
-                color: SGColors.primary,
-                padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                borderRadius: BorderRadius.circular(SGSpacing.p3),
-                child: Center(
-                  child: SGTypography.body("확인", size: FontSize.normal, color: SGColors.white, weight: FontWeight.w700),
-                )),
+              color: selectedMenuCategory.storeMenuCategoryId == -1 ? SGColors.gray2 : SGColors.primary, // 비활성화 시 색상 변경
+              padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Center(
+                child: SGTypography.body(
+                  "확인",
+                  size: FontSize.normal,
+                  color: selectedMenuCategory.storeMenuCategoryId == -1 ? SGColors.gray5 : SGColors.white, // 비활성화 시 텍스트 색상 변경
+                  weight: FontWeight.w700,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -294,18 +397,19 @@ class __CategorySelectionDialogBodyState extends State<__CategorySelectionDialog
   }
 }
 
-class __CategoryMultipleSelectionDialogBody extends StatefulWidget {
-  BuildContext dialogContext;
-  VoidCallback onConfirm;
+class __SelectUserMenuCategoryDialog extends StatefulWidget {
+  BuildContext context;
+  final List<String> selectedUserMenuCategories;
+  final ValueChanged<List<String>> onConfirm;
 
-  __CategoryMultipleSelectionDialogBody({super.key, required this.dialogContext, required this.onConfirm});
+  __SelectUserMenuCategoryDialog({required this.context, required this.selectedUserMenuCategories, required this.onConfirm});
 
   @override
-  State<__CategoryMultipleSelectionDialogBody> createState() => __CategoryMultipleSelectionDialogBodyState();
+  State<__SelectUserMenuCategoryDialog> createState() => __SelectUserMenuCategoryDialogState();
 }
 
-class __CategoryMultipleSelectionDialogBodyState extends State<__CategoryMultipleSelectionDialogBody> {
-  List<String> categoryOptions = [
+class __SelectUserMenuCategoryDialogState extends State<__SelectUserMenuCategoryDialog> {
+  List<String> userMenuCategories = [
     "샐러드",
     "포케",
     "샌드위치",
@@ -314,7 +418,13 @@ class __CategoryMultipleSelectionDialogBodyState extends State<__CategoryMultipl
     "버거",
   ];
 
-  List<String> selectedCategories = [];
+  late List<String> selectedUserMenuCategories;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedUserMenuCategories = widget.selectedUserMenuCategories;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -334,30 +444,38 @@ class __CategoryMultipleSelectionDialogBodyState extends State<__CategoryMultipl
           Container(
               constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 2 / 5),
               child: ListView(shrinkWrap: true, children: [
-                ...categoryOptions.map((option) => GestureDetector(
+                ...userMenuCategories.map((userMenuCategory) => GestureDetector(
                     onTap: () {
                       setState(() {
-                        if (selectedCategories.contains(option)) {
-                          selectedCategories.remove(option);
+                        if (selectedUserMenuCategories.contains(userMenuCategory)) {
+                          selectedUserMenuCategories.remove(userMenuCategory);
                         } else {
-                          selectedCategories.add(option);
+                          selectedUserMenuCategories.add(userMenuCategory);
                         }
                       });
                     },
-                    child: __CategoryOptionRadioButton(category: option, isSelected: selectedCategories.contains(option)))),
+                    child: __CategoryOptionRadioButton(category: userMenuCategory, isSelected: selectedUserMenuCategories.contains(userMenuCategory)))),
               ])),
           SizedBox(height: SGSpacing.p4),
           GestureDetector(
             onTap: () {
-              widget.onConfirm();
+              if (selectedUserMenuCategories.isNotEmpty) {
+                widget.onConfirm(selectedUserMenuCategories);
+              }
             },
             child: SGContainer(
-                color: SGColors.primary,
-                padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                borderRadius: BorderRadius.circular(SGSpacing.p3),
-                child: Center(
-                  child: SGTypography.body("확인", size: FontSize.normal, color: SGColors.white, weight: FontWeight.w700),
-                )),
+              color: selectedUserMenuCategories.isEmpty ? SGColors.gray2 : SGColors.primary, // 비활성화 시 색상 변경
+              padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Center(
+                child: SGTypography.body(
+                  "확인",
+                  size: FontSize.normal,
+                  color: selectedUserMenuCategories.isEmpty ? SGColors.gray5 : SGColors.white, // 비활성화 시 텍스트 색상 변경
+                  weight: FontWeight.w700,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -394,18 +512,28 @@ class __CategoryOptionRadioButton extends StatelessWidget {
   }
 }
 
-class _NewMenuPriceStepScreen extends StatefulWidget {
+class _Page_2_MenuPrice extends StatefulWidget {
+  final int price;
   final VoidCallback onNext;
   final VoidCallback onPrev;
+  final Function(int) onEditFunction;
 
-  _NewMenuPriceStepScreen({super.key, required this.onNext, required this.onPrev});
+  _Page_2_MenuPrice({required this.price, required this.onNext, required this.onPrev, required this.onEditFunction});
 
   @override
-  State<_NewMenuPriceStepScreen> createState() => _NewMenuPriceStepScreenState();
+  State<_Page_2_MenuPrice> createState() => _Page_2_MenuPriceState();
 }
 
-class _NewMenuPriceStepScreenState extends State<_NewMenuPriceStepScreen> {
-  String menuPrice = "";
+class _Page_2_MenuPriceState extends State<_Page_2_MenuPrice> {
+  late int price;
+  late TextEditingController priceController;
+
+  @override
+  void initState() {
+    super.initState();
+    price = widget.price;
+    priceController = TextEditingController(text: price.toKoreanCurrency);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -418,6 +546,7 @@ class _NewMenuPriceStepScreenState extends State<_NewMenuPriceStepScreen> {
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
+                    widget.onEditFunction(price);
                     widget.onPrev();
                   },
                   child: SGContainer(
@@ -430,14 +559,23 @@ class _NewMenuPriceStepScreenState extends State<_NewMenuPriceStepScreen> {
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
-                    widget.onNext();
-                    FocusScope.of(context).unfocus();
+                    if (price > 0) {
+                      widget.onEditFunction(price);
+                      widget.onNext();
+                      FocusScope.of(context).unfocus();
+                    }
                   },
                   child: SGContainer(
-                      color: SGColors.primary,
+                      color: price == 0 ? SGColors.gray2 : SGColors.primary,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(child: SGTypography.body("다음", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(
+                          child: SGTypography.body(
+                        "다음",
+                        size: FontSize.large,
+                        color: price == 0 ? SGColors.gray5 : SGColors.white,
+                        weight: FontWeight.w700,
+                      ))),
                 )),
               ],
             )),
@@ -455,21 +593,21 @@ class _NewMenuPriceStepScreenState extends State<_NewMenuPriceStepScreen> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: TextField(
-                            onChanged: (value) {
-                              setState(() {
-                                menuPrice = value;
-                              });
-                            },
-                            style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), comparableNumericInputFormatter(1000000000)],
-                            decoration: InputDecoration(
-                              isDense: true,
-                              isCollapsed: true,
-                              hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                              hintText: "0",
-                              border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                            )),
+                        child: NumericTextField(
+                          initialValue: widget.price,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            isCollapsed: true,
+                            hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                            hintText: price.toKoreanCurrency,
+                            border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                          ),
+                          onValueChanged: (price) {
+                            setState(() {
+                              this.price = price;
+                            });
+                          },
+                        ),
                       ),
                       SGTypography.body("원", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
                     ],
@@ -480,22 +618,35 @@ class _NewMenuPriceStepScreenState extends State<_NewMenuPriceStepScreen> {
   }
 }
 
-class _NewMenuNutritionStepScreen extends StatefulWidget {
+class _Page_3_MenuNutrition extends StatefulWidget {
+  final Nutrition nutrition;
+  final int supply;
   final VoidCallback onNext;
   final VoidCallback onPrev;
+  final Function(Nutrition, int) onEditFunction;
 
-  const _NewMenuNutritionStepScreen({
-    super.key,
+  const _Page_3_MenuNutrition({
+    required this.nutrition,
+    required this.supply,
     required this.onNext,
     required this.onPrev,
+    required this.onEditFunction,
   });
 
   @override
-  State<_NewMenuNutritionStepScreen> createState() => _NewMenuNutritionStepScreenState();
+  State<_Page_3_MenuNutrition> createState() => _Page_3_MenuNutritionState();
 }
 
-class _NewMenuNutritionStepScreenState extends State<_NewMenuNutritionStepScreen> {
-  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
+class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
+  late Nutrition nutrition;
+  late int supply;
+
+  @override
+  void initState() {
+    super.initState();
+    nutrition = widget.nutrition;
+    supply = widget.supply;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -508,6 +659,7 @@ class _NewMenuNutritionStepScreenState extends State<_NewMenuNutritionStepScreen
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
+                    widget.onEditFunction(nutrition, supply);
                     widget.onPrev();
                   },
                   child: SGContainer(
@@ -520,6 +672,7 @@ class _NewMenuNutritionStepScreenState extends State<_NewMenuNutritionStepScreen
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
+                    widget.onEditFunction(nutrition, supply);
                     widget.onNext();
                   },
                   child: SGContainer(
@@ -539,11 +692,20 @@ class _NewMenuNutritionStepScreenState extends State<_NewMenuNutritionStepScreen
                 SizedBox(height: SGSpacing.p3),
                 NutritionCard(
                     nutrition: nutrition,
+                    isSolid: true,
+                    supply: supply,
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => _NutritionInputScreen(
                                 nutrition: nutrition,
-                                onConfirm: (nutrition, context) {
+                                supply: supply,
+                                onConfirm: (nutrition, supply, context) {
+                                  logger.i("onConfirm supply $supply");
+                                  logger.i("onConfirm nutrition.calories ${nutrition.calories}");
+                                  setState(() {
+                                    this.nutrition = nutrition;
+                                    this.supply = supply;
+                                  });
                                   Navigator.of(context).pop();
                                 },
                               )));
@@ -555,9 +717,10 @@ class _NewMenuNutritionStepScreenState extends State<_NewMenuNutritionStepScreen
 
 class _NutritionInputScreen extends StatefulWidget {
   Nutrition nutrition;
-  Function(Nutrition, BuildContext) onConfirm;
+  int supply;
+  Function(Nutrition, int, BuildContext) onConfirm;
 
-  _NutritionInputScreen({super.key, required this.nutrition, required this.onConfirm});
+  _NutritionInputScreen({required this.nutrition, required this.supply, required this.onConfirm});
 
   @override
   State<_NutritionInputScreen> createState() => _NutritionInputScreenState();
@@ -568,22 +731,22 @@ class _NutritionInputScreenState extends State<_NutritionInputScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: "영양성분 설정"),
-      body: NutritionForm(nutrition: widget.nutrition, onChanged: widget.onConfirm),
+      body: NutritionForm(nutrition: widget.nutrition, supply: widget.supply, onChanged: widget.onConfirm),
     );
   }
 }
 
-class _NewMenuRegistrationStepScreen extends StatefulWidget {
+class _Page_4_MenuRegistration extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrev;
 
-  const _NewMenuRegistrationStepScreen({super.key, required this.onNext, required this.onPrev});
+  const _Page_4_MenuRegistration({super.key, required this.onNext, required this.onPrev});
 
   @override
-  State<_NewMenuRegistrationStepScreen> createState() => _NewMenuRegistrationStepScreenState();
+  State<_Page_4_MenuRegistration> createState() => _Page_4_MenuRegistrationState();
 }
 
-class _NewMenuRegistrationStepScreenState extends State<_NewMenuRegistrationStepScreen> {
+class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
   String intro = "연어 500g + 곡물밥 300g";
   String description = "연어와 곡물 베이스 조화의 오븐에 바싹 구운 연어를 올린 단백질 듬뿍 샐러드";
 

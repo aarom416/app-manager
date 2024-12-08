@@ -34,17 +34,19 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   }
 
   void setState(MenuOptionsDataModel menuOptionsDataModel) {
+    final storeMenuCategoryDTOList = List<MenuCategoryModel>.from(menuOptionsDataModel.storeMenuCategoryDTOList)..sort((a, b) => a.menuCategoryName.compareTo(b.menuCategoryName));
+    final storeMenuDTOList = List<MenuModel>.from(menuOptionsDataModel.storeMenuDTOList)..sort((a, b) => a.menuName.compareTo(b.menuName));
     state = state.copyWith(
         dataRetrieveStatus: DataRetrieveStatus.success,
         menuOptionsDataModel: menuOptionsDataModel,
         menuCategoryList: createMenuCategoryModels(
-            storeMenuCategoryDTOList: menuOptionsDataModel.storeMenuCategoryDTOList,
-            storeMenuDTOList: menuOptionsDataModel.storeMenuDTOList,
+            storeMenuCategoryDTOList: storeMenuCategoryDTOList,
+            storeMenuDTOList: storeMenuDTOList,
             menuOptionCategoryDTOList: menuOptionsDataModel.menuOptionCategoryDTOList,
             storeMenuOptionDTOList: menuOptionsDataModel.storeMenuOptionDTOList,
             menuOptionRelationshipDTOList: menuOptionsDataModel.menuOptionRelationshipDTOList),
-        storeMenuCategoryDTOList: menuOptionsDataModel.storeMenuCategoryDTOList,
-        storeMenuDTOList: menuOptionsDataModel.storeMenuDTOList,
+        storeMenuCategoryDTOList: storeMenuCategoryDTOList,
+        storeMenuDTOList: storeMenuDTOList,
         menuOptionCategoryDTOList: menuOptionsDataModel.menuOptionCategoryDTOList,
         storeMenuOptionDTOList: menuOptionsDataModel.storeMenuOptionDTOList,
         menuOptionRelationshipDTOList: menuOptionsDataModel.menuOptionRelationshipDTOList);
@@ -88,9 +90,10 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   void createMenuCategory(MenuCategoryModel newMenuCategoryModel) async {
     final response = await ref.read(menuOptionsServiceProvider).createMenuCategory(storeId: UserHive.getBox(key: UserKey.storeId), newMenuCategoryModel: newMenuCategoryModel);
     if (response.statusCode == 200) {
-      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(storeMenuCategoryDTOList: [...state.menuOptionsDataModel.storeMenuCategoryDTOList, newMenuCategoryModel]);
-      setState(updatedMenuOptionsDataModel);
-      state = state.copyWith(error: const ResultFailResponseModel());
+      // MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(storeMenuCategoryDTOList: [...state.menuOptionsDataModel.storeMenuCategoryDTOList, newMenuCategoryModel]);
+      // setState(updatedMenuOptionsDataModel);
+      // state = state.copyWith(error: const ResultFailResponseModel());
+      getMenuOptionInfo();
     } else {
       state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
     }

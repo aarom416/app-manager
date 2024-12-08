@@ -6,7 +6,6 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/extensions/integer.dart';
 
 import '../../../../../core/components/multiple_information_box.dart';
 import '../../../../common/components/numeric_textfield.dart';
@@ -27,32 +26,6 @@ class DeliveryTipCard extends StatefulWidget {
 }
 
 class _DeliveryTipCardState extends State<DeliveryTipCard> {
-  late List<TextEditingController> minPriceControllers;
-  late List<TextEditingController> maxPriceControllers;
-  late List<TextEditingController> deliveryTipControllers;
-
-  @override
-  void initState() {
-    super.initState();
-    minPriceControllers = widget.storeDeliveryTipDTOList.map((deliveryTip) => TextEditingController(text: deliveryTip.minPrice.toKoreanCurrency)).toList();
-    maxPriceControllers = widget.storeDeliveryTipDTOList.map((deliveryTip) => TextEditingController(text: deliveryTip.maxPrice.toKoreanCurrency)).toList();
-    deliveryTipControllers = widget.storeDeliveryTipDTOList.map((deliveryTip) => TextEditingController(text: deliveryTip.deliveryTip.toKoreanCurrency)).toList();
-  }
-
-  @override
-  void dispose() {
-    for (var controller in minPriceControllers) {
-      controller.dispose();
-    }
-    for (var controller in maxPriceControllers) {
-      controller.dispose();
-    }
-    for (var controller in deliveryTipControllers) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MultipleInformationBox(children: [
@@ -66,7 +39,13 @@ class _DeliveryTipCardState extends State<DeliveryTipCard> {
                   children: [
                     Expanded(
                       child: NumericTextField(
-                        controller: minPriceControllers[index],
+                        initialValue: deliveryTipModel.minPrice,
+                        decoration: InputDecoration(
+                          hintText: "",
+                          hintStyle: TextStyle(color: SGColors.gray4),
+                          contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
+                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                        ),
                         onValueChanged: (minPrice) {
                           final updatedStoreDeliveryTipDTOList = List<DeliveryTipModel>.from(widget.storeDeliveryTipDTOList);
                           updatedStoreDeliveryTipDTOList[index] = deliveryTipModel.copyWith(minPrice: minPrice);
@@ -85,7 +64,7 @@ class _DeliveryTipCardState extends State<DeliveryTipCard> {
                   children: [
                     Expanded(
                       child: NumericTextField(
-                        controller: maxPriceControllers[index],
+                        initialValue: deliveryTipModel.maxPrice,
                         onValueChanged: (maxPrice) {
                           final updatedStoreDeliveryTipDTOList = List<DeliveryTipModel>.from(widget.storeDeliveryTipDTOList);
                           updatedStoreDeliveryTipDTOList[index] = deliveryTipModel.copyWith(maxPrice: maxPrice);
@@ -105,9 +84,6 @@ class _DeliveryTipCardState extends State<DeliveryTipCard> {
                   color: SGColors.warningRed,
                   child: GestureDetector(
                       onTap: () {
-                        minPriceControllers.removeAt(index).dispose();
-                        maxPriceControllers.removeAt(index).dispose();
-                        deliveryTipControllers.removeAt(index).dispose();
                         final updatedStoreDeliveryTipDTOList = List<DeliveryTipModel>.from(widget.storeDeliveryTipDTOList);
                         updatedStoreDeliveryTipDTOList.removeAt(index);
                         widget.onEditFunction(updatedStoreDeliveryTipDTOList);
@@ -126,7 +102,7 @@ class _DeliveryTipCardState extends State<DeliveryTipCard> {
                   children: [
                     Expanded(
                       child: NumericTextField(
-                        controller: deliveryTipControllers[index],
+                        initialValue: deliveryTipModel.deliveryTip,
                         onValueChanged: (deliveryTip) {
                           final updatedStoreDeliveryTipDTOList = List<DeliveryTipModel>.from(widget.storeDeliveryTipDTOList);
                           updatedStoreDeliveryTipDTOList[index] = deliveryTipModel.copyWith(deliveryTip: deliveryTip);
@@ -149,9 +125,6 @@ class _DeliveryTipCardState extends State<DeliveryTipCard> {
                 onTap: () {
                   setState(() {
                     const newDeliveryTip = DeliveryTipModel();
-                    minPriceControllers.add(TextEditingController(text: newDeliveryTip.minPrice == 0 ? "" : newDeliveryTip.minPrice.toKoreanCurrency));
-                    maxPriceControllers.add(TextEditingController(text: newDeliveryTip.maxPrice == 0 ? "" : newDeliveryTip.maxPrice.toKoreanCurrency));
-                    deliveryTipControllers.add(TextEditingController(text: newDeliveryTip.deliveryTip == 0 ? "" : newDeliveryTip.deliveryTip.toKoreanCurrency));
                     final updatedStoreDeliveryTipDTOList = List<DeliveryTipModel>.from(widget.storeDeliveryTipDTOList);
                     updatedStoreDeliveryTipDTOList.add(newDeliveryTip);
                     widget.onEditFunction(updatedStoreDeliveryTipDTOList);

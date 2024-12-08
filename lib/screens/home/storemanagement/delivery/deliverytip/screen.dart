@@ -34,8 +34,6 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
   late int baseDeliveryTip;
   late int minimumOrderPrice;
   late List<DeliveryTipModel> storeDeliveryTipDTOList;
-  late TextEditingController minimumOrderPriceController;
-  late TextEditingController baseDeliveryTipController;
 
   @override
   void initState() {
@@ -43,15 +41,6 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
     baseDeliveryTip = widget.baseDeliveryTip;
     minimumOrderPrice = widget.minimumOrderPrice;
     storeDeliveryTipDTOList = widget.storeDeliveryTipDTOList;
-    minimumOrderPriceController = TextEditingController(text: minimumOrderPrice.toKoreanCurrency);
-    baseDeliveryTipController = TextEditingController(text: baseDeliveryTip.toKoreanCurrency);
-  }
-
-  @override
-  void dispose() {
-    minimumOrderPriceController.dispose();
-    baseDeliveryTipController.dispose();
-    super.dispose();
   }
 
   void showFailDialogWithImage({
@@ -143,7 +132,13 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
                     children: [
                       Expanded(
                         child: NumericTextField(
-                          controller: minimumOrderPriceController,
+                          initialValue: widget.minimumOrderPrice,
+                          decoration: InputDecoration(
+                            hintText: "",
+                            hintStyle: TextStyle(color: SGColors.gray4),
+                            contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
+                            border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                          ),
                           onValueChanged: (minimumOrderPrice) {
                             setState(() {
                               this.minimumOrderPrice = minimumOrderPrice;
@@ -163,7 +158,13 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
                     children: [
                       Expanded(
                         child: NumericTextField(
-                          controller: baseDeliveryTipController,
+                          initialValue: widget.baseDeliveryTip,
+                          decoration: InputDecoration(
+                            hintText: "",
+                            hintStyle: TextStyle(color: SGColors.gray4),
+                            contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
+                            border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                          ),
                           onValueChanged: (baseDeliveryTip) {
                             setState(() {
                               this.baseDeliveryTip = baseDeliveryTip;

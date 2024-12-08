@@ -17,6 +17,7 @@ import 'nutrition_form.dart';
 
 class NewCuisineOptionScreen extends StatefulWidget {
   final Function(MenuOptionModel) onSubmitCuisineOption;
+
   const NewCuisineOptionScreen({super.key, required this.onSubmitCuisineOption});
 
   @override
@@ -61,6 +62,7 @@ class _NewCuisineOptionNameStepScreen extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrev;
   final Function(MenuOptionModel) onSubmit;
+
   _NewCuisineOptionNameStepScreen({super.key, required this.onNext, required this.onPrev, required this.onSubmit});
 
   @override
@@ -90,9 +92,7 @@ class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameSt
                       color: SGColors.gray3,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("이전",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
@@ -106,9 +106,7 @@ class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameSt
                       color: isFormValid ? SGColors.primary : SGColors.gray3,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("다음",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("다음", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
               ],
             )),
@@ -133,8 +131,7 @@ class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameSt
                       decoration: InputDecoration(
                         isDense: true,
                         isCollapsed: true,
-                        hintStyle:
-                            TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                        hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
                         hintText: "Ex) 2인 샐러드 포케 세트",
                         border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
                       )),
@@ -156,18 +153,13 @@ class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameSt
                               });
                             },
                             style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                              comparableNumericInputFormatter(1000000000)
-                            ],
+                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), comparableNumericInputFormatter(1000000000)],
                             decoration: InputDecoration(
                               isDense: true,
                               isCollapsed: true,
-                              hintStyle: TextStyle(
-                                  color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                              hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
                               hintText: "0",
-                              border: const OutlineInputBorder(
-                                  borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                              border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
                             )),
                       ),
                       SGTypography.body("원", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
@@ -194,8 +186,7 @@ class _NewCuisineOptionNutritionStepScreen extends StatefulWidget {
 }
 
 class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionNutritionStepScreen> {
-  Nutrition nutrition =
-      Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
+  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
 
   @override
   Widget build(BuildContext context) {
@@ -214,9 +205,7 @@ class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionN
                       color: SGColors.gray3,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("이전",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
@@ -228,9 +217,7 @@ class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionN
                       color: SGColors.primary,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("다음",
-                              size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("다음", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                 )),
               ],
             )),
@@ -248,16 +235,11 @@ class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionN
                     Navigator.of(nutritionScreenContext).push(MaterialPageRoute(
                         builder: (context) => _NutritionInputScreen(
                               nutrition: nutrition,
-                              onConfirm: (value, ctx) {
+                              onConfirm: (value, quantity, ctx) {
                                 showSGDialog(
                                     context: ctx,
                                     childrenBuilder: (_ctx) => [
-                                          Center(
-                                              child: SGTypography.body("영양성분을\n정말 설정하시겠습니까?",
-                                                  size: FontSize.large,
-                                                  weight: FontWeight.w700,
-                                                  lineHeight: 1.25,
-                                                  align: TextAlign.center)),
+                                          Center(child: SGTypography.body("영양성분을\n정말 설정하시겠습니까?", size: FontSize.large, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
                                           SizedBox(height: SGSpacing.p5),
                                           Row(children: [
                                             Expanded(
@@ -270,10 +252,7 @@ class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionN
                                                   padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
                                                   borderRadius: BorderRadius.circular(SGSpacing.p3),
                                                   child: Center(
-                                                    child: SGTypography.body("취소",
-                                                        size: FontSize.normal,
-                                                        weight: FontWeight.w700,
-                                                        color: SGColors.white),
+                                                    child: SGTypography.body("취소", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
                                                   ),
                                                 ),
                                               ),
@@ -290,10 +269,7 @@ class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionN
                                                   padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
                                                   borderRadius: BorderRadius.circular(SGSpacing.p3),
                                                   child: Center(
-                                                    child: SGTypography.body("확인",
-                                                        size: FontSize.normal,
-                                                        weight: FontWeight.w700,
-                                                        color: SGColors.white),
+                                                    child: SGTypography.body("확인", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
                                                   ),
                                                 ),
                                               ),
@@ -311,7 +287,7 @@ class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionN
 
 class _NutritionInputScreen extends StatefulWidget {
   Nutrition nutrition;
-  Function(Nutrition, BuildContext) onConfirm;
+  Function(Nutrition, int, BuildContext) onConfirm;
 
   _NutritionInputScreen({super.key, required this.nutrition, required this.onConfirm});
 

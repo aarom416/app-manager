@@ -62,7 +62,7 @@ class _MenuTabState extends ConsumerState<MenuTab> {
           }).toList();
 
           // 필터링된 메뉴로 새로운 category 생성
-          if (isCategoryNameMatch && filteredMenus.isNotEmpty) {
+          if (isCategoryNameMatch) {
             return category.copyWith(menuList: filteredMenus);
           }
           return null;
@@ -206,7 +206,7 @@ class _MenuTabState extends ConsumerState<MenuTab> {
         Expanded(
             child: GestureDetector(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewMenuScreen()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddMenuScreen()));
           },
           child: SGContainer(
               color: SGColors.primary,

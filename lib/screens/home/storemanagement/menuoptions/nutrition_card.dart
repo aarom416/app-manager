@@ -9,14 +9,18 @@ import 'package:singleeat/core/extensions/integer.dart';
 import 'model.dart';
 
 class NutritionCard extends StatelessWidget {
+  final Nutrition nutrition;
+  final bool isSolid;
+  final int supply;
+  final VoidCallback? onTap;
+
   const NutritionCard({
     super.key,
     required this.nutrition,
+    this.isSolid = false,
+    this.supply = 0,
     this.onTap,
   });
-
-  final Nutrition nutrition;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -42,73 +46,42 @@ class NutritionCard extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
               child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 SGTypography.body("총 칼로리", size: FontSize.normal, color: SGColors.gray5, weight: FontWeight.w500),
-                SGTypography.body("${(nutrition.calories ?? 0).toKoreanCurrency}Kcal",
-                    size: FontSize.large, weight: FontWeight.w700, color: SGColors.primary),
+                SGTypography.body("${(nutrition.calories ?? 0).toKoreanCurrency}Kcal", size: FontSize.large, weight: FontWeight.w700, color: SGColors.primary),
               ])),
           SizedBox(height: SGSpacing.p1),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SGTypography.body("총 제공량 (g,ml)",
-                    size: FontSize.normal, color: SGColors.gray4, weight: FontWeight.w500),
-                SGTypography.body("350g", size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray5)
-              ]),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, crossAxisAlignment: CrossAxisAlignment.center, children: [
+            SGTypography.body("총 제공량 (g,ml)", size: FontSize.normal, color: SGColors.gray4, weight: FontWeight.w500),
+            SGTypography.body("$supply${isSolid ? "g" : "ml"}", size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray5)
+          ]),
           SizedBox(height: SGSpacing.p5),
           Divider(thickness: 1, color: SGColors.line1, height: 1),
           SizedBox(height: SGSpacing.p5),
           Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SGTypography.body("탄수화물", size: FontSize.normal, color: SGColors.gray4, weight: FontWeight.w500),
-                SGTypography.body("${nutrition.carbohydrate}g",
-                    size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray5)
-              ]),
+              children: [SGTypography.body("탄수화물", size: FontSize.normal, color: SGColors.gray4, weight: FontWeight.w500), SGTypography.body("${nutrition.carbohydrate}g", size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray5)]),
           SizedBox(height: SGSpacing.p6),
           Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SGTypography.body("단백질", size: FontSize.normal, color: SGColors.gray4, weight: FontWeight.w500),
-                SGTypography.body("${nutrition.protein}g",
-                    size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray5)
-              ]),
+              children: [SGTypography.body("단백질", size: FontSize.normal, color: SGColors.gray4, weight: FontWeight.w500), SGTypography.body("${nutrition.protein}g", size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray5)]),
           SizedBox(height: SGSpacing.p6),
           Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SGTypography.body("지방", size: FontSize.normal, color: SGColors.gray4, weight: FontWeight.w500),
-                SGTypography.body("${nutrition.fat}g",
-                    size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray5)
-              ]),
+              children: [SGTypography.body("지방", size: FontSize.normal, color: SGColors.gray4, weight: FontWeight.w500), SGTypography.body("${nutrition.fat}g", size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray5)]),
           SizedBox(height: SGSpacing.p2),
           SGContainer(
               color: SGColors.gray1,
               padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
               borderRadius: BorderRadius.circular(SGSpacing.p3),
               child: Row(children: [
-                Expanded(
-                    child: Column(children: [
-                  SGTypography.body("당", size: FontSize.small, color: SGColors.gray5),
-                  SizedBox(height: SGSpacing.p1),
-                  SGTypography.body("${nutrition.glucose}g", size: FontSize.normal, color: SGColors.gray5)
-                ])),
+                Expanded(child: Column(children: [SGTypography.body("당", size: FontSize.small, color: SGColors.gray5), SizedBox(height: SGSpacing.p1), SGTypography.body("${nutrition.glucose}g", size: FontSize.normal, color: SGColors.gray5)])),
                 SGContainer(width: 1, height: SGSpacing.p8, color: SGColors.line1),
                 Expanded(
-                    child: Column(children: [
-                  SGTypography.body("포화지방", size: FontSize.small, color: SGColors.gray5),
-                  SizedBox(height: SGSpacing.p1),
-                  SGTypography.body("${nutrition.saturatedFat}g", size: FontSize.normal, color: SGColors.gray5)
-                ])),
+                    child: Column(children: [SGTypography.body("포화지방", size: FontSize.small, color: SGColors.gray5), SizedBox(height: SGSpacing.p1), SGTypography.body("${nutrition.saturatedFat}g", size: FontSize.normal, color: SGColors.gray5)])),
                 SGContainer(width: 1, height: SGSpacing.p8, color: SGColors.line1),
-                Expanded(
-                    child: Column(children: [
-                  SGTypography.body("나트륨", size: FontSize.small, color: SGColors.gray5),
-                  SizedBox(height: SGSpacing.p1),
-                  SGTypography.body("${nutrition.sodium} mg", size: FontSize.normal, color: SGColors.gray5)
-                ])),
+                Expanded(child: Column(children: [SGTypography.body("나트륨", size: FontSize.small, color: SGColors.gray5), SizedBox(height: SGSpacing.p1), SGTypography.body("${nutrition.sodium} mg", size: FontSize.normal, color: SGColors.gray5)])),
               ]))
         ]));
   }

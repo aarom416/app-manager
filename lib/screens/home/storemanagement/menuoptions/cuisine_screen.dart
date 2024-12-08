@@ -51,8 +51,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
   bool featured = false;
   bool recommended = false;
 
-  Nutrition nutrition =
-      Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
+  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
 
   void showFailDialogWithImage({
     required String mainTitle,
@@ -61,66 +60,42 @@ class _CuisineScreenState extends State<CuisineScreen> {
     showSGDialogWithImage(
         context: context,
         childrenBuilder: (ctx) => [
-          if (subTitle.isEmpty) ...[
-            Center(
-                child: SGTypography.body(mainTitle,
-                    size: FontSize.medium,
-                    weight: FontWeight.w700,
-                    lineHeight: 1.25,
-                    align: TextAlign.center)),
-            SizedBox(height: SGSpacing.p6),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: SGContainer(
-                color: SGColors.primary,
-                width: double.infinity,
-                borderColor: SGColors.primary,
-                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                borderRadius: BorderRadius.circular(SGSpacing.p3),
-                child: Center(
-                    child: SGTypography.body("확인",
-                        color: SGColors.white,
-                        weight: FontWeight.w700,
-                        size: FontSize.normal)),
-              ),
-            )
-          ] else ...[
-            Center(
-                child: SGTypography.body(mainTitle,
-                    size: FontSize.medium,
-                    weight: FontWeight.w700,
-                    lineHeight: 1.25,
-                    align: TextAlign.center)),
-            SizedBox(height: SGSpacing.p4),
-            Center(
-                child: SGTypography.body(subTitle,
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w700,
-                    lineHeight: 1.25,
-                    align: TextAlign.center)),
-            SizedBox(height: SGSpacing.p6),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(ctx);
-              },
-              child: SGContainer(
-                color: SGColors.primary,
-                width: double.infinity,
-                borderColor: SGColors.primary,
-                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                borderRadius: BorderRadius.circular(SGSpacing.p3),
-                child: Center(
-                    child: SGTypography.body("확인",
-                        color: SGColors.white,
-                        weight: FontWeight.w700,
-                        size: FontSize.normal)),
-              ),
-            )
-          ]
-        ]);
+              if (subTitle.isEmpty) ...[
+                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
+                SizedBox(height: SGSpacing.p6),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: SGContainer(
+                    color: SGColors.primary,
+                    width: double.infinity,
+                    borderColor: SGColors.primary,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
+                  ),
+                )
+              ] else ...[
+                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
+                SizedBox(height: SGSpacing.p4),
+                Center(child: SGTypography.body(subTitle, color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
+                SizedBox(height: SGSpacing.p6),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(ctx);
+                  },
+                  child: SGContainer(
+                    color: SGColors.primary,
+                    width: double.infinity,
+                    borderColor: SGColors.primary,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
+                  ),
+                )
+              ]
+            ]);
   }
 
   @override
@@ -141,8 +116,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(SGSpacing.p4),
-                          child: Image.network("https://via.placeholder.com/150",
-                              width: SGSpacing.p20, height: SGSpacing.p20, fit: BoxFit.cover),
+                          child: Image.network("https://via.placeholder.com/150", width: SGSpacing.p20, height: SGSpacing.p20, fit: BoxFit.cover),
                         ),
                         SGContainer(
                           padding: EdgeInsets.all(SGSpacing.p1),
@@ -160,8 +134,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                       children: [
                         SGTypography.body(menuName, size: FontSize.medium, weight: FontWeight.w700),
                         SizedBox(height: SGSpacing.p2),
-                        SGTypography.body(menuPrice,
-                            size: FontSize.small, color: SGColors.gray4, weight: FontWeight.w400),
+                        SGTypography.body(menuPrice, size: FontSize.small, color: SGColors.gray4, weight: FontWeight.w400),
                       ],
                     )
                   ]),
@@ -187,9 +160,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                         borderColor: SGColors.line3,
                         borderRadius: BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
                         padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
-                        child: Center(
-                            child: SGTypography.body("메뉴명 변경",
-                                size: FontSize.small, weight: FontWeight.w400, color: SGColors.gray4)),
+                        child: Center(child: SGTypography.body("메뉴명 변경", size: FontSize.small, weight: FontWeight.w400, color: SGColors.gray4)),
                       ),
                     )),
                     SizedBox(width: SGSpacing.p1),
@@ -213,9 +184,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                         borderColor: SGColors.line3,
                         borderRadius: BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
                         padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
-                        child: Center(
-                            child: SGTypography.body("가격 변경",
-                                size: FontSize.small, weight: FontWeight.w400, color: SGColors.gray4)),
+                        child: Center(child: SGTypography.body("가격 변경", size: FontSize.small, weight: FontWeight.w400, color: SGColors.gray4)),
                       ),
                     )),
                   ]),
@@ -242,8 +211,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
                     child: Row(children: [
-                      SGTypography.body("인기 메뉴 등록",
-                          size: FontSize.normal, weight: FontWeight.w500, color: SGColors.black),
+                      SGTypography.body("인기 메뉴 등록", size: FontSize.normal, weight: FontWeight.w500, color: SGColors.black),
                       Spacer(),
                       SGSwitch(
                           value: featured,
@@ -260,8 +228,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
                     child: Row(children: [
-                      SGTypography.body("베스트 메뉴",
-                          size: FontSize.normal, weight: FontWeight.w500, color: SGColors.black),
+                      SGTypography.body("베스트 메뉴", size: FontSize.normal, weight: FontWeight.w500, color: SGColors.black),
                       Spacer(),
                       SGSwitch(
                           value: recommended,
@@ -343,7 +310,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                 ])),
             SGContainer(height: SGSpacing.p2, color: SGColors.gray1),
             SGContainer(
-                color: Color(0xFFFAFAFA),
+                color: const Color(0xFFFAFAFA),
                 padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: SGSpacing.p5),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   SGTypography.body("총 영양성분", size: FontSize.large, weight: FontWeight.w700),
@@ -355,16 +322,11 @@ class _CuisineScreenState extends State<CuisineScreen> {
                       Navigator.of(screenContext).push(MaterialPageRoute(
                           builder: (nutritionScreenContext) => _NutritionEditScreen(
                                 nutrition: nutrition,
-                                onConfirm: (value, ctx) {
+                                onConfirm: (value, quantity, ctx) {
                                   showSGDialog(
                                       context: ctx,
                                       childrenBuilder: (_ctx) => [
-                                            Center(
-                                                child: SGTypography.body("영양성분을\n정말 수정하시겠습니까?",
-                                                    size: FontSize.large,
-                                                    weight: FontWeight.w700,
-                                                    lineHeight: 1.25,
-                                                    align: TextAlign.center)),
+                                            Center(child: SGTypography.body("영양성분을\n정말 수정하시겠습니까?", size: FontSize.large, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
                                             SizedBox(height: SGSpacing.p5),
                                             Row(children: [
                                               Expanded(
@@ -377,10 +339,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                                                     padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
                                                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                                                     child: Center(
-                                                      child: SGTypography.body("취소",
-                                                          size: FontSize.normal,
-                                                          weight: FontWeight.w700,
-                                                          color: SGColors.white),
+                                                      child: SGTypography.body("취소", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
                                                     ),
                                                   ),
                                                 ),
@@ -397,10 +356,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                                                     padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
                                                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                                                     child: Center(
-                                                      child: SGTypography.body("확인",
-                                                          size: FontSize.normal,
-                                                          weight: FontWeight.w700,
-                                                          color: SGColors.white),
+                                                      child: SGTypography.body("확인", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
                                                     ),
                                                   ),
                                                 ),
@@ -423,12 +379,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                           context: context,
                           childrenBuilder: (ctx) => [
                                 // 로그아웃 하시겠습니까.
-                                Center(
-                                    child: SGTypography.body("메뉴를\n정말 삭제하시겠습니까?",
-                                        size: FontSize.large,
-                                        weight: FontWeight.w700,
-                                        lineHeight: 1.25,
-                                        align: TextAlign.center)),
+                                Center(child: SGTypography.body("메뉴를\n정말 삭제하시겠습니까?", size: FontSize.large, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
                                 SizedBox(height: SGSpacing.p5),
                                 Row(children: [
                                   Expanded(
@@ -441,8 +392,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                                         padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
                                         borderRadius: BorderRadius.circular(SGSpacing.p3),
                                         child: Center(
-                                          child: SGTypography.body("확인",
-                                              size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                          child: SGTypography.body("확인", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
                                         ),
                                       ),
                                     ),
@@ -458,8 +408,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
                                         padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
                                         borderRadius: BorderRadius.circular(SGSpacing.p3),
                                         child: Center(
-                                          child: SGTypography.body("취소",
-                                              size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                          child: SGTypography.body("취소", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
                                         ),
                                       ),
                                     ),
@@ -479,7 +428,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
 
 class _NutritionEditScreen extends StatefulWidget {
   Nutrition nutrition;
-  Function(Nutrition, BuildContext) onConfirm;
+  Function(Nutrition, int, BuildContext) onConfirm;
 
   _NutritionEditScreen({super.key, required this.nutrition, required this.onConfirm});
 
