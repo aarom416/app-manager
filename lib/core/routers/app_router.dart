@@ -15,7 +15,9 @@ import 'package:singleeat/screens/find_account_webview_screen.dart';
 import 'package:singleeat/screens/find_by_password_screen.dart';
 import 'package:singleeat/screens/find_by_password_webview_screen.dart';
 import 'package:singleeat/screens/home/storeVat/operation/screen.dart';
+import 'package:singleeat/screens/home/storeinformation/operation/phonechange/change_phone_webview_screen.dart';
 import 'package:singleeat/screens/home/storeinformation/operation/screen.dart';
+import 'package:singleeat/screens/home/storemanagement/menuoptions/store_management_screen.dart';
 import 'package:singleeat/screens/home/storeorderhistory/operation/screen.dart';
 import 'package:singleeat/screens/home/storesettlement/operation/screen.dart';
 import 'package:singleeat/screens/home/storestatistics/operation/screen.dart';
@@ -27,7 +29,6 @@ import 'package:singleeat/screens/register_delivery_agency_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/signup_screen.dart';
 import 'package:singleeat/screens/signup_webview_screen.dart';
-import 'package:singleeat/screens/home/storemanagement/menuoptions/store_management_screen.dart';
 import 'package:singleeat/screens/store_registration_form_screen.dart';
 import 'package:singleeat/screens/success_change_password_screen.dart';
 
@@ -119,6 +120,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.findByAccountWebView,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: FindAccountWebViewScreen())),
+      GoRoute(
+          path: AppRoutes.changePhoneWebView,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: ChangePhoneWebviewScreen())),
       GoRoute(
           path: AppRoutes.profileEdit,
           pageBuilder: (context, state) =>
