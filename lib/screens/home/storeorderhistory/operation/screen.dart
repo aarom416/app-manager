@@ -10,7 +10,9 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/extensions/datetime.dart';
 import 'package:singleeat/core/extensions/integer.dart';
+import 'package:singleeat/core/utils/time_utils.dart';
 import 'package:singleeat/screens/home/storeorderhistory/operation/model.dart';
 import 'package:singleeat/screens/home/storeorderhistory/operation/provider.dart';
 
@@ -26,6 +28,17 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   List<String> dateRangeType = ["월별", "기간 선택"];
   String filterValue = '처리 중';
   DateRange dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(storeOrderHistoryNotifierProvider.notifier).onChangeStartDate(
+          startDate: getFirstDayOfMonthWithDateTime(dateRange.start));
+      ref.read(storeOrderHistoryNotifierProvider.notifier).onChangeEndDate(
+          endDate: getLastDayOfMonthWithDateTime(dateRange.end));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,11 +99,17 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                             onStartDateChanged: (date) {
                               setState(() {
                                 dateRange = dateRange.copyWith(start: date);
+                                provider.onChangeStartDate(
+                                    startDate: dateRange.start
+                                        .toShortDateStringWithZeroPadding);
                               });
                             },
                             onEndDateChanged: (date) {
                               setState(() {
                                 dateRange = dateRange.copyWith(end: date);
+                                provider.onChangeEndDate(
+                                    endDate: dateRange
+                                        .end.toShortDateStringWithZeroPadding);
                               });
                             },
                           )
@@ -104,6 +123,12 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                     .subtract(Duration(days: 1));
                                 dateRange = dateRange.copyWith(
                                     start: startDate, end: endDate);
+                                provider.onChangeStartDate(
+                                    startDate: getFirstDayOfMonthWithDateTime(
+                                        dateRange.start));
+                                provider.onChangeEndDate(
+                                    endDate: getLastDayOfMonthWithDateTime(
+                                        dateRange.start));
                               }),
                         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
                         SGTypography.body(

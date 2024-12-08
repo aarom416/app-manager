@@ -25,7 +25,9 @@ class StoreOrderHistoryNotifier extends _$StoreOrderHistoryNotifier {
         .getOrderHistoryByFilter(
             storeId: storeId,
             page: state.pageNumber.toString(),
-            filter: state.filter);
+            filter: state.filter,
+            startDate: state.startDate,
+            endDate: state.endDate);
 
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);
@@ -40,14 +42,17 @@ class StoreOrderHistoryNotifier extends _$StoreOrderHistoryNotifier {
     }
   }
 
-  /*Future<void> onChangePageNumber({required int pageNumber}) async {
-    state = state.copyWith(pageNumber: pageNumber);
-    getOrderHistory();
-  }*/
-
   Future<void> onChangeFilter({required String filter}) async {
     state = state.copyWith(filter: filter);
     getOrderHistoryByFilter();
+  }
+
+  void onChangeStartDate({required String startDate}) async {
+    state = state.copyWith(startDate: startDate);
+  }
+
+  void onChangeEndDate({required String endDate}) async {
+    state = state.copyWith(endDate: endDate);
   }
 }
 
@@ -64,6 +69,8 @@ abstract class StoreOrderHistoryState with _$StoreOrderHistoryState {
     @Default(StoreOrderHistoryModel()) StoreOrderHistoryModel storeOrderHistory,
     @Default(0) int pageNumber,
     @Default('0') String filter,
+    @Default('') String startDate,
+    @Default('') String endDate,
     @Default(0) int totalOrderCount,
     @Default(0) int totalOrderAmount,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,

@@ -12,7 +12,9 @@ class StoreOrderHistoryService {
   Future<Response<dynamic>> getOrderHistoryByFilter(
       {required String storeId,
       required String page,
-      required String filter}) async {
+      required String filter,
+      required String startDate,
+      required String endDate}) async {
     try {
       Map<String, String> replacements = {
         "{storeId}": storeId,
@@ -28,10 +30,7 @@ class StoreOrderHistoryService {
 
       final response = ref.read(requestApiProvider).get(
           path: apiPath,
-          queryParameters: {
-            'startDate': '2024-12-01',
-            'endDate': '2024-12-31'
-          });
+          queryParameters: {'startDate': startDate, 'endDate': endDate});
 
       return response;
     } on DioException catch (e) {
