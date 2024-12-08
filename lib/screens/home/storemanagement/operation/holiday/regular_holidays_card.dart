@@ -33,21 +33,21 @@ final List<SelectionOption<String>> daysOfWeekOptions = [
   SelectionOption(value: "일", label: "일요일"),
 ];
 
-class RegularHolidayBox extends StatefulWidget {
+class RegularHolidayCard extends StatefulWidget {
   final List<OperationTimeDetailModel> regularHolidays;
   final Function(List<OperationTimeDetailModel>) onEditFunction;
 
-  const RegularHolidayBox({
+  const RegularHolidayCard({
     super.key,
     required this.regularHolidays,
     required this.onEditFunction,
   });
 
   @override
-  State<RegularHolidayBox> createState() => _RegularHolidayBoxState();
+  State<RegularHolidayCard> createState() => _RegularHolidayCardState();
 }
 
-class _RegularHolidayBoxState extends State<RegularHolidayBox> {
+class _RegularHolidayCardState extends State<RegularHolidayCard> {
   @override
   Widget build(BuildContext context) {
     return Column(

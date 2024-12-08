@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/app_bar_with_step_indicator.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -10,14 +9,14 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/utils/formatter.dart';
-import 'package:singleeat/office/components/nutrition_card.dart';
-import 'package:singleeat/office/models/cuisine_model.dart';
-import 'package:singleeat/screens/nutrition_form.dart';
+
+import 'model.dart';
+import 'nutrition_card.dart';
+import 'nutrition_form.dart';
 
 class NewCuisineOptionScreen extends StatefulWidget {
-  final Function(CuisineOption) onSubmitCuisineOption;
+  final Function(MenuOptionModel) onSubmitCuisineOption;
   const NewCuisineOptionScreen({super.key, required this.onSubmitCuisineOption});
 
   @override
@@ -27,7 +26,7 @@ class NewCuisineOptionScreen extends StatefulWidget {
 class _NewCuisineOptionScreenState extends State<NewCuisineOptionScreen> {
   PageController pageController = PageController();
 
-  CuisineOption option = CuisineOption(name: "", price: 0);
+  MenuOptionModel option = MenuOptionModel(optionContent: "", price: 0);
 
   void animateToPage(int index) => pageController.animateToPage(
         index,
@@ -61,7 +60,7 @@ class _NewCuisineOptionScreenState extends State<NewCuisineOptionScreen> {
 class _NewCuisineOptionNameStepScreen extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrev;
-  final Function(CuisineOption) onSubmit;
+  final Function(MenuOptionModel) onSubmit;
   _NewCuisineOptionNameStepScreen({super.key, required this.onNext, required this.onPrev, required this.onSubmit});
 
   @override
@@ -100,7 +99,7 @@ class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameSt
                     child: GestureDetector(
                   onTap: () {
                     if (!isFormValid) return;
-                    widget.onSubmit(CuisineOption(name: optionName, price: int.parse(optionPrice.replaceAll(",", ""))));
+                    widget.onSubmit(MenuOptionModel(optionContent: optionName, price: int.parse(optionPrice.replaceAll(",", ""))));
                     widget.onNext();
                   },
                   child: SGContainer(

@@ -12,10 +12,11 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/text_field_edit_screen.dart';
-import 'package:singleeat/office/components/nutrition_card.dart';
-import 'package:singleeat/office/models/cuisine_model.dart';
-import 'package:singleeat/screens/new_cuisine_option_screen.dart';
-import 'package:singleeat/screens/nutrition_form.dart';
+
+import '../model.dart';
+import '../new_cuisine_option_screen.dart';
+import '../nutrition_card.dart';
+import '../nutrition_form.dart';
 
 class CuisineOptionCategoryScreen extends StatefulWidget {
   const CuisineOptionCategoryScreen({super.key});
@@ -24,68 +25,68 @@ class CuisineOptionCategoryScreen extends StatefulWidget {
   State<CuisineOptionCategoryScreen> createState() => _CuisineOptionCategoryScreenState();
 }
 
-final CuisineOptionCategory category = CuisineOptionCategory(
-  name: "곡물 베이스 선택",
-  isEssential: true,
-  maximumSelection: 1,
-  options: [
-    CuisineOption(name: "채소 베이스", price: 0),
-    CuisineOption(name: "오곡 베이스", price: 0),
+final MenuOptionCategoryModel category = MenuOptionCategoryModel(
+  menuOptionCategoryName: "곡물 베이스 선택",
+  essentialStatus: 1,
+  maxChoice: 1,
+  menuOptions: [
+    MenuOptionModel(optionContent: "채소 베이스", price: 0),
+    MenuOptionModel(optionContent: "오곡 베이스", price: 0),
   ],
 );
 
-final List<Cuisine> cuisines = [
-  Cuisine(
-    name: "참치 샐러드",
+final List<MenuModel> cuisines = [
+  MenuModel(
+    menuName: "참치 샐러드",
     price: 13000,
-    description: "곡물 베이스는 기본입니다.",
-    image: "https://via.placeholder.com/150",
-    optionCategories: [
-      CuisineOptionCategory(name: "추가 옵션", options: [
-        CuisineOption(),
-        CuisineOption(),
-        CuisineOption(),
+    menuDescription: "곡물 베이스는 기본입니다.",
+    menuPictureURL: "https://via.placeholder.com/150",
+    menuCategoryOptions: [
+      MenuOptionCategoryModel(menuOptionCategoryName: "추가 옵션", menuOptions: [
+        MenuOptionModel(),
+        MenuOptionModel(),
+        MenuOptionModel(),
       ]),
-      CuisineOptionCategory(name: "소스", options: [
-        CuisineOption(),
-        CuisineOption(),
-        CuisineOption(),
+      MenuOptionCategoryModel(menuOptionCategoryName: "소스", menuOptions: [
+        MenuOptionModel(),
+        MenuOptionModel(),
+        MenuOptionModel(),
       ]),
     ],
   ),
-  Cuisine(
-    name: "연어 샐러드",
+  MenuModel(
+    menuName: "연어 샐러드",
     price: 13000,
-    description: "곡물 베이스는 기본입니다.",
-    image: "https://via.placeholder.com/150",
-    optionCategories: [
-      CuisineOptionCategory(name: "추가 옵션", options: [
-        CuisineOption(),
-        CuisineOption(),
-        CuisineOption(),
+    menuDescription: "곡물 베이스는 기본입니다.",
+    menuPictureURL: "https://via.placeholder.com/150",
+    menuCategoryOptions: [
+      MenuOptionCategoryModel(menuOptionCategoryName: "추가 옵션", menuOptions: [
+        MenuOptionModel(),
+        MenuOptionModel(),
+        MenuOptionModel(),
       ]),
-      CuisineOptionCategory(name: "소스", options: [
-        CuisineOption(),
-        CuisineOption(),
-        CuisineOption(),
+      MenuOptionCategoryModel(menuOptionCategoryName: "소스", menuOptions: [
+        MenuOptionModel(),
+        MenuOptionModel(),
+        MenuOptionModel(),
       ]),
     ],
   ),
-  Cuisine(
-    name: "닭가슴살 샐러드",
+  MenuModel(
+    menuName: "닭가슴살 샐러드",
     price: 13000,
-    description: "곡물 베이스는 기본입니다.",
-    image: "https://via.placeholder.com/150",
-    optionCategories: [
-      CuisineOptionCategory(name: "추가 옵션", options: [
-        CuisineOption(),
-        CuisineOption(),
-        CuisineOption(),
+    menuDescription: "곡물 베이스는 기본입니다.",
+    menuPictureURL: "https://via.placeholder.com/150",
+    menuCategoryOptions: [
+      MenuOptionCategoryModel(menuOptionCategoryName: "추가 옵션", menuOptions: [
+        MenuOptionModel(),
+        MenuOptionModel(),
+        MenuOptionModel(),
       ]),
-      CuisineOptionCategory(name: "소스", options: [
-        CuisineOption(),
-        CuisineOption(),
-        CuisineOption(),
+      MenuOptionCategoryModel(menuOptionCategoryName: "소스", menuOptions: [
+        MenuOptionModel(),
+        MenuOptionModel(),
+        MenuOptionModel(),
       ]),
     ],
   )
@@ -186,7 +187,7 @@ class _CuisineOptionCategoryScreenState extends State<CuisineOptionCategoryScree
                         ClipRRect(
                           borderRadius: BorderRadius.circular(SGSpacing.p4),
                           child: Image.network(
-                            cuisine.image,
+                            cuisine.menuPictureURL,
                             width: SGSpacing.p18,
                             height: SGSpacing.p18,
                             fit: BoxFit.cover,
@@ -194,7 +195,7 @@ class _CuisineOptionCategoryScreenState extends State<CuisineOptionCategoryScree
                         ),
                         SizedBox(width: SGSpacing.p4),
                         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          SGTypography.body(cuisine.name, size: FontSize.normal, weight: FontWeight.w700),
+                          SGTypography.body(cuisine.menuName, size: FontSize.normal, weight: FontWeight.w700),
                           SizedBox(height: SGSpacing.p2),
                           SGTypography.body("${cuisine.price.toKoreanCurrency}원",
                               size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray4),
@@ -274,7 +275,7 @@ class _CuisineOptionCategoryScreenState extends State<CuisineOptionCategoryScree
 }
 
 class _EditRelatedCuisineScreen extends StatefulWidget {
-  final List<Cuisine> cuisines;
+  final List<MenuModel> cuisines;
   const _EditRelatedCuisineScreen({
     super.key,
     required this.cuisines,
@@ -395,7 +396,7 @@ class _EditRelatedCuisineScreenState extends State<_EditRelatedCuisineScreen> {
 }
 
 class _SelectedCuisineCard extends StatelessWidget {
-  final Cuisine cuisine;
+  final MenuModel cuisine;
   final VoidCallback onRemove;
 
   const _SelectedCuisineCard({Key? key, required this.cuisine, required this.onRemove}) : super(key: key);
@@ -415,12 +416,12 @@ class _SelectedCuisineCard extends StatelessWidget {
             children: [
               ClipRRect(
                   borderRadius: BorderRadius.circular(SGSpacing.p4),
-                  child: Image.network(cuisine.image, width: SGSpacing.p18, height: SGSpacing.p18)),
+                  child: Image.network(cuisine.menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18)),
               SizedBox(width: SGSpacing.p3),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SGTypography.body(cuisine.name,
+                  SGTypography.body(cuisine.menuName,
                       color: SGColors.black, size: FontSize.normal, weight: FontWeight.w700),
                   SizedBox(height: SGSpacing.p2),
                   SGTypography.body("${cuisine.price.toKoreanCurrency}원",
@@ -581,7 +582,7 @@ class _CuisionOptionCategoryQuantityEditScreenState extends State<CuisionOptionC
 
 
 class _CuisineOptionCategoryCard extends StatefulWidget {
-  final CuisineOptionCategory category;
+  final MenuOptionCategoryModel category;
 
   const _CuisineOptionCategoryCard({super.key, required this.category});
 
@@ -591,8 +592,8 @@ class _CuisineOptionCategoryCard extends StatefulWidget {
 
 class _CuisineOptionCategoryCardState extends State<_CuisineOptionCategoryCard> {
   String get selectionType {
-    if (widget.category.isEssential) return "(필수)";
-    return "(선택 최대 ${widget.category.maximumSelection ?? 0}개)";
+    if (widget.category.essentialStatus == 1) return "(필수)";
+    return "(선택 최대 ${widget.category.maxChoice ?? 0}개)";
   }
 
   void showFailDialogWithImage({
@@ -673,17 +674,17 @@ class _CuisineOptionCategoryCardState extends State<_CuisineOptionCategoryCard> 
               .push(MaterialPageRoute(builder: (context) => CuisineOptionCategoryEditScreen(category: widget.category)));
         },
         child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          SGTypography.body(widget.category.name, size: FontSize.normal, weight: FontWeight.w600),
+          SGTypography.body(widget.category.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
           SizedBox(width: SGSpacing.p1),
           SGTypography.body(selectionType, size: FontSize.small, color: SGColors.primary, weight: FontWeight.w600),
           SizedBox(width: SGSpacing.p1),
           Icon(Icons.edit, size: FontSize.small),
         ]),
       ),
-      ...widget.category.options
+      ...widget.category.menuOptions
           .mapIndexed((index, option) => [
                 if (index == 0) SizedBox(height: SGSpacing.p5) else SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: option.name ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
+                DataTableRow(left: option.optionContent ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
               ])
           .flattened
     ]);
@@ -691,7 +692,7 @@ class _CuisineOptionCategoryCardState extends State<_CuisineOptionCategoryCard> 
 }
 
 class CuisineOptionCategoryEditScreen extends StatefulWidget {
-  final CuisineOptionCategory category;
+  final MenuOptionCategoryModel category;
   CuisineOptionCategoryEditScreen({super.key, required this.category});
 
   @override
@@ -704,8 +705,8 @@ class _CuisineOptionCategoryEditScreenState extends State<CuisineOptionCategoryE
   Nutrition nutrition =
       Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
 
-  late String categoryName = widget.category.name;
-  List<CuisineOption> options = [];
+  late String categoryName = widget.category.menuOptionCategoryName;
+  List<MenuOptionModel> options = [];
 
   void showFailDialogWithImage({
     required String mainTitle,
@@ -808,7 +809,7 @@ class _CuisineOptionCategoryEditScreenState extends State<CuisineOptionCategoryE
                 )
               ]),
               SizedBox(height: SGSpacing.p5),
-              ...widget.category.options
+              ...widget.category.menuOptions
                   .mapIndexed((index, option) => [
                         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
                         MultipleInformationBox(children: [
@@ -819,7 +820,7 @@ class _CuisineOptionCategoryEditScreenState extends State<CuisineOptionCategoryE
                               showFailDialogWithImage(mainTitle: "해당 옵션은 삭제된 옵션입니다.", subTitle: "");
                             },
                             child: Row(children: [
-                              SGTypography.body(option.name ?? "", size: FontSize.normal, weight: FontWeight.w600),
+                              SGTypography.body(option.optionContent ?? "", size: FontSize.normal, weight: FontWeight.w600),
                               SizedBox(width: SGSpacing.p1),
                               Icon(Icons.edit, size: FontSize.small),
                             ]),
@@ -858,7 +859,7 @@ class _CuisineOptionCategoryEditScreenState extends State<CuisineOptionCategoryE
 }
 
 class _CuisineOptionEditScreen extends StatefulWidget {
-  final CuisineOption option;
+  final MenuOptionModel option;
   _CuisineOptionEditScreen({
     super.key,
     required this.option,
@@ -956,11 +957,11 @@ class _CuisineOptionEditScreenState extends State<_CuisineOptionEditScreen> {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => TextFieldEditScreen(
-                            value: widget.option.name ?? "",
+                            value: widget.option.optionContent ?? "",
                             title: "옵션 변경",
                             onSubmit: (value) {
                               setState(() {
-                                widget.option.name = value;
+                                // widget.option.optionContent = value;
                               });
                             },
                             buttonText: "저장하기",
@@ -968,7 +969,7 @@ class _CuisineOptionEditScreenState extends State<_CuisineOptionEditScreen> {
                           )));
                 },
                 child: Row(children: [
-                  SGTypography.body(widget.option.name ?? "", size: FontSize.normal, weight: FontWeight.w600),
+                  SGTypography.body(widget.option.optionContent ?? "", size: FontSize.normal, weight: FontWeight.w600),
                   SizedBox(width: SGSpacing.p1),
                   Icon(Icons.edit, size: FontSize.small),
                 ]),

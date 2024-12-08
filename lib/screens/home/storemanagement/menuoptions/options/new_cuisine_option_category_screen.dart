@@ -10,38 +10,39 @@ import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
-import 'package:singleeat/office/components/cuisine_selection_bottom_sheet.dart';
-import 'package:singleeat/office/models/cuisine_model.dart';
-import 'package:singleeat/screens/new_cuisine_option_screen.dart';
+
+import '../cuisine_selection_bottom_sheet.dart';
+import '../model.dart';
+import '../new_cuisine_option_screen.dart';
 
 final selectableCuisines = [
-  Cuisine(
-    id: 1,
-    name: "김치찌개",
+  MenuModel(
+    menuId: 1,
+    menuName: "김치찌개",
     price: 8000,
-    description: "맛있는 김치찌개",
-    image: "https://via.placeholder.com/150",
+    menuDescription: "맛있는 김치찌개",
+    menuPictureURL: "https://via.placeholder.com/150",
   ),
-  Cuisine(
-    id: 2,
-    name: "된장찌개",
+  MenuModel(
+    menuId: 2,
+    menuName: "된장찌개",
     price: 8000,
-    description: "맛있는 된장찌개",
-    image: "https://via.placeholder.com/150",
+    menuDescription: "맛있는 된장찌개",
+    menuPictureURL: "https://via.placeholder.com/150",
   ),
-  Cuisine(
-    id: 3,
-    name: "부대찌개",
+  MenuModel(
+    menuId: 3,
+    menuName: "부대찌개",
     price: 8000,
-    description: "맛있는 부대찌개",
-    image: "https://via.placeholder.com/150",
+    menuDescription: "맛있는 부대찌개",
+    menuPictureURL: "https://via.placeholder.com/150",
   ),
-  Cuisine(
-    id: 4,
-    name: "김치찌개",
+  MenuModel(
+    menuId: 4,
+    menuName: "김치찌개",
     price: 8000,
-    description: "맛있는 김치찌개",
-    image: "https://via.placeholder.com/150",
+    menuDescription: "맛있는 김치찌개",
+    menuPictureURL: "https://via.placeholder.com/150",
   ),
 ];
 
@@ -55,7 +56,7 @@ class NewCuisineOptionCategoryScreen extends StatefulWidget {
 class _NewCuisineOptionCategoryScreenState extends State<NewCuisineOptionCategoryScreen> {
   PageController pageController = PageController();
 
-  List<Cuisine> cuisines = [];
+  List<MenuModel> cuisines = [];
 
   void animateToPage(int index) => pageController.animateToPage(
         index,
@@ -172,7 +173,7 @@ class _NewCuisineOptionsStepScreen extends StatefulWidget {
 }
 
 class _NewCuisineOptionsStepScreenState extends State<_NewCuisineOptionsStepScreen> {
-  List<CuisineOption> options = [];
+  List<MenuOptionModel> options = [];
 
   @override
   Widget build(BuildContext context) {
@@ -260,8 +261,8 @@ class _NewCuisineOptionsStepScreenState extends State<_NewCuisineOptionsStepScre
 }
 
 class __CuisineOptionCard extends StatelessWidget {
-  final CuisineOption option;
-  final Function(CuisineOption) onRemove;
+  final MenuOptionModel option;
+  final Function(MenuOptionModel) onRemove;
 
   __CuisineOptionCard({
     super.key,
@@ -286,7 +287,7 @@ class __CuisineOptionCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SGTypography.body(option.name, size: FontSize.normal, weight: FontWeight.w700),
+                    SGTypography.body(option.optionContent, size: FontSize.normal, weight: FontWeight.w700),
                     SizedBox(height: SGSpacing.p3),
                     SGTypography.body("${(option.price ?? 0).toKoreanCurrency}원",
                         size: FontSize.small, weight: FontWeight.w400),
@@ -463,8 +464,8 @@ class _NewCuisionOptionCategoryQuantityEditScreenState extends State<_NewCuision
 class _SelectCuisinesStepScreen extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrev;
-  final List<Cuisine> cuisines;
-  final Function(List<Cuisine>) onCuisinesSelected;
+  final List<MenuModel> cuisines;
+  final Function(List<MenuModel>) onCuisinesSelected;
   _SelectCuisinesStepScreen(
       {super.key,
       required this.onNext,
@@ -580,8 +581,8 @@ class _SelectCuisinesStepScreenState extends State<_SelectCuisinesStepScreen> {
         title: "메뉴 추가",
         cuisines: selectableCuisines,
         onSelect: (selectedCuisines) {
-          final sortedCuisines = selectedCuisines.toList()..sort((a, b) => a.id!.compareTo(b.id!));
-          widget.onCuisinesSelected(sortedCuisines);
+          // final sortedCuisines = selectedCuisines.toList()..sort((a, b) => a.menuId!.compareTo(b.menuId!));
+          // widget.onCuisinesSelected(sortedCuisines);
         },
         selectedCuisines: widget.cuisines);
   }
@@ -590,7 +591,7 @@ class _SelectCuisinesStepScreenState extends State<_SelectCuisinesStepScreen> {
 class _ConfirmCuisineOptionCategoryScreen extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrev;
-  final List<Cuisine> cuisines;
+  final List<MenuModel> cuisines;
   _ConfirmCuisineOptionCategoryScreen({super.key, required this.onNext, required this.onPrev, required this.cuisines});
 
   @override
@@ -712,7 +713,7 @@ class _ConfirmCuisineOptionCategoryScreenState extends State<_ConfirmCuisineOpti
 }
 
 class _SelectedCuisineCard extends StatelessWidget {
-  final Cuisine cuisine;
+  final MenuModel cuisine;
   VoidCallback? onRemove;
 
   _SelectedCuisineCard({Key? key, required this.cuisine, this.onRemove}) : super(key: key);
@@ -732,12 +733,12 @@ class _SelectedCuisineCard extends StatelessWidget {
             children: [
               ClipRRect(
                   borderRadius: BorderRadius.circular(SGSpacing.p4),
-                  child: Image.network(cuisine.image, width: SGSpacing.p18, height: SGSpacing.p18)),
+                  child: Image.network(cuisine.menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18)),
               SizedBox(width: SGSpacing.p3),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SGTypography.body(cuisine.name,
+                  SGTypography.body(cuisine.menuName,
                       color: SGColors.black, size: FontSize.normal, weight: FontWeight.w700),
                   SizedBox(height: SGSpacing.p2),
                   SGTypography.body("${cuisine.price.toKoreanCurrency}원",

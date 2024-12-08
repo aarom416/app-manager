@@ -13,21 +13,21 @@ import '../../../../../core/components/text_field_wrapper.dart';
 import '../../../../common/common_widgets.dart';
 import '../model.dart';
 
-class TemporaryHolidayBox extends StatefulWidget {
+class TemporaryHolidayCard extends StatefulWidget {
   final List<OperationTimeDetailModel> temporaryHolidays;
   final Function(List<OperationTimeDetailModel>) onEditFunction;
 
-  const TemporaryHolidayBox({
+  const TemporaryHolidayCard({
     super.key,
     required this.temporaryHolidays,
     required this.onEditFunction,
   });
 
   @override
-  State<TemporaryHolidayBox> createState() => _TemporaryHolidayBoxState();
+  State<TemporaryHolidayCard> createState() => _TemporaryHolidayCardState();
 }
 
-class _TemporaryHolidayBoxState extends State<TemporaryHolidayBox> {
+class _TemporaryHolidayCardState extends State<TemporaryHolidayCard> {
   late List<TextEditingController> textEditingControllers;
 
   final int MENT_INPUT_MAX = 100;

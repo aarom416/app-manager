@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:singleeat/core/components/container.dart';
-import 'package:singleeat/core/components/dialog.dart';
-import 'package:singleeat/core/components/menu_tab_bar.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/reload_button.dart';
 import 'package:singleeat/core/components/selection_bottom_sheet.dart';
@@ -11,27 +9,23 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
-import 'package:singleeat/office/models/cuisine_model.dart';
-import 'package:singleeat/screens/home/storemanagement/menu/options/cuisine_option_category_screen.dart';
-import 'package:singleeat/screens/cuisine_screen.dart';
-import 'package:singleeat/screens/home/storemanagement/menu/menu/tab_menu.dart';
-import 'package:singleeat/screens/home/storemanagement/menu/menu/new_cuisine_category_screen.dart';
-import 'package:singleeat/screens/home/storemanagement/menu/options/new_cuisine_option_category_screen.dart';
-import 'package:singleeat/screens/home/storemanagement/menu/menu/new_cuisine_screen.dart';
-import 'package:singleeat/screens/update_cuisine_category_screen.dart';
 
-List<CuisineOptionCategory> categoryOptions = [
-  CuisineOptionCategory(
-      name: "곡물 베이스 선택",
-      options: [
-        CuisineOption(name: "곡물 베이스 선택", price: 0),
-        CuisineOption(name: "오곡 베이스", price: 0),
+import '../model.dart';
+import 'cuisine_option_category_screen.dart';
+import 'new_cuisine_option_category_screen.dart';
+
+List<MenuOptionCategoryModel> categoryOptions = [
+  MenuOptionCategoryModel(
+      menuOptionCategoryName: "곡물 베이스 선택",
+      menuOptions: [
+        MenuOptionModel(optionContent: "곡물 베이스 선택", price: 0),
+        MenuOptionModel(optionContent: "오곡 베이스", price: 0),
       ],
-      isEssential: true),
-  CuisineOptionCategory(name: "토핑 선택", maximumSelection: 2, options: [
-    CuisineOption(name: "훈제오리 토핑", price: 0),
-    CuisineOption(name: "연어 토핑", price: 500),
-    CuisineOption(name: "우삼겹 토핑", price: 3000),
+      essentialStatus: 1),
+  MenuOptionCategoryModel(menuOptionCategoryName: "토핑 선택", maxChoice: 2, menuOptions: [
+    MenuOptionModel(optionContent: "훈제오리 토핑", price: 0),
+    MenuOptionModel(optionContent: "연어 토핑", price: 500),
+    MenuOptionModel(optionContent: "우삼겹 토핑", price: 3000),
   ]),
 ];
 
@@ -68,12 +62,7 @@ class _OptionsTabState extends State<OptionsTab> {
             Expanded(
                 child: TextField(
                     style: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5),
-                    decoration: InputDecoration(
-                        isDense: true,
-                        hintText: "옵션명을 입력해주세요",
-                        hintStyle:
-                            TextStyle(fontSize: FontSize.normal, color: SGColors.gray5, fontWeight: FontWeight.w400),
-                        border: InputBorder.none)))
+                    decoration: InputDecoration(isDense: true, hintText: "옵션명을 입력해주세요", hintStyle: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5, fontWeight: FontWeight.w400), border: InputBorder.none)))
           ])),
       SizedBox(height: SGSpacing.p4),
       Stack(alignment: Alignment.center, children: [
@@ -99,11 +88,9 @@ class _OptionsTabState extends State<OptionsTab> {
                       borderColor: SGColors.line2,
                       borderRadius: BorderRadius.circular(SGSpacing.p20),
                       color: SGColors.white,
-                      padding: EdgeInsets.symmetric(vertical: SGSpacing.p2, horizontal: SGSpacing.p4)
-                          .copyWith(right: SGSpacing.p3),
+                      padding: EdgeInsets.symmetric(vertical: SGSpacing.p2, horizontal: SGSpacing.p4).copyWith(right: SGSpacing.p3),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        SGTypography.body(selectedOption,
-                            size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray5),
+                        SGTypography.body(selectedOption, size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray5),
                         SizedBox(width: SGSpacing.p1),
                         Image.asset("assets/images/dropdown-arrow.png", width: SGSpacing.p4, height: SGSpacing.p4)
                       ]))),
@@ -128,9 +115,7 @@ class _OptionsTabState extends State<OptionsTab> {
               borderColor: SGColors.line3,
               padding: EdgeInsets.symmetric(vertical: SGSpacing.p2, horizontal: SGSpacing.p3),
               child: Row(children: [
-                ColorFiltered(
-                    colorFilter: ColorFilter.mode(SGColors.gray4, BlendMode.modulate),
-                    child: Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3)),
+                ColorFiltered(colorFilter: ColorFilter.mode(SGColors.gray4, BlendMode.modulate), child: Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3)),
                 SizedBox(width: SGSpacing.p1),
                 SGTypography.body("옵션 카테고리 추가", size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray4)
               ])),
@@ -148,7 +133,7 @@ class _OptionsTabState extends State<OptionsTab> {
 }
 
 class _OptionCategoryCard extends StatefulWidget {
-  final CuisineOptionCategory category;
+  final MenuOptionCategoryModel category;
 
   const _OptionCategoryCard({super.key, required this.category});
 
@@ -158,8 +143,8 @@ class _OptionCategoryCard extends StatefulWidget {
 
 class _OptionCategoryCardState extends State<_OptionCategoryCard> {
   String get selectionType {
-    if (widget.category.isEssential) return "(필수)";
-    return "(선택 최대 ${widget.category.maximumSelection ?? 0}개)";
+    if (widget.category.essentialStatus == 1) return "(필수)";
+    return "(선택 최대 ${widget.category.maxChoice ?? 0}개)";
   }
 
   bool isExpanded = false;
@@ -176,7 +161,7 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => CuisineOptionCategoryScreen()));
             },
             child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              SGTypography.body(widget.category.name, size: FontSize.normal, weight: FontWeight.w600),
+              SGTypography.body(widget.category.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
               SizedBox(width: SGSpacing.p1),
               SGTypography.body(selectionType, size: FontSize.small, color: SGColors.primary, weight: FontWeight.w600),
               SizedBox(width: SGSpacing.p1),
@@ -185,10 +170,10 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
           ),
         ],
       ),
-      ...widget.category.options
+      ...widget.category.menuOptions
           .mapIndexed((index, option) => [
                 if (index == 0) SizedBox(height: SGSpacing.p5) else SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: option.name ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
+                DataTableRow(left: option.optionContent ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
               ])
           .flattened,
       SizedBox(height: SGSpacing.p5),
@@ -206,8 +191,7 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
                   isExpanded = !isExpanded;
                 });
               },
-              child: SGTypography.body(isExpanded ? "접기" : "펼치기",
-                  color: SGColors.primary, weight: FontWeight.w500, size: FontSize.small),
+              child: SGTypography.body(isExpanded ? "접기" : "펼치기", color: SGColors.primary, weight: FontWeight.w500, size: FontSize.small),
             ),
           ]),
           SizedBox(height: SGSpacing.p05),
@@ -228,5 +212,3 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
     ]);
   }
 }
-
-

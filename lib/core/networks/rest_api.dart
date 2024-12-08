@@ -25,10 +25,6 @@ class RestApiUri {
   // GET - 통계 내역 전체 조회
   static const String loadStatisticsByStoreId =
       '/api/v1/owner/statistics/{storeId}';
-  static const String loadStatisticsWeekByStoreId =
-      '/api/v1/owner/statistics/week/{storeId}';
-  static const String loadStatisticsMonthByStoreId =
-      '/api/v1/owner/statistics/month/{storeId}';
 
   /// StoreInfoUpdate
   /// 가게 정보 수정 API
@@ -240,11 +236,6 @@ class RestApiUri {
   static const String generateVatReport = '/api/v1/owner/vat/report';
   // GET - 부가세 내역 조회 TODO
   static const String getVatInfo = '/api/v1/owner/vat/{storeId}';
-  // GET - 매출 부가세 내역 조회 TODO
-  static const String getVatSalesInfo = '/api/v1/owner/vat/sales/{storeId}';
-  // GET - 매입 부가세 내역 조회 TODO
-  static const String getVatPurchasesInfo =
-      '/api/v1/owner/vat/purchases/{storeId}';
 
   /// StoreMenuGet
   /// 가게 메뉴 조회 API
@@ -437,4 +428,14 @@ class RestApiUri {
   /// ???
   static const String identityVerification =
       '/owner/pages/identity-verification';
+  static const String getOperationInfo =
+      '/api/v1/owner/store-info/operation-info/{storeId}';
+  // GET - 메뉴/옵션 정보 조회
+  static const String getMenuOptionInfo =
+      '/api/v1/owner/store-info/menu-option-info/{storeId}';
+  // GET - 매출 부가세 내역 조회 TODO
+  static const String getVatSalesInfo = '/api/v1/owner/vat/sales/{storeId}';
+  // GET - 매입 부가세 내역 조회 TODO
+  static const String getVatPurchasesInfo =
+      '/api/v1/owner/vat/purchases/{storeId}';
 }

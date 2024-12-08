@@ -69,17 +69,6 @@ abstract class OperationTimeDetailModel with _$OperationTimeDetailModel {
 
 /// OperationTimeDetailModel 확장함수
 extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
-  /// 두 OperationTimeDetailModel 객체를 비교
-  bool isEqualTo(OperationTimeDetailModel other) {
-    return holidayType == other.holidayType &&
-        cycle == other.cycle &&
-        day == other.day &&
-        startTime == other.startTime &&
-        endTime == other.endTime &&
-        startDate == other.startDate &&
-        endDate == other.endDate &&
-        ment == other.ment;
-  }
 
   /// OperationTimeDetailModel 에서 DateRange 를 생성
   DateRange get toDateRange {
@@ -136,17 +125,3 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
   }
 }
 
-/// 두 List<OperationTimeDetailModel> 이 동일한지 비교하는 확장함수
-extension OperationTimeDetailModelListExtensions on List<OperationTimeDetailModel> {
-  bool isEqualTo(List<OperationTimeDetailModel> other) {
-    if (length != other.length) {
-      return false;
-    }
-    for (int i = 0; i < length; i++) {
-      if (!this[i].isEqualTo(other[i])) {
-        return false;
-      }
-    }
-    return true;
-  }
-}

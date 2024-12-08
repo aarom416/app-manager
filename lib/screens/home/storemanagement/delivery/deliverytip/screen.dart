@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -13,7 +14,7 @@ import '../../../../../core/components/dialog.dart';
 import '../../../../../core/components/multiple_information_box.dart';
 import '../../../../common/components/numeric_textfield.dart';
 import '../model.dart';
-import 'delivery_tip_box.dart';
+import 'delivery_tip_card.dart';
 
 class DeliveryTipScreen extends StatefulWidget {
   final int baseDeliveryTip;
@@ -23,14 +24,7 @@ class DeliveryTipScreen extends StatefulWidget {
   final String deliveryTipInfo;
   final Function(int, int, List<DeliveryTipModel>) onSaveFunction;
 
-  const DeliveryTipScreen(
-      {super.key,
-      required this.baseDeliveryTip,
-      required this.deliveryTipMax,
-      required this.minimumOrderPrice,
-      required this.storeDeliveryTipDTOList,
-      required this.deliveryTipInfo,
-      required this.onSaveFunction});
+  const DeliveryTipScreen({super.key, required this.baseDeliveryTip, required this.deliveryTipMax, required this.minimumOrderPrice, required this.storeDeliveryTipDTOList, required this.deliveryTipInfo, required this.onSaveFunction});
 
   @override
   State<DeliveryTipScreen> createState() => _DeliveryTipScreenState();
@@ -130,7 +124,7 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
               }
             },
             label: "변경하기",
-            disabled: widget.minimumOrderPrice == minimumOrderPrice && widget.baseDeliveryTip == baseDeliveryTip && widget.storeDeliveryTipDTOList.isEqualTo(storeDeliveryTipDTOList),
+            disabled: widget.minimumOrderPrice == minimumOrderPrice && widget.baseDeliveryTip == baseDeliveryTip && const DeepCollectionEquality().equals(widget.storeDeliveryTipDTOList, storeDeliveryTipDTOList),
           )),
       body: SGContainer(
           color: const Color(0xFFFAFAFA),
@@ -190,7 +184,7 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
             // --------------------------- 배달팁 추가 ---------------------------
             SGTypography.body("배달팁 추가", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w600),
             SizedBox(height: SGSpacing.p3),
-            DeliveryTipBox(
+            DeliveryTipCard(
               storeDeliveryTipDTOList: storeDeliveryTipDTOList,
               onEditFunction: (storeDeliveryTipDTOList) {
                 print("onEditFunction storeDeliveryTipDTOList $storeDeliveryTipDTOList");
@@ -202,11 +196,9 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
 
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
 
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              SGTypography.body("*", color: SGColors.gray3, lineHeight: 1.25),
-              SizedBox(width: SGSpacing.p1),
-              SGTypography.body(widget.deliveryTipInfo, color: SGColors.gray3, lineHeight: 1.25)
-            ]),
+            Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [SGTypography.body("*", color: SGColors.gray3, lineHeight: 1.25), SizedBox(width: SGSpacing.p1), SGTypography.body(widget.deliveryTipInfo, color: SGColors.gray3, lineHeight: 1.25)]),
             SizedBox(height: SGSpacing.p20),
           ])),
     );

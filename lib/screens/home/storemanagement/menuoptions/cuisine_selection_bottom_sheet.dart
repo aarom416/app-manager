@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/office/models/cuisine_model.dart';
 import 'package:singleeat/core/extensions/integer.dart';
+
+import 'model.dart';
+
 
 void showCuisineSelectionBottomSheet({
   required BuildContext context,
   required String title,
-  required List<Cuisine> cuisines,
-  required void Function(List<Cuisine>) onSelect,
-  required List<Cuisine> selectedCuisines,
+  required List<MenuModel> cuisines,
+  required void Function(List<MenuModel>) onSelect,
+  required List<MenuModel> selectedCuisines,
 }) {
   showModalBottomSheet(
     context: context,
@@ -32,9 +33,9 @@ void showCuisineSelectionBottomSheet({
 
 class _CuisineSelectionBottomSheet extends StatefulWidget {
   final String title;
-  final List<Cuisine> cuisines;
-  final void Function(List<Cuisine>) onSelect;
-  final List<Cuisine> selectedCuisines;
+  final List<MenuModel> cuisines;
+  final void Function(List<MenuModel>) onSelect;
+  final List<MenuModel> selectedCuisines;
 
   const _CuisineSelectionBottomSheet({
     super.key,
@@ -49,9 +50,9 @@ class _CuisineSelectionBottomSheet extends StatefulWidget {
 }
 
 class _CuisineSelectionBottomSheetState extends State<_CuisineSelectionBottomSheet> {
-  late List<Cuisine> selectedCuisines;
+  late List<MenuModel> selectedCuisines;
 
-  List<int?> get selectedCuisineIds => selectedCuisines.map((e) => e.id).toList();
+  List<int?> get selectedCuisineIds => selectedCuisines.map((e) => e.menuId).toList();
 
   @override
   void initState() {
@@ -118,7 +119,7 @@ class _CuisineSelectionBottomSheetState extends State<_CuisineSelectionBottomShe
                     onTap: () {
                       // onSelect(options[idx].value);
                       // Navigator.of(context).pop();
-                      if (selectedCuisineIds.contains(widget.cuisines[idx].id)) {
+                      if (selectedCuisineIds.contains(widget.cuisines[idx].menuId)) {
                         setState(() {
                           selectedCuisines.remove(widget.cuisines[idx]);
                         });
@@ -142,13 +143,13 @@ class _CuisineSelectionBottomSheetState extends State<_CuisineSelectionBottomShe
                             children: [
                               ClipRRect(
                                   borderRadius: BorderRadius.circular(SGSpacing.p4),
-                                  child: Image.network(widget.cuisines[idx].image,
+                                  child: Image.network(widget.cuisines[idx].menuPictureURL,
                                       width: SGSpacing.p18, height: SGSpacing.p18)),
                               SizedBox(width: SGSpacing.p3),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SGTypography.body(widget.cuisines[idx].name,
+                                  SGTypography.body(widget.cuisines[idx].menuName,
                                       color: SGColors.black, size: FontSize.normal, weight: FontWeight.w700),
                                   SizedBox(height: SGSpacing.p2),
                                   SGTypography.body("${widget.cuisines[idx].price.toKoreanCurrency}원",
@@ -157,7 +158,7 @@ class _CuisineSelectionBottomSheetState extends State<_CuisineSelectionBottomShe
                               ),
                             ],
                           ),
-                          if (selectedCuisineIds.contains(widget.cuisines[idx].id))
+                          if (selectedCuisineIds.contains(widget.cuisines[idx].menuId))
                             Image.asset("assets/images/checkbox-on.png", width: 24, height: 24)
                           else
                             Image.asset("assets/images/checkbox-off.png", width: 24, height: 24)
