@@ -8,60 +8,65 @@ import 'package:singleeat/core/extensions/integer.dart';
 
 import 'model.dart';
 
-
-void showCuisineSelectionBottomSheet({
+void showSelectableMenuModelsBottomSheet({
   required BuildContext context,
   required String title,
-  required List<MenuModel> cuisines,
+  required List<MenuModel> selectableMenus,
   required void Function(List<MenuModel>) onSelect,
-  required List<MenuModel> selectedCuisines,
+  required List<MenuModel> selectedMenus,
 }) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.white,
     builder: (ctx) {
-      return _CuisineSelectionBottomSheet(
+      return _SelectableMenuModelsBottomSheet(
         title: title,
-        cuisines: cuisines,
+        selectableMenus: selectableMenus,
         onSelect: onSelect,
-        selectedCuisines: selectedCuisines,
+        selectedMenus: selectedMenus,
       );
     },
   );
 }
 
-class _CuisineSelectionBottomSheet extends StatefulWidget {
+class _SelectableMenuModelsBottomSheet extends StatefulWidget {
   final String title;
-  final List<MenuModel> cuisines;
+  final List<MenuModel> selectableMenus;
   final void Function(List<MenuModel>) onSelect;
-  final List<MenuModel> selectedCuisines;
+  final List<MenuModel> selectedMenus;
 
-  const _CuisineSelectionBottomSheet({
+  const _SelectableMenuModelsBottomSheet({
     super.key,
     required this.title,
-    required this.cuisines,
+    required this.selectableMenus,
     required this.onSelect,
-    required this.selectedCuisines,
+    required this.selectedMenus,
   });
 
   @override
-  State<_CuisineSelectionBottomSheet> createState() => _CuisineSelectionBottomSheetState();
+  State<_SelectableMenuModelsBottomSheet> createState() => _SelectableMenuModelsBottomSheetState();
 }
 
-class _CuisineSelectionBottomSheetState extends State<_CuisineSelectionBottomSheet> {
-  late List<MenuModel> selectedCuisines;
+class _SelectableMenuModelsBottomSheetState extends State<_SelectableMenuModelsBottomSheet> {
+  late List<MenuModel> selectedMenus;
+  late String menuNameQuery;
 
-  List<int?> get selectedCuisineIds => selectedCuisines.map((e) => e.menuId).toList();
+  List<int?> get selectedCuisineIds => selectedMenus.map((e) => e.menuId).toList();
 
   @override
   void initState() {
     super.initState();
-    selectedCuisines = widget.selectedCuisines;
+    selectedMenus = widget.selectedMenus;
+    menuNameQuery = "";
   }
 
   @override
   Widget build(BuildContext context) {
+    List<MenuModel> selectableMenus = widget.selectableMenus.where((menu) {
+      return menuNameQuery == "" || menu.menuName.contains(menuNameQuery);
+    }).toList();
+
     return Column(mainAxisSize: MainAxisSize.min, children: [
       SGContainer(
         color: Colors.transparent,
@@ -99,13 +104,14 @@ class _CuisineSelectionBottomSheetState extends State<_CuisineSelectionBottomShe
               SizedBox(width: SGSpacing.p2),
               Expanded(
                   child: TextField(
-                      style: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5),
-                      decoration: InputDecoration(
-                          isDense: true,
-                          hintText: "메뉴명 검색",
-                          hintStyle:
-                              TextStyle(fontSize: FontSize.normal, color: SGColors.gray3, fontWeight: FontWeight.w400),
-                          border: InputBorder.none)))
+                style: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5),
+                decoration: InputDecoration(isDense: true, hintText: "메뉴명 검색", hintStyle: TextStyle(fontSize: FontSize.normal, color: SGColors.gray3, fontWeight: FontWeight.w400), border: InputBorder.none),
+                onChanged: (menuNameQuery) {
+                  setState(() {
+                    this.menuNameQuery = menuNameQuery;
+                  });
+                },
+              ))
             ])),
       ),
       SizedBox(height: SGSpacing.p4),
@@ -119,13 +125,13 @@ class _CuisineSelectionBottomSheetState extends State<_CuisineSelectionBottomShe
                     onTap: () {
                       // onSelect(options[idx].value);
                       // Navigator.of(context).pop();
-                      if (selectedCuisineIds.contains(widget.cuisines[idx].menuId)) {
+                      if (selectedCuisineIds.contains(selectableMenus[idx].menuId)) {
                         setState(() {
-                          selectedCuisines.remove(widget.cuisines[idx]);
+                          selectedMenus.remove(selectableMenus[idx]);
                         });
                       } else {
                         setState(() {
-                          selectedCuisines.add(widget.cuisines[idx]);
+                          selectedMenus.add(selectableMenus[idx]);
                         });
                         print(selectedCuisineIds);
                       }
@@ -141,33 +147,25 @@ class _CuisineSelectionBottomSheetState extends State<_CuisineSelectionBottomShe
                         children: [
                           Row(
                             children: [
-                              ClipRRect(
-                                  borderRadius: BorderRadius.circular(SGSpacing.p4),
-                                  child: Image.network(widget.cuisines[idx].menuPictureURL,
-                                      width: SGSpacing.p18, height: SGSpacing.p18)),
+                              ClipRRect(borderRadius: BorderRadius.circular(SGSpacing.p4), child: Image.network(selectableMenus[idx].menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18)),
                               SizedBox(width: SGSpacing.p3),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SGTypography.body(widget.cuisines[idx].menuName,
-                                      color: SGColors.black, size: FontSize.normal, weight: FontWeight.w700),
+                                  SGTypography.body(selectableMenus[idx].menuName, color: SGColors.black, size: FontSize.normal, weight: FontWeight.w700),
                                   SizedBox(height: SGSpacing.p2),
-                                  SGTypography.body("${widget.cuisines[idx].price.toKoreanCurrency}원",
-                                      color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w400),
+                                  SGTypography.body("${selectableMenus[idx].price.toKoreanCurrency}원", color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w400),
                                 ],
                               ),
                             ],
                           ),
-                          if (selectedCuisineIds.contains(widget.cuisines[idx].menuId))
-                            Image.asset("assets/images/checkbox-on.png", width: 24, height: 24)
-                          else
-                            Image.asset("assets/images/checkbox-off.png", width: 24, height: 24)
+                          if (selectedCuisineIds.contains(selectableMenus[idx].menuId)) Image.asset("assets/images/checkbox-on.png", width: 24, height: 24) else Image.asset("assets/images/checkbox-off.png", width: 24, height: 24)
                         ],
                       ),
                     ),
                   ),
               separatorBuilder: (ctx, _) => SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-              itemCount: widget.cuisines.length),
+              itemCount: selectableMenus.length),
         ),
       ),
       SizedBox(height: SGSpacing.p2),
@@ -175,27 +173,21 @@ class _CuisineSelectionBottomSheetState extends State<_CuisineSelectionBottomShe
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
           child: GestureDetector(
             onTap: () {
-              widget.onSelect(selectedCuisines);
+              widget.onSelect(selectedMenus);
               Navigator.of(context).pop();
             },
             child: SGContainer(
                 padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
                 width: double.infinity,
-                color: selectedCuisines.isEmpty ? SGColors.gray3 : SGColors.primary,
+                color: selectedMenus.isEmpty ? SGColors.gray3 : SGColors.primary,
                 borderRadius: BorderRadius.circular(SGSpacing.p3),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Center(
-                        child: SGTypography.body("추가하기",
-                            color: Colors.white, weight: FontWeight.w700, size: FontSize.medium)),
-                    if (selectedCuisines.isNotEmpty) ...[
+                    Center(child: SGTypography.body("추가하기", color: Colors.white, weight: FontWeight.w700, size: FontSize.medium)),
+                    if (selectedMenus.isNotEmpty) ...[
                       SizedBox(width: SGSpacing.p1),
-                      CircleAvatar(
-                          radius: SGSpacing.p5 / 2,
-                          backgroundColor: SGColors.white,
-                          child: Center(
-                              child: SGTypography.body(selectedCuisines.length.toString(), color: SGColors.primary)))
+                      CircleAvatar(radius: SGSpacing.p5 / 2, backgroundColor: SGColors.white, child: Center(child: SGTypography.body(selectedMenus.length.toString(), color: SGColors.primary)))
                     ]
                   ],
                 )),

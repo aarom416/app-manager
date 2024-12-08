@@ -97,7 +97,7 @@ class RestApiUri {
       '/api/v1/owner/store-menu/option-category';
   // POST - 메뉴 추가 TODO
   static const String createMenu = '/api/v1/owner/store-menu/menu';
-  // POST - 메뉴 카테고리 추가 TODO
+  // POST - 메뉴 카테고리 추가
   static const String createMenuCategory =
       '/api/v1/owner/store-menu/menu-category';
 

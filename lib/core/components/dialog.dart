@@ -91,11 +91,14 @@ void showFailDialogWithImage({
   required BuildContext context,
   required String mainTitle,
   String? subTitle,
-  required VoidCallback onTapFunction,
-  VoidCallback onNonEmptySubTitleTapFunction = onNonEmptySubTitleTap,
+  VoidCallback? onTapFunction,
+  VoidCallback? onNonEmptySubTitleTapFunction,
   String confirmButtonText = "확인",
 }) {
-  final VoidCallback onTapAction = (subTitle == null || subTitle.isEmpty) ? onTapFunction : onNonEmptySubTitleTapFunction;
+  defaultTapAction() => Navigator.pop(context);
+  final VoidCallback onTapAction = (subTitle == null || subTitle.isEmpty)
+      ? (onTapFunction ?? defaultTapAction)
+      : (onNonEmptySubTitleTapFunction ?? (onTapFunction ?? defaultTapAction));
 
   showSGDialogWithImage(
     context: context,
@@ -144,11 +147,6 @@ void showFailDialogWithImage({
     ],
   );
 }
-
-void onNonEmptySubTitleTap() {
-  // Default implementation for non-empty subtitle tap action
-}
-
 
 void showSGDialogWithImageBoth({
   required BuildContext context,

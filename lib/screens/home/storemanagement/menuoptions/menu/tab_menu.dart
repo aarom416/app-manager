@@ -9,11 +9,12 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
+import '../../../../../main.dart';
 import '../model.dart';
 import '../provider.dart';
+import 'addmenu/screen.dart';
+import 'addmenucategory/screen.dart';
 import 'menu_category_card.dart';
-import 'newmenucategory/screen.dart';
-import 'newmenu/screen.dart';
 
 class MenuTab extends ConsumerStatefulWidget {
   const MenuTab({super.key});
@@ -39,147 +40,6 @@ class _MenuTabState extends ConsumerState<MenuTab> {
   @override
   void initState() {
     super.initState();
-    menuCategoryList = [
-      MenuCategoryModel(menuCategoryName: "단품 메뉴", menuDescription: "곡물 베이스는 기본입니다.", menuList: [
-        MenuModel(
-          menuName: "참치 샐러드",
-          price: 13000,
-          menuDescription: "곡물 베이스는 기본입니다.",
-          menuPictureURL: "https://via.placeholder.com/150",
-          soldOutStatus: 0,
-          menuCategoryOptions: [
-            MenuOptionCategoryModel(menuOptionCategoryName: "추가 옵션", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-            MenuOptionCategoryModel(menuOptionCategoryName: "소스", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-          ],
-        ),
-        MenuModel(
-          menuName: "연어 샐러드",
-          price: 13000,
-          menuDescription: "곡물 베이스는 기본입니다.",
-          menuPictureURL: "https://via.placeholder.com/150",
-          soldOutStatus: 1,
-          menuCategoryOptions: [
-            MenuOptionCategoryModel(menuOptionCategoryName: "추가 옵션", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-            MenuOptionCategoryModel(menuOptionCategoryName: "소스", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-          ],
-        ),
-        MenuModel(
-          menuName: "닭가슴살 샐러드",
-          price: 13000,
-          menuDescription: "곡물 베이스는 기본입니다.",
-          menuPictureURL: "https://via.placeholder.com/150",
-          soldOutStatus: 0,
-          menuCategoryOptions: [
-            MenuOptionCategoryModel(menuOptionCategoryName: "추가 옵션", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-            MenuOptionCategoryModel(menuOptionCategoryName: "소스", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-          ],
-        )
-      ]),
-      MenuCategoryModel(menuCategoryName: "1인 샐러드 세트", menuDescription: "곡물 베이스는 기본입니다.", menuList: [
-        MenuModel(
-          menuName: "연어 샐러드",
-          price: 13000,
-          menuDescription: "곡물 베이스는 기본입니다.",
-          menuPictureURL: "https://via.placeholder.com/150",
-          soldOutStatus: 1,
-          menuCategoryOptions: [
-            MenuOptionCategoryModel(menuOptionCategoryName: "추가 옵션", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-            MenuOptionCategoryModel(menuOptionCategoryName: "소스", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-          ],
-        ),
-        MenuModel(
-          menuName: "닭가슴살 샐러드",
-          price: 13000,
-          menuDescription: "곡물 베이스는 기본입니다.",
-          menuPictureURL: "https://via.placeholder.com/150",
-          soldOutStatus: 1,
-          menuCategoryOptions: [
-            MenuOptionCategoryModel(menuOptionCategoryName: "추가 옵션", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-            MenuOptionCategoryModel(menuOptionCategoryName: "소스", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-          ],
-        )
-      ]),
-      MenuCategoryModel(menuCategoryName: "다이어트 풀코스", menuDescription: "곡물 베이스는 기본입니다.", menuList: [
-        MenuModel(
-          menuName: "연어 샐러드",
-          price: 13000,
-          menuDescription: "곡물 베이스는 기본입니다.",
-          menuPictureURL: "https://via.placeholder.com/150",
-          soldOutStatus: 0,
-          menuCategoryOptions: [
-            MenuOptionCategoryModel(menuOptionCategoryName: "추가 옵션", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-            MenuOptionCategoryModel(menuOptionCategoryName: "소스", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-          ],
-        ),
-        MenuModel(
-          menuName: "닭가슴살 샐러드",
-          price: 13000,
-          menuDescription: "곡물 베이스는 기본입니다.",
-          menuPictureURL: "https://via.placeholder.com/150",
-          soldOutStatus: 0,
-          menuCategoryOptions: [
-            MenuOptionCategoryModel(menuOptionCategoryName: "추가 옵션", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-            MenuOptionCategoryModel(menuOptionCategoryName: "소스", menuOptions: [
-              MenuOptionModel(),
-              MenuOptionModel(),
-              MenuOptionModel(),
-            ]),
-          ],
-        )
-      ]),
-    ];
     selectedSoldOutStatusOptionValue = soldOutStatusOptions[0].value;
     selectedSoldOutStatusOptionLabel = soldOutStatusOptions[0].label;
     selectedMenuCategoryName = "";
@@ -187,6 +47,7 @@ class _MenuTabState extends ConsumerState<MenuTab> {
     menuNameQueryController = TextEditingController();
   }
 
+  /// 검색조건, 정렬 option 에 따른 menuCategoryList
   List<MenuCategoryModel> getFilteredMenuCategories() {
     return menuCategoryList
         .map((category) {
@@ -213,16 +74,17 @@ class _MenuTabState extends ConsumerState<MenuTab> {
   @override
   Widget build(BuildContext context) {
     final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
-
     final MenuOptionsNotifier provider = ref.read(menuOptionsNotifierProvider.notifier);
 
-    print("menuNameQuery $menuNameQuery");
-    print("selectedSoldOutStatusOptionValue $selectedSoldOutStatusOptionValue");
-    print("selectedMenuCategoryName $selectedMenuCategoryName");
-    print("selectedSoldOutStatusOptionLabel $selectedSoldOutStatusOptionLabel");
+    menuCategoryList = state.menuCategoryList;
+
+    logger.d("menuNameQuery $menuNameQuery");
+    logger.d("selectedSoldOutStatusOptionValue $selectedSoldOutStatusOptionValue");
+    logger.d("selectedMenuCategoryName $selectedMenuCategoryName");
+    logger.d("selectedSoldOutStatusOptionLabel $selectedSoldOutStatusOptionLabel");
 
     List<MenuCategoryModel> filterMenuCategories = getFilteredMenuCategories();
-    print("filterMenuCategories $filterMenuCategories");
+    logger.d("filterMenuCategories $filterMenuCategories");
 
     return Column(children: [
       SizedBox(height: SGSpacing.p3),
@@ -238,14 +100,15 @@ class _MenuTabState extends ConsumerState<MenuTab> {
             SizedBox(width: SGSpacing.p2),
             Expanded(
                 child: TextField(
-                    controller: menuNameQueryController,
-                    style: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5),
-                    decoration: InputDecoration(isDense: true, hintText: "메뉴명 검색", hintStyle: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5, fontWeight: FontWeight.w400), border: InputBorder.none),
-                    onChanged: (menuNameQuery) {
-                      setState(() {
-                        this.menuNameQuery = menuNameQuery;
-                      });
-                    }))
+              controller: menuNameQueryController,
+              style: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5),
+              decoration: InputDecoration(isDense: true, hintText: "메뉴명 검색", hintStyle: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5, fontWeight: FontWeight.w400), border: InputBorder.none),
+              onChanged: (menuNameQuery) {
+                setState(() {
+                  this.menuNameQuery = menuNameQuery;
+                });
+              },
+            ))
           ])),
 
       SizedBox(height: SGSpacing.p4),
@@ -308,7 +171,7 @@ class _MenuTabState extends ConsumerState<MenuTab> {
         Align(
             alignment: Alignment.centerRight,
             child: ReloadButton(onReload: () {
-              print("hello");
+              logger.i("hello");
               setState(() {
                 selectedSoldOutStatusOptionValue = soldOutStatusOptions[0].value;
                 selectedSoldOutStatusOptionLabel = soldOutStatusOptions[0].label;
@@ -326,7 +189,7 @@ class _MenuTabState extends ConsumerState<MenuTab> {
         Expanded(
             child: GestureDetector(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewMenuCategoryScreen()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddMenuCategoryScreen()));
           },
           child: SGContainer(
               color: SGColors.primary,

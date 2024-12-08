@@ -1,61 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:intl/intl.dart';
-
-import '../../../../core/components/date_range_picker.dart';
 
 part 'model.freezed.dart';
 
 part 'model.g.dart';
 
 /// data retrieve model. api response 형상에 맞춤.
-/*
-    "storeMenuCategoryDTOList": [  // MenuCategoryModel
-      {
-        "storeId": 1,
-        "storeMenuCategoryId": 11,
-        "menuCategoryName": "대표메뉴",
-        "menuDescription": "대표메뉴입니다!"
-      }
-    ],
-    "storeMenuDTOList": [ // MenuModel
-      {
-        "menuId": 1,
-        "storeMenuCategoryId": 1,
-        "popularityStatus": 0,
-        "bestStatus": 0,
-        "soldOutStatus": 0,
-        "menuName": "햄에그 샌드위치",
-        "price": 14000,
-        "menuPictureURL": "URL"
-      }
-    ],
-    "menuOptionCategoryDTOList": [ // MenuOptionCategoryModel
-      {
-        "menuOptionCategoryId": 1,
-        "menuOptionCategoryName": "베이스 필수 선택",
-        "essentialStatus": 1,
-        "minChoice": 1,
-        "maxChoice": 2
-      }
-    ],
-    "storeMenuOptionDTOList": [ // MenuOptionModel
-      {
-        "menuOptionId": 1,
-        "menuOptionCategoryId": 1,
-        "optionContent": "채소볼(기본)",
-        "price": 0,
-        "soldOutStatus": 0
-      }
-    ],
-    "menuOptionRelationshipDTOList": [ // MenuOptionRelationshipModel
-      {
-        "menuId": 1,
-        "menuOptionCategoryId": 1,
-        "menuOptionId": 1
-      }
-    ]
- */
-
 @freezed
 abstract class MenuOptionsDataModel with _$MenuOptionsDataModel {
   const factory MenuOptionsDataModel({
@@ -158,5 +107,3 @@ class Nutrition {
     required this.saturatedFat,
   });
 }
-
-

@@ -11,7 +11,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 
-import '../cuisine_selection_bottom_sheet.dart';
+import '../menu_selection_bottom_sheet.dart';
 import '../model.dart';
 import '../new_cuisine_option_screen.dart';
 
@@ -576,15 +576,15 @@ class _SelectCuisinesStepScreenState extends State<_SelectCuisinesStepScreen> {
   }
 
   void _selectCuisine(BuildContext context) {
-    return showCuisineSelectionBottomSheet(
+    return showSelectableMenuModelsBottomSheet(
         context: context,
         title: "메뉴 추가",
-        cuisines: selectableCuisines,
+        selectableMenus: selectableCuisines,
         onSelect: (selectedCuisines) {
           // final sortedCuisines = selectedCuisines.toList()..sort((a, b) => a.menuId!.compareTo(b.menuId!));
           // widget.onCuisinesSelected(sortedCuisines);
         },
-        selectedCuisines: widget.cuisines);
+        selectedMenus: widget.cuisines);
   }
 }
 

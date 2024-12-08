@@ -21,7 +21,7 @@ import '../../model.dart';
 import '../../nutrition_card.dart';
 import '../../nutrition_form.dart';
 import '../../cuisine_option_category_selection_bottom_sheet.dart';
-import '../newmenucategory/screen.dart';
+import '../addmenucategory/screen.dart';
 
 class NewMenuScreen extends StatefulWidget {
   const NewMenuScreen({super.key});
@@ -260,7 +260,7 @@ class __CategorySelectionDialogBodyState extends State<__CategorySelectionDialog
           SizedBox(height: SGSpacing.p4),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewMenuCategoryScreen()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddMenuCategoryScreen()));
             },
             child: SGContainer(
                 color: SGColors.white,
