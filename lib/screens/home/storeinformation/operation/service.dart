@@ -54,6 +54,48 @@ class StoreInformationService {
       return Future.error(e);
     }
   }
+
+  /// POST - 이메일 인증코드 전송
+  Future<Response<dynamic>> sendEmailCode({required String email}) async {
+    try {
+      final response = ref.read(requestApiProvider).post(
+        RestApiUri.sendEmailCode,
+        queryParameters: {
+          'email': email,
+        },
+      );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 이메일 인증코드 확인
+  Future<Response<dynamic>> verifyEmailCode(
+      {required String email, required String authCode}) async {
+    try {
+      final response = ref.read(requestApiProvider).post(
+        RestApiUri.verifyEmailCode,
+        data: {
+          'email': email,
+          'authCode': authCode,
+        },
+      );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final storeInformationServiceProvider =
