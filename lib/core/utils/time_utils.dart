@@ -74,3 +74,28 @@ String formatHourToAmPmWithKoreanSuffix(String hour) {
   // 결과 문자열 반환
   return "$period $hourIn12HourFormat시";
 }
+
+// 해당 월의 첫날 반환
+DateTime getFirstDayOfMonth(String yearMonth) {
+  final parts = yearMonth.split('-');
+  final year = int.parse(parts[0]);
+  final month = int.parse(parts[1]);
+  return DateTime(year, month, 1);
+}
+
+// 해당 월의 마지막날 반환
+DateTime getLastDayOfMonth(String yearMonth) {
+  final parts = yearMonth.split('-');
+  final year = int.parse(parts[0]);
+  final month = int.parse(parts[1]);
+  return DateTime(year, month + 1, 0);
+}
+
+String getFirstDayOfMonthWithDateTime(DateTime date) {
+  return "${date.year}-${date.month.toString().padLeft(2, '0')}-01";
+}
+
+String getLastDayOfMonthWithDateTime(DateTime date) {
+  final lastDay = DateTime(date.year, date.month + 1, 0);
+  return "${lastDay.year}-${lastDay.month.toString().padLeft(2, '0')}-${lastDay.day.toString().padLeft(2, '0')}";
+}

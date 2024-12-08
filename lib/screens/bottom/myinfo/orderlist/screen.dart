@@ -13,6 +13,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
+import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/office/models/order_model.dart';
 import 'package:singleeat/screens/bottom/myinfo/orderlist/provider.dart';
 
@@ -283,8 +284,12 @@ class _ReceiptCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 시간대
-              SGTypography.body(order.createdDate,
-                  size: FontSize.normal, weight: FontWeight.w600),
+              SGTypography.body(
+                  order.createdDate.toString().substring(
+                      order.createdDate.length - 8,
+                      order.createdDate.length - 3),
+                  size: FontSize.normal,
+                  weight: FontWeight.w600),
               SizedBox(height: SGSpacing.p3 + SGSpacing.p05),
               Row(
                 children: [
@@ -324,7 +329,7 @@ class _ReceiptCard extends StatelessWidget {
                       size: FontSize.small,
                       weight: FontWeight.w500,
                       color: SGColors.gray4),
-                  SGTypography.body("${order.orderAmount}원",
+                  SGTypography.body("${order.orderAmount.toKoreanCurrency}원",
                       size: FontSize.small,
                       weight: FontWeight.w500,
                       color: SGColors.gray5),
@@ -360,7 +365,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                         children: [
                           SGTypography.body("주문 상태",
                               size: FontSize.small, weight: FontWeight.w600),
-                          SGTypography.body(order.createdDate,
+                          SGTypography.body(order.createdDate.substring(0, 10),
                               size: FontSize.small,
                               weight: FontWeight.w600,
                               color: SGColors.gray4),
@@ -446,7 +451,8 @@ class _ReceiptDetailScreen extends StatelessWidget {
                       SGFlexible(
                           flex: 1,
                           child: SGTypography.body(
-                              order.orderMenuDTOList[0].menuPrice.toString(),
+                              order.orderMenuDTOList[0].menuPrice
+                                  .toKoreanCurrency,
                               align: TextAlign.right,
                               size: FontSize.small)),
                     ]),
@@ -472,8 +478,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                           child: SGTypography.body(
                               order.orderMenuOptionDTOList[0].isNotEmpty
                                   ? order.orderMenuOptionDTOList[0][0]
-                                      .menuOptionPrice
-                                      .toString()
+                                      .menuOptionPrice.toKoreanCurrency
                                   : '',
                               align: TextAlign.right,
                               size: FontSize.small)),
@@ -488,7 +493,8 @@ class _ReceiptDetailScreen extends StatelessWidget {
                               size: FontSize.small, color: SGColors.gray4)),
                       SGFlexible(
                           flex: 1,
-                          child: SGTypography.body(order.orderAmount.toString(),
+                          child: SGTypography.body(
+                              order.orderAmount.toKoreanCurrency,
                               align: TextAlign.right,
                               size: FontSize.small,
                               color: SGColors.gray4)),
@@ -503,7 +509,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                         SGFlexible(
                             flex: 1,
                             child: SGTypography.body(
-                                order.deliveryTip.toString(),
+                                order.deliveryTip.toKoreanCurrency,
                                 align: TextAlign.right,
                                 size: FontSize.small,
                                 color: SGColors.gray4)),
@@ -520,7 +526,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                       SGFlexible(
                           flex: 1,
                           child: SGTypography.body(
-                              order.totalOrderAmount.toString(),
+                              order.totalOrderAmount.toKoreanCurrency,
                               align: TextAlign.right,
                               size: FontSize.large,
                               weight: FontWeight.w700)),
@@ -533,7 +539,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                     SizedBox(height: SGSpacing.p4),
                     DataTableRow(
                         left: order.payMethodDetail,
-                        right: order.totalOrderAmount.toString()),
+                        right: order.totalOrderAmount.toKoreanCurrency),
                   ]),
                   if (order.receiveFoodType == 'DELIVERY') ...[
                     SizedBox(height: SGSpacing.p4),

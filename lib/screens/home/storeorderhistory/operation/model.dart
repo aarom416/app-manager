@@ -18,9 +18,19 @@ class OrderHistoryDTO with _$OrderHistoryDTO {
     @Default('') String receiveFoodType,
     @Default(0) int totalOrderAmount,
     @Default(<OrderMenuDTO>[]) List<OrderMenuDTO> orderMenuDTOList,
-    @Default(<OrderMenuOptionDTO>[])
-    List<OrderMenuOptionDTO> orderMenuOptionDTOList,
-    @Default(0) int count,
+    @Default([<OrderMenuOptionDTO>[]])
+    List<List<OrderMenuOptionDTO>> orderMenuOptionDTOList,
+    @Default('') String toOwner,
+    @Default('') String toRider,
+    @Default('') String address,
+    @Default('') String payMethodDetail,
+    @Default('') String secondPayMethod,
+    @Default(0) int deliveryTip,
+    @Default(0) int couponDiscount,
+    @Default(0) int pointAmount,
+    @Default('') String createdDate,
+    @Default('') String receivedDate,
+    @Default('') String completedDate,
   }) = _OrderHistoryDTO;
 
   factory OrderHistoryDTO.fromJson(Map<String, dynamic> json) =>
@@ -62,17 +72,7 @@ abstract class StoreOrderHistoryModel with _$StoreOrderHistoryModel {
   const factory StoreOrderHistoryModel({
     @Default(0) int totalOrderCount,
     @Default(0.0) double totalOrderAmount,
-    @Default(<OrderHistoryDTO>[]) List<OrderHistoryDTO> orderHistoryDTOList,
-    @Default('') String toOwner,
-    @Default('') String toRider,
-    @Default('') String address,
-    @Default('') String payMethodDetail,
-    @Default('') String secondPayMethod,
-    @Default(0) int deliveryTip,
-    @Default(0) int couponDiscount,
-    @Default('') String createdDate,
-    @Default('') String receivedDate,
-    @Default('') String completedDate,
+    @Default([]) List<OrderHistoryDTO> orderHistoryDTOList,
   }) = _StoreOrderHistoryModel;
 
   factory StoreOrderHistoryModel.fromJson(Map<String, dynamic> json) =>

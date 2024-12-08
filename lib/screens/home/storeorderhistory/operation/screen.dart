@@ -11,6 +11,9 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
+import 'package:singleeat/core/extensions/integer.dart';
+import 'package:singleeat/core/utils/time_utils.dart';
+import 'package:singleeat/screens/home/storeorderhistory/operation/model.dart';
 import 'package:singleeat/screens/home/storeorderhistory/operation/provider.dart';
 
 class OrderHistoryScreen extends ConsumerStatefulWidget {
@@ -27,7 +30,19 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   DateRange dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
 
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(storeOrderHistoryNotifierProvider.notifier).onChangeStartDate(
+          startDate: getFirstDayOfMonthWithDateTime(dateRange.start));
+      ref.read(storeOrderHistoryNotifierProvider.notifier).onChangeEndDate(
+          endDate: getLastDayOfMonthWithDateTime(dateRange.end));
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(storeOrderHistoryNotifierProvider);
     final provider = ref.read(storeOrderHistoryNotifierProvider.notifier);
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "주문 내역"),
@@ -84,11 +99,17 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                             onStartDateChanged: (date) {
                               setState(() {
                                 dateRange = dateRange.copyWith(start: date);
+                                provider.onChangeStartDate(
+                                    startDate: dateRange.start
+                                        .toShortDateStringWithZeroPadding);
                               });
                             },
                             onEndDateChanged: (date) {
                               setState(() {
                                 dateRange = dateRange.copyWith(end: date);
+                                provider.onChangeEndDate(
+                                    endDate: dateRange
+                                        .end.toShortDateStringWithZeroPadding);
                               });
                             },
                           )
@@ -102,6 +123,12 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                     .subtract(Duration(days: 1));
                                 dateRange = dateRange.copyWith(
                                     start: startDate, end: endDate);
+                                provider.onChangeStartDate(
+                                    startDate: getFirstDayOfMonthWithDateTime(
+                                        dateRange.start));
+                                provider.onChangeEndDate(
+                                    endDate: getLastDayOfMonthWithDateTime(
+                                        dateRange.start));
                               }),
                         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
                         SGTypography.body(
@@ -136,6 +163,12 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                         onTap: () {
                                           setState(() {
                                             filterValue = e;
+                                            provider.onChangeFilter(
+                                                filter: filterValue == '처리 중'
+                                                    ? '0'
+                                                    : filterValue == '배달/픽업 완료'
+                                                        ? '1'
+                                                        : '2');
                                           });
                                         },
                                         child: SGContainer(
@@ -186,7 +219,9 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                     weight: FontWeight.w500,
                                     color: SGColors.gray4),
                                 SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                                SGTypography.body("47건",
+                                SGTypography.body(
+                                    state.storeOrderHistory.totalOrderCount
+                                        .toKoreanCurrency,
                                     size: FontSize.large,
                                     weight: FontWeight.w700),
                               ]),
@@ -206,7 +241,8 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                     weight: FontWeight.w500,
                                     color: SGColors.gray4),
                                 SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                                SGTypography.body("00,000원",
+                                SGTypography.body(
+                                    "${state.storeOrderHistory.totalOrderAmount.toInt().toKoreanCurrency}원",
                                     size: FontSize.large,
                                     weight: FontWeight.w700),
                               ]),
@@ -216,7 +252,11 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                       SGTypography.body("누적 주문 내역",
                           size: FontSize.medium, weight: FontWeight.w700),
                       SizedBox(height: SGSpacing.p2),
-                      _CollasipleOrderCard(),
+                      ...state.storeOrderHistory.orderHistoryDTOList.map((e) =>
+                          _CollasipleOrderCard(
+                              storeOrderHistory: e as OrderHistoryDTO)),
+                      /*_CollasipleOrderCard(
+                          storeOrderHistory: state.storeOrderHistory.),*/
                       SizedBox(height: SGSpacing.p2),
                     ]),
               ),
@@ -225,9 +265,8 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
 }
 
 class _CollasipleOrderCard extends StatefulWidget {
-  _CollasipleOrderCard({
-    super.key,
-  });
+  final OrderHistoryDTO storeOrderHistory;
+  _CollasipleOrderCard({super.key, required this.storeOrderHistory});
 
   @override
   State<_CollasipleOrderCard> createState() => _CollasipleOrderCardState();
@@ -246,17 +285,29 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
             horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
         boxShadow: SGBoxShadow.large,
         child: Column(children: [
-          DataTableRow(left: "주문 상태", right: "배달 완료"),
+          DataTableRow(
+              left: "주문 상태", right: widget.storeOrderHistory.orderStatus),
           SizedBox(height: SGSpacing.p4),
-          DataTableRow(left: "주문 번호", right: "ABCDEFGHIJ"),
+          DataTableRow(
+              left: "주문 번호", right: widget.storeOrderHistory.orderNumber),
           SizedBox(height: SGSpacing.p4),
-          DataTableRow(left: "주문 내역", right: "연어 샐러드 외 1건"),
+          DataTableRow(
+              left: "주문 내역",
+              right: widget.storeOrderHistory.orderMenuDTOList[0].menuName),
           SizedBox(height: SGSpacing.p4),
-          DataTableRow(left: "결제 유형", right: "바로 결제"),
+          DataTableRow(
+              left: "결제 유형", right: widget.storeOrderHistory.payMethodDetail),
           SizedBox(height: SGSpacing.p4),
-          DataTableRow(left: "수령 방법", right: "배달"),
+          DataTableRow(
+              left: "수령 방법",
+              right: widget.storeOrderHistory.receiveFoodType == 'DELIVERY'
+                  ? '배달'
+                  : '포장'),
           SizedBox(height: SGSpacing.p4),
-          DataTableRow(left: "결제 금액", right: "00,000"),
+          DataTableRow(
+              left: "결제 금액",
+              right:
+                  widget.storeOrderHistory.totalOrderAmount.toKoreanCurrency),
           SizedBox(height: SGSpacing.p4),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -320,42 +371,29 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                         SGFlexible(
                             flex: 2,
                             child: SGTypography.body(
-                              "연어 샐러드",
+                              widget.storeOrderHistory.orderMenuDTOList[0]
+                                  .menuName,
                               size: FontSize.small,
                             )),
                         SGFlexible(
                             flex: 1,
                             child: Center(
                                 child: SGTypography.body(
-                              "1",
+                              widget.storeOrderHistory.orderMenuDTOList[0].count
+                                  .toString(),
                               size: FontSize.small,
                             ))),
                         SGFlexible(
                             flex: 1,
-                            child: SGTypography.body("13,000",
-                                align: TextAlign.right, size: FontSize.small)),
+                            child: SGTypography.body(
+                                widget.storeOrderHistory.orderMenuDTOList[0]
+                                    .menuPrice.toKoreanCurrency,
+                                align: TextAlign.right,
+                                size: FontSize.small)),
                       ]),
                       SizedBox(height: SGSpacing.p3),
-                      Row(children: [
-                        SGFlexible(
-                            flex: 2,
-                            child: SGTypography.body(
-                              "ㄴ 오리 훈제 토핑",
-                              size: FontSize.small,
-                              color: SGColors.gray3,
-                            )),
-                        SGFlexible(
-                            flex: 1,
-                            child: Center(
-                                child: SGTypography.body(
-                              "1",
-                              size: FontSize.small,
-                            ))),
-                        SGFlexible(
-                            flex: 1,
-                            child: SGTypography.body("3,000",
-                                align: TextAlign.right, size: FontSize.small)),
-                      ]),
+                      ...widget.storeOrderHistory.orderMenuOptionDTOList[0]
+                          .map((e) => _OrderMenuOptionList(orderMenuOption: e)),
                       SizedBox(height: SGSpacing.p4),
                       Divider(height: 1, thickness: 1, color: SGColors.line1),
                       SizedBox(height: SGSpacing.p3),
@@ -367,7 +405,9 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                                 size: FontSize.small, color: SGColors.gray4)),
                         SGFlexible(
                             flex: 1,
-                            child: SGTypography.body("16,000",
+                            child: SGTypography.body(
+                                widget.storeOrderHistory.totalOrderAmount
+                                    .toKoreanCurrency,
                                 align: TextAlign.right,
                                 size: FontSize.small,
                                 color: SGColors.gray4)),
@@ -380,7 +420,9 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                                 size: FontSize.small, color: SGColors.gray4)),
                         SGFlexible(
                             flex: 1,
-                            child: SGTypography.body("3,000",
+                            child: SGTypography.body(
+                                widget.storeOrderHistory.deliveryTip
+                                    .toKoreanCurrency,
                                 align: TextAlign.right,
                                 size: FontSize.small,
                                 color: SGColors.gray4)),
@@ -395,7 +437,8 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                                 size: FontSize.small)),
                         SGFlexible(
                             flex: 1,
-                            child: SGTypography.body("19,000원",
+                            child: SGTypography.body(
+                                '${widget.storeOrderHistory.totalOrderAmount.toKoreanCurrency}원',
                                 align: TextAlign.right,
                                 size: FontSize.normal,
                                 weight: FontWeight.w700)),
@@ -406,7 +449,8 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => _OrderHistoryDetailScreen()));
+                    builder: (context) => _OrderHistoryDetailScreen(
+                        storeOrderHistory: widget.storeOrderHistory)));
               },
               child: SGContainer(
                   borderColor: SGColors.primary,
@@ -423,7 +467,48 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
   }
 }
 
+class _OrderMenuOptionList extends StatefulWidget {
+  _OrderMenuOptionList({super.key, required this.orderMenuOption});
+  final OrderMenuOptionDTO orderMenuOption;
+
+  @override
+  State<_OrderMenuOptionList> createState() => _OrderMenuOptionListState();
+}
+
+class _OrderMenuOptionListState extends State<_OrderMenuOptionList> {
+  @override
+  Widget build(BuildContext context) {
+    return SGContainer(
+      child: Row(children: [
+        SGFlexible(
+            flex: 2,
+            child: SGTypography.body(
+              "ㄴ ${widget.orderMenuOption.menuOptionName}",
+              size: FontSize.small,
+              color: SGColors.gray3,
+            )),
+        SGFlexible(
+            flex: 1,
+            child: Center(
+                child: SGTypography.body(
+              widget.orderMenuOption.count.toString(),
+              size: FontSize.small,
+            ))),
+        SGFlexible(
+            flex: 1,
+            child: SGTypography.body(
+                widget.orderMenuOption.menuOptionPrice.toKoreanCurrency,
+                align: TextAlign.right,
+                size: FontSize.small)),
+      ]),
+    );
+  }
+}
+
 class _OrderHistoryDetailScreen extends StatelessWidget {
+  final OrderHistoryDTO storeOrderHistory;
+  _OrderHistoryDetailScreen({required this.storeOrderHistory});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -441,24 +526,32 @@ class _OrderHistoryDetailScreen extends StatelessWidget {
             SizedBox(height: SGSpacing.p2),
             MultipleInformationBox(
               children: [
-                DataTableRow(left: "주 결제 방법", right: "삼성페이"),
-                SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: "보조 결제 방법", right: "할인쿠폰"),
-                SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: "픽업 주소", right: "강남구 역삼 1동"),
-                SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: "가게 요청 사항", right: "(수저포크O)"),
-                SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: "배달 요청 사항", right: "문 앞에 두고 벨 눌러주세요."),
+                DataTableRow(
+                    left: "주 결제 방법", right: storeOrderHistory.payMethodDetail),
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "주문 시각", right: DateTime.now().toFullDateTimeString),
+                    left: "보조 결제 방법", right: storeOrderHistory.secondPayMethod),
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "접수 시각", right: DateTime.now().toFullDateTimeString),
+                    left: "픽업 주소",
+                    right: storeOrderHistory.address.length > 25
+                        ? storeOrderHistory.address.substring(0, 25)
+                        : storeOrderHistory.address),
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "완료 시각", right: DateTime.now().toFullDateTimeString),
+                    left: "가게 요청 사항", right: storeOrderHistory.toOwner),
+                SizedBox(height: SGSpacing.p4),
+                DataTableRow(
+                    left: "배달 요청 사항", right: storeOrderHistory.toRider),
+                SizedBox(height: SGSpacing.p4),
+                DataTableRow(
+                    left: "주문 시각", right: storeOrderHistory.createdDate),
+                SizedBox(height: SGSpacing.p4),
+                DataTableRow(
+                    left: "접수 시각", right: storeOrderHistory.receivedDate),
+                SizedBox(height: SGSpacing.p4),
+                DataTableRow(
+                    left: "완료 시각", right: storeOrderHistory.completedDate),
               ],
             )
           ])),
