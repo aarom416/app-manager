@@ -9,10 +9,12 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/screens/home/storeVat/operation/provider.dart';
 import 'package:singleeat/screens/home/storesettlement/operation/provider.dart';
 
 class SendEmailScreen extends ConsumerStatefulWidget {
-  const SendEmailScreen({super.key});
+  final int callScreen;
+  const SendEmailScreen({super.key, required this.callScreen});
 
   @override
   ConsumerState<SendEmailScreen> createState() => _SendEmailScreen();
@@ -23,9 +25,8 @@ class _SendEmailScreen extends ConsumerState<SendEmailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(storeSettlementNotifierProvider);
     final provider = ref.read(storeSettlementNotifierProvider.notifier);
-
+    final vatProvider = ref.read(storeVatNotifierProvider.notifier);
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "이메일 발송"),
         body: SGContainer(
@@ -57,7 +58,11 @@ class _SendEmailScreen extends ConsumerState<SendEmailScreen> {
                 children: [
                   SGActionButton(
                       onPressed: () {
-                        provider.onChangeEmail(email: emailController.text);
+                        widget.callScreen == 1
+                            ? provider.onChangeEmail(
+                                email: emailController.text)
+                            : vatProvider.onChangeEmail(
+                                email: emailController.text);
                         showSGDialog(
                             context: context,
                             childrenBuilder: (ctx) => [
@@ -105,7 +110,12 @@ class _SendEmailScreen extends ConsumerState<SendEmailScreen> {
                                           onTap: () {
                                             Navigator.of(ctx).pop();
                                             //Navigator.of(context).pop();
-                                            provider.generateSettlementReport();
+                                            if (widget.callScreen == 1) {
+                                              provider
+                                                  .generateSettlementReport();
+                                            } else {
+                                              vatProvider.generateVatReport();
+                                            }
                                           },
                                           child: SGContainer(
                                             color: SGColors.primary,

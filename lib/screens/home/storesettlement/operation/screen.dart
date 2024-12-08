@@ -84,7 +84,9 @@ class _SettlementScreenState extends ConsumerState<SettlementScreen> {
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => SendEmailScreen()));
+                                builder: (context) => SendEmailScreen(
+                                      callScreen: 1,
+                                    )));
                           },
                           child: Row(children: [
                             Image.asset("assets/images/download.png",

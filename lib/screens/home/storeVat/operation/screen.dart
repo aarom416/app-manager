@@ -11,6 +11,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
+import 'package:singleeat/core/extensions/string.dart';
 import 'package:singleeat/screens/home/storeVat/operation/provider.dart';
 import 'package:singleeat/screens/home/storesettlement/email/screen.dart';
 
@@ -21,13 +22,13 @@ class TaxesScreen extends ConsumerStatefulWidget {
   ConsumerState<TaxesScreen> createState() => _TaxesScreenState();
 }
 
-class SellHistoryModel {
+class SaleHistoryModel {
   final String sellType;
-  final int price;
-  final int tax;
-  int get total => price + tax;
+  final String price;
+  final String tax;
+  //int get total => int.parse(price) + int.parse(tax);
 
-  SellHistoryModel(
+  SaleHistoryModel(
       {required this.sellType, required this.price, required this.tax});
 }
 
@@ -53,36 +54,17 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
 
   DateRange dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
 
-  List<SellHistoryModel> sellHistories = [
-    SellHistoryModel(sellType: "기타매출", price: 90000, tax: 10000),
-    SellHistoryModel(sellType: "카드매출", price: 90000, tax: 10000),
-    SellHistoryModel(sellType: "현금매출", price: 90000, tax: 10000),
-  ];
-
-  List<PurchaseHistoryModel> purchaseHistories = [
-    PurchaseHistoryModel(
-        code: "싱그릿",
-        serviceType: "싱그릿 포장 주문 중개 수수료",
-        price: 100000,
-        tax: 50000),
-    PurchaseHistoryModel(
-        code: "싱그릿",
-        serviceType: "싱그릿 배달 주문 중개 수수료",
-        price: 100000,
-        tax: 50000),
-    PurchaseHistoryModel(
-        code: "싱그릿", serviceType: "결제 수수료", price: 100000, tax: 50000),
-  ];
-
   @override
   void initState() {
     Future.microtask(() {
-      ref.read(storeVatNotifierProvider.notifier).getVatInfo();
+      ref.read(storeVatNotifierProvider.notifier).getVatSalesInfo();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(storeVatNotifierProvider);
+    final provider = ref.read(storeVatNotifierProvider.notifier);
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "부가세"),
         body: SGContainer(
@@ -108,7 +90,9 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                SendEmailScreen()));
+                                                SendEmailScreen(
+                                                  callScreen: 2,
+                                                )));
                                   },
                                   child: Row(
                                     children: [
@@ -213,6 +197,11 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                             setState(() {
                               currentTab = tab;
                             });
+                            if (currentTab == '매출') {
+                              provider.getVatSalesInfo();
+                            } else {
+                              provider.getVatPurchasesInfo();
+                            }
                           }),
                       SizedBox(height: SGSpacing.p5),
                       Column(
@@ -231,7 +220,9 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  SendEmailScreen()));
+                                                  SendEmailScreen(
+                                                    callScreen: 2,
+                                                  )));
                                     },
                                     child: Row(
                                       children: [
@@ -249,10 +240,29 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                                   ),
                                 ]),
                             SizedBox(height: SGSpacing.p3),
-                            ...sellHistories
+                            ...[
+                              SaleHistoryModel(
+                                  sellType: "기타매출",
+                                  price: state.storeVatSale
+                                      .otherSalesSupplyAmount.toKoreanCurrency,
+                                  tax: state.storeVatSale.otherSalesVatAmount
+                                      .toKoreanCurrency),
+                              SaleHistoryModel(
+                                  sellType: "카드매출",
+                                  price: state.storeVatSale
+                                      .cardSalesSupplyAmount.toKoreanCurrency,
+                                  tax: state.storeVatSale.cardSalesVatAmount
+                                      .toKoreanCurrency),
+                              SaleHistoryModel(
+                                  sellType: "현금매출",
+                                  price: state.storeVatSale
+                                      .cashSalesSupplyAmount.toKoreanCurrency,
+                                  tax: state.storeVatSale.cashSalesVatAmount
+                                      .toKoreanCurrency),
+                            ]
                                 .map((e) => [
-                                      SellHistoryCard(
-                                        sellHistory: e,
+                                      SaleHistoryCard(
+                                        saleHistory: e,
                                       ),
                                       SizedBox(
                                           height: SGSpacing.p2 + SGSpacing.p05),
@@ -271,7 +281,9 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  SendEmailScreen()));
+                                                  SendEmailScreen(
+                                                    callScreen: 2,
+                                                  )));
                                     },
                                     child: Row(
                                       children: [
@@ -289,7 +301,29 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                                   ),
                                 ]),
                             SizedBox(height: SGSpacing.p3),
-                            ...purchaseHistories
+                            ...[
+                              PurchaseHistoryModel(
+                                  code: "싱그릿",
+                                  serviceType: "싱그릿 포장 주문 중개 수수료",
+                                  price: state.storeVatPurchases
+                                      .pickUpOrderPlatformFeeSupplyAmount,
+                                  tax: state.storeVatPurchases
+                                      .pickUpOrderPlatformFeeVatAmount),
+                              PurchaseHistoryModel(
+                                  code: "싱그릿",
+                                  serviceType: "싱그릿 배달 주문 중개 수수료",
+                                  price: state.storeVatPurchases
+                                      .deliveryOrderPlatformFeeSupplyAmount,
+                                  tax: state.storeVatPurchases
+                                      .deliveryOrderPlatformFeeVatAmount),
+                              PurchaseHistoryModel(
+                                  code: "싱그릿",
+                                  serviceType: "결제 수수료",
+                                  price: state
+                                      .storeVatPurchases.paymentFeeSupplyAmount,
+                                  tax: state
+                                      .storeVatPurchases.paymentFeeVatAmount),
+                            ]
                                 .map((e) => [
                                       PurchaseHistoryCard(
                                         purchaseHistory: e,
@@ -310,21 +344,25 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
   }
 }
 
-class SellHistoryCard extends StatelessWidget {
-  final SellHistoryModel sellHistory;
-  const SellHistoryCard({super.key, required this.sellHistory});
+class SaleHistoryCard extends StatelessWidget {
+  final SaleHistoryModel saleHistory;
+  const SaleHistoryCard({super.key, required this.saleHistory});
 
   @override
   Widget build(BuildContext context) {
     return MultipleInformationBox(
       children: [
-        DataTableRow(left: "구분", right: sellHistory.sellType),
+        DataTableRow(left: "구분", right: saleHistory.sellType),
         SizedBox(height: SGSpacing.p4),
-        DataTableRow(left: "공급가액", right: sellHistory.price.toKoreanCurrency),
+        DataTableRow(left: "공급가액", right: saleHistory.price),
         SizedBox(height: SGSpacing.p4),
-        DataTableRow(left: "부가세", right: sellHistory.tax.toKoreanCurrency),
+        DataTableRow(left: "부가세", right: saleHistory.tax),
         SizedBox(height: SGSpacing.p4),
-        DataTableRow(left: "합계", right: sellHistory.total.toKoreanCurrency),
+        DataTableRow(
+            left: "합계",
+            right: (saleHistory.price.toIntFromCurrency +
+                    saleHistory.tax.toIntFromCurrency)
+                .toKoreanCurrency),
       ],
     );
   }
