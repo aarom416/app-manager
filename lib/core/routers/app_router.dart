@@ -4,30 +4,33 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/screens/allergy_information_screen.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
-import 'package:singleeat/screens/business_notification_configuration_screen.dart';
-import 'package:singleeat/screens/check_password_screen.dart';
+import 'package:singleeat/screens/bottom/myinfo/accountstatus/checkpassword/screen.dart';
+import 'package:singleeat/screens/bottom/myinfo/accountstatus/screen.dart';
+import 'package:singleeat/screens/bottom/myinfo/alarmstatus/business_notification_configuration_screen.dart';
+import 'package:singleeat/screens/bottom/myinfo/alarmstatus/notification_configuration_screen.dart';
+import 'package:singleeat/screens/bottom/myinfo/operationstatus/screen.dart';
 import 'package:singleeat/screens/delivery_agency_screen.dart';
 import 'package:singleeat/screens/find_account_screen.dart';
 import 'package:singleeat/screens/find_account_webview_screen.dart';
 import 'package:singleeat/screens/find_by_password_screen.dart';
 import 'package:singleeat/screens/find_by_password_webview_screen.dart';
+import 'package:singleeat/screens/home/storeVat/operation/screen.dart';
+import 'package:singleeat/screens/home/storeinformation/operation/phonechange/change_phone_webview_screen.dart';
+import 'package:singleeat/screens/home/storeinformation/operation/screen.dart';
+import 'package:singleeat/screens/home/storemanagement/menuoptions/store_management_screen.dart';
+import 'package:singleeat/screens/home/storeorderhistory/operation/screen.dart';
+import 'package:singleeat/screens/home/storesettlement/operation/screen.dart';
+import 'package:singleeat/screens/home/storestatistics/operation/screen.dart';
 import 'package:singleeat/screens/home_screen.dart';
 import 'package:singleeat/screens/login_screen.dart';
 import 'package:singleeat/screens/login_webview_screen.dart';
-import 'package:singleeat/screens/notification_configuration_screen.dart';
 import 'package:singleeat/screens/notification_screen.dart';
-import 'package:singleeat/screens/onboding/onboding_page.dart';
-import 'package:singleeat/screens/order_history_screen.dart';
-import 'package:singleeat/screens/profile_delete_session_screen.dart';
 import 'package:singleeat/screens/register_delivery_agency_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/signup_screen.dart';
 import 'package:singleeat/screens/signup_webview_screen.dart';
-import 'package:singleeat/screens/statistics_screen.dart';
-import 'package:singleeat/screens/store_management_screen.dart';
 import 'package:singleeat/screens/store_registration_form_screen.dart';
 import 'package:singleeat/screens/success_change_password_screen.dart';
-import 'package:singleeat/screens/temporary_closed_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
 
@@ -118,6 +121,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: FindAccountWebViewScreen())),
       GoRoute(
+          path: AppRoutes.changePhoneWebView,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: ChangePhoneWebviewScreen())),
+      GoRoute(
           path: AppRoutes.profileEdit,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: ProfileEditScreen())),
@@ -178,9 +185,21 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: StatisticsScreen())),
       GoRoute(
+          path: AppRoutes.settlement,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: SettlementScreen())),
+      GoRoute(
+          path: AppRoutes.vat,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: TaxesScreen())),
+      GoRoute(
           path: AppRoutes.storeManagement,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: StoreManagementScreen())),
+      GoRoute(
+          path: AppRoutes.storeInformation,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: StoreInformationScreen())),
       GoRoute(
           path: AppRoutes.orderHistory,
           pageBuilder: (context, state) =>

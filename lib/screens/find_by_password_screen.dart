@@ -258,10 +258,13 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             child: SGActionButton(
                 onPressed: () {
                   if (isPasswordValid) {
-                    provider.updatePassword();
+                    provider.updatePassword().then((value) {
+                      if (!value) {
+                        showFailDialogWithImage(
+                            '비밀번호 변경을 위해\n이전과 다른 비밀번호를 입력해주세요');
+                      }
+                    });
                   }
-
-                  //
                 },
                 disabled: !isPasswordValid,
                 label: "다음")),
@@ -397,17 +400,10 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             ])));
   }
 
-  void showFailDialogWithImage(String mainTitle, String subTitle) {
+  void showFailDialogWithImage(String subTitle) {
     showSGDialogWithImage(
         context: context,
         childrenBuilder: (ctx) => [
-              Center(
-                  child: SGTypography.body(mainTitle,
-                      size: FontSize.medium,
-                      weight: FontWeight.w700,
-                      lineHeight: 1.25,
-                      align: TextAlign.center)),
-              SizedBox(height: SGSpacing.p4),
               Center(
                   child: SGTypography.body(subTitle,
                       color: SGColors.gray4,

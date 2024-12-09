@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -6,13 +7,13 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/screens/login_screen.dart';
+import 'package:singleeat/office/providers/login_provider.dart';
 
-class SuccessChangePasswordScreen extends StatelessWidget {
+class SuccessChangePasswordScreen extends ConsumerWidget {
   const SuccessChangePasswordScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBarWithLeftArrow(
             title: "비밀번호 변경",
@@ -25,12 +26,7 @@ class SuccessChangePasswordScreen extends StatelessWidget {
                 maxHeight: 58),
             child: SGActionButton(
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()),
-                    (Route<dynamic> route) => false,
-                  );
+                  ref.read(loginNotifierProvider.notifier).logout();
                 },
                 label: "확인")),
         body: SGContainer(

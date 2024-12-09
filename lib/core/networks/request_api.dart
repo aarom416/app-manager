@@ -154,6 +154,47 @@ class RequestApi {
       return response;
     }
   }
+
+  Future<Response<dynamic>> delete<T>(
+      String path, {
+        Object? data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+        String? contentType,
+      }) async {
+    try {
+      final response = await DioServices().dio.delete(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: (options == null)
+            ? Options().copyWith(headers: getHeader(contentType: contentType))
+            : options.copyWith(headers: getHeader(contentType: contentType)),
+        cancelToken: cancelToken,
+      );
+      return response;
+    } on DioException catch (e) {
+      Response? response = e.response;
+      if (response == null) {
+        return Future.error(e);
+      } else {
+        if (await dioException(response)) {
+          return await delete(
+            path,
+            data: data,
+            queryParameters: queryParameters,
+            cancelToken: cancelToken,
+            options: options,
+            contentType: contentType,
+          );
+        }
+      }
+
+      return response;
+    }
+  }
+
 }
 
 final requestApiProvider = Provider<RequestApi>((ref) {

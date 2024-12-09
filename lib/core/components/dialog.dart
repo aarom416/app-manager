@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:singleeat/core/components/container.dart';
+import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
+import 'package:singleeat/core/components/typography.dart';
+
+import '../constants/colors.dart';
 
 void showSGDialogWithCloseButton({
   required BuildContext context,
@@ -80,6 +84,67 @@ void showSGDialogWithImage({
         ),
       );
     },
+  );
+}
+
+void showFailDialogWithImage({
+  required BuildContext context,
+  required String mainTitle,
+  String? subTitle,
+  VoidCallback? onTapFunction,
+  VoidCallback? onNonEmptySubTitleTapFunction,
+  String confirmButtonText = "확인",
+}) {
+  defaultTapAction() => Navigator.pop(context);
+  final VoidCallback onTapAction = (subTitle == null || subTitle.isEmpty)
+      ? (onTapFunction ?? defaultTapAction)
+      : (onNonEmptySubTitleTapFunction ?? (onTapFunction ?? defaultTapAction));
+
+  showSGDialogWithImage(
+    context: context,
+    childrenBuilder: (ctx) => [
+      Center(
+        child: SGTypography.body(
+          mainTitle,
+          size: FontSize.medium,
+          weight: FontWeight.w700,
+          lineHeight: 1.25,
+          align: TextAlign.center,
+        ),
+      ),
+      if (subTitle != null && subTitle.isNotEmpty) ...[
+        SizedBox(height: SGSpacing.p4),
+        Center(
+          child: SGTypography.body(
+            subTitle,
+            color: SGColors.gray4,
+            size: FontSize.small,
+            weight: FontWeight.w700,
+            lineHeight: 1.25,
+            align: TextAlign.center,
+          ),
+        ),
+      ],
+      SizedBox(height: SGSpacing.p6),
+      GestureDetector(
+        onTap: onTapAction,
+        child: SGContainer(
+          color: SGColors.primary,
+          width: double.infinity,
+          borderColor: SGColors.primary,
+          padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          child: Center(
+            child: SGTypography.body(
+              confirmButtonText,
+              color: SGColors.white,
+              weight: FontWeight.w700,
+              size: FontSize.normal,
+            ),
+          ),
+        ),
+      ),
+    ],
   );
 }
 

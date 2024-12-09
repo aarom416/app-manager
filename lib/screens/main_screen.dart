@@ -12,11 +12,11 @@ import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/main_provider.dart';
 import 'package:singleeat/screens/coupon_management_screen.dart';
-import 'package:singleeat/screens/event_history_screen.dart';
+import 'package:singleeat/screens/home/storeHistory/operation/screen.dart';
+import 'package:singleeat/screens/home/storesettlement/operation/screen.dart';
 import 'package:singleeat/screens/notice_screen.dart';
-import 'package:singleeat/screens/settlement_screen.dart';
-import 'package:singleeat/screens/store_information_screen.dart';
-import 'package:singleeat/screens/taxes_screen.dart';
+
+import 'home/storeVat/operation/screen.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -232,10 +232,15 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                                 builder: (context) =>
                                     CouponManagementScreen()));
                           }),
-                          menuButton('사업자 정보', "menu-business-profile", () {
+                          /*menuButton('사업자 정보', "menu-business-profile", () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>
                                     StoreInformationScreen()));
+                          }),*/
+                          menuButton('사업자 정보', "menu-business-profile", () {
+                            ref
+                                .read(goRouterProvider)
+                                .push(AppRoutes.storeInformation);
                           }),
                         ]),
                         Row(children: [
@@ -284,40 +289,50 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                         ListView.separated(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (ctx, i) => SGContainer(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: SGSpacing.p4),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SGContainer(
-                                        child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                            itemBuilder: (ctx, i) => InkWell(
+                                  onTap: () {
+                                    //print('tab ' + i.toString());
+                                  },
+                                  child: SGContainer(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: SGSpacing.p4),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SGContainer(
+                                              child: Row(
                                             children: [
-                                              SGTypography.body(
-                                                  state.result.newsDTOList[i]
-                                                      .title,
-                                                  size: FontSize.small,
-                                                  weight: FontWeight.w500,
-                                                  overflow:
-                                                      TextOverflow.ellipsis),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    SGTypography.body(
+                                                        state
+                                                            .result
+                                                            .newsDTOList[i]
+                                                            .title,
+                                                        size: FontSize.small,
+                                                        weight: FontWeight.w500,
+                                                        overflow: TextOverflow
+                                                            .ellipsis),
+                                                  ],
+                                                ),
+                                              ),
                                             ],
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                    SizedBox(
-                                        height: SGSpacing.p1 + SGSpacing.p05),
-                                    SGTypography.body(
-                                        state.result.newsDTOList[i].createdDate,
-                                        size: FontSize.tiny,
-                                        color: SGColors.gray3),
-                                  ],
-                                )),
+                                          )),
+                                          SizedBox(
+                                              height:
+                                                  SGSpacing.p1 + SGSpacing.p05),
+                                          SGTypography.body(
+                                              state.result.newsDTOList[i]
+                                                  .createdDate,
+                                              size: FontSize.tiny,
+                                              color: SGColors.gray3),
+                                        ],
+                                      )),
+                                ),
                             separatorBuilder: (ctx, _i) => Container(
                                   child: Divider(
                                       color: SGColors.gray2,

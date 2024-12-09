@@ -1,10 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:singleeat/core/hives/user_hive.dart';
+import 'package:singleeat/core/routers/app_router.dart';
+import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/services/find_by_password_service.dart';
 
 part 'find_by_password_provider.freezed.dart';
-
 part 'find_by_password_provider.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -49,19 +51,28 @@ class FindByPasswordNotifier extends _$FindByPasswordNotifier {
     state = state.copyWith(loginId: loginId);
   }
 
-  void updatePassword() async {
+  Future<bool> updatePassword() async {
+    String loginId = '';
+    if (state.loginId.isEmpty) {
+      loginId = UserHive.get().loginId;
+    } else {
+      loginId = state.loginId;
+    }
     final response =
         await ref.read(findByPasswordServiceProvider).updatePassword(
-              loginId: state.loginId,
+              loginId: loginId,
               password: state.password,
             );
 
     if (response.statusCode == 200) {
       state = state.copyWith(status: FindByPasswordStatus.step4);
+      ref.read(goRouterProvider).push(AppRoutes.successChangePassword);
+      return true;
     } else {
       state = state.copyWith(
           status: FindByPasswordStatus.error,
           error: ResultFailResponseModel.fromJson(response.data));
+      return false;
     }
   }
 }

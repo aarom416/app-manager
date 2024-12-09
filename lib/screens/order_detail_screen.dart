@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:singleeat/core/components/action_button.dart';
-import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/flex.dart';
-import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/step_counter.dart';
@@ -22,7 +20,8 @@ class _DataTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SGContainer(
-      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+      padding: EdgeInsets.symmetric(
+          horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
       color: Color(0xFF1F1F1F),
       borderRadius: BorderRadius.circular(SGSpacing.p4),
       child: Column(
@@ -35,7 +34,8 @@ class _DataTable extends StatelessWidget {
 }
 
 class _DataTableRow extends StatelessWidget {
-  const _DataTableRow({Key? key, required this.left, required this.right}) : super(key: key);
+  const _DataTableRow({Key? key, required this.left, required this.right})
+      : super(key: key);
 
   final String left;
   final String right;
@@ -45,8 +45,14 @@ class _DataTableRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SGTypography.body(left, color: SGColors.gray4, weight: FontWeight.w500, size: FontSize.small),
-        SGTypography.body(right, color: SGColors.whiteForDarkMode, weight: FontWeight.w500, size: FontSize.small),
+        SGTypography.body(left,
+            color: SGColors.gray4,
+            weight: FontWeight.w500,
+            size: FontSize.small),
+        SGTypography.body(right,
+            color: SGColors.whiteForDarkMode,
+            weight: FontWeight.w500,
+            size: FontSize.small),
       ],
     );
   }
@@ -56,7 +62,8 @@ class NewOrderDetailScreen extends StatelessWidget {
   final OrderModel order;
   const NewOrderDetailScreen({super.key, required this.order});
 
-  void showRejectDialog({required BuildContext context, required OrderModel order}) {
+  void showRejectDialog(
+      {required BuildContext context, required OrderModel order}) {
     showSGDialogWithCloseButton(
         context: context,
         childrenBuilder: (ctx) => [
@@ -67,10 +74,15 @@ class NewOrderDetailScreen extends StatelessWidget {
                         context: context,
                         childrenBuilder: (ctx) => [
                               Center(
-                                child: Image.asset("assets/images/emoticon-cry.png", width: 40, height: 40),
+                                child: Image.asset(
+                                    "assets/images/emoticon-cry.png",
+                                    width: 40,
+                                    height: 40),
                               ),
                               SizedBox(height: SGSpacing.p4),
-                              SGTypography.body("주문을 거절하셨어요.", size: FontSize.medium, weight: FontWeight.w700),
+                              SGTypography.body("주문을 거절하셨어요.",
+                                  size: FontSize.medium,
+                                  weight: FontWeight.w700),
                               SizedBox(height: SGSpacing.p5),
                               GestureDetector(
                                 onTap: () {
@@ -78,12 +90,16 @@ class NewOrderDetailScreen extends StatelessWidget {
                                 },
                                 child: SGContainer(
                                   width: double.infinity,
-                                  padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: SGSpacing.p4),
+                                  borderRadius:
+                                      BorderRadius.circular(SGSpacing.p3),
                                   color: SGColors.primary,
                                   child: Center(
                                     child: SGTypography.body("확인",
-                                        size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                        size: FontSize.normal,
+                                        weight: FontWeight.w700,
+                                        color: SGColors.white),
                                   ),
                                 ),
                               ),
@@ -101,24 +117,28 @@ class NewOrderDetailScreen extends StatelessWidget {
           surfaceTintColor: Colors.transparent,
           elevation: 0.0,
           title: SGTypography.body(
-            "${order.orderType} 신규 접수",
+            "${order.receiveFoodType} 신규 접수",
             size: FontSize.medium,
             weight: FontWeight.w800,
             color: SGColors.white,
           ),
         ),
         body: SGContainer(
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+            padding: EdgeInsets.symmetric(
+                horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
             color: SGColors.black,
             child: ListView(children: [
-              _DataTable(
-                  children: [
+              _DataTable(children: [
                 Row(children: [
                   SGTypography.body("주문 상태",
-                      size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+                      size: FontSize.normal,
+                      color: SGColors.whiteForDarkMode,
+                      weight: FontWeight.w600),
                   Spacer(),
                   SGTypography.body("${order.orderTime.toShortDateTimeString}",
-                      size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+                      size: FontSize.normal,
+                      color: SGColors.whiteForDarkMode,
+                      weight: FontWeight.w600),
                 ]),
                 SizedBox(height: SGSpacing.p4),
                 Row(children: [
@@ -129,22 +149,28 @@ class NewOrderDetailScreen extends StatelessWidget {
                       padding: EdgeInsets.all(SGSpacing.p1),
                       borderRadius: BorderRadius.circular(SGSpacing.p1),
                       child: SGTypography.body(
-                        order.status != OrderStatus.cancelled ? "신규 접수" : "주문 취소",
-                        color: order.status != OrderStatus.cancelled ? SGColors.primary : SGColors.warningRed,
+                        order.status != OrderStatus.cancelled
+                            ? "신규 접수"
+                            : "주문 취소",
+                        color: order.status != OrderStatus.cancelled
+                            ? SGColors.primary
+                            : SGColors.warningRed,
                       )),
                   Spacer(),
                   SGTypography.body("${order.orderTime.toShortTimeString}",
-                      size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+                      size: FontSize.normal,
+                      color: SGColors.whiteForDarkMode,
+                      weight: FontWeight.w600),
                 ]),
               ]),
               SizedBox(height: SGSpacing.p3),
               _OrderInformation(order: order),
               SizedBox(height: SGSpacing.p32),
               StepCounter(
-                defaultValue: order.orderType == "포장" ? 20 : 60,
+                defaultValue: order.receiveFoodType == "포장" ? 20 : 60,
                 step: 5,
-                maxValue: order.orderType == "포장" ? 60 : 100,
-                minValue: order.orderType == "포장" ? 5 : 20,
+                maxValue: order.receiveFoodType == "포장" ? 60 : 100,
+                minValue: order.receiveFoodType == "포장" ? 5 : 20,
               ),
               SizedBox(height: SGSpacing.p4),
               Row(
@@ -162,7 +188,9 @@ class NewOrderDetailScreen extends StatelessWidget {
                         color: SGColors.gray3,
                         child: Center(
                           child: SGTypography.body("거절",
-                              size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                              size: FontSize.normal,
+                              weight: FontWeight.w700,
+                              color: SGColors.white),
                         ),
                       ),
                     ),
@@ -181,7 +209,9 @@ class NewOrderDetailScreen extends StatelessWidget {
                         color: SGColors.primary,
                         child: Center(
                           child: SGTypography.body("확인",
-                              size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                              size: FontSize.normal,
+                              weight: FontWeight.w700,
+                              color: SGColors.white),
                         ),
                       ),
                     ),
@@ -213,16 +243,21 @@ class CompletedOrderDetailScreen extends StatelessWidget {
           ),
         ),
         body: SGContainer(
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+            padding: EdgeInsets.symmetric(
+                horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
             color: SGColors.black,
             child: ListView(children: [
               _DataTable(children: [
                 Row(children: [
                   SGTypography.body("주문 상태",
-                      size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+                      size: FontSize.normal,
+                      color: SGColors.whiteForDarkMode,
+                      weight: FontWeight.w600),
                   Spacer(),
                   SGTypography.body("${order.orderTime.toShortDateTimeString}",
-                      size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+                      size: FontSize.normal,
+                      color: SGColors.whiteForDarkMode,
+                      weight: FontWeight.w600),
                 ]),
                 SizedBox(height: SGSpacing.p4),
                 Row(children: [
@@ -233,12 +268,18 @@ class CompletedOrderDetailScreen extends StatelessWidget {
                       padding: EdgeInsets.all(SGSpacing.p1),
                       borderRadius: BorderRadius.circular(SGSpacing.p1),
                       child: SGTypography.body(
-                        order.status != OrderStatus.cancelled ? "${order.orderType} 접수" : "주문 취소",
-                        color: order.status != OrderStatus.cancelled ? SGColors.primary : SGColors.warningRed,
+                        order.status != OrderStatus.cancelled
+                            ? "${order.orderType} 접수"
+                            : "주문 취소",
+                        color: order.status != OrderStatus.cancelled
+                            ? SGColors.primary
+                            : SGColors.warningRed,
                       )),
                   Spacer(),
                   SGTypography.body("${order.orderTime.toShortTimeString}",
-                      size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+                      size: FontSize.normal,
+                      color: SGColors.whiteForDarkMode,
+                      weight: FontWeight.w600),
                 ]),
               ]),
               SizedBox(height: SGSpacing.p3),
@@ -257,7 +298,8 @@ class InProgressOrderDetailScreen extends StatelessWidget {
   void showSnackBar(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        margin: EdgeInsets.only(left: SGSpacing.p24, right: SGSpacing.p24, bottom: SGSpacing.p12),
+        margin: EdgeInsets.only(
+            left: SGSpacing.p24, right: SGSpacing.p24, bottom: SGSpacing.p12),
         behavior: SnackBarBehavior.floating,
         content: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -266,7 +308,10 @@ class InProgressOrderDetailScreen extends StatelessWidget {
               child: Text(
                 text,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: SGColors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: SGColors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -280,7 +325,6 @@ class InProgressOrderDetailScreen extends StatelessWidget {
     );
   }
 
-
   void showCancelDialog({required BuildContext context}) {
     showSGDialogWithCloseButton(
         context: context,
@@ -291,10 +335,14 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                     showSGDialog(
                         context: context,
                         childrenBuilder: (ctx) => [
-                              SGTypography.body("주문 취소", size: FontSize.medium, weight: FontWeight.w700),
+                              SGTypography.body("주문 취소",
+                                  size: FontSize.medium,
+                                  weight: FontWeight.w700),
                               SizedBox(height: SGSpacing.p4),
                               SGTypography.body("주문을 정말 취소하시겠습니까?",
-                                  size: FontSize.small, weight: FontWeight.w700, color: SGColors.gray4),
+                                  size: FontSize.small,
+                                  weight: FontWeight.w700,
+                                  color: SGColors.gray4),
                               SizedBox(height: SGSpacing.p5),
                               Row(
                                 children: [
@@ -306,12 +354,16 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                                       },
                                       child: SGContainer(
                                         width: double.infinity,
-                                        padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                        borderRadius: BorderRadius.circular(SGSpacing.p3),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: SGSpacing.p4),
+                                        borderRadius:
+                                            BorderRadius.circular(SGSpacing.p3),
                                         color: SGColors.gray3,
                                         child: Center(
                                           child: SGTypography.body("취소",
-                                              size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                              size: FontSize.normal,
+                                              weight: FontWeight.w700,
+                                              color: SGColors.white),
                                         ),
                                       ),
                                     ),
@@ -326,12 +378,16 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                                       },
                                       child: SGContainer(
                                         width: double.infinity,
-                                        padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                        borderRadius: BorderRadius.circular(SGSpacing.p3),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: SGSpacing.p4),
+                                        borderRadius:
+                                            BorderRadius.circular(SGSpacing.p3),
                                         color: SGColors.primary,
                                         child: Center(
                                           child: SGTypography.body("확인",
-                                              size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                              size: FontSize.normal,
+                                              weight: FontWeight.w700,
+                                              color: SGColors.white),
                                         ),
                                       ),
                                     ),
@@ -359,32 +415,45 @@ class InProgressOrderDetailScreen extends StatelessWidget {
           ),
         ),
         body: SGContainer(
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+            padding: EdgeInsets.symmetric(
+                horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
             color: SGColors.black,
             child: ListView(children: [
               if (order.orderType == "포장")
                 SGTypography.body("음식을 준비하고 있어요",
-                    color: SGColors.whiteForDarkMode, size: FontSize.xlarge, weight: FontWeight.w700)
+                    color: SGColors.whiteForDarkMode,
+                    size: FontSize.xlarge,
+                    weight: FontWeight.w700)
               else
                 SGTypography.body("기사님이 배달중이에요",
-                    color: SGColors.whiteForDarkMode, size: FontSize.xlarge, weight: FontWeight.w700),
+                    color: SGColors.whiteForDarkMode,
+                    size: FontSize.xlarge,
+                    weight: FontWeight.w700),
               if (order.orderType == "배달") ...[
                 SizedBox(height: SGSpacing.p2),
                 SGTypography.body("배달 대행사 : 바로고",
-                    size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray4),
+                    size: FontSize.normal,
+                    weight: FontWeight.w400,
+                    color: SGColors.gray4),
               ],
               SizedBox(height: SGSpacing.p6),
               SizedBox(height: SGSpacing.p2),
               if (order.orderType == "배달")
-                Image.asset("assets/images/order-progress-indicator-delivery.png", width: double.infinity)
+                Image.asset(
+                    "assets/images/order-progress-indicator-delivery.png",
+                    width: double.infinity)
               else
-                Image.asset("assets/images/order-progress-indicator-takeout.png", width: double.infinity),
+                Image.asset(
+                    "assets/images/order-progress-indicator-takeout.png",
+                    width: double.infinity),
               SizedBox(height: SGSpacing.p10),
               _OrderInformation(order: order),
               SizedBox(height: SGSpacing.p20),
               Center(
                 child: SGTypography.body("고객센터 문의는 1600-7723으로 문의 주세요",
-                    color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w700),
+                    color: SGColors.gray4,
+                    size: FontSize.small,
+                    weight: FontWeight.w700),
               ),
               SizedBox(height: SGSpacing.p4),
               if (order.orderType == "포장") ...[
@@ -393,15 +462,20 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                       showSGDialog(
                           context: context,
                           childrenBuilder: (ctx) => [
-                                SGTypography.body("식단 준비 완료", size: FontSize.medium, weight: FontWeight.w700),
+                                SGTypography.body("식단 준비 완료",
+                                    size: FontSize.medium,
+                                    weight: FontWeight.w700),
                                 SizedBox(height: SGSpacing.p4),
                                 SGTypography.body("고객님께 준비 완료 알림을 보내시겠습니까?",
                                     size: FontSize.small,
                                     weight: FontWeight.w700,
                                     color: SGColors.gray4,
                                     lineHeight: 1.25),
-                                SGTypography.body("'확인' 클릭 시 고객님께 푸시알림이 전송됩니다. ",
-                                    size: FontSize.small, weight: FontWeight.w700, color: SGColors.gray4),
+                                SGTypography.body(
+                                    "'확인' 클릭 시 고객님께 푸시알림이 전송됩니다. ",
+                                    size: FontSize.small,
+                                    weight: FontWeight.w700,
+                                    color: SGColors.gray4),
                                 SizedBox(height: SGSpacing.p5),
                                 Row(
                                   children: [
@@ -413,12 +487,16 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                                         },
                                         child: SGContainer(
                                           width: double.infinity,
-                                          padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: SGSpacing.p4),
+                                          borderRadius: BorderRadius.circular(
+                                              SGSpacing.p3),
                                           color: SGColors.gray3,
                                           child: Center(
                                             child: SGTypography.body("취소",
-                                                size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                                size: FontSize.normal,
+                                                weight: FontWeight.w700,
+                                                color: SGColors.white),
                                           ),
                                         ),
                                       ),
@@ -429,16 +507,21 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                                       child: GestureDetector(
                                         onTap: () {
                                           Navigator.of(ctx).pop();
-                                          showSnackBar(context, "포장 완료 알림 전송 성공!");
+                                          showSnackBar(
+                                              context, "포장 완료 알림 전송 성공!");
                                         },
                                         child: SGContainer(
                                           width: double.infinity,
-                                          padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: SGSpacing.p4),
+                                          borderRadius: BorderRadius.circular(
+                                              SGSpacing.p3),
                                           color: SGColors.primary,
                                           child: Center(
                                             child: SGTypography.body("확인",
-                                                size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                                size: FontSize.normal,
+                                                weight: FontWeight.w700,
+                                                color: SGColors.white),
                                           ),
                                         ),
                                       ),
@@ -456,59 +539,73 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                       showSGDialog(
                           context: context,
                           childrenBuilder: (ctx) => [
-                            SGTypography.body("식단 배달 완료", size: FontSize.medium, weight: FontWeight.w700),
-                            SizedBox(height: SGSpacing.p4),
-                            SGTypography.body("고객님께 배달 완료 알림을 보내시겠습니까?",
-                                size: FontSize.small,
-                                weight: FontWeight.w700,
-                                color: SGColors.gray4,
-                                lineHeight: 1.25),
-                            SGTypography.body("'확인' 클릭 시 고객님께 푸시알림이 전송됩니다. ",
-                                size: FontSize.small, weight: FontWeight.w700, color: SGColors.gray4),
-                            SizedBox(height: SGSpacing.p5),
-                            Row(
-                              children: [
-                                SGFlexible(
-                                  flex: 1,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(ctx).pop();
-                                    },
-                                    child: SGContainer(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                                      color: SGColors.gray3,
-                                      child: Center(
-                                        child: SGTypography.body("취소",
-                                            size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                SGTypography.body("식단 배달 완료",
+                                    size: FontSize.medium,
+                                    weight: FontWeight.w700),
+                                SizedBox(height: SGSpacing.p4),
+                                SGTypography.body("고객님께 배달 완료 알림을 보내시겠습니까?",
+                                    size: FontSize.small,
+                                    weight: FontWeight.w700,
+                                    color: SGColors.gray4,
+                                    lineHeight: 1.25),
+                                SGTypography.body(
+                                    "'확인' 클릭 시 고객님께 푸시알림이 전송됩니다. ",
+                                    size: FontSize.small,
+                                    weight: FontWeight.w700,
+                                    color: SGColors.gray4),
+                                SizedBox(height: SGSpacing.p5),
+                                Row(
+                                  children: [
+                                    SGFlexible(
+                                      flex: 1,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(ctx).pop();
+                                        },
+                                        child: SGContainer(
+                                          width: double.infinity,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: SGSpacing.p4),
+                                          borderRadius: BorderRadius.circular(
+                                              SGSpacing.p3),
+                                          color: SGColors.gray3,
+                                          child: Center(
+                                            child: SGTypography.body("취소",
+                                                size: FontSize.normal,
+                                                weight: FontWeight.w700,
+                                                color: SGColors.white),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                SizedBox(width: SGSpacing.p2),
-                                SGFlexible(
-                                  flex: 2,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(ctx).pop();
-                                      showSnackBar(context, "배달 완료 알림 전송 성공!");
-                                    },
-                                    child: SGContainer(
-                                      width: double.infinity,
-                                      padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                                      color: SGColors.primary,
-                                      child: Center(
-                                        child: SGTypography.body("확인",
-                                            size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                    SizedBox(width: SGSpacing.p2),
+                                    SGFlexible(
+                                      flex: 2,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(ctx).pop();
+                                          showSnackBar(
+                                              context, "배달 완료 알림 전송 성공!");
+                                        },
+                                        child: SGContainer(
+                                          width: double.infinity,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: SGSpacing.p4),
+                                          borderRadius: BorderRadius.circular(
+                                              SGSpacing.p3),
+                                          color: SGColors.primary,
+                                          child: Center(
+                                            child: SGTypography.body("확인",
+                                                size: FontSize.normal,
+                                                weight: FontWeight.w700,
+                                                color: SGColors.white),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ]);
+                              ]);
                     },
                     label: "배달 완료 처리하기"),
                 SizedBox(height: SGSpacing.p5),
@@ -524,7 +621,9 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Center(
                         child: SGTypography.body("주문 취소하기",
-                            color: Colors.white, weight: FontWeight.w700, size: FontSize.medium))),
+                            color: Colors.white,
+                            weight: FontWeight.w700,
+                            size: FontSize.medium))),
               ),
               SizedBox(height: SGSpacing.p32),
             ])));
@@ -543,7 +642,10 @@ class _OrderInformation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       _DataTable(children: [
-        SGTypography.body("요청 사항", size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+        SGTypography.body("요청 사항",
+            size: FontSize.normal,
+            color: SGColors.whiteForDarkMode,
+            weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
         _DataTableRow(left: "가게", right: "요청 사항 없음"),
         if (order.orderType == '배달') ...[
@@ -554,22 +656,36 @@ class _OrderInformation extends StatelessWidget {
       SizedBox(height: SGSpacing.p3),
       _DataTable(children: [
         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SGTypography.body("주문 정보", size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+          SGTypography.body("주문 정보",
+              size: FontSize.normal,
+              color: SGColors.whiteForDarkMode,
+              weight: FontWeight.w600),
           SizedBox(height: SGSpacing.p5),
           Row(children: [
-            SGFlexible(flex: 2, child: SGTypography.body("메뉴", size: FontSize.small, color: SGColors.gray3)),
             SGFlexible(
-                flex: 1, child: Center(child: SGTypography.body("수량", size: FontSize.small, color: SGColors.gray3))),
+                flex: 2,
+                child: SGTypography.body("메뉴",
+                    size: FontSize.small, color: SGColors.gray3)),
             SGFlexible(
                 flex: 1,
-                child: SGTypography.body("금액", align: TextAlign.right, size: FontSize.small, color: SGColors.gray3)),
+                child: Center(
+                    child: SGTypography.body("수량",
+                        size: FontSize.small, color: SGColors.gray3))),
+            SGFlexible(
+                flex: 1,
+                child: SGTypography.body("금액",
+                    align: TextAlign.right,
+                    size: FontSize.small,
+                    color: SGColors.gray3)),
           ]),
           SizedBox(height: SGSpacing.p3),
           Divider(height: 1, thickness: 1, color: SGColors.lineDark2),
           SizedBox(height: SGSpacing.p4),
           Row(children: [
             SGFlexible(
-                flex: 2, child: SGTypography.body("연어 샐러드", size: FontSize.small, color: SGColors.whiteForDarkMode)),
+                flex: 2,
+                child: SGTypography.body("연어 샐러드",
+                    size: FontSize.small, color: SGColors.whiteForDarkMode)),
             SGFlexible(
                 flex: 1,
                 child: Center(
@@ -581,7 +697,9 @@ class _OrderInformation extends StatelessWidget {
             SGFlexible(
                 flex: 1,
                 child: SGTypography.body("13,000",
-                    align: TextAlign.right, size: FontSize.small, color: SGColors.whiteForDarkMode)),
+                    align: TextAlign.right,
+                    size: FontSize.small,
+                    color: SGColors.whiteForDarkMode)),
           ]),
           SizedBox(height: SGSpacing.p3),
           Row(children: [
@@ -594,30 +712,45 @@ class _OrderInformation extends StatelessWidget {
                 )),
             SGFlexible(
                 flex: 1,
-                child: Center(child: SGTypography.body("1", size: FontSize.small, color: SGColors.whiteForDarkMode))),
+                child: Center(
+                    child: SGTypography.body("1",
+                        size: FontSize.small,
+                        color: SGColors.whiteForDarkMode))),
             SGFlexible(
                 flex: 1,
                 child: SGTypography.body("3,000",
-                    align: TextAlign.right, size: FontSize.small, color: SGColors.whiteForDarkMode)),
+                    align: TextAlign.right,
+                    size: FontSize.small,
+                    color: SGColors.whiteForDarkMode)),
           ]),
           SizedBox(height: SGSpacing.p4),
           Divider(height: 1, thickness: 1, color: SGColors.lineDark2),
           SizedBox(height: SGSpacing.p3),
           Row(children: [
-            SGFlexible(flex: 2, child: SGTypography.body("메뉴 합계", size: FontSize.small, color: SGColors.gray4)),
+            SGFlexible(
+                flex: 2,
+                child: SGTypography.body("메뉴 합계",
+                    size: FontSize.small, color: SGColors.gray4)),
             SGFlexible(
                 flex: 1,
-                child:
-                    SGTypography.body("16,000", align: TextAlign.right, size: FontSize.small, color: SGColors.gray4)),
+                child: SGTypography.body("16,000",
+                    align: TextAlign.right,
+                    size: FontSize.small,
+                    color: SGColors.gray4)),
           ]),
           if (order.orderType == '배달') ...[
             SizedBox(height: SGSpacing.p3),
             Row(children: [
-              SGFlexible(flex: 2, child: SGTypography.body("배달팁", size: FontSize.small, color: SGColors.gray4)),
+              SGFlexible(
+                  flex: 2,
+                  child: SGTypography.body("배달팁",
+                      size: FontSize.small, color: SGColors.gray4)),
               SGFlexible(
                   flex: 1,
-                  child:
-                      SGTypography.body("3,000", align: TextAlign.right, size: FontSize.small, color: SGColors.gray4)),
+                  child: SGTypography.body("3,000",
+                      align: TextAlign.right,
+                      size: FontSize.small,
+                      color: SGColors.gray4)),
             ])
           ],
           SizedBox(height: SGSpacing.p3),
@@ -625,10 +758,13 @@ class _OrderInformation extends StatelessWidget {
           SizedBox(height: SGSpacing.p5),
           Row(children: [
             SGFlexible(
-                flex: 1, child: SGTypography.body("총 결제 금액", size: FontSize.normal, color: SGColors.whiteForDarkMode)),
+                flex: 1,
+                child: SGTypography.body("총 결제 금액",
+                    size: FontSize.normal, color: SGColors.whiteForDarkMode)),
             SGFlexible(
                 flex: 1,
-                child: SGTypography.body(order.orderType == '배달' ? "19,000원" : '16,000원',
+                child: SGTypography.body(
+                    order.receiveFoodType == '배달' ? "19,000원" : '16,000원',
                     align: TextAlign.right,
                     size: FontSize.medium,
                     weight: FontWeight.w700,
@@ -638,21 +774,34 @@ class _OrderInformation extends StatelessWidget {
       ]),
       SizedBox(height: SGSpacing.p3),
       _DataTable(children: [
-        SGTypography.body("결제방법", size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+        SGTypography.body("결제방법",
+            size: FontSize.normal,
+            color: SGColors.whiteForDarkMode,
+            weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(left: "카카오페이", right: "${(order.orderType == '배달' ? 19000 : 16000).toKoreanCurrency}원"),
+        _DataTableRow(
+            left: "카카오페이",
+            right:
+                "${(order.receiveFoodType == '배달' ? 19000 : 16000).toKoreanCurrency}원"),
       ]),
       if (order.orderType == '배달') ...[
         SizedBox(height: SGSpacing.p3),
         _DataTable(children: [
-          SGTypography.body("배달 정보", size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+          SGTypography.body("배달 정보",
+              size: FontSize.normal,
+              color: SGColors.whiteForDarkMode,
+              weight: FontWeight.w600),
           SizedBox(height: SGSpacing.p4),
           _DataTableRow(left: "배달 주소", right: "강남구 역삼 1동"),
-          if (order.orderType == "배달" && order.status == OrderStatus.inProgress || order.status == OrderStatus.completed || order.status == OrderStatus.cancelled) ...[
+          if (order.orderType == "배달" &&
+                  order.status == OrderStatus.inProgress ||
+              order.status == OrderStatus.completed ||
+              order.status == OrderStatus.cancelled) ...[
             SizedBox(height: SGSpacing.p3),
             _DataTableRow(
                 left: "연락처",
-                right: [OrderStatus.newOrder, OrderStatus.inProgress].contains(order.status)
+                right: [OrderStatus.newOrder, OrderStatus.inProgress]
+                        .contains(order.status)
                     ? "010-0000-1111"
                     : "010-****-****"),
           ],
@@ -660,7 +809,10 @@ class _OrderInformation extends StatelessWidget {
       ],
       SizedBox(height: SGSpacing.p3),
       _DataTable(children: [
-        SGTypography.body("주문 이력", size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+        SGTypography.body("주문 이력",
+            size: FontSize.normal,
+            color: SGColors.whiteForDarkMode,
+            weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
         _DataTableRow(left: "주문 일시", right: "00.00(일) 00:00"),
         if (order.status != OrderStatus.newOrder) ...[
@@ -674,20 +826,30 @@ class _OrderInformation extends StatelessWidget {
       ]),
       SizedBox(height: SGSpacing.p3),
       _DataTable(children: [
-        SGTypography.body("가게 정보", size: FontSize.normal, color: SGColors.whiteForDarkMode, weight: FontWeight.w600),
+        SGTypography.body("가게 정보",
+            size: FontSize.normal,
+            color: SGColors.whiteForDarkMode,
+            weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
         _DataTableRow(left: "가게명", right: "샐러디 역삼점"),
         SizedBox(height: SGSpacing.p4),
         _DataTableRow(left: "주문번호", right: "ABCDEFGH"),
       ]),
-      if (order.orderType == '포장' && (order.status == OrderStatus.inProgress || order.status == OrderStatus.completed || order.status == OrderStatus.cancelled)) ...[
+      if (order.orderType == '포장' &&
+          (order.status == OrderStatus.inProgress ||
+              order.status == OrderStatus.completed ||
+              order.status == OrderStatus.cancelled)) ...[
         SizedBox(height: SGSpacing.p3),
         _DataTable(children: [
-          SGTypography.body("주문자 정보", size: FontSize.normal, color: SGColors.white, weight: FontWeight.w600),
+          SGTypography.body("주문자 정보",
+              size: FontSize.normal,
+              color: SGColors.white,
+              weight: FontWeight.w600),
           SizedBox(height: SGSpacing.p4),
           _DataTableRow(
               left: "연락처",
-              right: [OrderStatus.newOrder, OrderStatus.inProgress].contains(order.status)
+              right: [OrderStatus.newOrder, OrderStatus.inProgress]
+                      .contains(order.status)
                   ? "010-0000-1111"
                   : "010-****-****"),
         ]),
@@ -724,7 +886,9 @@ class _CancelDialogBodyState extends State<_CancelDialogBody> {
       "기타 사정",
     ];
     return Column(children: [
-      Center(child: SGTypography.body("취소 사유", size: FontSize.medium, weight: FontWeight.w700)),
+      Center(
+          child: SGTypography.body("취소 사유",
+              size: FontSize.medium, weight: FontWeight.w700)),
       SizedBox(height: SGSpacing.p4),
       Wrap(
           alignment: WrapAlignment.center,
@@ -733,7 +897,10 @@ class _CancelDialogBodyState extends State<_CancelDialogBody> {
           children: [...reasons.map((e) => _renderCancelButton(e)).toList()]),
       SizedBox(height: SGSpacing.p4),
       Center(
-          child: SGTypography.body("최대 1개 선택", size: FontSize.small, weight: FontWeight.w700, color: SGColors.gray4)),
+          child: SGTypography.body("최대 1개 선택",
+              size: FontSize.small,
+              weight: FontWeight.w700,
+              color: SGColors.gray4)),
       SizedBox(height: SGSpacing.p4),
       GestureDetector(
         onTap: () {
@@ -748,7 +915,10 @@ class _CancelDialogBodyState extends State<_CancelDialogBody> {
             borderRadius: BorderRadius.circular(SGSpacing.p3),
             color: cancelReason.isEmpty ? SGColors.gray3 : SGColors.primary,
             child: Center(
-              child: SGTypography.body("거절", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+              child: SGTypography.body("거절",
+                  size: FontSize.normal,
+                  weight: FontWeight.w700,
+                  color: SGColors.white),
             )),
       )
     ]);
@@ -766,7 +936,8 @@ class _CancelDialogBodyState extends State<_CancelDialogBody> {
         });
       },
       child: SGContainer(
-        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p5, vertical: SGSpacing.p3 + SGSpacing.p05),
+        padding: EdgeInsets.symmetric(
+            horizontal: SGSpacing.p5, vertical: SGSpacing.p3 + SGSpacing.p05),
         borderRadius: BorderRadius.circular(SGSpacing.p3),
         borderColor: cancelReason == reason ? SGColors.primary : SGColors.line3,
         color: SGColors.white,
@@ -808,7 +979,9 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
       "영업시간 외",
     ];
     return Column(children: [
-      Center(child: SGTypography.body("거절 사유", size: FontSize.medium, weight: FontWeight.w700)),
+      Center(
+          child: SGTypography.body("거절 사유",
+              size: FontSize.medium, weight: FontWeight.w700)),
       SizedBox(height: SGSpacing.p4),
       Wrap(
           alignment: WrapAlignment.center,
@@ -817,7 +990,10 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
           children: [...reasons.map((e) => _renderRejectButton(e)).toList()]),
       SizedBox(height: SGSpacing.p4),
       Center(
-          child: SGTypography.body("최대 1개 선택", size: FontSize.small, weight: FontWeight.w700, color: SGColors.gray4)),
+          child: SGTypography.body("최대 1개 선택",
+              size: FontSize.small,
+              weight: FontWeight.w700,
+              color: SGColors.gray4)),
       SizedBox(height: SGSpacing.p4),
       GestureDetector(
         onTap: () {
@@ -830,7 +1006,10 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
             borderRadius: BorderRadius.circular(SGSpacing.p3),
             color: rejectReason.isEmpty ? SGColors.gray3 : SGColors.primary,
             child: Center(
-              child: SGTypography.body("거절", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+              child: SGTypography.body("거절",
+                  size: FontSize.normal,
+                  weight: FontWeight.w700,
+                  color: SGColors.white),
             )),
       )
     ]);
@@ -848,7 +1027,8 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
         });
       },
       child: SGContainer(
-        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p5, vertical: SGSpacing.p3 + SGSpacing.p05),
+        padding: EdgeInsets.symmetric(
+            horizontal: SGSpacing.p5, vertical: SGSpacing.p3 + SGSpacing.p05),
         borderRadius: BorderRadius.circular(SGSpacing.p3),
         borderColor: rejectReason == reason ? SGColors.primary : SGColors.line3,
         color: SGColors.white,

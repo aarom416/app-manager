@@ -10,10 +10,13 @@ class AppRoutes {
   static const String findByPasswordWebView = '/find/password/webview';
   static const String findByAccount = '/find/account';
   static const String findByAccountWebView = '/find/account/webview';
+  static const String changePhoneWebView = '/store/phone/webview';
   static const String profileEdit = '/profile/edit';
   static const String storeRegistrationForm = '/store/registration/form';
   static const String notification = '/notification';
   static const String statistics = '/statistics';
+  static const String settlement = '/settlement';
+  static const String vat = '/vat';
   static const String notificationConfiguration = '/notification/configuration';
   static const String businessNotificationConfiguration =
       '/business/notification/configuration';
@@ -25,6 +28,7 @@ class AppRoutes {
   static const String changePassword = '/change/password';
   static const String successChangePassword = '/success/change/password';
   static const String storeManagement = '/store/management';
+  static const String storeInformation = '/store/information';
   static const String orderHistory = '/order/history';
   static const String allergyInformation = '/allergy/information';
 }

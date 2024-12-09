@@ -31,6 +31,10 @@ extension DateTimeExtension on DateTime {
     return "$year. $month. $day";
   }
 
+  String get toShortDateStringWithZeroPadding {
+    return "$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}";
+  }
+
   String get toShortTimeString {
     return "${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}";
   }

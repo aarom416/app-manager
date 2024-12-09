@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
+import 'package:singleeat/core/routers/app_router.dart';
+import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/office/models/user_model.dart';
@@ -211,7 +214,8 @@ class LoginNotifier extends _$LoginNotifier {
     }
   }
 
-  Future<bool> logout() async {
+  // JSS 2024.12.05
+  Future<void> logout() async {
     try {
       final response = await ref
           .read(loginServiceProvider)
@@ -226,7 +230,7 @@ class LoginNotifier extends _$LoginNotifier {
           break;
       }
     } catch (e) {
-      return false;
+      return;
     }
 
     UserHive.set(user: const UserModel());
@@ -241,7 +245,7 @@ class LoginNotifier extends _$LoginNotifier {
     ref.invalidate(findByPasswordNotifierProvider);
     ref.invalidate(homeNotifierProvider);
 
-    return true;
+    ref.read(goRouterProvider).go(AppRoutes.login, extra: UniqueKey());
   }
 
   void autoLogin() async {

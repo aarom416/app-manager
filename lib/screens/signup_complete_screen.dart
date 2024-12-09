@@ -47,13 +47,15 @@ class _SignUpCompleteScreenState extends ConsumerState<SignUpCompleteScreen> {
                 Expanded(
                     child: GestureDetector(
                   onTap: () async {
-                    bool logout =
+                    await ref.read(loginNotifierProvider.notifier).logout();
+                    // JSS 2024.12.05
+                    /*bool logout =
                         await ref.read(loginNotifierProvider.notifier).logout();
                     if (logout) {
                       ref
                           .read(goRouterProvider)
                           .go(AppRoutes.login, extra: UniqueKey());
-                    }
+                    }*/
                   },
                   child: SGContainer(
                       color: SGColors.gray1,
