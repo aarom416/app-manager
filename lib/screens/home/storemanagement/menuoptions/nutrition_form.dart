@@ -9,7 +9,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 
-import '../../../common/components/numeric_textfield.dart';
+import '../../../../core/components/numeric_textfield.dart';
 import 'model.dart';
 
 class NutritionForm extends StatefulWidget {

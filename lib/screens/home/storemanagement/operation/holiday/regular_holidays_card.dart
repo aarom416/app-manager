@@ -8,7 +8,7 @@ import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
-import '../../../../common/common_widgets.dart';
+import '../../../../../core/components/snackbar.dart';
 import '../model.dart';
 
 const List<String> regularHolidayTypes = [

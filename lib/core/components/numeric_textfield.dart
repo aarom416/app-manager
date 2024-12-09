@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/extensions/string.dart';
 
-import '../../../core/components/sizing.dart';
-import '../../../core/components/spacing.dart';
-import '../../../core/constants/colors.dart';
+import 'sizing.dart';
+import 'spacing.dart';
+import '../constants/colors.dart';
 
 /// 금액 입력 필드. 입력시 자동 콤마 추가.
 class NumericTextField extends StatefulWidget {

@@ -16,8 +16,8 @@ import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/image_upload_screen.dart';
 import 'package:singleeat/core/screens/textarea_screen.dart';
 
+import '../../../../../../core/components/numeric_textfield.dart';
 import '../../../../../../main.dart';
-import '../../../../../common/components/numeric_textfield.dart';
 import '../../cuisine_option_category_selection_bottom_sheet.dart';
 import '../../model.dart';
 import '../../nutrition_card.dart';
@@ -25,7 +25,6 @@ import '../../nutrition_form.dart';
 import '../../provider.dart';
 import '../addmenucategory/screen.dart';
 
-/// todo controller 해제
 class AddMenuScreen extends ConsumerStatefulWidget {
   const AddMenuScreen({super.key});
 
@@ -135,6 +134,12 @@ class _Page_0_MenuNameState extends State<_Page_0_MenuName> {
     super.initState();
     menuName = widget.menuName;
     menuNameController = TextEditingController(text: menuName);
+  }
+
+  @override
+  void dispose() {
+    menuNameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -750,51 +755,6 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
   String intro = "연어 500g + 곡물밥 300g";
   String description = "연어와 곡물 베이스 조화의 오븐에 바싹 구운 연어를 올린 단백질 듬뿍 샐러드";
 
-  void showFailDialogWithImage({
-    required String mainTitle,
-    required String subTitle,
-  }) {
-    showSGDialogWithImage(
-        context: context,
-        childrenBuilder: (ctx) => [
-              if (subTitle.isEmpty) ...[
-                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p6),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(ctx);
-                  },
-                  child: SGContainer(
-                    color: SGColors.primary,
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
-                  ),
-                )
-              ] else ...[
-                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p4),
-                Center(child: SGTypography.body(subTitle, color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p6),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(ctx);
-                  },
-                  child: SGContainer(
-                    color: SGColors.primary,
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
-                  ),
-                )
-              ]
-            ]);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -818,8 +778,13 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
+                    // todo !!정의된 삭제된 메뉴 판단기준이 발견되지 않음.
+                    // showFailDialogWithImage(
+                    //   context: context,
+                    //   mainTitle: "해당 메뉴는 삭제된 메뉴입니다.",
+                    //   subTitle: "이미 동일한 메뉴가 등록되어있습니다.\n다시 한번 확인해주세요.",
+                    // );
                     widget.onNext();
-                    showFailDialogWithImage(mainTitle: "메뉴 추가 실패", subTitle: "이미 동일한 메뉴가 등록되어있습니다.\n다시 한번 확인해주세요.");
                   },
                   child: SGContainer(
                       color: SGColors.primary,
@@ -845,7 +810,9 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                               maximumImages: 1,
                               fieldLabel: "메뉴 이미지",
                               buttonText: "변경하기",
-                              onSubmit: (value) {},
+                              onSubmit: (List<String> images) {
+                                logger.i("images $images");
+                              },
                             )));
                   },
                   child: Row(
@@ -861,6 +828,22 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                             SizedBox(height: SGSpacing.p2),
                             SGTypography.body("이미지 등록", weight: FontWeight.w600, color: SGColors.gray5)
                           ])),
+
+                      // SGContainer(
+                      //   borderColor: SGColors.line2,
+                      //   color: SGColors.white,
+                      //   borderRadius: BorderRadius.circular(SGSpacing.p2),
+                      //   child: Stack(
+                      //     children: [
+                      //       Positioned.fill(
+                      //         child: Image.file(
+                      //           File("/data/user/0/com.golgoru.singleat_owner/cache/3052a09c-c98e-4b3e-9ae9-44267f1860d6/1000000463.jpg"),
+                      //           fit: BoxFit.cover,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

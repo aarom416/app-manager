@@ -12,7 +12,7 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/screens/home/storemanagement/operation/holiday/regular_holidays_card.dart';
 import 'package:singleeat/screens/home/storemanagement/operation/holiday/temporary_holidays_card.dart';
 
-import '../../../../common/common_widgets.dart';
+import '../../../../../core/components/snackbar.dart';
 import '../model.dart';
 
 class HolidayScreen extends StatefulWidget {

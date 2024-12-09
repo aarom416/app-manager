@@ -12,7 +12,7 @@ import 'package:singleeat/core/extensions/integer.dart';
 
 import '../../../../../core/components/dialog.dart';
 import '../../../../../core/components/multiple_information_box.dart';
-import '../../../../common/components/numeric_textfield.dart';
+import '../../../../../core/components/numeric_textfield.dart';
 import '../model.dart';
 import 'delivery_tip_card.dart';
 

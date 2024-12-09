@@ -10,7 +10,7 @@ import 'package:singleeat/core/constants/colors.dart';
 
 import '../../../../../core/components/date_range_picker.dart';
 import '../../../../../core/components/text_field_wrapper.dart';
-import '../../../../common/common_widgets.dart';
+import '../../../../../core/components/snackbar.dart';
 import '../model.dart';
 
 class TemporaryHolidayCard extends StatefulWidget {

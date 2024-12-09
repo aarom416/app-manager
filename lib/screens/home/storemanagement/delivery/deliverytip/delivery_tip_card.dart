@@ -8,7 +8,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
 import '../../../../../core/components/multiple_information_box.dart';
-import '../../../../common/components/numeric_textfield.dart';
+import '../../../../../core/components/numeric_textfield.dart';
 import '../model.dart';
 
 class DeliveryTipCard extends StatefulWidget {
