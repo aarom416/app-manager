@@ -5,6 +5,7 @@ import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/screens/home/storemanagement/menuoptions/service.dart';
 
+import '../../../../main.dart';
 import '../../../common/emuns.dart';
 import 'model.dart';
 
@@ -20,7 +21,7 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     return const MenuOptionsState();
   }
 
-  /// GET - 배달/포장 정보 조회
+  /// GET - 메뉴/옵션 정보 조회
   void getMenuOptionInfo() async {
     final response = await ref.read(menuOptionsServiceProvider).getMenuOptionInfo(storeId: UserHive.getBox(key: UserKey.storeId));
     if (response.statusCode == 200) {
@@ -37,19 +38,23 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     final storeMenuCategoryDTOList = List<MenuCategoryModel>.from(menuOptionsDataModel.storeMenuCategoryDTOList)..sort((a, b) => a.menuCategoryName.compareTo(b.menuCategoryName));
     final storeMenuDTOList = List<MenuModel>.from(menuOptionsDataModel.storeMenuDTOList)..sort((a, b) => a.menuName.compareTo(b.menuName));
     state = state.copyWith(
-        dataRetrieveStatus: DataRetrieveStatus.success,
-        menuOptionsDataModel: menuOptionsDataModel,
-        menuCategoryList: createMenuCategoryModels(
-            storeMenuCategoryDTOList: storeMenuCategoryDTOList,
-            storeMenuDTOList: storeMenuDTOList,
-            menuOptionCategoryDTOList: menuOptionsDataModel.menuOptionCategoryDTOList,
-            storeMenuOptionDTOList: menuOptionsDataModel.storeMenuOptionDTOList,
-            menuOptionRelationshipDTOList: menuOptionsDataModel.menuOptionRelationshipDTOList),
-        storeMenuCategoryDTOList: storeMenuCategoryDTOList,
-        storeMenuDTOList: storeMenuDTOList,
-        menuOptionCategoryDTOList: menuOptionsDataModel.menuOptionCategoryDTOList,
-        storeMenuOptionDTOList: menuOptionsDataModel.storeMenuOptionDTOList,
-        menuOptionRelationshipDTOList: menuOptionsDataModel.menuOptionRelationshipDTOList);
+      dataRetrieveStatus: DataRetrieveStatus.success,
+      menuOptionsDataModel: menuOptionsDataModel,
+      menuCategoryList: createMenuCategoryModels(
+          storeMenuCategoryDTOList: storeMenuCategoryDTOList,
+          storeMenuDTOList: storeMenuDTOList,
+          menuOptionCategoryDTOList: menuOptionsDataModel.menuOptionCategoryDTOList,
+          storeMenuOptionDTOList: menuOptionsDataModel.storeMenuOptionDTOList,
+          menuOptionRelationshipDTOList: menuOptionsDataModel.menuOptionRelationshipDTOList),
+      storeMenuCategoryDTOList: storeMenuCategoryDTOList,
+      storeMenuDTOList: storeMenuDTOList,
+      menuOptionCategoryDTOList: menuOptionsDataModel.menuOptionCategoryDTOList.map((menuOptionCategory) {
+        List<MenuOptionModel> matchingMenuOptionOptions = menuOptionsDataModel.storeMenuOptionDTOList.where((option) => option.menuOptionCategoryId == menuOptionCategory.menuOptionCategoryId).toList();
+        return menuOptionCategory.copyWith(menuOptions: matchingMenuOptionOptions);
+      }).toList(),
+      storeMenuOptionDTOList: menuOptionsDataModel.storeMenuOptionDTOList,
+      menuOptionRelationshipDTOList: menuOptionsDataModel.menuOptionRelationshipDTOList,
+    );
   }
 
   /// api 데이타 구조화.
@@ -122,6 +127,44 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
           state.menuOptionsDataModel.copyWith(storeMenuCategoryDTOList: state.menuOptionsDataModel.storeMenuCategoryDTOList.where((menuCategory) => menuCategory.storeMenuCategoryId != menuCategoryModel.storeMenuCategoryId).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
+
+  /// POST - 메뉴 추가
+  void createMenu(
+    String menuName,
+    MenuCategoryModel selectedMenuCategory,
+    List<String> selectedUserMenuCategories,
+    int price,
+    Nutrition nutrition,
+    int servingAmount,
+    String servingAmountType,
+    String imagePath,
+    String menuBriefDescription,
+    String menuDescription,
+    String selectedMenuOptionCategories,
+  ) async {
+
+    logger.d("======= selectedMenuOptionCategories $selectedMenuOptionCategories");
+
+    final response = await ref.read(menuOptionsServiceProvider).createMenu(
+          storeId: UserHive.getBox(key: UserKey.storeId),
+          menuName: menuName,
+          selectedMenuCategory: selectedMenuCategory,
+          selectedUserMenuCategories: selectedUserMenuCategories,
+          price: price,
+          nutrition: nutrition,
+          servingAmount: servingAmount,
+          servingAmountType: servingAmountType,
+          imagePath: imagePath,
+          menuBriefDescription: menuBriefDescription,
+          menuDescription: menuDescription,
+          selectedMenuOptionCategories: selectedMenuOptionCategories,
+        );
+    if (response.statusCode == 200) {
+      getMenuOptionInfo();
     } else {
       state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
     }

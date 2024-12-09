@@ -51,7 +51,7 @@ class _CuisineScreenState extends State<CuisineScreen> {
   bool featured = false;
   bool recommended = false;
 
-  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
+  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
 
   void showFailDialogWithImage({
     required String mainTitle,
@@ -441,7 +441,7 @@ class _NutritionEditScreenState extends State<_NutritionEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: "영양성분 수정"),
-      body: NutritionForm(nutrition: widget.nutrition, onChanged: widget.onConfirm),
+      // body: NutritionForm(nutrition: widget.nutrition, onChanged: widget.onConfirm),
     );
   }
 }

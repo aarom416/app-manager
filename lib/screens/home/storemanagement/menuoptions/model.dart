@@ -92,7 +92,7 @@ class Nutrition {
   int? protein;
   int? fat;
   int? carbohydrate;
-  int? glucose;
+  int? sugar;
   int? sodium;
   int? saturatedFat;
 
@@ -101,7 +101,7 @@ class Nutrition {
     required this.protein,
     required this.fat,
     required this.carbohydrate,
-    required this.glucose,
+    required this.sugar,
     required this.sodium,
     required this.saturatedFat,
   });
@@ -111,7 +111,7 @@ class Nutrition {
     int? protein,
     int? fat,
     int? carbohydrate,
-    int? glucose,
+    int? sugar,
     int? sodium,
     int? saturatedFat,
   }) {
@@ -120,7 +120,7 @@ class Nutrition {
       protein: protein ?? this.protein,
       fat: fat ?? this.fat,
       carbohydrate: carbohydrate ?? this.carbohydrate,
-      glucose: glucose ?? this.glucose,
+      sugar: sugar ?? this.sugar,
       sodium: sodium ?? this.sodium,
       saturatedFat: saturatedFat ?? this.saturatedFat,
     );

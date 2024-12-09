@@ -14,14 +14,17 @@ import 'model.dart';
 
 class NutritionForm extends StatefulWidget {
   final Nutrition nutrition;
-  final int supply;
-  final Function(Nutrition, int, BuildContext) onChanged;
+  final int servingAmount;
+  final String servingAmountType;
 
-  NutritionForm({
+  final Function(Nutrition, int, String, BuildContext) onChanged;
+
+  const NutritionForm({
     super.key,
     required this.nutrition,
     required this.onChanged,
-    this.supply = 0,
+    required this.servingAmount,
+    required this.servingAmountType,
   });
 
   @override
@@ -29,10 +32,10 @@ class NutritionForm extends StatefulWidget {
 }
 
 class _NutritionFormState extends State<NutritionForm> {
-  late int supply = widget.supply;
-  late bool quantityIsNone = false;
   late Nutrition nutrition = widget.nutrition;
-  late String quantityUnit = "g";
+  late int servingAmount = widget.servingAmount;
+  late String servingAmountType = widget.servingAmountType;
+  late bool quantityIsNone = false;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +65,7 @@ class _NutritionFormState extends State<NutritionForm> {
               child: Column(
                 children: [
                   Row(children: [
-                    SGTypography.body("${quantityIsNone ? '-- ' : supply.toKoreanCurrency}${quantityUnit}", size: FontSize.large, weight: FontWeight.w600, color: quantityIsNone ? SGColors.gray3 : SGColors.black),
+                    SGTypography.body("${quantityIsNone ? '-- ' : servingAmount.toKoreanCurrency}$servingAmountType", size: FontSize.large, weight: FontWeight.w600, color: quantityIsNone ? SGColors.gray3 : SGColors.black),
                     Spacer(),
                     Row(children: [
                       GestureDetector(
@@ -91,10 +94,10 @@ class _NutritionFormState extends State<NutritionForm> {
                             ],
                             onSelect: (value) {
                               setState(() {
-                                quantityUnit = value;
+                                servingAmountType = value;
                               });
                             },
-                            selected: quantityUnit);
+                            selected: servingAmountType);
                       },
                       child: Row(
                         children: [
@@ -116,7 +119,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                       ),
                                       onValueChanged: (inputValue) {
                                         setState(() {
-                                          supply = inputValue;
+                                          servingAmount = inputValue;
                                         });
                                       },
                                     ),
@@ -134,7 +137,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    SGContainer(child: SGTypography.body(quantityUnit, size: FontSize.normal, weight: FontWeight.w500)),
+                                    SGContainer(child: SGTypography.body(servingAmountType, size: FontSize.normal, weight: FontWeight.w500)),
                                     Image.asset("assets/images/dropdown-arrow.png", width: SGSpacing.p4, height: SGSpacing.p4),
                                   ],
                                 ),
@@ -183,10 +186,10 @@ class _NutritionFormState extends State<NutritionForm> {
           NutritionFormField(
               label: "당",
               unit: "g",
-              value: nutrition.glucose,
+              value: nutrition.sugar,
               onChanged: (value) {
                 setState(() {
-                  nutrition = nutrition.copyWith(glucose: value.toInt());
+                  nutrition = nutrition.copyWith(sugar: value.toInt());
                 });
               }),
           SizedBox(height: SGSpacing.p6),
@@ -212,7 +215,7 @@ class _NutritionFormState extends State<NutritionForm> {
           SizedBox(height: SGSpacing.p32),
           SGActionButton(
             onPressed: () {
-              widget.onChanged(nutrition, supply, context);
+              widget.onChanged(nutrition, servingAmount, servingAmountType, context);
             },
             label: "설정하기",
           )

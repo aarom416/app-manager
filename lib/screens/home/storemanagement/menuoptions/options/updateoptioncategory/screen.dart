@@ -13,16 +13,16 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 
-import '../model.dart';
-import '../new_cuisine_option_screen.dart';
-import '../nutrition_card.dart';
-import '../nutrition_form.dart';
+import '../../model.dart';
+import '../../new_cuisine_option_screen.dart';
+import '../../nutrition_card.dart';
+import '../../nutrition_form.dart';
 
-class CuisineOptionCategoryScreen extends StatefulWidget {
-  const CuisineOptionCategoryScreen({super.key});
+class UpdateOptionCategoryScreen extends StatefulWidget {
+  const UpdateOptionCategoryScreen({super.key});
 
   @override
-  State<CuisineOptionCategoryScreen> createState() => _CuisineOptionCategoryScreenState();
+  State<UpdateOptionCategoryScreen> createState() => _UpdateOptionCategoryScreenState();
 }
 
 final MenuOptionCategoryModel category = MenuOptionCategoryModel(
@@ -92,7 +92,7 @@ final List<MenuModel> cuisines = [
   )
 ];
 
-class _CuisineOptionCategoryScreenState extends State<CuisineOptionCategoryScreen> {
+class _UpdateOptionCategoryScreenState extends State<UpdateOptionCategoryScreen> {
   bool isEssential = true;
   bool isSoldOut = true;
 
@@ -639,7 +639,7 @@ class CuisineOptionCategoryEditScreen extends StatefulWidget {
 class _CuisineOptionCategoryEditScreenState extends State<CuisineOptionCategoryEditScreen> {
   bool isSoldOut = false;
 
-  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
+  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
 
   late String categoryName = widget.category.menuOptionCategoryName;
   List<MenuOptionModel> options = [];
@@ -783,7 +783,7 @@ class _CuisineOptionEditScreen extends StatefulWidget {
 class _CuisineOptionEditScreenState extends State<_CuisineOptionEditScreen> {
   late String menuPrice = "${(widget.option.price ?? 0).toKoreanCurrency}원";
   bool isSoldOut = false;
-  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
+  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
 
   void showFailDialogWithImage({
     required String mainTitle,
@@ -1034,7 +1034,7 @@ class _NutritionEditScreenState extends State<_NutritionEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: "영양성분 수정"),
-      body: NutritionForm(nutrition: widget.nutrition, onChanged: widget.onConfirm),
+      // body: NutritionForm(nutrition: widget.nutrition, onChanged: widget.onConfirm),
     );
   }
 }

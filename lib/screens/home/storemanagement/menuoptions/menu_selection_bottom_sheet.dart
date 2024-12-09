@@ -11,7 +11,7 @@ import 'model.dart';
 void showSelectableMenuModelsBottomSheet({
   required BuildContext context,
   required String title,
-  required List<MenuModel> selectableMenus,
+  required List<MenuModel> menuModels,
   required void Function(List<MenuModel>) onSelect,
   required List<MenuModel> selectedMenus,
 }) {
@@ -22,7 +22,7 @@ void showSelectableMenuModelsBottomSheet({
     builder: (ctx) {
       return _SelectableMenuModelsBottomSheet(
         title: title,
-        selectableMenus: selectableMenus,
+        menuModels: menuModels,
         onSelect: onSelect,
         selectedMenus: selectedMenus,
       );
@@ -32,14 +32,14 @@ void showSelectableMenuModelsBottomSheet({
 
 class _SelectableMenuModelsBottomSheet extends StatefulWidget {
   final String title;
-  final List<MenuModel> selectableMenus;
+  final List<MenuModel> menuModels;
   final void Function(List<MenuModel>) onSelect;
   final List<MenuModel> selectedMenus;
 
   const _SelectableMenuModelsBottomSheet({
     super.key,
     required this.title,
-    required this.selectableMenus,
+    required this.menuModels,
     required this.onSelect,
     required this.selectedMenus,
   });
@@ -63,7 +63,7 @@ class _SelectableMenuModelsBottomSheetState extends State<_SelectableMenuModelsB
 
   @override
   Widget build(BuildContext context) {
-    List<MenuModel> selectableMenus = widget.selectableMenus.where((menu) {
+    List<MenuModel> selectableMenus = widget.menuModels.where((menu) {
       return menuNameQuery == "" || menu.menuName.contains(menuNameQuery);
     }).toList();
 

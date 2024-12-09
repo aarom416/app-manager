@@ -186,7 +186,7 @@ class _AddMenuCategoryScreenState extends ConsumerState<AddMenuCategoryScreen> {
                 showSelectableMenuModelsBottomSheet(
                     context: context,
                     title: "메뉴 추가",
-                    selectableMenus: state.storeMenuDTOList,
+                    menuModels: state.storeMenuDTOList,
                     onSelect: (selectedMenuList) {
                       setState(() {
                         this.selectedMenuList = selectedMenuList.toList()..sort((a, b) => a.menuName.compareTo(b.menuName));

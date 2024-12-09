@@ -112,6 +112,71 @@ class MenuOptionsService {
       return Future.error(e);
     }
   }
+
+  /// POST - 메뉴 추가
+  /*
+      메뉴를 추가합니다.
+      ContentType 은 Multipart/form-data 형식입니다.
+      같은 이름과 가격을 갖는 메뉴를 추가할 경우, 메뉴 중복으로 추가할 수 없습니다.
+      욕설 및 비하 발언은 기입할 수 없습니다.
+      메뉴 사진 파일은 [Optional] 입니다.
+      메뉴 사진의 크기는 10MB 까지 전송가능하고 jpg, jpeg, png, gif, bmp, webp 형식만 가능합니다.
+      가게 카테고리를 반드시 선택해야 하며, 가게 카테고리가 없을 시 추가하여 선택해야 합니다.
+      해당 도메인이 진행 중 종료되면 처음부터 다시 기입해야 됩니다.
+   */
+  Future<Response<dynamic>> createMenu({
+    required String storeId,
+    required String menuName,
+    required MenuCategoryModel selectedMenuCategory,
+    required List<String> selectedUserMenuCategories,
+    required int price,
+    required Nutrition nutrition,
+    required int servingAmount,
+    required String servingAmountType,
+    required String imagePath,
+    required String menuBriefDescription,
+    required String menuDescription,
+    required String selectedMenuOptionCategories,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        'storeId': UserHive.getBox(key: UserKey.storeId),
+        'storeMenuCategoryId': selectedMenuCategory.storeMenuCategoryId,
+        'menuName': menuName,
+        'category': selectedUserMenuCategories.join(),
+        'menuPrice': price,
+        'servingAmount': servingAmount,
+        'servingAmountType': servingAmountType,
+        'calories': nutrition.calories,
+        'carbohydrate': nutrition.carbohydrate,
+        'protein': nutrition.protein,
+        'fat': nutrition.fat,
+        'sugar': nutrition.sugar,
+        'saturatedFat': nutrition.saturatedFat,
+        'natrium': nutrition.sugar,
+        'menuIntroduction': menuDescription,
+        'madeOf': menuBriefDescription,
+        'menuOptionCategoryIdList': selectedMenuOptionCategories,
+        'menuPicture': await MultipartFile.fromFile(imagePath, filename: imagePath.split('/').last),
+      });
+
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.createMenu,
+        data: formData,
+        options: Options(
+          contentType: 'multipart/form-data',
+        ),
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+
 }
 
 final menuOptionsServiceProvider = Provider<MenuOptionsService>((ref) => MenuOptionsService(ref));

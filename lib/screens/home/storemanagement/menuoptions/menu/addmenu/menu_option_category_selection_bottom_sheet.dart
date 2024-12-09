@@ -7,62 +7,67 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 
-import 'model.dart';
-import 'options/new_cuisine_option_category_screen.dart';
+import '../../model.dart';
+import '../../options/addcategory/screen.dart';
 
-void showCuisineOptionCategorySelectionBottomSheet({
+void showMenuOptionCategorySelectionBottomSheet({
   required BuildContext context,
   required String title,
-  required List<MenuOptionCategoryModel> cuisineOptionCategories,
+  required List<MenuOptionCategoryModel> menuOptionCategories,
   required void Function(List<MenuOptionCategoryModel>) onSelect,
-  required List<MenuOptionCategoryModel> selectedCuisineOptionCatagories,
+  required List<MenuOptionCategoryModel> selectedMenuOptionCategories,
 }) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.white,
     builder: (ctx) {
-      return _CuisineOptionCategorySelectionBottomSheet(
+      return _MenuOptionCategorySelectionBottomSheet(
         title: title,
-        cuisineOptionCategories: cuisineOptionCategories,
+        menuOptionCategories: menuOptionCategories,
         onSelect: onSelect,
-        selectedCuisineOptionCatagories: selectedCuisineOptionCatagories,
+        selectedMenuOptionCategories: selectedMenuOptionCategories,
       );
     },
   );
 }
 
-class _CuisineOptionCategorySelectionBottomSheet extends StatefulWidget {
+class _MenuOptionCategorySelectionBottomSheet extends StatefulWidget {
   final String title;
-  final List<MenuOptionCategoryModel> cuisineOptionCategories;
+  final List<MenuOptionCategoryModel> menuOptionCategories;
   final void Function(List<MenuOptionCategoryModel>) onSelect;
-  final List<MenuOptionCategoryModel> selectedCuisineOptionCatagories;
+  final List<MenuOptionCategoryModel> selectedMenuOptionCategories;
 
-  const _CuisineOptionCategorySelectionBottomSheet({
-    super.key,
+  const _MenuOptionCategorySelectionBottomSheet({
     required this.title,
-    required this.cuisineOptionCategories,
+    required this.menuOptionCategories,
     required this.onSelect,
-    required this.selectedCuisineOptionCatagories,
+    required this.selectedMenuOptionCategories,
   });
 
   @override
-  State<_CuisineOptionCategorySelectionBottomSheet> createState() => _CuisineOptionCategorySelectionBottomSheetState();
+  State<_MenuOptionCategorySelectionBottomSheet> createState() => _MenuOptionCategorySelectionBottomSheetState();
 }
 
-class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOptionCategorySelectionBottomSheet> {
-  late List<MenuOptionCategoryModel> selectedCuisineOptionCatagories;
+class _MenuOptionCategorySelectionBottomSheetState extends State<_MenuOptionCategorySelectionBottomSheet> {
+  late List<MenuOptionCategoryModel> selectedMenuOptionCategories;
+  late String categoryNameQuery;
 
-  List<int?> get selectedCuisineOptionCategoryIds => selectedCuisineOptionCatagories.map((e) => e.menuOptionCategoryId).toList();
+  List<int?> get selectedCuisineOptionCategoryIds => selectedMenuOptionCategories.map((e) => e.menuOptionCategoryId).toList();
 
   @override
   void initState() {
     super.initState();
-    selectedCuisineOptionCatagories = widget.selectedCuisineOptionCatagories;
+    selectedMenuOptionCategories = widget.selectedMenuOptionCategories;
+    categoryNameQuery = "";
   }
 
   @override
   Widget build(BuildContext context) {
+    List<MenuOptionCategoryModel> selectableMenuOptionCategories = widget.menuOptionCategories.where((menuOptionCategory) {
+      return categoryNameQuery == "" || menuOptionCategory.menuOptionCategoryName.contains(categoryNameQuery);
+    }).toList();
+
     return Column(mainAxisSize: MainAxisSize.min, children: [
       SGContainer(
         color: Colors.transparent,
@@ -106,7 +111,14 @@ class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOpti
                           hintText: "옵션 카테고리명 검색",
                           hintStyle:
                               TextStyle(fontSize: FontSize.normal, color: SGColors.gray3, fontWeight: FontWeight.w400),
-                          border: InputBorder.none)))
+                          border: InputBorder.none),
+                    onChanged: (categoryNameQuery) {
+                      setState(() {
+                        this.categoryNameQuery = categoryNameQuery;
+                      });
+                    },
+                  )
+              )
             ])),
       ),
       SizedBox(height: SGSpacing.p4),
@@ -120,13 +132,13 @@ class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOpti
                     onTap: () {
                       // onSelect(options[idx].value);
                       // Navigator.of(context).pop();
-                      if (selectedCuisineOptionCategoryIds.contains(widget.cuisineOptionCategories[idx].menuOptionCategoryId)) {
+                      if (selectedCuisineOptionCategoryIds.contains(selectableMenuOptionCategories[idx].menuOptionCategoryId)) {
                         setState(() {
-                          selectedCuisineOptionCatagories.remove(widget.cuisineOptionCategories[idx]);
+                          selectedMenuOptionCategories.remove(selectableMenuOptionCategories[idx]);
                         });
                       } else {
                         setState(() {
-                          selectedCuisineOptionCatagories.add(widget.cuisineOptionCategories[idx]);
+                          selectedMenuOptionCategories.add(selectableMenuOptionCategories[idx]);
                         });
                         print(selectedCuisineOptionCategoryIds);
                       }
@@ -145,10 +157,10 @@ class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOpti
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SGTypography.body(widget.cuisineOptionCategories[idx].menuOptionCategoryName,
+                                  SGTypography.body(selectableMenuOptionCategories[idx].menuOptionCategoryName,
                                       color: SGColors.black, size: FontSize.normal, weight: FontWeight.w700),
                                   SizedBox(height: SGSpacing.p1),
-                                  ...widget.cuisineOptionCategories[idx].menuOptions
+                                  ...selectableMenuOptionCategories[idx].menuOptions
                                       .map((e) => [
                                             SizedBox(height: SGSpacing.p2),
                                             SGTypography.body("${e.optionContent} : ${e.price!.toKoreanCurrency}원",
@@ -160,7 +172,7 @@ class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOpti
                               ),
                             ],
                           ),
-                          if (selectedCuisineOptionCategoryIds.contains(widget.cuisineOptionCategories[idx].menuOptionCategoryId))
+                          if (selectedCuisineOptionCategoryIds.contains(selectableMenuOptionCategories[idx].menuOptionCategoryId))
                             Image.asset("assets/images/checkbox-on.png", width: 24, height: 24)
                           else
                             Image.asset("assets/images/checkbox-off.png", width: 24, height: 24)
@@ -169,13 +181,13 @@ class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOpti
                     ),
                   ),
               separatorBuilder: (ctx, _) => SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-              itemCount: widget.cuisineOptionCategories.length),
+              itemCount: selectableMenuOptionCategories.length),
         ),
       ),
       SizedBox(height: SGSpacing.p2),
       InkWell(
         onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NewCuisineOptionCategoryScreen()));
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddOptionCategoryScreen()));
         },
         child: SGContainer(
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
@@ -197,13 +209,13 @@ class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOpti
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
           child: GestureDetector(
             onTap: () {
-              widget.onSelect(selectedCuisineOptionCatagories);
+              widget.onSelect(selectedMenuOptionCategories);
               Navigator.of(context).pop();
             },
             child: SGContainer(
                 padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
                 width: double.infinity,
-                color: selectedCuisineOptionCatagories.isEmpty ? SGColors.gray3 : SGColors.primary,
+                color: selectedMenuOptionCategories.isEmpty ? SGColors.gray3 : SGColors.primary,
                 borderRadius: BorderRadius.circular(SGSpacing.p3),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -211,13 +223,13 @@ class _CuisineOptionCategorySelectionBottomSheetState extends State<_CuisineOpti
                     Center(
                         child: SGTypography.body("추가하기",
                             color: Colors.white, weight: FontWeight.w700, size: FontSize.medium)),
-                    if (selectedCuisineOptionCatagories.isNotEmpty) ...[
+                    if (selectedMenuOptionCategories.isNotEmpty) ...[
                       SizedBox(width: SGSpacing.p1),
                       CircleAvatar(
                           radius: SGSpacing.p5 / 2,
                           backgroundColor: SGColors.white,
                           child: Center(
-                              child: SGTypography.body(selectedCuisineOptionCatagories.length.toString(),
+                              child: SGTypography.body(selectedMenuOptionCategories.length.toString(),
                                   color: SGColors.primary)))
                     ]
                   ],

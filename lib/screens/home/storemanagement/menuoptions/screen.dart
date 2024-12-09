@@ -39,7 +39,7 @@ class _MenuOptionsScreenState extends ConsumerState<MenuOptionsScreen> {
               currentTab = tab;
             });
           }),
-      currentTab == "메뉴 관리" ? const MenuTab() : OptionsTab()
+      currentTab == "메뉴 관리" ? const MenuTab() : const OptionsTab()
     ]);
   }
 }

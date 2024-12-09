@@ -95,7 +95,7 @@ class RestApiUri {
   // POST - 옵션 카테고리 추가 TODO
   static const String createOptionCategory =
       '/api/v1/owner/store-menu/option-category';
-  // POST - 메뉴 추가 TODO
+  // POST - 메뉴 추가
   static const String createMenu = '/api/v1/owner/store-menu/menu';
   // POST - 메뉴 카테고리 추가
   static const String createMenuCategory =
@@ -108,7 +108,7 @@ class RestApiUri {
   // GET - 영업 정보 조회
   static const String getOperationInfo =
       '/api/v1/owner/store-info/operation-info/{storeId}';
-  // GET - 메뉴/옵션 정보 조회 TODO
+  // GET - 메뉴/옵션 정보 조회
   static const String getMenuOptionInfo =
       '/api/v1/owner/store-info/menu-option-info/{storeId}';
   // GET - 배달/포장 정보 조회

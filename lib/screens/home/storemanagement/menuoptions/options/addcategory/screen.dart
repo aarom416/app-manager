@@ -11,9 +11,9 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 
-import '../menu_selection_bottom_sheet.dart';
-import '../model.dart';
-import '../new_cuisine_option_screen.dart';
+import '../../menu_selection_bottom_sheet.dart';
+import '../../model.dart';
+import '../../new_cuisine_option_screen.dart';
 
 final selectableCuisines = [
   MenuModel(
@@ -46,14 +46,14 @@ final selectableCuisines = [
   ),
 ];
 
-class NewCuisineOptionCategoryScreen extends StatefulWidget {
-  const NewCuisineOptionCategoryScreen({super.key});
+class AddOptionCategoryScreen extends StatefulWidget {
+  const AddOptionCategoryScreen({super.key});
 
   @override
-  State<NewCuisineOptionCategoryScreen> createState() => _NewCuisineOptionCategoryScreenState();
+  State<AddOptionCategoryScreen> createState() => _AddOptionCategoryScreenState();
 }
 
-class _NewCuisineOptionCategoryScreenState extends State<NewCuisineOptionCategoryScreen> {
+class _AddOptionCategoryScreenState extends State<AddOptionCategoryScreen> {
   PageController pageController = PageController();
 
   List<MenuModel> cuisines = [];
@@ -579,7 +579,7 @@ class _SelectCuisinesStepScreenState extends State<_SelectCuisinesStepScreen> {
     return showSelectableMenuModelsBottomSheet(
         context: context,
         title: "메뉴 추가",
-        selectableMenus: selectableCuisines,
+        menuModels: selectableCuisines,
         onSelect: (selectedCuisines) {
           // final sortedCuisines = selectedCuisines.toList()..sort((a, b) => a.menuId!.compareTo(b.menuId!));
           // widget.onCuisinesSelected(sortedCuisines);

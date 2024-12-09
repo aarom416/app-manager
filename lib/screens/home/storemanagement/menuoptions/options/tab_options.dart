@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/reload_button.dart';
@@ -8,49 +9,79 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/extensions/dynamic.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 
+import '../../../../../main.dart';
 import '../model.dart';
-import 'cuisine_option_category_screen.dart';
-import 'new_cuisine_option_category_screen.dart';
+import '../provider.dart';
+import 'updateoptioncategory/screen.dart';
+import 'addcategory/screen.dart';
 
-List<MenuOptionCategoryModel> categoryOptions = [
-  MenuOptionCategoryModel(
-      menuOptionCategoryName: "곡물 베이스 선택",
-      menuOptions: [
-        MenuOptionModel(optionContent: "곡물 베이스 선택", price: 0),
-        MenuOptionModel(optionContent: "오곡 베이스", price: 0),
-      ],
-      essentialStatus: 1),
-  MenuOptionCategoryModel(menuOptionCategoryName: "토핑 선택", maxChoice: 2, menuOptions: [
-    MenuOptionModel(optionContent: "훈제오리 토핑", price: 0),
-    MenuOptionModel(optionContent: "연어 토핑", price: 500),
-    MenuOptionModel(optionContent: "우삼겹 토핑", price: 3000),
-  ]),
-];
 
-class OptionsTab extends StatefulWidget {
-  OptionsTab({
-    super.key,
-  });
+class OptionsTab extends ConsumerStatefulWidget {
+  const OptionsTab({super.key});
 
   @override
-  State<OptionsTab> createState() => _OptionsTabState();
+  ConsumerState<OptionsTab> createState() => _OptionsTabState();
 }
 
-class _OptionsTabState extends State<OptionsTab> {
-  List<SelectionOption<String>> options = [
-    SelectionOption<String>(value: "판매 상태 전체", label: "판매 상태 전체"),
-    SelectionOption<String>(value: "판매 중", label: "판매 중"),
-    SelectionOption<String>(value: "품절", label: "품절"),
+class _OptionsTabState extends ConsumerState<OptionsTab> {
+  List<SelectionOption<int>> soldOutStatusOptions = [
+    SelectionOption<int>(value: -1, label: "판매 상태 전체"),
+    SelectionOption<int>(value: 0, label: "판매 중"),
+    SelectionOption<int>(value: 1, label: "품절"),
   ];
 
-  String selectedOption = "판매 상태 전체";
+  // String selectedOption = "판매 상태 전체";
+  late List<MenuOptionCategoryModel> optionCategoryList;
+  late int selectedSoldOutStatusOptionValue;
+  late String selectedSoldOutStatusOptionLabel;
+  late String optionContentQuery;
+  late TextEditingController optionContentQueryController;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedSoldOutStatusOptionValue = soldOutStatusOptions[0].value;
+    selectedSoldOutStatusOptionLabel = soldOutStatusOptions[0].label;
+    optionContentQuery = "";
+    optionContentQueryController = TextEditingController();
+  }
+
+  /// 검색조건, 정렬 option 에 따른 optionCategoryList
+  List<MenuOptionCategoryModel> getFilteredOptionCategories() {
+    return optionCategoryList
+        .map((category) {
+          // 메뉴 필터링
+          final filteredOptions = category.menuOptions.where((option) {
+            final isContentMatch = optionContentQuery == "" || option.optionContent.contains(optionContentQuery); // optionContentQuery은 like 필터
+            final isSoldOutMatch = selectedSoldOutStatusOptionValue == -1 || option.soldOutStatus == selectedSoldOutStatusOptionValue; // -1이면 조건 무시
+            return isContentMatch && isSoldOutMatch;
+          }).toList();
+
+          // 필터링된 옵션으로 새로운 category 생성
+          return category.copyWith(menuOptions: filteredOptions);
+        })
+        .whereType<MenuOptionCategoryModel>() // null 제거
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
+    final MenuOptionsNotifier provider = ref.read(menuOptionsNotifierProvider.notifier);
+    optionCategoryList = state.menuOptionCategoryDTOList;
+    logger.d("optionContentQuery $optionContentQuery");
+    logger.d("selectedSoldOutStatusOptionValue $selectedSoldOutStatusOptionValue");
+    logger.d("selectedSoldOutStatusOptionLabel $selectedSoldOutStatusOptionLabel");
+    List<MenuOptionCategoryModel> filterOptionCategories = getFilteredOptionCategories();
+    logger.d("filterOptionCategories ${filterOptionCategories.toFormattedJson()}");
+
     return Column(children: [
       SizedBox(height: SGSpacing.p3),
+
+      // --------------------------- 옵션명 검색 ---------------------------
       SGContainer(
           color: SGColors.white,
           padding: EdgeInsets.symmetric(vertical: SGSpacing.p2, horizontal: SGSpacing.p4),
@@ -61,10 +92,19 @@ class _OptionsTabState extends State<OptionsTab> {
             SizedBox(width: SGSpacing.p2),
             Expanded(
                 child: TextField(
-                    style: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5),
-                    decoration: InputDecoration(isDense: true, hintText: "옵션명을 입력해주세요", hintStyle: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5, fontWeight: FontWeight.w400), border: InputBorder.none)))
+              controller: optionContentQueryController,
+              style: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5),
+              decoration: InputDecoration(isDense: true, hintText: "옵션명을 입력해주세요", hintStyle: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5, fontWeight: FontWeight.w400), border: InputBorder.none),
+              onChanged: (optionContentQuery) {
+                setState(() {
+                  this.optionContentQuery = optionContentQuery;
+                });
+              },
+            ))
           ])),
       SizedBox(height: SGSpacing.p4),
+
+      // --------------------------- 정렬 option ---------------------------
       Stack(alignment: Alignment.center, children: [
         SGContainer(
           height: SGSpacing.p9,
@@ -76,13 +116,15 @@ class _OptionsTabState extends State<OptionsTab> {
                     showSelectionBottomSheet(
                         context: context,
                         title: "정렬",
-                        options: options,
-                        onSelect: (value) {
+                        options: soldOutStatusOptions,
+                        onSelect: (selectedSoldOutStatusOptionValue) {
                           setState(() {
-                            selectedOption = value;
+                            this.selectedSoldOutStatusOptionValue = selectedSoldOutStatusOptionValue;
+                            selectedSoldOutStatusOptionLabel = soldOutStatusOptions.firstWhere((selectionOption) => selectionOption.value == selectedSoldOutStatusOptionValue).label;
+                            optionContentQuery = "";
                           });
                         },
-                        selected: selectedOption);
+                        selected: selectedSoldOutStatusOptionValue);
                   },
                   child: SGContainer(
                       borderColor: SGColors.line2,
@@ -90,7 +132,7 @@ class _OptionsTabState extends State<OptionsTab> {
                       color: SGColors.white,
                       padding: EdgeInsets.symmetric(vertical: SGSpacing.p2, horizontal: SGSpacing.p4).copyWith(right: SGSpacing.p3),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        SGTypography.body(selectedOption, size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray5),
+                        SGTypography.body(selectedSoldOutStatusOptionLabel, size: FontSize.small, weight: FontWeight.w500, color: SGColors.gray5),
                         SizedBox(width: SGSpacing.p1),
                         Image.asset("assets/images/dropdown-arrow.png", width: SGSpacing.p4, height: SGSpacing.p4)
                       ]))),
@@ -104,10 +146,12 @@ class _OptionsTabState extends State<OptionsTab> {
             }))
       ]),
       SizedBox(height: SGSpacing.p4),
+
+      // --------------------------- 옵션 카테고리 추가 button ---------------------------
       Row(mainAxisAlignment: MainAxisAlignment.end, children: [
         GestureDetector(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => NewCuisineOptionCategoryScreen()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddOptionCategoryScreen()));
           },
           child: SGContainer(
               color: SGColors.white,
@@ -122,12 +166,15 @@ class _OptionsTabState extends State<OptionsTab> {
         )
       ]),
       SizedBox(height: SGSpacing.p4),
-      ...categoryOptions
+
+      // --------------------------- 단품 메뉴 list ---------------------------
+      ...filterOptionCategories
           .map((category) => [
                 _OptionCategoryCard(category: category),
                 SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               ])
           .flattened,
+      SizedBox(height: SGSpacing.p10),
     ]);
   }
 }
@@ -158,7 +205,7 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CuisineOptionCategoryScreen()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateOptionCategoryScreen()));
             },
             child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               SGTypography.body(widget.category.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),

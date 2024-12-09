@@ -186,7 +186,7 @@ class _NewCuisineOptionNutritionStepScreen extends StatefulWidget {
 }
 
 class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionNutritionStepScreen> {
-  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, glucose: 12, sodium: 120, saturatedFat: 8);
+  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
 
   @override
   Widget build(BuildContext context) {
@@ -300,7 +300,7 @@ class _NutritionInputScreenState extends State<_NutritionInputScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: "영양성분 설정"),
-      body: NutritionForm(nutrition: widget.nutrition, onChanged: widget.onConfirm),
+      // body: NutritionForm(nutrition: widget.nutrition, onChanged: widget.onConfirm),
     );
   }
 }
