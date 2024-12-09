@@ -54,7 +54,7 @@ class _StoreManagementBasicInfoScreenState
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ImageUploadScreen(
-                            images: [],
+                            imagePaths: [],
                             title: "가게 로고 변경",
                             fieldLabel: "로고 이미지",
                             buttonText: "변경하기",
@@ -120,7 +120,7 @@ class _StoreManagementBasicInfoScreenState
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ImageUploadScreen(
-                            images: [],
+                            imagePaths: [],
                             title: "가게 이미지 변경",
                             fieldLabel: "가게 소개 이미지",
                             buttonText: "변경하기",
@@ -180,7 +180,7 @@ class _StoreManagementBasicInfoScreenState
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ImageUploadScreen(
-                            images: [],
+                            imagePaths: [],
                             title: "가게 소개 이미지 변경",
                             fieldLabel: "가게 소개 이미지",
                             buttonText: "변경하기",

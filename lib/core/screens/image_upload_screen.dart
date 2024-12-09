@@ -13,7 +13,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
 class ImageUploadScreen extends StatefulWidget {
-  List<String> images = [];
+  List<String> imagePaths = [];
   final String title;
   final String fieldLabel;
   final String buttonText;
@@ -22,7 +22,7 @@ class ImageUploadScreen extends StatefulWidget {
 
   ImageUploadScreen({
     super.key,
-    required this.images,
+    required this.imagePaths,
     required this.title,
     required this.fieldLabel,
     required this.buttonText,
@@ -39,7 +39,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
 
   /// 이미지 추가
   Future<void> addImage() async {
-    if (widget.images.length >= widget.maximumImages) {
+    if (widget.imagePaths.length >= widget.maximumImages) {
       showFailDialogWithImage(
         context: context,
         mainTitle: "최대 이미지 수 초과",
@@ -83,21 +83,21 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
     }
 
     setState(() {
-      widget.images.add(imagePath);
+      widget.imagePaths.add(imagePath);
     });
   }
 
   /// 이미지 삭제
   void removeImage(int index) {
     setState(() {
-      widget.images.removeAt(index);
+      widget.imagePaths.removeAt(index);
     });
   }
 
   /// 이미지 슬롯 생성
   List<(int, String?)> get imageSlots => [
-        ...widget.images,
-        ...List.generate(widget.maximumImages - widget.images.length, (_) => null),
+        ...widget.imagePaths,
+        ...List.generate(widget.maximumImages - widget.imagePaths.length, (_) => null),
         ...List.generate((widget.maximumImages + columns - 1) ~/ columns * columns - widget.maximumImages, (_) => null),
       ].mapIndexed((index, value) => (index, value)).toList();
 
@@ -109,7 +109,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
         child: SGActionButton(
           onPressed: () {
-            widget.onSubmit(widget.images);
+            widget.onSubmit(widget.imagePaths);
             Navigator.pop(context);
           },
           label: widget.buttonText,
@@ -124,7 +124,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SGTypography.body(widget.fieldLabel, color: SGColors.black, weight: FontWeight.w700, size: FontSize.normal),
-                SGTypography.body("${widget.images.length}/${widget.maximumImages}", color: SGColors.gray5, weight: FontWeight.w500),
+                SGTypography.body("${widget.imagePaths.length}/${widget.maximumImages}", color: SGColors.gray5, weight: FontWeight.w500),
               ],
             ),
             SizedBox(height: SGSpacing.p3),
@@ -134,61 +134,60 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                   final index = slot.$1;
                   final imagePath = slot.$2;
 
-                  return Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(right: index % columns < columns - 1 ? SGSpacing.p3 : 0),
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: GestureDetector(
-                          onTap: imagePath == null ? addImage : () => removeImage(index),
-                          child: imagePath == null
-                              ? SGContainer(
-                                  borderColor: SGColors.line2,
-                                  color: SGColors.white,
-                                  borderRadius: BorderRadius.circular(SGSpacing.p2),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      ColorFiltered(
-                                        colorFilter: const ColorFilter.mode(Colors.black, BlendMode.modulate),
-                                        child: Image.asset(
-                                          "assets/images/plus.png",
-                                          width: SGSpacing.p6,
-                                          height: SGSpacing.p6,
-                                        ),
+                  return Padding(
+                    padding: EdgeInsets.only(right: index % columns < columns - 1 ? SGSpacing.p3 : 0, bottom: SGSpacing.p3),
+                    child: SizedBox(
+                      width: (MediaQuery.of(context).size.width - (SGSpacing.p3 * (columns - 1)) - (SGSpacing.p4 * 2)) / columns,
+                      height: (MediaQuery.of(context).size.width - (SGSpacing.p3 * (columns - 1)) - (SGSpacing.p4 * 2)) / columns,
+                      child: GestureDetector(
+                        onTap: imagePath == null ? addImage : () => removeImage(index),
+                        child: imagePath == null
+                            ? SGContainer(
+                                borderColor: SGColors.line2,
+                                color: SGColors.white,
+                                borderRadius: BorderRadius.circular(SGSpacing.p2),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ColorFiltered(
+                                      colorFilter: const ColorFilter.mode(Colors.black, BlendMode.modulate),
+                                      child: Image.asset(
+                                        "assets/images/plus.png",
+                                        width: SGSpacing.p6,
+                                        height: SGSpacing.p6,
                                       ),
-                                      SizedBox(height: SGSpacing.p2),
-                                      SGTypography.body("이미지 등록", weight: FontWeight.w600, color: SGColors.gray5),
-                                    ],
-                                  ),
-                                )
-                              : SGContainer(
-                                  borderColor: SGColors.line2,
-                                  color: SGColors.white,
-                                  borderRadius: BorderRadius.circular(SGSpacing.p2),
-                                  child: Stack(
-                                    children: [
-                                      Positioned.fill(
-                                        child: Image.file(
-                                          File(imagePath),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: 4,
-                                        right: 4,
-                                        child: GestureDetector(
-                                          onTap: () => removeImage(index),
-                                          child: const Icon(
-                                            Icons.close,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    SizedBox(height: SGSpacing.p2),
+                                    SGTypography.body("이미지 등록", weight: FontWeight.w600, color: SGColors.gray5),
+                                  ],
                                 ),
-                        ),
+                              )
+                            : SGContainer(
+                                borderColor: SGColors.line2,
+                                color: SGColors.white,
+                                borderRadius: BorderRadius.circular(SGSpacing.p2),
+                                child: Stack(
+                                  children: [
+                                    Positioned.fill(
+                                      child: Image.file(
+                                        File(imagePath),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 4,
+                                      right: 4,
+                                      child: GestureDetector(
+                                        onTap: () => removeImage(index),
+                                        child: const Icon(
+                                          Icons.close,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                       ),
                     ),
                   );
