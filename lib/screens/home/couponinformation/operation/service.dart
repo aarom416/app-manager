@@ -10,6 +10,26 @@ class CouponInformationService {
 
   CouponInformationService(this.ref);
 
+  /// POST - 쿠폰 발급
+  Future<Response<dynamic>> issueCoupon({
+    required Object data,
+  }) async {
+    try {
+      final response = ref.read(requestApiProvider).post(
+            RestApiUri.issueCoupon,
+            data: data,
+          );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
   /// GET - 쿠폰 정보를 조회
   Future<Response<dynamic>> getCouponInformation({
     required String storeId,

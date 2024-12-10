@@ -1,5 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:singleeat/core/components/date_range_picker.dart';
+import 'package:singleeat/core/extensions/datetime.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_list_model.dart';
@@ -13,7 +16,12 @@ part 'provider.g.dart';
 class CouponInformationNotifier extends _$CouponInformationNotifier {
   @override
   CouponInformationState build() {
-    return const CouponInformationState();
+    return CouponInformationState(
+      dateRange: DateRange(
+        start: DateTime(DateTime.now().year, DateTime.now().month, 1),
+        end: DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
+      ),
+    );
   }
 
   void clear() {
@@ -21,14 +29,12 @@ class CouponInformationNotifier extends _$CouponInformationNotifier {
   }
 
   /// GET - 쿠폰 정보 조회
-  void getCouponInformation({
-    required String startDate,
-    required String endDate,
-  }) async {
+  void getCouponInformation() async {
     final queryParameter = {
-      'startDate': startDate,
-      'endDate': endDate,
+      'startDate': state.dateRange!.start.toShortDateStringWithZeroPadding,
+      'endDate': state.dateRange!.end.toShortDateStringWithZeroPadding,
     };
+
     final response = await ref
         .read(couponInformationServiceProvider)
         .getCouponInformation(
@@ -124,6 +130,20 @@ class CouponInformationNotifier extends _$CouponInformationNotifier {
   void onChangeSelectedCoupon(CouponInformationModel selectedCoupon) {
     state = state.copyWith(selectedCoupon: selectedCoupon);
   }
+
+  void prependIssuedCoupon(CouponInformationModel couponIssue) {
+    final copiedCouponInformationList = state.couponInformationList.toList();
+    copiedCouponInformationList.insert(0, couponIssue);
+    state = state.copyWith(couponInformationList: copiedCouponInformationList);
+  }
+
+  void onChangeDateRange(DateRange dateRange) {
+    state = state.copyWith(dateRange: dateRange);
+  }
+
+  void onChangeCurrentDateRangeType(String currentDateRangeType) {
+    state = state.copyWith(currentDateRangeType: currentDateRangeType);
+  }
 }
 
 enum CouponInformationStatus {
@@ -135,6 +155,8 @@ enum CouponInformationStatus {
 @freezed
 abstract class CouponInformationState with _$CouponInformationState {
   const factory CouponInformationState({
+    DateRange? dateRange,
+    @Default('월별') String currentDateRangeType,
     @Default(true) bool hasMoreData,
     @Default('') String storeId,
     @Default(0) int page,
@@ -144,7 +166,4 @@ abstract class CouponInformationState with _$CouponInformationState {
     @Default(CouponInformationStatus.init) CouponInformationStatus status,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
   }) = _CouponInformationState;
-
-  factory CouponInformationState.fromJson(Map<String, dynamic> json) =>
-      _$CouponInformationStateFromJson(json);
 }

@@ -32,4 +32,6 @@ class AppRoutes {
   static const String allergyInformation = '/allergy/information';
   static const String couponInformation = '/coupon/information';
   static const String couponInformationDetail = '/coupon/information/detail';
+  static const String couponIssue = '/coupon/issue';
+
 }

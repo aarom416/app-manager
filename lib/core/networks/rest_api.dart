@@ -10,7 +10,7 @@ class RestApiUri {
 
   /// Coupon
   /// 쿠폰 발급 API
-  // POST - 쿠폰 발급 TODO
+  // POST - 쿠폰 발급
   static const String issueCoupon = '/api/v1/owner/coupon';
   // GET - 쿠폰 정보 조회
   static const String getCouponInfo = '/api/v1/owner/coupon/{storeId}/{page}';

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-void popUntil({required BuildContext context, required String path}) {
+void popUntil({
+  required BuildContext context,
+  required String path,
+}) {
   if (!context.mounted) return;
 
   final goRouter = GoRouter.of(context);

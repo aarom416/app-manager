@@ -25,14 +25,14 @@ enum CouponExpirationType {
 }
 
 enum OrderType {
-  all,
+  delivery,
   takeout,
-  delivery;
+  all;
 
   String get labelName => switch (this) {
-        all => "전체",
-        takeout => "포장",
         delivery => "배달",
+        takeout => "포장",
+        all => "전체",
       };
 }
 
