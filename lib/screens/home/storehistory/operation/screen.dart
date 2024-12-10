@@ -100,14 +100,15 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
                         child: SGActionButton(
                             onPressed: () {
                               provider.getStoreHistory(
-                                  '0',
-                                  currentTab,
-                                  dateRange
-                                      .start.toShortDateStringWithZeroPadding,
-                                  dateRange
-                                      .end.toShortDateStringWithZeroPadding);
+                                '0',
+                                currentTab,
+                                dateRange
+                                    .start.toShortDateStringWithZeroPadding,
+                                dateRange
+                                    .end.toShortDateStringWithZeroPadding);
                             },
-                            label: "조회"),
+                            label: "조회"
+                        ),
                       ),
                       SizedBox(height: SGSpacing.p4),
                       MenuTabBar(
@@ -193,13 +194,21 @@ class _EventCardState extends State<_EventCard> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SGTypography.body(widget.event.createdDate,
+                          SGTypography.body(
+                              widget.event.createdDate,
                               color: SGColors.gray4,
                               size: FontSize.small,
                               weight: FontWeight.w500),
                           SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                          SGTypography.body(widget.event.content,
-                              weight: FontWeight.w700, size: FontSize.normal),
+                          Container(
+                            width: 220,
+                            child: SGTypography.body(
+                              widget.event.content,
+                              weight: FontWeight.w700,
+                              size: FontSize.normal,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ]),
                     Icon(collapsed
                         ? Icons.keyboard_arrow_down
@@ -213,7 +222,7 @@ class _EventCardState extends State<_EventCard> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     ...[
-                      ["작업자", "None"],
+                      ["작업자", "사장님"],
                       ["변경 시간", widget.event.createdDate],
                     ].map((List<String> pair) {
                       return [
