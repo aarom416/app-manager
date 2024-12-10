@@ -12,7 +12,7 @@ class RestApiUri {
   /// 쿠폰 발급 API
   // POST - 쿠폰 발급 TODO
   static const String issueCoupon = '/api/v1/owner/coupon';
-  // GET - 쿠폰 정보 조회 TODO
+  // GET - 쿠폰 정보 조회
   static const String getCouponInfo = '/api/v1/owner/coupon/{storeId}/{page}';
   // DELETE - 발급 쿠폰 삭제 TODO
   static const String deleteIssuedCoupon = '/api/v1/owner/coupon/{couponId}';
@@ -431,7 +431,7 @@ class RestApiUri {
   // GET - 헬스 체크 TODO
   static const String healthCheck = '/api/v1/owner/health-check';
 
-  /// ???
+  /// 사장님 전화번호 변경
   static const String identityVerification =
       '/owner/pages/identity-verification';
   // GET - 매출 부가세 내역 조회 TODO

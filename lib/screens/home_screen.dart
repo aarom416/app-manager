@@ -5,8 +5,8 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/screens/bottom/myinfo/profile_screen.dart';
+import 'package:singleeat/screens/bottom/order/order_management_screen.dart';
 import 'package:singleeat/screens/main_screen.dart';
-import 'package:singleeat/screens/order_management_screen.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key, required this.title});
