@@ -10,9 +10,9 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/office/models/order_model.dart';
-import 'package:singleeat/screens/bottom/order/model.dart';
-import 'package:singleeat/screens/bottom/order/order_detail_screen.dart';
-import 'package:singleeat/screens/bottom/order/provider.dart';
+import 'package:singleeat/screens/bottom/order/operation/detail/screen.dart';
+import 'package:singleeat/screens/bottom/order/operation/model.dart';
+import 'package:singleeat/screens/bottom/order/operation/provider.dart';
 
 class OrderManagementScreen extends ConsumerStatefulWidget {
   const OrderManagementScreen({super.key});

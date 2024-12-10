@@ -5,8 +5,8 @@ import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_list_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/screens/bottom/myinfo/orderlist/model.dart';
-import 'package:singleeat/screens/bottom/order/model.dart';
-import 'package:singleeat/screens/bottom/order/service.dart';
+import 'package:singleeat/screens/bottom/order/operation/model.dart';
+import 'package:singleeat/screens/bottom/order/operation/service.dart';
 
 part 'provider.freezed.dart';
 part 'provider.g.dart';

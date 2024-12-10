@@ -12,7 +12,7 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/office/models/order_model.dart';
 import 'package:singleeat/screens/bottom/myinfo/orderlist/model.dart';
-import 'package:singleeat/screens/bottom/order/provider.dart';
+import 'package:singleeat/screens/bottom/order/operation/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class _DataTable extends StatelessWidget {
