@@ -128,7 +128,7 @@ class MenuOptionsService {
     required String storeId,
     required String menuName,
     required MenuCategoryModel selectedMenuCategory,
-    required List<String> selectedUserMenuCategories,
+    required String selectedUserMenuCategoryIdsFlatString,
     required int price,
     required Nutrition nutrition,
     required int servingAmount,
@@ -136,14 +136,36 @@ class MenuOptionsService {
     required String imagePath,
     required String menuBriefDescription,
     required String menuDescription,
-    required String selectedMenuOptionCategories,
+    required List<MenuOptionCategoryModel> selectedMenuOptionCategories,
   }) async {
+
+    logger.d(
+      "storeId: ${storeId}\r\n" +
+          "storeMenuCategoryId: ${selectedMenuCategory.storeMenuCategoryId}\r\n" +
+          "menuName: ${menuName}\r\n" +
+          "category: ${selectedUserMenuCategoryIdsFlatString}\r\n" +
+          // "menuPrice: ${price}\r\n" +
+          // "servingAmount: ${servingAmount}\r\n" +
+          // "servingAmountType: ${servingAmountType}\r\n" +
+          // "calories: ${nutrition.calories}\r\n" +
+          // "carbohydrate: ${nutrition.carbohydrate}\r\n" +
+          // "protein: ${nutrition.protein}\r\n" +
+          // "fat: ${nutrition.fat}\r\n" +
+          // "sugar: ${nutrition.sugar}\r\n" +
+          // "saturatedFat: ${nutrition.saturatedFat}\r\n" +
+          // "natrium: ${nutrition.sodium}\r\n" +
+          "menuIntroduction: ${menuDescription}\r\n" +
+          "madeOf: ${menuBriefDescription}\r\n" +
+          "menuOptionCategoryIdList: ${selectedMenuOptionCategories.map((optionCategory) => optionCategory.menuOptionCategoryId).toList()}\r\n" +
+          "menuPicture: ${imagePath}\r\n",
+    );
+
     try {
       final formData = FormData.fromMap({
         'storeId': UserHive.getBox(key: UserKey.storeId),
         'storeMenuCategoryId': selectedMenuCategory.storeMenuCategoryId,
         'menuName': menuName,
-        'category': selectedUserMenuCategories.join(),
+        'category': selectedUserMenuCategoryIdsFlatString,
         'menuPrice': price,
         'servingAmount': servingAmount,
         'servingAmountType': servingAmountType,
@@ -153,20 +175,20 @@ class MenuOptionsService {
         'fat': nutrition.fat,
         'sugar': nutrition.sugar,
         'saturatedFat': nutrition.saturatedFat,
-        'natrium': nutrition.sugar,
+        'natrium': nutrition.sodium,
         'menuIntroduction': menuDescription,
         'madeOf': menuBriefDescription,
-        'menuOptionCategoryIdList': selectedMenuOptionCategories,
+        'menuOptionCategoryIdList': selectedMenuOptionCategories.map((optionCategory) => optionCategory.menuOptionCategoryId).toList(),
         'menuPicture': await MultipartFile.fromFile(imagePath, filename: imagePath.split('/').last),
       });
 
       return await ref.read(requestApiProvider).post(
-        RestApiUri.createMenu,
-        data: formData,
-        options: Options(
-          contentType: 'multipart/form-data',
-        ),
-      );
+            RestApiUri.createMenu,
+            data: formData,
+            options: Options(
+              contentType: 'multipart/form-data',
+            ),
+          );
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);
@@ -175,8 +197,6 @@ class MenuOptionsService {
       return Future.error(e);
     }
   }
-
-
 }
 
 final menuOptionsServiceProvider = Provider<MenuOptionsService>((ref) => MenuOptionsService(ref));

@@ -132,7 +132,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
             provider.createMenu(
               menuName,
               selectedMenuCategory,
-              selectedUserMenuCategories,
+              selectedUserMenuCategories.map((category) => userMenuCategories.indexOf(category)).toList().join(),
               price,
               nutrition,
               servingAmount,
@@ -140,7 +140,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
               imagePath,
               menuBriefDescription,
               menuDescription,
-              selectedUserMenuCategories.map((category) => userMenuCategories.indexOf(category)).toList().join(),
+              selectedMenuOptionCategories,
             ),
             Navigator.of(context).pop()
           },

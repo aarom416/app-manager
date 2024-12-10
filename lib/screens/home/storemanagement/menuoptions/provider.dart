@@ -149,7 +149,7 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   void createMenu(
     String menuName,
     MenuCategoryModel selectedMenuCategory,
-    List<String> selectedUserMenuCategories,
+    String selectedUserMenuCategoryIdsFlatString,
     int price,
     Nutrition nutrition,
     int servingAmount,
@@ -157,16 +157,13 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     String imagePath,
     String menuBriefDescription,
     String menuDescription,
-    String selectedMenuOptionCategories,
+    List<MenuOptionCategoryModel> selectedMenuOptionCategories,
   ) async {
-
-    logger.d("======= selectedMenuOptionCategories $selectedMenuOptionCategories");
-
     final response = await ref.read(menuOptionsServiceProvider).createMenu(
           storeId: UserHive.getBox(key: UserKey.storeId),
           menuName: menuName,
           selectedMenuCategory: selectedMenuCategory,
-          selectedUserMenuCategories: selectedUserMenuCategories,
+          selectedUserMenuCategoryIdsFlatString: selectedUserMenuCategoryIdsFlatString,
           price: price,
           nutrition: nutrition,
           servingAmount: servingAmount,
