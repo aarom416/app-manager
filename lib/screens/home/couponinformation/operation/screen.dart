@@ -141,6 +141,13 @@ class _CouponManagementScreenState
                                       end: DateTime(DateTime.now().year,
                                           DateTime.now().month + 1, 0),
                                     );
+                                  } else {
+                                    dateRange = DateRange(
+                                      start: DateTime.now().subtract(
+                                        const Duration(days: 1),
+                                      ),
+                                      end: DateTime.now(),
+                                    );
                                   }
                                 });
                               },
