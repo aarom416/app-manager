@@ -30,6 +30,15 @@ class StepCounter extends StatefulWidget {
 class _StepCounterState extends State<StepCounter> {
   late int value = widget.defaultValue;
 
+  void _updateValue(int newValue) {
+    setState(() {
+      value = newValue;
+    });
+    if (widget.onChanged != null) {
+      widget.onChanged!(value); // onChanged 콜백 호출
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SGContainer(
@@ -41,19 +50,20 @@ class _StepCounterState extends State<StepCounter> {
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         InkWell(
             onTap: () {
-              setState(() {
-                value = max(value - widget.step, widget.minValue);
-              });
+              int newValue = max(value - widget.step, widget.minValue);
+              _updateValue(newValue); // 값 업데이트 및 콜백 호출
             },
-            child: Image.asset("assets/images/minus.png", width: 24, height: 24)),
-        SGTypography.body("${value}분", size: FontSize.normal, weight: FontWeight.w500),
+            child:
+                Image.asset("assets/images/minus.png", width: 24, height: 24)),
+        SGTypography.body("${value}분",
+            size: FontSize.normal, weight: FontWeight.w500),
         InkWell(
             onTap: () {
-              setState(() {
-                value = min(value + widget.step, widget.maxValue);
-              });
+              int newValue = min(value + widget.step, widget.maxValue);
+              _updateValue(newValue); // 값 업데이트 및 콜백 호출
             },
-            child: Image.asset("assets/images/plus.png", width: 24, height: 24)),
+            child:
+                Image.asset("assets/images/plus.png", width: 24, height: 24)),
       ]),
     );
   }
