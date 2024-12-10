@@ -38,25 +38,25 @@ class _NewCuisineOptionScreenState extends State<NewCuisineOptionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView(controller: pageController, physics: NeverScrollableScrollPhysics(), children: [
-      _NewCuisineOptionNameStepScreen(onPrev: () {
-        Navigator.of(context).pop();
-      }, onNext: () {
-        animateToPage(1);
-      }, onSubmit: (value) {
-        setState(() {
-          option = value;
-        });
-      }),
-      _NewCuisineOptionNutritionStepScreen(onPrev: () {
-        animateToPage(0);
-      }, onNext: () {
-        widget.onSubmitCuisineOption(option);
-        Navigator.of(context).pop();
-      }),
-    ]));
-  }
-}
+        body: PageView(controller: pageController, physics: const NeverScrollableScrollPhysics(), children: [
+          _NewCuisineOptionNameStepScreen(onPrev: () {
+            Navigator.of(context).pop();
+          }, onNext: () {
+            animateToPage(1);
+          }, onSubmit: (value) {
+            setState(() {
+              option = value;
+            });
+          }),
+          _NewCuisineOptionNutritionStepScreen(onPrev: () {
+            animateToPage(0);
+          }, onNext: () {
+            widget.onSubmitCuisineOption(option);
+            Navigator.of(context).pop();
+          }),
+        ]));
+      }
+    }
 
 class _NewCuisineOptionNameStepScreen extends StatefulWidget {
   final VoidCallback onNext;
@@ -141,30 +141,31 @@ class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameSt
                 SizedBox(height: SGSpacing.p3),
                 SGTextFieldWrapper(
                     child: SGContainer(
-                  padding: EdgeInsets.all(SGSpacing.p4),
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                            onChanged: (value) {
-                              setState(() {
-                                optionPrice = value;
-                              });
-                            },
-                            style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), comparableNumericInputFormatter(1000000000)],
-                            decoration: InputDecoration(
-                              isDense: true,
-                              isCollapsed: true,
-                              hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                              hintText: "0",
-                              border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                            )),
+                      padding: EdgeInsets.all(SGSpacing.p4),
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              onChanged: (value) {
+                                setState(() {
+                                  optionPrice = value;
+                                });
+                              },
+                              keyboardType: TextInputType.number,
+                              style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
+                              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), comparableNumericInputFormatter(1000000000)],
+                              decoration: InputDecoration(
+                                isDense: true,
+                                isCollapsed: true,
+                                hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                                hintText: "0",
+                                border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                              )),
+                          ),
+                          SGTypography.body("원", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
+                        ],
                       ),
-                      SGTypography.body("원", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
-                    ],
-                  ),
                 )),
               ],
             )));
@@ -197,16 +198,16 @@ class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionN
             child: Row(
               children: [
                 Expanded(
-                    child: GestureDetector(
-                  onTap: () {
-                    widget.onPrev();
-                  },
-                  child: SGContainer(
-                      color: SGColors.gray3,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
-                )),
+                  child: GestureDetector(
+                    onTap: () {
+                      widget.onPrev();
+                    },
+                    child: SGContainer(
+                        color: SGColors.gray3,
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        borderRadius: BorderRadius.circular(SGSpacing.p3),
+                        child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                  )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
                     child: GestureDetector(

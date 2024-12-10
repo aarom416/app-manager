@@ -250,10 +250,10 @@ class _NewCuisineOptionsStepScreenState extends State<_NewCuisineOptionsStepScre
                         borderColor: SGColors.primary,
                         child: Center(
                             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3),
-                          SizedBox(width: SGSpacing.p2),
-                          SGTypography.body("새 옵션 설정",
-                              size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)
+                              Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3),
+                              SizedBox(width: SGSpacing.p2),
+                              SGTypography.body("새 옵션 설정",
+                                  size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)
                         ])))),
               ],
             )));
@@ -656,7 +656,12 @@ class _ConfirmCuisineOptionCategoryScreenState extends State<_ConfirmCuisineOpti
                           size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray5),
                     ])),
                 SizedBox(height: SGSpacing.p15 / 2),
-                SGTypography.body("옵션명", size: FontSize.normal, weight: FontWeight.w700),
+                SGTypography.body(
+                    "옵션명",
+                    size: FontSize.normal,
+                    weight: FontWeight.w700,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 SizedBox(height: SGSpacing.p5 / 2),
                 SGContainer(
                     color: Colors.white,
@@ -664,8 +669,16 @@ class _ConfirmCuisineOptionCategoryScreenState extends State<_ConfirmCuisineOpti
                     borderColor: SGColors.line3,
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Row(children: [
-                      SGTypography.body("훈제오리 토핑",
-                          size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray5),
+                      Container(
+                        width: 190,
+                        child: SGTypography.body(
+                          "훈제오리 토핑",
+                          size: FontSize.normal,
+                          weight: FontWeight.w400,
+                          color: SGColors.gray5,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                       Spacer(),
                       SGTypography.body("3,000원",
                           size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray4),
@@ -738,11 +751,27 @@ class _SelectedCuisineCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SGTypography.body(cuisine.menuName,
-                      color: SGColors.black, size: FontSize.normal, weight: FontWeight.w700),
+                  SizedBox(
+                    width: 163,
+                    child: SGTypography.body(
+                      cuisine.menuName,
+                      color: SGColors.black,
+                      size: FontSize.normal,
+                      weight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                   SizedBox(height: SGSpacing.p2),
-                  SGTypography.body("${cuisine.price.toKoreanCurrency}원",
-                      color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w400),
+                  SizedBox(
+                    width: 163,
+                    child: SGTypography.body(
+                      "${cuisine.price.toKoreanCurrency}원",
+                      color: SGColors.gray4,
+                      size: FontSize.normal,
+                      weight: FontWeight.w400,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                 ],
               ),
             ],
