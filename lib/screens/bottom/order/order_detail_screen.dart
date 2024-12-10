@@ -13,6 +13,7 @@ import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/office/models/order_model.dart';
 import 'package:singleeat/screens/bottom/myinfo/orderlist/model.dart';
 import 'package:singleeat/screens/bottom/order/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class _DataTable extends StatelessWidget {
   const _DataTable({super.key, this.children = const []});
@@ -287,7 +288,13 @@ class CompletedOrderDetailScreen extends ConsumerWidget {
               SizedBox(height: SGSpacing.p3),
               _OrderInformation(order: order),
               SizedBox(height: SGSpacing.p20),
-              SGActionButton(onPressed: () {}, label: "고객 센터"),
+              SGActionButton(
+                  onPressed: () {
+                    launchUrl(Uri.parse(
+                      'tel://1600-7723',
+                    ));
+                  },
+                  label: "고객 센터"),
               SizedBox(height: SGSpacing.p20),
             ])));
   }
