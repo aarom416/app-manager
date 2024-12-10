@@ -805,6 +805,8 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
   late String menuDescription;
   late List<MenuOptionCategoryModel> selectedMenuOptionCategories;
 
+  static const columns = 3;
+
   @override
   void initState() {
     super.initState();
@@ -816,292 +818,304 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarWithStepIndicator(title: "새 메뉴 추가", currentStep: 5, totalStep: 5, onTap: widget.onPrev),
+    final double imageSize = (MediaQuery.of(context).size.width - (SGSpacing.p3 * (columns - 1)) - (SGSpacing.p4 * 2)) / columns;
 
-        // --------------------------- ActionButton ---------------------------
-        floatingActionButton: Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
-            child: Row(
-              children: [
-                Expanded(
-                    child: GestureDetector(
+    return Scaffold(
+      appBar: AppBarWithStepIndicator(title: "새 메뉴 추가", currentStep: 5, totalStep: 5, onTap: widget.onPrev),
+
+      // --------------------------- ActionButton ---------------------------
+      floatingActionButton: Container(
+          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+          child: Row(
+            children: [
+              Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      widget.onPrev();
+                    },
+                    child: SGContainer(
+                        color: SGColors.gray3,
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        borderRadius: BorderRadius.circular(SGSpacing.p3),
+                        child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                  )),
+              SizedBox(width: SGSpacing.p3),
+              Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      if (imagePath.isNotEmpty && menuBriefDescription.isNotEmpty && menuDescription.isNotEmpty) {
+                        // todo 중복메뉴 확인
+                        // showFailDialogWithImage(
+                        //   context: context,
+                        //   mainTitle: "메뉴 추가 실패",
+                        //   subTitle: "이미 동일한 메뉴가 등록되어있습니다.\n다시 한번 확인해주세요.",
+                        // );
+                        widget.onNext();
+                      }
+                    },
+                    child: SGContainer(
+                        color: imagePath.isEmpty || menuBriefDescription.isEmpty || menuDescription.isEmpty ? SGColors.gray2 : SGColors.primary,
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        borderRadius: BorderRadius.circular(SGSpacing.p3),
+                        child: Center(
+                            child: SGTypography.body(
+                              "등록",
+                              size: FontSize.large,
+                              color: imagePath.isEmpty || menuBriefDescription.isEmpty || menuDescription.isEmpty ? SGColors.gray5 : SGColors.white,
+                              weight: FontWeight.w700,
+                            ))),
+                  )),
+            ],
+          )),
+
+      body: SGContainer(
+        color: const Color(0xFFFAFAFA),
+        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+        child: ListView(
+          children: [
+
+            // --------------------------- 메뉴 사진 ---------------------------
+            SGTypography.body("새 메뉴 사진을 등록해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+            SizedBox(height: SGSpacing.p3),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: SizedBox(
+                width: imageSize,
+                height: imageSize,
+                child: GestureDetector(
                   onTap: () {
-                    widget.onPrev();
-                  },
-                  child: SGContainer(
-                      color: SGColors.gray3,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
-                )),
-                SizedBox(width: SGSpacing.p3),
-                Expanded(
-                    child: GestureDetector(
-                  onTap: () {
-                    if (imagePath.isNotEmpty && menuBriefDescription.isNotEmpty && menuDescription.isNotEmpty) {
-                      // todo 중복메뉴 확인
-                      // showFailDialogWithImage(
-                      //   context: context,
-                      //   mainTitle: "메뉴 추가 실패",
-                      //   subTitle: "이미 동일한 메뉴가 등록되어있습니다.\n다시 한번 확인해주세요.",
-                      // );
-                      widget.onNext();
-                    }
-                  },
-                  child: SGContainer(
-                      color: imagePath.isEmpty || menuBriefDescription.isEmpty || menuDescription.isEmpty ? SGColors.gray2 : SGColors.primary,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body(
-                        "등록",
-                        size: FontSize.large,
-                        color: imagePath.isEmpty || menuBriefDescription.isEmpty || menuDescription.isEmpty ? SGColors.gray5 : SGColors.white,
-                        weight: FontWeight.w700,
-                      ))),
-                )),
-              ],
-            )),
-        body: SGContainer(
-            color: Color(0xFFFAFAFA),
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-            child: ListView(
-              children: [
-                // --------------------------- 메뉴 사진 ---------------------------
-                SGTypography.body("새 메뉴 사진을 등록해주세요.", size: FontSize.normal, weight: FontWeight.w700),
-                SizedBox(height: SGSpacing.p3),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
                         builder: (context) => ImageUploadScreen(
-                              title: "메뉴 이미지",
-                              imagePaths: [],
-                              maximumImages: 1,
-                              fieldLabel: "메뉴 이미지",
-                              buttonText: "변경하기",
-                              onSubmit: (List<String> imagePaths) {
-                                logger.i("imagePaths $imagePaths");
-                                setState(() {
-                                  imagePath = imagePaths[0];
-                                });
-                                widget.onEditFunction(imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories);
-                              },
-                            )));
+                          title: "메뉴 이미지",
+                          imagePaths: [],
+                          maximumImages: 1,
+                          fieldLabel: "메뉴 이미지",
+                          buttonText: "변경하기",
+                          onSubmit: (List<String> imagePaths) {
+                            logger.i("imagePaths $imagePaths");
+                            setState(() {
+                              imagePath = imagePaths[0];
+                            });
+                            widget.onEditFunction(imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories);
+                          },
+                        ),
+                      ),
+                    );
                   },
                   child: imagePath.isEmpty
                       ? SGContainer(
-                          width: SGSpacing.p24,
-                          height: SGSpacing.p24,
-                          borderColor: SGColors.line2,
-                          color: SGColors.white,
-                          borderRadius: BorderRadius.circular(SGSpacing.p2),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ColorFiltered(
-                                colorFilter: const ColorFilter.mode(Colors.black, BlendMode.modulate),
-                                child: Image.asset(
-                                  "assets/images/plus.png",
-                                  width: SGSpacing.p6,
-                                  height: SGSpacing.p6,
-                                ),
-                              ),
-                              SizedBox(height: SGSpacing.p2),
-                              SGTypography.body("이미지 등록", weight: FontWeight.w600, color: SGColors.gray5),
-                            ],
-                          ),
-                        )
-                      : SGContainer(
-                          width: SGSpacing.p24,
-                          height: SGSpacing.p24,
-                          borderColor: SGColors.line2,
-                          color: SGColors.white,
-                          borderRadius: BorderRadius.circular(SGSpacing.p2),
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(SGSpacing.p2),
-                                  child: Image.file(
-                                    File(imagePath),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                top: 4,
-                                right: 4,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      imagePath = "";
-                                    });
-                                  },
-                                  child: const Icon(
-                                    Icons.close,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                            ],
+                    borderColor: SGColors.line2,
+                    color: SGColors.white,
+                    borderRadius: BorderRadius.circular(SGSpacing.p2),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ColorFiltered(
+                          colorFilter: const ColorFilter.mode(Colors.black, BlendMode.modulate),
+                          child: Image.asset(
+                            "assets/images/plus.png",
+                            width: SGSpacing.p6,
+                            height: SGSpacing.p6,
                           ),
                         ),
-                ),
-                SizedBox(height: SGSpacing.p3),
-                SGTypography.body("10MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.", color: SGColors.gray4, weight: FontWeight.w500),
-                SizedBox(height: SGSpacing.p8),
-
-                // --------------------------- 메뉴 구성 ---------------------------
-                SGTypography.body("메뉴 구성 및 설명을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
-                SizedBox(height: SGSpacing.p3),
-                MultipleInformationBox(children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => TextAreaScreen(
-                                value: menuBriefDescription,
-                                title: "메뉴 구성",
-                                fieldLabel: "메뉴 구성을 입력해주세요.",
-                                buttonText: "변경하기",
-                                hintText: "메뉴 구성을 입력해주세요.",
-                                onSubmit: (value) {
-                                  setState(() {
-                                    menuBriefDescription = value;
-                                  });
-                                  widget.onEditFunction(imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories);
-                                  Navigator.pop(context);
-                                },
-                              )));
-                    },
-                    child: Row(
-                      children: [
-                        SGTypography.body("메뉴 구성", size: FontSize.normal, weight: FontWeight.w600),
-                        SizedBox(width: SGSpacing.p1),
-                        Icon(Icons.edit, size: FontSize.small),
+                        SizedBox(height: SGSpacing.p2),
+                        SGTypography.body("이미지 등록", weight: FontWeight.w600, color: SGColors.gray5),
                       ],
                     ),
-                  ),
-                  SizedBox(height: SGSpacing.p5),
-                  SGTypography.body(menuBriefDescription, size: FontSize.small, weight: FontWeight.w500),
-                ]),
-                SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-
-                // --------------------------- 메뉴 설명 ---------------------------
-                MultipleInformationBox(children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => TextAreaScreen(
-                                value: menuDescription,
-                                title: "메뉴 설명",
-                                fieldLabel: "메뉴 설명을 입력해주세요.",
-                                buttonText: "변경하기",
-                                hintText: "메뉴 설명을 입력해주세요.",
-                                onSubmit: (value) {
-                                  setState(() {
-                                    menuDescription = value;
-                                  });
-                                  widget.onEditFunction(imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories);
-                                  Navigator.pop(context);
-                                },
-                              )));
-                    },
-                    child: Row(
+                  )
+                      : SGContainer(
+                    borderColor: SGColors.line2,
+                    color: SGColors.white,
+                    borderRadius: BorderRadius.circular(SGSpacing.p2),
+                    child: Stack(
                       children: [
-                        SGTypography.body("메뉴 설명", size: FontSize.normal, weight: FontWeight.w600),
-                        SizedBox(width: SGSpacing.p1),
-                        Icon(Icons.edit, size: FontSize.small),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: SGSpacing.p5),
-                  SGTypography.body(menuDescription, size: FontSize.small, weight: FontWeight.w500, lineHeight: 1.25),
-                ]),
-                SizedBox(height: SGSpacing.p8),
-
-                // --------------------------- 메뉴 옵션 ---------------------------
-                SGTypography.body("옵션을 선택해주세요.", size: FontSize.normal, weight: FontWeight.w700),
-                SizedBox(height: SGSpacing.p3),
-                MultipleInformationBox(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => _MenuOptionCategorySelectionScreen(
-                            selectedMenuOptionCategories: widget.selectedMenuOptionCategories,
-                            onConfirm: (selectedMenuOptionCategories) {
-                              setState(() {
-                                this.selectedMenuOptionCategories = selectedMenuOptionCategories;
-                              });
-                              widget.onEditFunction(
-                                imagePath,
-                                menuBriefDescription,
-                                menuDescription,
-                                selectedMenuOptionCategories,
-                              );
-                            },
-                          ),
-                        ));
-                      },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              SGTypography.body("옵션 설정", size: FontSize.normal, weight: FontWeight.w600),
-                              SizedBox(width: SGSpacing.p1),
-                              Icon(Icons.edit, size: FontSize.small),
-                            ],
-                          ),
-                          SizedBox(height: SGSpacing.p2),
-                          if (selectedMenuOptionCategories.isEmpty)
-                            SGTypography.body(
-                              "등록된 내용이 없어요.",
-                              color: SGColors.gray4,
-                              size: FontSize.small,
-                              weight: FontWeight.w500,
-                              lineHeight: 1.25,
-                            )
-                          else
-                            ListView.builder(
-                              shrinkWrap: true, // 내용물 크기에 맞게 높이를 줄임
-                              physics: const NeverScrollableScrollPhysics(), // 스크롤 비활성화
-                              itemCount: selectedMenuOptionCategories.length,
-                              itemBuilder: (context, index) {
-                                final category = selectedMenuOptionCategories[index];
-                                return Column(
-                                  children: [
-                                    SizedBox(height: SGSpacing.p3),
-                                    __MenuOptionCataegoryCard(
-                                      category: category,
-                                      onRemove: (_) {
-                                        final updatedSelectedMenuOptionCategories = List<MenuOptionCategoryModel>.from(widget.selectedMenuOptionCategories);
-                                        updatedSelectedMenuOptionCategories.removeAt(index);
-                                        setState(() {
-                                          selectedMenuOptionCategories = updatedSelectedMenuOptionCategories;
-                                        });
-                                        widget.onEditFunction(
-                                          imagePath,
-                                          menuBriefDescription,
-                                          menuDescription,
-                                          updatedSelectedMenuOptionCategories,
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
+                        Positioned.fill(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(SGSpacing.p2),
+                            child: Image.file(
+                              File(imagePath),
+                              fit: BoxFit.cover,
                             ),
-                        ],
-                      ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 4,
+                          right: 4,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                imagePath = "";
+                              });
+                            },
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: SGSpacing.p5),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: SGSpacing.p3),
+            SGTypography.body("10MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.", color: SGColors.gray4, weight: FontWeight.w500),
+            SizedBox(height: SGSpacing.p8),
+
+            // --------------------------- 메뉴 구성 ---------------------------
+            SGTypography.body("메뉴 구성 및 설명을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+            SizedBox(height: SGSpacing.p3),
+            MultipleInformationBox(children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => TextAreaScreen(
+                        value: menuBriefDescription,
+                        title: "메뉴 구성",
+                        fieldLabel: "메뉴 구성을 입력해주세요.",
+                        buttonText: "변경하기",
+                        hintText: "메뉴 구성을 입력해주세요.",
+                        onSubmit: (value) {
+                          setState(() {
+                            menuBriefDescription = value;
+                          });
+                          widget.onEditFunction(imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories);
+                          Navigator.pop(context);
+                        },
+                      )));
+                },
+                child: Row(
+                  children: [
+                    SGTypography.body("메뉴 구성", size: FontSize.normal, weight: FontWeight.w600),
+                    SizedBox(width: SGSpacing.p1),
+                    Icon(Icons.edit, size: FontSize.small),
                   ],
                 ),
-                SizedBox(height: SGSpacing.p32),
+              ),
+              SizedBox(height: SGSpacing.p5),
+              SGTypography.body(menuBriefDescription, size: FontSize.small, weight: FontWeight.w500),
+            ]),
+            SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+
+            // --------------------------- 메뉴 설명 ---------------------------
+            MultipleInformationBox(children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => TextAreaScreen(
+                        value: menuDescription,
+                        title: "메뉴 설명",
+                        fieldLabel: "메뉴 설명을 입력해주세요.",
+                        buttonText: "변경하기",
+                        hintText: "메뉴 설명을 입력해주세요.",
+                        onSubmit: (value) {
+                          setState(() {
+                            menuDescription = value;
+                          });
+                          widget.onEditFunction(imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories);
+                          Navigator.pop(context);
+                        },
+                      )));
+                },
+                child: Row(
+                  children: [
+                    SGTypography.body("메뉴 설명", size: FontSize.normal, weight: FontWeight.w600),
+                    SizedBox(width: SGSpacing.p1),
+                    Icon(Icons.edit, size: FontSize.small),
+                  ],
+                ),
+              ),
+              SizedBox(height: SGSpacing.p5),
+              SGTypography.body(menuDescription, size: FontSize.small, weight: FontWeight.w500, lineHeight: 1.25),
+            ]),
+            SizedBox(height: SGSpacing.p8),
+
+            // --------------------------- 메뉴 옵션 ---------------------------
+            SGTypography.body("옵션을 선택해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+            SizedBox(height: SGSpacing.p3),
+            MultipleInformationBox(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => _MenuOptionCategorySelectionScreen(
+                        selectedMenuOptionCategories: widget.selectedMenuOptionCategories,
+                        onConfirm: (selectedMenuOptionCategories) {
+                          setState(() {
+                            this.selectedMenuOptionCategories = selectedMenuOptionCategories;
+                          });
+                          widget.onEditFunction(
+                            imagePath,
+                            menuBriefDescription,
+                            menuDescription,
+                            selectedMenuOptionCategories,
+                          );
+                        },
+                      ),
+                    ));
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          SGTypography.body("옵션 설정", size: FontSize.normal, weight: FontWeight.w600),
+                          SizedBox(width: SGSpacing.p1),
+                          Icon(Icons.edit, size: FontSize.small),
+                        ],
+                      ),
+                      SizedBox(height: SGSpacing.p2),
+                      if (selectedMenuOptionCategories.isEmpty)
+                        SGTypography.body(
+                          "등록된 내용이 없어요.",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w500,
+                          lineHeight: 1.25,
+                        )
+                      else
+                        ListView.builder(
+                          shrinkWrap: true, // 내용물 크기에 맞게 높이를 줄임
+                          physics: const NeverScrollableScrollPhysics(), // 스크롤 비활성화
+                          itemCount: selectedMenuOptionCategories.length,
+                          itemBuilder: (context, index) {
+                            final category = selectedMenuOptionCategories[index];
+                            return Column(
+                              children: [
+                                SizedBox(height: SGSpacing.p3),
+                                __MenuOptionCataegoryCard(
+                                  category: category,
+                                  onRemove: (_) {
+                                    final updatedSelectedMenuOptionCategories = List<MenuOptionCategoryModel>.from(widget.selectedMenuOptionCategories);
+                                    updatedSelectedMenuOptionCategories.removeAt(index);
+                                    setState(() {
+                                      selectedMenuOptionCategories = updatedSelectedMenuOptionCategories;
+                                    });
+                                    widget.onEditFunction(
+                                      imagePath,
+                                      menuBriefDescription,
+                                      menuDescription,
+                                      updatedSelectedMenuOptionCategories,
+                                    );
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: SGSpacing.p5),
               ],
-            )));
+            ),
+            SizedBox(height: SGSpacing.p32),
+          ],
+        ),
+      ),
+    );
   }
 }
 

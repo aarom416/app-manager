@@ -15,16 +15,17 @@ import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 import 'package:singleeat/core/screens/textarea_screen.dart';
 import 'package:singleeat/screens/home/storemanagement/infomation/provider.dart';
 
+import '../../../../core/components/network_image_container.dart';
+import '../../../../main.dart';
+
 class StoreManagementBasicInfoScreen extends ConsumerStatefulWidget {
   const StoreManagementBasicInfoScreen({super.key});
 
   @override
-  ConsumerState<StoreManagementBasicInfoScreen> createState() =>
-      _StoreManagementBasicInfoScreenState();
+  ConsumerState<StoreManagementBasicInfoScreen> createState() => _StoreManagementBasicInfoScreenState();
 }
 
-class _StoreManagementBasicInfoScreenState
-    extends ConsumerState<StoreManagementBasicInfoScreen> {
+class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagementBasicInfoScreen> {
   @override
   void initState() {
     Future.microtask(() {
@@ -35,45 +36,51 @@ class _StoreManagementBasicInfoScreenState
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(storeManagementBasicInfoNotifierProvider);
-    final provider =
-        ref.read(storeManagementBasicInfoNotifierProvider.notifier);
+    final provider = ref.read(storeManagementBasicInfoNotifierProvider.notifier);
+
+    logger.i("=== state.storeInfo.thumbnail ${state.storeInfo.thumbnail}");
+
     return ListView(shrinkWrap: true, children: [
       SGContainer(
-          padding: EdgeInsets.symmetric(
-              horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-          color: SGColors.white,
-          borderColor: SGColors.line2,
-          borderRadius: BorderRadius.circular(SGSpacing.p4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SGTypography.body("로고 (썸네일 이미지)",
-                  size: FontSize.normal, weight: FontWeight.w600),
-              SizedBox(width: SGSpacing.p1),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ImageUploadScreen(
-                            imagePaths: [],
-                            title: "가게 로고 변경",
-                            fieldLabel: "로고 이미지",
-                            buttonText: "변경하기",
-                            maximumImages: 1,
-                            onSubmit: (images) {})));
-                  },
-                  child: const Icon(Icons.edit, size: FontSize.small)),
-              const Spacer(),
-              SGContainer(
-                color: SGColors.gray1,
-                width: SGSpacing.p20,
-                height: SGSpacing.p20,
-                borderRadius: BorderRadius.circular(SGSpacing.p2),
-              )
-            ],
-          )),
+        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+        color: SGColors.white,
+        borderColor: SGColors.line2,
+        borderRadius: BorderRadius.circular(SGSpacing.p4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SGTypography.body("로고 (썸네일 이미지)", size: FontSize.normal, weight: FontWeight.w600),
+            SizedBox(width: SGSpacing.p1),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ImageUploadScreen(
+                    title: "가게 로고 변경",
+                    imagePaths: [],
+                    maximumImages: 1,
+                    fieldLabel: "로고 이미지",
+                    buttonText: "변경하기",
+                    onSubmit: (List<String> imagePaths) {
+                      logger.i("imagePaths $imagePaths");
+                      provider.updateStoreThumbnail(imagePaths[0]);
+                    },
+                  ),
+                ));
+              },
+              child: const Icon(Icons.edit, size: FontSize.small),
+            ),
+            const Spacer(),
+            state.storeInfo.thumbnail.isNotEmpty
+                ? NetworkImageContainer(
+                    key: ValueKey(state.storeInfo.thumbnail),
+                    networkImageUrl: "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
+                  )
+                : const SizedBox.shrink(),
+          ],
+        ),
+      ),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      SingleInformationBox(
-          label: '가게 이름', value: state.storeInfo.name, editable: false),
+      SingleInformationBox(label: '가게 이름', value: state.storeInfo.name, editable: false),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       SingleInformationBox(label: '가게 번호', value: state.storeInfo.storeNum),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
@@ -82,8 +89,7 @@ class _StoreManagementBasicInfoScreenState
       SingleInformationBox(label: '가게 위치', value: state.storeInfo.address),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       GestureDetector(
-          child: SingleInformationBox(
-              label: '가게 전화번호', value: state.storeInfo.phone, editable: true),
+          child: SingleInformationBox(label: '가게 전화번호', value: state.storeInfo.phone, editable: true),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => TextFieldEditScreen(
@@ -97,52 +103,56 @@ class _StoreManagementBasicInfoScreenState
                           context.pop();
                         } else {
                           showFailDialogWithImage(
-                              mainTitle: '가게 번호 변경 실패',
-                              subTitle: '가게 번호 변경이 실패 하였습니다.');
+                            context: context,
+                            mainTitle: "가게 번호 변경 실패",
+                            subTitle: "가게 번호 변경이 실패 하였습니다.",
+                          );
                         }
                       });
                     })));
           }),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       SGContainer(
-          padding: EdgeInsets.symmetric(
-              horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-          color: SGColors.white,
-          borderColor: SGColors.line2,
-          borderRadius: BorderRadius.circular(SGSpacing.p4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SGTypography.body("가게 이미지",
-                  size: FontSize.normal, weight: FontWeight.w600),
-              SizedBox(width: SGSpacing.p1),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ImageUploadScreen(
-                            imagePaths: [],
-                            title: "가게 이미지 변경",
-                            fieldLabel: "가게 소개 이미지",
-                            buttonText: "변경하기",
-                            maximumImages: 3,
-                            onSubmit: (images) {})));
-                  },
-                  child: const Icon(Icons.edit, size: FontSize.small)),
-              const Spacer(),
-              SGContainer(
-                color: SGColors.gray1,
-                width: SGSpacing.p20,
-                height: SGSpacing.p20,
-                borderRadius: BorderRadius.circular(SGSpacing.p2),
-              )
-            ],
-          )),
+        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+        color: SGColors.white,
+        borderColor: SGColors.line2,
+        borderRadius: BorderRadius.circular(SGSpacing.p4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SGTypography.body("가게 이미지", size: FontSize.normal, weight: FontWeight.w600),
+            SizedBox(width: SGSpacing.p1),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ImageUploadScreen(
+                    title: "가게 이미지 변경",
+                    imagePaths: [],
+                    maximumImages: 3,
+                    fieldLabel: "가게 이미지",
+                    buttonText: "변경하기",
+                    onSubmit: (List<String> imagePaths) {
+                      logger.i("imagePaths $imagePaths");
+                      provider.updateStorePicture(imagePaths);
+                    },
+                  ),
+                ));
+              },
+              child: const Icon(Icons.edit, size: FontSize.small),
+            ),
+            const Spacer(),
+            state.storeInfo.storePictureURL1.isNotEmpty
+                ? NetworkImageContainer(
+                    key: ValueKey(state.storeInfo.storePictureURL1),
+                    networkImageUrl: "${state.storeInfo.storePictureURL1}?${DateTime.now().millisecondsSinceEpoch}",
+                  )
+                : const SizedBox.shrink(),
+          ],
+        ),
+      ),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       GestureDetector(
-          child: SingleInformationBox(
-              label: '가게 소개',
-              value: state.storeInfo.introduction,
-              editable: true),
+          child: SingleInformationBox(label: '가게 소개', value: state.storeInfo.introduction, editable: true),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => TextAreaScreen(
@@ -157,46 +167,53 @@ class _StoreManagementBasicInfoScreenState
                           context.pop();
                         } else {
                           showFailDialogWithImage(
-                              mainTitle: '가게 소개 변경 오류',
-                              subTitle: '가게 소개 변경 오류');
+                            context: context,
+                            mainTitle: "가게 소개 변경 오류",
+                            subTitle: "가게 소개 변경 오류",
+                          );
                         }
                       });
                     })));
           }),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       SGContainer(
-          padding: EdgeInsets.symmetric(
-              horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-          color: SGColors.white,
-          borderColor: SGColors.line2,
-          borderRadius: BorderRadius.circular(SGSpacing.p4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SGTypography.body("가게 소개 이미지",
-                  size: FontSize.normal, weight: FontWeight.w600),
-              SizedBox(width: SGSpacing.p1),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => ImageUploadScreen(
-                            imagePaths: [],
-                            title: "가게 소개 이미지 변경",
-                            fieldLabel: "가게 소개 이미지",
-                            buttonText: "변경하기",
-                            maximumImages: 1,
-                            onSubmit: (images) {})));
-                  },
-                  child: const Icon(Icons.edit, size: FontSize.small)),
-              const Spacer(),
-              SGContainer(
-                color: SGColors.gray1,
-                width: SGSpacing.p20,
-                height: SGSpacing.p20,
-                borderRadius: BorderRadius.circular(SGSpacing.p2),
-              )
-            ],
-          )),
+        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+        color: SGColors.white,
+        borderColor: SGColors.line2,
+        borderRadius: BorderRadius.circular(SGSpacing.p4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SGTypography.body("가게 소개 이미지", size: FontSize.normal, weight: FontWeight.w600),
+            SizedBox(width: SGSpacing.p1),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ImageUploadScreen(
+                    title: "가게 소개 이미지 변경",
+                    imagePaths: [],
+                    maximumImages: 1,
+                    fieldLabel: "가게 소개 이미지",
+                    buttonText: "변경하기",
+                    onSubmit: (List<String> imagePaths) {
+                      logger.i("imagePaths $imagePaths");
+                      provider.updateIntroductionPicture(imagePaths[0]);
+                    },
+                  ),
+                ));
+              },
+              child: const Icon(Icons.edit, size: FontSize.small),
+            ),
+            const Spacer(),
+            state.storeInfo.storeInformationURL.isNotEmpty
+                ? NetworkImageContainer(
+                    key: ValueKey(state.storeInfo.storeInformationURL),
+                    networkImageUrl: "${state.storeInfo.storeInformationURL}?${DateTime.now().millisecondsSinceEpoch}",
+                  )
+                : const SizedBox.shrink(),
+          ],
+        ),
+      ),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       GestureDetector(
         onTap: () {
@@ -210,74 +227,5 @@ class _StoreManagementBasicInfoScreenState
       ),
       SizedBox(height: SGSpacing.p32),
     ]);
-  }
-
-  void showFailDialogWithImage({
-    required String mainTitle,
-    required String subTitle,
-  }) {
-    showSGDialogWithImage(
-        context: context,
-        childrenBuilder: (ctx) => [
-              if (subTitle.isEmpty) ...[
-                Center(
-                    child: SGTypography.body(mainTitle,
-                        size: FontSize.medium,
-                        weight: FontWeight.w700,
-                        lineHeight: 1.25,
-                        align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p6),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(ctx);
-                  },
-                  child: SGContainer(
-                    color: SGColors.primary,
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(
-                        child: SGTypography.body("확인",
-                            color: SGColors.white,
-                            weight: FontWeight.w700,
-                            size: FontSize.normal)),
-                  ),
-                )
-              ] else ...[
-                Center(
-                    child: SGTypography.body(mainTitle,
-                        size: FontSize.medium,
-                        weight: FontWeight.w700,
-                        lineHeight: 1.25,
-                        align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p4),
-                Center(
-                    child: SGTypography.body(subTitle,
-                        color: SGColors.gray4,
-                        size: FontSize.small,
-                        weight: FontWeight.w700,
-                        lineHeight: 1.25,
-                        align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p6),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(ctx);
-                  },
-                  child: SGContainer(
-                    color: SGColors.primary,
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(
-                        child: SGTypography.body("확인",
-                            color: SGColors.white,
-                            weight: FontWeight.w700,
-                            size: FontSize.normal)),
-                  ),
-                )
-              ]
-            ]);
   }
 }
