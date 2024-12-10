@@ -40,13 +40,41 @@ abstract class MenuModel with _$MenuModel {
     @Default(0) int bestStatus,
     @Default(0) int soldOutStatus,
     @Default('') String menuName,
+    @Default('') String menuParts, // 메뉴 구성. 필요해 보이나, api 규격에 존재하지 않음.
     @Default('') String menuDescription, // 메뉴 설명. 필요해 보이나, api 규격에 존재하지 않음.
     @Default(0) int price,
     @Default('https://via.placeholder.com/150') String menuPictureURL,
+    @Default(NutritionModel(
+      calories: 2400,
+      protein: 100,
+      fat: 120,
+      carbohydrate: 130,
+      sugar: 50,
+      sodium: 30,
+      saturatedFat: 120,
+    ))
+    NutritionModel nutrition, //Nutrition. 필요해 보이나, api 규격에 존재하지 않음.
+    @Default(500) int servingAmount, //제공량. 필요해 보이나, api 규격에 존재하지 않음.
+    @Default('g') String servingAmountType, //제공량 단위. 필요해 보이나, api 규격에 존재하지 않음.
     @Default(<MenuOptionCategoryModel>[]) List<MenuOptionCategoryModel> menuCategoryOptions,
   }) = _MenuModel;
 
   factory MenuModel.fromJson(Map<String, dynamic> json) => _$MenuModelFromJson(json);
+}
+
+@freezed
+abstract class NutritionModel with _$NutritionModel {
+  const factory NutritionModel({
+    @Default(0) int calories,
+    @Default(0) int protein,
+    @Default(0) int fat,
+    @Default(0) int carbohydrate,
+    @Default(0) int sugar,
+    @Default(0) int sodium,
+    @Default(0) int saturatedFat,
+  }) = _NutritionModel;
+
+  factory NutritionModel.fromJson(Map<String, dynamic> json) => _$NutritionModelFromJson(json);
 }
 
 @freezed
@@ -87,42 +115,3 @@ abstract class MenuOptionRelationshipModel with _$MenuOptionRelationshipModel {
   factory MenuOptionRelationshipModel.fromJson(Map<String, dynamic> json) => _$MenuOptionRelationshipModelFromJson(json);
 }
 
-class Nutrition {
-  int? calories;
-  int? protein;
-  int? fat;
-  int? carbohydrate;
-  int? sugar;
-  int? sodium;
-  int? saturatedFat;
-
-  Nutrition({
-    required this.calories,
-    required this.protein,
-    required this.fat,
-    required this.carbohydrate,
-    required this.sugar,
-    required this.sodium,
-    required this.saturatedFat,
-  });
-
-  Nutrition copyWith({
-    int? calories,
-    int? protein,
-    int? fat,
-    int? carbohydrate,
-    int? sugar,
-    int? sodium,
-    int? saturatedFat,
-  }) {
-    return Nutrition(
-      calories: calories ?? this.calories,
-      protein: protein ?? this.protein,
-      fat: fat ?? this.fat,
-      carbohydrate: carbohydrate ?? this.carbohydrate,
-      sugar: sugar ?? this.sugar,
-      sodium: sodium ?? this.sodium,
-      saturatedFat: saturatedFat ?? this.saturatedFat,
-    );
-  }
-}

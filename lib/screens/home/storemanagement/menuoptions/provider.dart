@@ -151,7 +151,7 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     MenuCategoryModel selectedMenuCategory,
     String selectedUserMenuCategoryIdsFlatString,
     int price,
-    Nutrition nutrition,
+    NutritionModel nutrition,
     int servingAmount,
     String servingAmountType,
     String imagePath,
@@ -179,6 +179,155 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
       state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
     }
   }
+
+  /// POST - 메뉴 이름 변경
+  Future<bool> updateMenuName(int menuId, String menuName) async {
+    final response = await ref.read(menuOptionsServiceProvider).updateMenuName(storeId: UserHive.getBox(key: UserKey.storeId), menuId: menuId, menuName: menuName);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
+        return menu.menuId == menuId ? menu.copyWith(menuName: menuName) : menu;
+      }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  /// POST - 메뉴 가격 변경
+  Future<bool> updateMenuPrice(int menuId, int price) async {
+    final response = await ref.read(menuOptionsServiceProvider).updateMenuPrice(storeId: UserHive.getBox(key: UserKey.storeId), menuId: menuId, price: price);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
+            return menu.menuId == menuId ? menu.copyWith(price: price) : menu;
+          }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  /// POST - 메뉴 사진 변경 - 관리자 제한 API
+  void adminUpdateMenuPicture(int menuId, String imagePath) async {
+    final response = await ref.read(menuOptionsServiceProvider).adminUpdateMenuPicture(
+          storeId: UserHive.getBox(key: UserKey.storeId),
+          menuId: menuId,
+          imagePath: imagePath,
+        );
+    if (response.statusCode == 200) {
+      state = state.copyWith(error: const ResultFailResponseModel());
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+    }
+  }
+
+  /// POST - 메뉴 품절 상태 변경
+  Future<bool> updateMenuSoldOutStatus(int menuId, int soldOutStatus) async {
+    final response = await ref.read(menuOptionsServiceProvider).updateMenuSoldOutStatus(storeId: UserHive.getBox(key: UserKey.storeId), menuId: menuId, soldOutStatus: soldOutStatus);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
+            return menu.menuId == menuId ? menu.copyWith(soldOutStatus: soldOutStatus) : menu;
+          }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  /// POST - 메뉴 인기 상태 변경
+  Future<bool> updateMenuPopularity(int menuId, int popularityStatus) async {
+    final response = await ref.read(menuOptionsServiceProvider).updateMenuPopularity(storeId: UserHive.getBox(key: UserKey.storeId), menuId: menuId, popularityStatus: popularityStatus);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
+            return menu.menuId == menuId ? menu.copyWith(popularityStatus: popularityStatus) : menu;
+          }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  /// POST - 메뉴 베스트 상태 변경
+  Future<bool> updateMenuBestStatus(int menuId, int bestStatus) async {
+    final response = await ref.read(menuOptionsServiceProvider).updateMenuBestStatus(storeId: UserHive.getBox(key: UserKey.storeId), menuId: menuId, bestStatus: bestStatus);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
+            return menu.menuId == menuId ? menu.copyWith(bestStatus: bestStatus) : menu;
+          }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  /// POST - 메뉴 구성 변경
+  Future<bool> updateMenuMadeOf(int menuId, String menuParts) async {
+    final response = await ref.read(menuOptionsServiceProvider).updateMenuMadeOf(storeId: UserHive.getBox(key: UserKey.storeId), menuId: menuId, menuParts: menuParts);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
+            return menu.menuId == menuId ? menu.copyWith(menuParts: menuParts) : menu;
+          }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  /// POST - 메뉴 설명 변경
+  Future<bool> updateMenuIntroduction(int menuId, String menuDescription) async {
+    final response = await ref.read(menuOptionsServiceProvider).updateMenuIntroduction(storeId: UserHive.getBox(key: UserKey.storeId), menuId: menuId, menuDescription: menuDescription);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
+            return menu.menuId == menuId ? menu.copyWith(menuParts: menuDescription) : menu;
+          }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  /// POST - 메뉴 삭제
+  Future<bool> deleteMenu(MenuModel menuModel) async {
+    final response = await ref.read(menuOptionsServiceProvider).deleteMenu(storeId: UserHive.getBox(key: UserKey.storeId), menuModel: menuModel);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel =
+      state.menuOptionsDataModel.copyWith(storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.where((menu) => menu.menuId != menuModel.menuId).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
 }
 
 /// state provider

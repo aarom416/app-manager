@@ -6,10 +6,10 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 
-import 'model.dart';
+import '../model.dart';
 
 class NutritionCard extends StatelessWidget {
-  final Nutrition nutrition;
+  final NutritionModel nutrition;
   final String servingAmountType;
   final int servingAmount;
   final VoidCallback? onTap;

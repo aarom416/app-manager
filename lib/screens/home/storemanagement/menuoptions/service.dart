@@ -130,7 +130,7 @@ class MenuOptionsService {
     required MenuCategoryModel selectedMenuCategory,
     required String selectedUserMenuCategoryIdsFlatString,
     required int price,
-    required Nutrition nutrition,
+    required NutritionModel nutrition,
     required int servingAmount,
     required String servingAmountType,
     required String imagePath,
@@ -189,6 +189,195 @@ class MenuOptionsService {
               contentType: 'multipart/form-data',
             ),
           );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 이름 변경
+  Future<Response<dynamic>> updateMenuName({required String storeId, required int menuId, required String menuName}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuName,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'menuId': menuId,
+          'menuName': menuName,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 가격 변경
+  Future<Response<dynamic>> updateMenuPrice({required String storeId, required int menuId, required int price}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuPrice,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'menuId': menuId,
+          'price': price,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 사진 변경 - 관리자 제한 API
+  Future<Response<dynamic>> adminUpdateMenuPicture({
+    required String storeId,
+    required int menuId,
+    required String imagePath,
+  }) async {
+    try {
+      final formData = FormData.fromMap({
+        'storeId': UserHive.getBox(key: UserKey.storeId),
+        'menuId': menuId,
+        'menuPicture': await MultipartFile.fromFile(imagePath, filename: imagePath.split('/').last),
+      });
+
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.adminUpdateMenuPicture,
+        data: formData,
+        options: Options(
+          contentType: 'multipart/form-data',
+        ),
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 품절 상태 변경
+  Future<Response<dynamic>> updateMenuSoldOutStatus({required String storeId, required int menuId, required int soldOutStatus}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuSoldOutStatus,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'menuId': menuId,
+          'menuSoldOutStatus': soldOutStatus,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 인기 상태 변경
+  Future<Response<dynamic>> updateMenuPopularity({required String storeId, required int menuId, required int popularityStatus}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuPopularity,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'menuId': menuId,
+          'menuPopularityStatus': popularityStatus,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 베스트 상태 변경
+  Future<Response<dynamic>> updateMenuBestStatus({required String storeId, required int menuId, required int bestStatus}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuBestStatus,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'menuId': menuId,
+          'menuBestStatus': bestStatus,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 구성 변경
+  Future<Response<dynamic>> updateMenuMadeOf({required String storeId, required int menuId, required String menuParts}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuMadeOf,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'menuId': menuId,
+          'madeOf': menuParts,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 설명 변경
+  Future<Response<dynamic>> updateMenuIntroduction({required String storeId, required int menuId, required String menuDescription}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuIntroduction,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'menuId': menuId,
+          'menuIntroduction': menuDescription,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 삭제
+  Future<Response<dynamic>> deleteMenu({required String storeId, required MenuModel menuModel}) async {
+    try {
+      return await ref.read(requestApiProvider).delete(
+        RestApiUri.deleteMenu,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'menuId': menuModel.menuId,
+          'menuName': menuModel.menuName,
+        },
+      );
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);

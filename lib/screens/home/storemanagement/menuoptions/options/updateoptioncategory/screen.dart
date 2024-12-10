@@ -16,7 +16,8 @@ import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 
 import '../../model.dart';
 import '../../new_cuisine_option_screen.dart';
-import '../../nutrition_card.dart';
+import '../../nutrition/nutrition_card.dart';
+import '../../provider.dart';
 
 
 final MenuOptionCategoryModel category = MenuOptionCategoryModel(
@@ -90,43 +91,63 @@ final List<MenuModel> cuisines = [
 
 
 class UpdateOptionCategoryScreen extends ConsumerStatefulWidget {
-  const UpdateOptionCategoryScreen({super.key});
+  final MenuOptionCategoryModel optionCategoryModel;
+
+  const UpdateOptionCategoryScreen({super.key, required this.optionCategoryModel});
 
   @override
   ConsumerState<UpdateOptionCategoryScreen> createState() => _UpdateOptionCategoryScreenState();
 }
 
 class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategoryScreen> {
-  bool isEssential = true;
+  late MenuOptionCategoryModel optionCategoryModel;
+
+  // bool isEssential = true;
   bool isSoldOut = true;
 
   @override
+  void initState() {
+    super.initState();
+    optionCategoryModel = widget.optionCategoryModel;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
+    final MenuOptionsNotifier provider = ref.read(menuOptionsNotifierProvider.notifier);
+
     return Scaffold(
+
       appBar: AppBarWithLeftArrow(title: "옵션 카테고리 관리"),
+
       body: SGContainer(
-        color: Color(0xFFFAFAFA),
+        color: const Color(0xFFFAFAFA),
         padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
         child: ListView(children: [
+
           SGTypography.body("곡물 베이스 선택", weight: FontWeight.w700, size: FontSize.normal),
           SizedBox(height: SGSpacing.p3),
           MultipleInformationBox(children: [
+
+            // --------------------------- 옵션 필수 여부 ---------------------------
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               SGTypography.body("옵션 필수 여부", size: FontSize.normal, weight: FontWeight.w600),
-              Spacer(),
+              const Spacer(),
               SGSwitch(
-                value: isEssential,
-                onChanged: (value) {
+                value: optionCategoryModel.essentialStatus == 1,
+                onChanged: (boolEssential) {
                   setState(() {
-                    isEssential = value;
+                    optionCategoryModel = optionCategoryModel.copyWith(essentialStatus : boolEssential ? 1: 0);
                   });
                 },
               ),
             ]),
             SizedBox(height: SGSpacing.p3 + SGSpacing.p05),
+
+            // --------------------------- 옵션 선택 개수 설정 ---------------------------
             GestureDetector(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CuisionOptionCategoryQuantityEditScreen(isEssential: isEssential)));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CuisionOptionCategoryQuantityEditScreen(isEssential: optionCategoryModel.essentialStatus == 1)));
               },
               child: SGContainer(
                 borderColor: SGColors.line2,
@@ -135,8 +156,11 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                 child: Row(children: [SGTypography.body("옵션 선택 개수 설정", size: FontSize.small), SizedBox(width: SGSpacing.p1), Icon(Icons.edit, size: FontSize.small), Spacer(), SGTypography.body("최소 1개, 최대 1개", size: FontSize.small)]),
               ),
             ),
-          ]),
+          ]), // end of 곡물 베이스 선택
+
           SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+
+          // --------------------------- 품절 ---------------------------
           SGContainer(
               color: Colors.white,
               padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3 + SGSpacing.p05),
@@ -155,8 +179,12 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                 ),
               ])),
           SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+
+          // --------------------------- MenuOptionCategoryModel 편집 ---------------------------
           _CuisineOptionCategoryCard(category: category),
           SizedBox(height: SGSpacing.p7 + SGSpacing.p05),
+
+          // --------------------------- 옵션 카테고리 사용 메뉴 ---------------------------
           MultipleInformationBox(children: [
             GestureDetector(
               onTap: () {
@@ -200,6 +228,8 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                 .flattened
           ]),
           SizedBox(height: SGSpacing.p4),
+
+          // --------------------------- 옵션 카테고리 삭제 ---------------------------
           GestureDetector(
             onTap: () {
               showSGDialog(
@@ -255,6 +285,7 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                 )),
           ),
           SizedBox(height: SGSpacing.p32),
+
         ]),
       ),
     );
@@ -643,7 +674,7 @@ class CuisineOptionCategoryEditScreen extends StatefulWidget {
 class _CuisineOptionCategoryEditScreenState extends State<CuisineOptionCategoryEditScreen> {
   bool isSoldOut = false;
 
-  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
+  NutritionModel nutrition = NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
 
   late String categoryName = widget.category.menuOptionCategoryName;
   List<MenuOptionModel> options = [];
@@ -787,7 +818,7 @@ class _CuisineOptionEditScreen extends StatefulWidget {
 class _CuisineOptionEditScreenState extends State<_CuisineOptionEditScreen> {
   late String menuPrice = "${(widget.option.price ?? 0).toKoreanCurrency}원";
   bool isSoldOut = false;
-  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
+  NutritionModel nutrition = NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
 
   void showFailDialogWithImage({
     required String mainTitle,
@@ -1024,8 +1055,8 @@ class _CuisineOptionEditScreenState extends State<_CuisineOptionEditScreen> {
 }
 
 class _NutritionEditScreen extends StatefulWidget {
-  Nutrition nutrition;
-  Function(Nutrition, int, BuildContext) onConfirm;
+  NutritionModel nutrition;
+  Function(NutritionModel, int, BuildContext) onConfirm;
 
   _NutritionEditScreen({super.key, required this.nutrition, required this.onConfirm});
 

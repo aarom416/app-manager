@@ -157,6 +157,3 @@ abstract class StoreManagementBasicInfoState with _$StoreManagementBasicInfoStat
   factory StoreManagementBasicInfoState.fromJson(Map<String, dynamic> json) => _$StoreManagementBasicInfoStateFromJson(json);
 }
 
-extension Let<T> on T {
-  R let<R>(R Function(T it) operation) => operation(this);
-}

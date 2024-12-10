@@ -12,8 +12,7 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/utils/formatter.dart';
 
 import 'model.dart';
-import 'nutrition_card.dart';
-import 'nutrition_form.dart';
+import 'nutrition/nutrition_card.dart';
 
 class NewCuisineOptionScreen extends StatefulWidget {
   final Function(MenuOptionModel) onSubmitCuisineOption;
@@ -186,7 +185,7 @@ class _NewCuisineOptionNutritionStepScreen extends StatefulWidget {
 }
 
 class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionNutritionStepScreen> {
-  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
+  NutritionModel nutrition = NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
 
   @override
   Widget build(BuildContext context) {
@@ -286,8 +285,8 @@ class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionN
 }
 
 class _NutritionInputScreen extends StatefulWidget {
-  Nutrition nutrition;
-  Function(Nutrition, int, BuildContext) onConfirm;
+  NutritionModel nutrition;
+  Function(NutritionModel, int, BuildContext) onConfirm;
 
   _NutritionInputScreen({super.key, required this.nutrition, required this.onConfirm});
 

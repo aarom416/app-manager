@@ -92,8 +92,7 @@ class _OptionsTabState extends ConsumerState<OptionsTab> {
                 child: TextField(
               controller: optionContentQueryController,
               style: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5),
-              decoration: InputDecoration(
-                  isDense: true, hintText: "옵션명을 입력해주세요", hintStyle: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5, fontWeight: FontWeight.w400), border: InputBorder.none),
+              decoration: InputDecoration(isDense: true, hintText: "옵션명을 입력해주세요", hintStyle: TextStyle(fontSize: FontSize.normal, color: SGColors.gray5, fontWeight: FontWeight.w400), border: InputBorder.none),
               onChanged: (optionContentQuery) {
                 setState(() {
                   this.optionContentQuery = optionContentQuery;
@@ -216,7 +215,7 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateOptionCategoryScreen()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateOptionCategoryScreen(optionCategoryModel : widget.optionCategory)));
             },
             child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               SGTypography.body(widget.optionCategory.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
@@ -231,7 +230,7 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
       ...widget.optionCategory.menuOptions
           .mapIndexed((index, option) => [
                 if (index == 0) SizedBox(height: SGSpacing.p5) else SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: option.optionContent ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
+                DataTableRow(left: ("${option.optionContent}${option.soldOutStatus == 1 ? "품절" : ""}") ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
               ])
           .flattened,
       SizedBox(height: SGSpacing.p5),

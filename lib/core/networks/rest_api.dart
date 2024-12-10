@@ -129,7 +129,7 @@ class RestApiUri {
 
   /// StoreMenuDelete
   /// 가게 메뉴 삭제 API
-  // DELETE - 메뉴 삭제 TODO
+  // DELETE - 메뉴 삭제
   static const String deleteMenu = '/api/v1/owner/store-menu/menu';
   // DELETE - 메뉴 카테고리 삭제
   static const String deleteMenuCategory =
@@ -281,12 +281,12 @@ class RestApiUri {
 
   /// StoreMenuUpdate
   /// 가게 메뉴 수정 API
-  // POST - 메뉴 품절 상태 변경 TODO
+  // POST - 메뉴 품절 상태 변경
   static const String updateMenuSoldOutStatus =
       '/api/v1/owner/store-menu/menu-sold-out';
-  // POST - 메뉴 가격 변경 TODO
+  // POST - 메뉴 가격 변경
   static const String updateMenuPrice = '/api/v1/owner/store-menu/menu-price';
-  // POST - 메뉴 인기 상태 변경 TODO
+  // POST - 메뉴 인기 상태 변경
   static const String updateMenuPopularity =
       '/api/v1/owner/store-menu/menu-popularity';
   // POST - 가게 메뉴 사진 등록 및 변경 TODO
@@ -320,12 +320,12 @@ class RestApiUri {
   // POST - 메뉴 옵션 카테고리 필수 여부 변경 TODO
   static const String updateMenuOptionCategoryEssential =
       '/api/v1/owner/store-menu/menu-option-category/essential';
-  // POST - 메뉴 이름 변경 TODO
+  // POST - 메뉴 이름 변경
   static const String updateMenuName = '/api/v1/owner/store-menu/menu-name';
-  // POST - 메뉴 구성 변경 TODO
+  // POST - 메뉴 구성 변경
   static const String updateMenuMadeOf =
       '/api/v1/owner/store-menu/menu-made-of';
-  // POST - 메뉴 설명 변경 TODO
+  // POST - 메뉴 설명 변경
   static const String updateMenuIntroduction =
       '/api/v1/owner/store-menu/menu-introduction';
   // POST - 메뉴 정보 변경 TODO
@@ -333,10 +333,10 @@ class RestApiUri {
   // POST - 메뉴 카테고리 이름 및 설명 수정
   static const String updateMenuCategoryName =
       '/api/v1/owner/store-menu/menu-category/name';
-  // POST - 메뉴 베스트 상태 변경 TODO
+  // POST - 메뉴 베스트 상태 변경
   static const String updateMenuBestStatus =
       '/api/v1/owner/store-menu/menu-best';
-  // POST - 메뉴 사진 변경 - 관리자 제한 API TODO
+  // POST - 메뉴 사진 변경 - 관리자 제한 API
   static const String adminUpdateMenuPicture =
       '/api/v1/owner/admin/menu-picture';
 

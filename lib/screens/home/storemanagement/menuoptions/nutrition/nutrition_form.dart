@@ -9,15 +9,15 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 
-import '../../../../core/components/numeric_textfield.dart';
-import 'model.dart';
+import '../../../../../core/components/numeric_textfield.dart';
+import '../model.dart';
 
 class NutritionForm extends StatefulWidget {
-  final Nutrition nutrition;
+  final NutritionModel nutrition;
   final int servingAmount;
   final String servingAmountType;
 
-  final Function(Nutrition, int, String, BuildContext) onChanged;
+  final Function(NutritionModel, int, String, BuildContext) onChanged;
 
   const NutritionForm({
     super.key,
@@ -32,7 +32,7 @@ class NutritionForm extends StatefulWidget {
 }
 
 class _NutritionFormState extends State<NutritionForm> {
-  late Nutrition nutrition = widget.nutrition;
+  late NutritionModel nutrition = widget.nutrition;
   late int servingAmount = widget.servingAmount;
   late String servingAmountType = widget.servingAmountType;
   late bool quantityIsNone = false;
