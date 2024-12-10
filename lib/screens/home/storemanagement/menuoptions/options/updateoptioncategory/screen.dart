@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -16,14 +17,7 @@ import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 import '../../model.dart';
 import '../../new_cuisine_option_screen.dart';
 import '../../nutrition_card.dart';
-import '../../nutrition_form.dart';
 
-class UpdateOptionCategoryScreen extends StatefulWidget {
-  const UpdateOptionCategoryScreen({super.key});
-
-  @override
-  State<UpdateOptionCategoryScreen> createState() => _UpdateOptionCategoryScreenState();
-}
 
 final MenuOptionCategoryModel category = MenuOptionCategoryModel(
   menuOptionCategoryName: "곡물 베이스 선택",
@@ -92,7 +86,17 @@ final List<MenuModel> cuisines = [
   )
 ];
 
-class _UpdateOptionCategoryScreenState extends State<UpdateOptionCategoryScreen> {
+
+
+
+class UpdateOptionCategoryScreen extends ConsumerStatefulWidget {
+  const UpdateOptionCategoryScreen({super.key});
+
+  @override
+  ConsumerState<UpdateOptionCategoryScreen> createState() => _UpdateOptionCategoryScreenState();
+}
+
+class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategoryScreen> {
   bool isEssential = true;
   bool isSoldOut = true;
 

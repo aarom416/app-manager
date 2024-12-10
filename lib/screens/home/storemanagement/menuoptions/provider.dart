@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:singleeat/core/extensions/dynamic.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
@@ -26,6 +27,7 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     final response = await ref.read(menuOptionsServiceProvider).getMenuOptionInfo(storeId: UserHive.getBox(key: UserKey.storeId));
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);
+      logger.i("getMenuOptionInfo result ${result.toFormattedJson()}");
       final menuOptionsDataModel = MenuOptionsDataModel.fromJson(result.data);
       setState(menuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
@@ -58,6 +60,17 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   }
 
   /// api 데이타 구조화.
+  /*
+      menuOptionCategoryDTOList 의 각 MenuOptionCategoryModel 에서 menuOptions 는
+      storeMenuOptionDTOList 에서 각 MenuOptionModel.menuOptionCategoryId 가 MenuOptionCategoryModel 의 menuOptionCategoryId 와 동일한 것들로 묶어서 데이타를 구성.
+
+      storeMenuDTOList 의 각 MenuModel 에서 menuCategoryOptions 는
+      MenuModel.menuId 가 menuOptionRelationshipDTOList 중에서 MenuOptionRelationshipModel.menuId 와 동일한 것의 menuOptionCategoryId 에 해당하는
+      menuOptionCategoryDTOList 상 데이타를 묶어서 데이타를 구성.
+
+      storeMenuCategoryDTOList 의 각 MenuCategoryModel 에서 menuList 는
+      storeMenuDTOList 에서 각 MenuModel.storeMenuCategoryId 가 MenuCategoryModel 의 storeMenuCategoryId 와 동일한 것들로 묶어서 데이타를 구성.
+   */
   List<MenuCategoryModel> createMenuCategoryModels({
     required List<MenuCategoryModel> storeMenuCategoryDTOList,
     required List<MenuModel> storeMenuDTOList,
