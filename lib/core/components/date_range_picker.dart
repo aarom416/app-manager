@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -162,6 +160,17 @@ class _MonthlyRangePickerState extends State<MonthlyRangePicker> {
   late DateRange dateRange;
 
   late DateTime date;
+
+  @override
+  void didUpdateWidget(covariant MonthlyRangePicker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.dateRange != widget.dateRange) {
+      setState(() {
+        dateRange = widget.dateRange;
+        date = dateRange.start;
+      });
+    }
+  }
 
   @override
   void initState() {

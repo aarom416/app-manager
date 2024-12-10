@@ -10,9 +10,9 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/office/models/order_model.dart';
-import 'package:singleeat/screens/bottom/order/model.dart';
-import 'package:singleeat/screens/bottom/order/order_detail_screen.dart';
-import 'package:singleeat/screens/bottom/order/provider.dart';
+import 'package:singleeat/screens/bottom/order/operation/detail/screen.dart';
+import 'package:singleeat/screens/bottom/order/operation/model.dart';
+import 'package:singleeat/screens/bottom/order/operation/provider.dart';
 
 class OrderManagementScreen extends ConsumerStatefulWidget {
   const OrderManagementScreen({super.key});
@@ -229,6 +229,7 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen>
                 child: SGContainer(
                     borderWidth: 0,
                     child: TabBarView(
+                        controller: _tabController,
                         physics: const NeverScrollableScrollPhysics(),
                         children: [
                           _NewOrderListView(orders: state.newOrderList),
@@ -535,6 +536,76 @@ class _NewOrderListView extends ConsumerWidget {
   }
 }
 
+class _InProgressOrderListView extends ConsumerWidget {
+  List<NewOrderModel> orders;
+
+  _InProgressOrderListView({
+    super.key,
+    required this.orders,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (orders.isEmpty) return _NoOrderScreen();
+    print('Build _InProgressOrderListView');
+    return ListView.separated(
+        shrinkWrap: true,
+        itemCount: orders.length,
+        separatorBuilder: (ctx, index) => Divider(
+              thickness: 0.5,
+              color: SGColors.lineDark,
+            ),
+        itemBuilder: (ctx, index) {
+          return GestureDetector(
+            onTap: () async {
+              bool result = await ref
+                  .read(orderNotifierProvider.notifier)
+                  .getAcceptedOrderDetail(orders[index].orderInformationId);
+              if (result) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => InProgressOrderDetailScreen(
+                        order: ref.watch(orderNotifierProvider).orderDetail)));
+              }
+            },
+            child: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                _OrderCard(
+                    order: orders[index],
+                    // TODO : 2024.12.10 접수 API 경과 시간 추가 필요 현재 10으로 고정
+                    tailing: PercentageIndicator(
+                        percentage: 10 / orders[index].expectedTime,
+                        radius: 25,
+                        strokeWidth: 3,
+                        strokeColor: strokeColor(orders[index]),
+                        color: Colors.transparent,
+                        label: "${orders[index].expectedTime}분")),
+                Positioned(
+                    top: SGSpacing.p4,
+                    right: SGSpacing.p2,
+                    child: CircleAvatar(
+                        radius: SGSpacing.p3 + SGSpacing.p05,
+                        backgroundColor: strokeColor(orders[index]),
+                        child: Center(
+                            child: SGTypography.body(
+                                orders[index].receiveFoodType == 'DELIVERY'
+                                    ? '배달'
+                                    : '포장',
+                                color: SGColors.white,
+                                weight: FontWeight.w700))))
+              ],
+            ),
+          );
+        });
+  }
+
+  Color strokeColor(NewOrderModel order) {
+    if (order.receiveFoodType == "TAKEOUT") return SGColors.success;
+    if (order.receiveFoodType == "DELIVERY") return SGColors.warningOrange;
+    return SGColors.primary;
+  }
+}
+
 class _RejectDialogBody extends ConsumerStatefulWidget {
   _RejectDialogBody({
     super.key,
@@ -703,75 +774,6 @@ class _CompleteOrderListView extends ConsumerWidget {
     if (order.orderStatus == OrderStatus.cancelled) return SGColors.warningRed;
     if (order.receiveFoodType == "DELIVERY") return SGColors.success;
     if (order.receiveFoodType == "TAKEOUT") return SGColors.warningOrange;
-    return SGColors.primary;
-  }
-}
-
-class _InProgressOrderListView extends ConsumerWidget {
-  List<NewOrderModel> orders;
-
-  _InProgressOrderListView({
-    super.key,
-    required this.orders,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (orders.isEmpty) return _NoOrderScreen();
-    return ListView.separated(
-        shrinkWrap: true,
-        itemCount: orders.length,
-        separatorBuilder: (ctx, index) => Divider(
-              thickness: 0.5,
-              color: SGColors.lineDark,
-            ),
-        itemBuilder: (ctx, index) {
-          return GestureDetector(
-            onTap: () async {
-              bool result = await ref
-                  .read(orderNotifierProvider.notifier)
-                  .getAcceptedOrderDetail(orders[index].orderInformationId);
-              if (result) {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctx) => InProgressOrderDetailScreen(
-                        order: ref.watch(orderNotifierProvider).orderDetail)));
-              }
-            },
-            child: Stack(
-              alignment: Alignment.topRight,
-              children: [
-                _OrderCard(
-                    order: orders[index],
-                    // TODO : 2024.12.10 접수 API 경과 시간 추가 필요 현재 10으로 고정
-                    tailing: PercentageIndicator(
-                        percentage: 10 / orders[index].expectedTime,
-                        radius: 25,
-                        strokeWidth: 3,
-                        strokeColor: strokeColor(orders[index]),
-                        color: Colors.transparent,
-                        label: "${orders[index].expectedTime}분")),
-                Positioned(
-                    top: SGSpacing.p4,
-                    right: SGSpacing.p2,
-                    child: CircleAvatar(
-                        radius: SGSpacing.p3 + SGSpacing.p05,
-                        backgroundColor: strokeColor(orders[index]),
-                        child: Center(
-                            child: SGTypography.body(
-                                orders[index].receiveFoodType == 'DELIVERY'
-                                    ? '배달'
-                                    : '포장',
-                                color: SGColors.white,
-                                weight: FontWeight.w700))))
-              ],
-            ),
-          );
-        });
-  }
-
-  Color strokeColor(NewOrderModel order) {
-    if (order.receiveFoodType == "TAKEOUT") return SGColors.success;
-    if (order.receiveFoodType == "DELIVERY") return SGColors.warningOrange;
     return SGColors.primary;
   }
 }

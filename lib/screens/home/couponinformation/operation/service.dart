@@ -10,6 +10,26 @@ class CouponInformationService {
 
   CouponInformationService(this.ref);
 
+  /// POST - 쿠폰 발급
+  Future<Response<dynamic>> issueCoupon({
+    required Object data,
+  }) async {
+    try {
+      final response = ref.read(requestApiProvider).post(
+            RestApiUri.issueCoupon,
+            data: data,
+          );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
   /// GET - 쿠폰 정보를 조회
   Future<Response<dynamic>> getCouponInformation({
     required String storeId,
@@ -22,6 +42,25 @@ class CouponInformationService {
                 .replaceAll('{storeId}', storeId)
                 .replaceAll('{page}', page),
             queryParameters: queryParameters,
+          );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// DELETE - 쿠폰 정보를 삭제
+  Future<Response<dynamic>> deleteIssuedCoupon({
+    required String couponId,
+  }) async {
+    try {
+      final response = ref.read(requestApiProvider).delete(
+            RestApiUri.deleteIssuedCoupon.replaceAll('{couponId}', couponId),
           );
 
       return response;

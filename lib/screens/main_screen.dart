@@ -228,9 +228,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                                 builder: (context) => TaxesScreen()));
                           }),
                           menuButton('쿠폰 관리', "menu-coupon", () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    CouponManagementScreen()));
+                            ref
+                                .read(goRouterProvider)
+                                .push(AppRoutes.couponInformation);
                           }),
                           /*menuButton('사업자 정보', "menu-business-profile", () {
                             Navigator.of(context).push(MaterialPageRoute(
