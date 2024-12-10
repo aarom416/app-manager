@@ -14,7 +14,7 @@ class RestApiUri {
   static const String issueCoupon = '/api/v1/owner/coupon';
   // GET - 쿠폰 정보 조회
   static const String getCouponInfo = '/api/v1/owner/coupon/{storeId}/{page}';
-  // DELETE - 발급 쿠폰 삭제 TODO
+  // DELETE - 발급 쿠폰 삭제
   static const String deleteIssuedCoupon = '/api/v1/owner/coupon/{couponId}';
   // DELETE - 발급 쿠폰 선택 삭제 - 관리자 제한 API TODO
   static const String adminDeleteIssuedCoupon =

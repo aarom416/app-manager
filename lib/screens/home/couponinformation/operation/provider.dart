@@ -73,6 +73,42 @@ class CouponInformationNotifier extends _$CouponInformationNotifier {
     }
   }
 
+  /// DELETE - 쿠폰 정보 삭제
+  Future<void> deleteIssuedCoupon({
+    Function? successCallback,
+    Function? failCallback,
+  }) async {
+    final response = await ref
+        .read(couponInformationServiceProvider)
+        .deleteIssuedCoupon(couponId: state.selectedCoupon.couponId.toString());
+
+    if (response.statusCode == 200) {
+      state = state.copyWith(
+        couponInformationList: state.couponInformationList
+            .where(
+              (coupon) => coupon.couponId != state.selectedCoupon.couponId,
+            )
+            .toList(),
+        selectedCoupon: const CouponInformationModel(),
+        status: CouponInformationStatus.success,
+        error: const ResultFailResponseModel(),
+      );
+
+      if (successCallback != null) {
+        successCallback();
+      }
+    } else {
+      state = state.copyWith(
+        status: CouponInformationStatus.error,
+        error: ResultFailResponseModel.fromJson(response.data),
+      );
+
+      if (failCallback != null) {
+        failCallback();
+      }
+    }
+  }
+
   void onChangeHasMoreData(bool hasMoreData) {
     state = state.copyWith(hasMoreData: hasMoreData);
   }
@@ -83,6 +119,10 @@ class CouponInformationNotifier extends _$CouponInformationNotifier {
 
   void onChangePage(int page) {
     state = state.copyWith(page: page);
+  }
+
+  void onChangeSelectedCoupon(CouponInformationModel selectedCoupon) {
+    state = state.copyWith(selectedCoupon: selectedCoupon);
   }
 }
 
@@ -98,6 +138,7 @@ abstract class CouponInformationState with _$CouponInformationState {
     @Default(true) bool hasMoreData,
     @Default('') String storeId,
     @Default(0) int page,
+    @Default(CouponInformationModel()) CouponInformationModel selectedCoupon,
     @Default(<CouponInformationModel>[])
     List<CouponInformationModel> couponInformationList,
     @Default(CouponInformationStatus.init) CouponInformationStatus status,

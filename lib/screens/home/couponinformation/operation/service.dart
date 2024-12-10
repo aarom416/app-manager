@@ -33,6 +33,25 @@ class CouponInformationService {
       return Future.error(e);
     }
   }
+
+  /// DELETE - 쿠폰 정보를 삭제
+  Future<Response<dynamic>> deleteIssuedCoupon({
+    required String couponId,
+  }) async {
+    try {
+      final response = ref.read(requestApiProvider).delete(
+            RestApiUri.deleteIssuedCoupon.replaceAll('{couponId}', couponId),
+          );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final couponInformationServiceProvider =

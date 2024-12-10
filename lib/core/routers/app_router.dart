@@ -14,6 +14,8 @@ import 'package:singleeat/screens/find_account_screen.dart';
 import 'package:singleeat/screens/find_account_webview_screen.dart';
 import 'package:singleeat/screens/find_by_password_screen.dart';
 import 'package:singleeat/screens/find_by_password_webview_screen.dart';
+import 'package:singleeat/screens/home/couponinformation/operation/detail/screen.dart';
+import 'package:singleeat/screens/home/couponinformation/operation/screen.dart';
 import 'package:singleeat/screens/home/storeVat/operation/screen.dart';
 import 'package:singleeat/screens/home/storeinformation/operation/screen.dart';
 import 'package:singleeat/screens/home/storemanagement/menuoptions/store_management_screen.dart';
@@ -203,6 +205,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.allergyInformation,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: AllergyInformationScreen())),
+      GoRoute(
+          path: AppRoutes.couponInformation,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: CouponInformationScreen())),
+      GoRoute(
+          path: AppRoutes.couponInformationDetail,
+          pageBuilder: (context, state) =>
+              const NoTransitionPage(child: CouponDetailScreen())),
     ],
   );
 });

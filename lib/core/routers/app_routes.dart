@@ -30,4 +30,6 @@ class AppRoutes {
   static const String storeInformation = '/store/information';
   static const String orderHistory = '/order/history';
   static const String allergyInformation = '/allergy/information';
+  static const String couponInformation = '/coupon/information';
+  static const String couponInformationDetail = '/coupon/information/detail';
 }

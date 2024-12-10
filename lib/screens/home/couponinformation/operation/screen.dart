@@ -9,21 +9,23 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
 import 'package:singleeat/core/extensions/integer.dart';
+import 'package:singleeat/core/routers/app_router.dart';
+import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/core/utils/throttle.dart';
 import 'package:singleeat/screens/coupon_issue_screen.dart';
 import 'package:singleeat/screens/home/couponinformation/operation/model.dart';
 import 'package:singleeat/screens/home/couponinformation/operation/provider.dart';
 
-class CouponManagementScreen extends ConsumerStatefulWidget {
-  const CouponManagementScreen({super.key});
+class CouponInformationScreen extends ConsumerStatefulWidget {
+  const CouponInformationScreen({super.key});
 
   @override
-  ConsumerState<CouponManagementScreen> createState() =>
-      _CouponManagementScreenState();
+  ConsumerState<CouponInformationScreen> createState() =>
+      _CouponInformationScreenState();
 }
 
-class _CouponManagementScreenState
-    extends ConsumerState<CouponManagementScreen> {
+class _CouponInformationScreenState
+    extends ConsumerState<CouponInformationScreen> {
   final ScrollController scrollController = ScrollController();
 
   DateRange dateRange = DateRange(
@@ -237,7 +239,7 @@ class _CouponManagementScreenState
   }
 }
 
-class _CouponCard extends StatelessWidget {
+class _CouponCard extends ConsumerStatefulWidget {
   final CouponInformationModel coupon;
 
   const _CouponCard({
@@ -246,11 +248,18 @@ class _CouponCard extends StatelessWidget {
   });
 
   @override
+  ConsumerState<_CouponCard> createState() => _CouponCardState();
+}
+
+class _CouponCardState extends ConsumerState<_CouponCard> {
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (context) => CouponDetailScreen(coupon: coupon)));
+        ref
+            .read(couponInformationNotifierProvider.notifier)
+            .onChangeSelectedCoupon(widget.coupon);
+        ref.read(goRouterProvider).push(AppRoutes.couponInformationDetail);
       },
       child: SGContainer(
         color: Colors.white,
@@ -265,7 +274,7 @@ class _CouponCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SGTypography.body(coupon.couponName,
+                SGTypography.body(widget.coupon.couponName,
                     size: FontSize.small, weight: FontWeight.w700),
                 SGContainer(
                     padding: EdgeInsets.all(SGSpacing.p1),
@@ -273,34 +282,37 @@ class _CouponCard extends StatelessWidget {
                     borderColor: Colors.transparent,
                     borderRadius:
                         BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
-                    child: SGTypography.body(createOrderTypeLabel(coupon),
+                    child: SGTypography.body(
+                        createOrderTypeLabel(widget.coupon),
                         color: SGColors.primary)),
               ],
             ),
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-            if (coupon.discountType == 'AMOUNT')
-              SGTypography.body("${coupon.discountValue.toKoreanCurrency}원 할인",
-                  size: FontSize.large, weight: FontWeight.w700)
-            else if (coupon.discountType == 'PERCENT')
-              SGTypography.body("${coupon.discountValue}% 할인",
+            if (widget.coupon.discountType == 'AMOUNT')
+              SGTypography.body(
+                  "${widget.coupon.discountValue.toKoreanCurrency}원 할인",
+                  size: FontSize.large,
+                  weight: FontWeight.w700)
+            else if (widget.coupon.discountType == 'PERCENT')
+              SGTypography.body("${widget.coupon.discountValue}% 할인",
                   size: FontSize.large, weight: FontWeight.w700),
             SizedBox(height: SGSpacing.p4),
             SGTypography.body(
-              "최소 주문 금액 ${coupon.minOrderAmount.toKoreanCurrency}원 이상",
+              "최소 주문 금액 ${widget.coupon.minOrderAmount.toKoreanCurrency}원 이상",
               size: FontSize.small,
               color: SGColors.gray4,
             ),
-            if (coupon.discountType == 'PERCENT') ...[
+            if (widget.coupon.discountType == 'PERCENT') ...[
               SizedBox(height: SGSpacing.p2),
               SGTypography.body(
-                "최대 할인 금액 ${coupon.discountLimit.toKoreanCurrency}원",
+                "최대 할인 금액 ${widget.coupon.discountLimit.toKoreanCurrency}원",
                 size: FontSize.small,
                 color: SGColors.gray4,
               ),
             ],
             SizedBox(height: SGSpacing.p2),
             SGTypography.body(
-                "쿠폰 유효 기간 ${coupon.startDate} ~ ${coupon.expiredDate}",
+                "쿠폰 유효 기간 ${widget.coupon.startDate} ~ ${widget.coupon.expiredDate}",
                 size: FontSize.small,
                 color: Color(0xFFF26969),
                 weight: FontWeight.w500),
@@ -309,16 +321,16 @@ class _CouponCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  String createOrderTypeLabel(CouponInformationModel coupon) {
-    if (coupon.isDeliveryOrder == 1 && coupon.isPickupOrder == 1) {
-      return '전부';
-    } else if (coupon.isDeliveryOrder == 1) {
-      return '배달';
-    } else if (coupon.isPickupOrder == 1) {
-      return '포장';
-    } else {
-      throw ArgumentError('isDeliverOrder 또는 isPickupOrder 파라미터가 유효하지 않습니다.');
-    }
+String createOrderTypeLabel(CouponInformationModel coupon) {
+  if (coupon.isDeliveryOrder == 1 && coupon.isPickupOrder == 1) {
+    return '전부';
+  } else if (coupon.isDeliveryOrder == 1) {
+    return '배달';
+  } else if (coupon.isPickupOrder == 1) {
+    return '포장';
+  } else {
+    throw ArgumentError('isDeliverOrder 또는 isPickupOrder 파라미터가 유효하지 않습니다.');
   }
 }
