@@ -229,6 +229,7 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen>
                 child: SGContainer(
                     borderWidth: 0,
                     child: TabBarView(
+                        controller: _tabController,
                         physics: const NeverScrollableScrollPhysics(),
                         children: [
                           _NewOrderListView(orders: state.newOrderList),
