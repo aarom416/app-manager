@@ -431,7 +431,7 @@ class RestApiUri {
   // GET - 헬스 체크 TODO
   static const String healthCheck = '/api/v1/owner/health-check';
 
-  /// ???
+  /// 사장님 전화번호 변경
   static const String identityVerification =
       '/owner/pages/identity-verification';
   // GET - 매출 부가세 내역 조회 TODO
