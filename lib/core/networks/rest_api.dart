@@ -12,7 +12,7 @@ class RestApiUri {
   /// 쿠폰 발급 API
   // POST - 쿠폰 발급 TODO
   static const String issueCoupon = '/api/v1/owner/coupon';
-  // GET - 쿠폰 정보 조회 TODO
+  // GET - 쿠폰 정보 조회
   static const String getCouponInfo = '/api/v1/owner/coupon/{storeId}/{page}';
   // DELETE - 발급 쿠폰 삭제 TODO
   static const String deleteIssuedCoupon = '/api/v1/owner/coupon/{couponId}';
