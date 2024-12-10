@@ -300,28 +300,29 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          SGContainer(
-                                              child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    SGTypography.body(
-                                                        state
-                                                            .result
-                                                            .newsDTOList[i]
-                                                            .title,
-                                                        size: FontSize.small,
-                                                        weight: FontWeight.w500,
-                                                        overflow: TextOverflow
-                                                            .ellipsis),
-                                                  ],
+                                          Container(
+                                            width : 280,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      SGTypography.body(
+                                                          state
+                                                              .result
+                                                              .newsDTOList[i]
+                                                              .title,
+                                                          size: FontSize.small,
+                                                          weight: FontWeight.w500,
+                                                          overflow: TextOverflow
+                                                              .ellipsis),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          )),
+                                              ],
+                                            )),
                                           SizedBox(
                                               height:
                                                   SGSpacing.p1 + SGSpacing.p05),
