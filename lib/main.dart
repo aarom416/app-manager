@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/date_symbol_data_file.dart';
 import 'package:logger/logger.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/utils/fcm.dart';
