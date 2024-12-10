@@ -40,7 +40,6 @@ class SingleInformationBox extends StatelessWidget {
                   color: SGColors.gray5,
                   weight: FontWeight.w400,
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
                 ),
               ),
             ),

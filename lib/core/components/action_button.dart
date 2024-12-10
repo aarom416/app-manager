@@ -24,7 +24,7 @@ class SGActionButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: SGContainer(
-          padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+          padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
           width: double.infinity,
           color: disabled
               ? SGColors.gray3
