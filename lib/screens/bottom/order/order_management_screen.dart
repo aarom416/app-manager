@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/flex.dart';
@@ -9,13 +10,16 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/office/models/order_model.dart';
-import 'package:singleeat/screens/order_detail_screen.dart';
+import 'package:singleeat/screens/bottom/order/model.dart';
+import 'package:singleeat/screens/bottom/order/order_detail_screen.dart';
+import 'package:singleeat/screens/bottom/order/provider.dart';
 
-class OrderManagementScreen extends StatefulWidget {
+class OrderManagementScreen extends ConsumerStatefulWidget {
   const OrderManagementScreen({super.key});
 
   @override
-  State<OrderManagementScreen> createState() => _OrderManagementScreenState();
+  ConsumerState<OrderManagementScreen> createState() =>
+      _OrderManagementScreenState();
 }
 
 class _NoOrderScreen extends StatelessWidget {
@@ -39,128 +43,54 @@ class _NoOrderScreen extends StatelessWidget {
   }
 }
 
-class _OrderManagementScreenState extends State<OrderManagementScreen> {
-  List<OrderModel> orders = [
-    // new orders
-    OrderModel(
-        id: 128,
-        orderName: "김치찌개",
-        price: 7000,
-        status: OrderStatus.newOrder,
-        orderTime: DateTime.now()),
-    OrderModel(
-        orderName: "된장찌개",
-        price: 7000,
-        status: OrderStatus.newOrder,
-        orderTime: DateTime.now(),
-        orderType: "배달"),
-    OrderModel(
-        orderName: "부대찌개",
-        price: 7000,
-        status: OrderStatus.newOrder,
-        orderTime: DateTime.now(),
-        orderType: "배달"),
-    OrderModel(
-        id: 256,
-        orderName: "부대찌개",
-        price: 7000,
-        status: OrderStatus.newOrder,
-        orderTime: DateTime.now()),
-
-    // in progress
-    OrderModel(
-        id: 100,
-        orderName: "된장찌개",
-        price: 7000,
-        status: OrderStatus.inProgress,
-        orderTime: DateTime.now().subtract(Duration(hours: 10)),
-        estimationTime: 40,
-        elapsedTime: 40),
-    OrderModel(
-        id: 101,
-        orderName: "부대찌개",
-        price: 7000,
-        status: OrderStatus.inProgress,
-        orderTime: DateTime.now(),
-        elapsedTime: 42,
-        estimationTime: 50),
-    OrderModel(
-        id: 102,
-        orderName: "김치찌개",
-        price: 7000,
-        status: OrderStatus.inProgress,
-        orderTime: DateTime.now(),
-        estimationTime: 60,
-        elapsedTime: 55),
-    OrderModel(
-        id: 103,
-        orderName: "된장찌개",
-        price: 7000,
-        status: OrderStatus.inProgress,
-        orderTime: DateTime.now(),
-        estimationTime: 40,
-        elapsedTime: 40),
-    OrderModel(
-        id: 1002,
-        orderName: "부대찌개",
-        price: 7000,
-        status: OrderStatus.inProgress,
-        orderTime: DateTime.now(),
-        elapsedTime: 42,
-        estimationTime: 50,
-        orderType: "배달"),
-    OrderModel(
-        id: 1004,
-        orderName: "김치찌개",
-        price: 7000,
-        status: OrderStatus.inProgress,
-        orderTime: DateTime.now(),
-        estimationTime: 60,
-        elapsedTime: 55),
-    // done
-    OrderModel(
-        orderName: "된장찌개",
-        price: 7000,
-        status: OrderStatus.completed,
-        orderTime: DateTime.now()),
-    OrderModel(
-        orderName: "부대찌개",
-        price: 7000,
-        status: OrderStatus.completed,
-        orderTime: DateTime.now()),
-    OrderModel(
-        orderName: "김치찌개",
-        price: 7000,
-        status: OrderStatus.completed,
-        orderTime: DateTime.now(),
-        orderType: "배달"),
-    OrderModel(
-        orderName: "김치찌개",
-        price: 7000,
-        status: OrderStatus.cancelled,
-        orderTime: DateTime.now(),
-        orderType: "배달"),
-  ];
-
-  List<OrderModel> get ordersNew => orders
-      .where((element) => element.status == OrderStatus.newOrder)
-      .toList();
-
-  List<OrderModel> get ordersInProgress => orders
-      .where((element) => element.status == OrderStatus.inProgress)
-      .toList();
-
-  List<OrderModel> get ordersCompleted => orders
-      .where((element) =>
-          element.status == OrderStatus.completed ||
-          element.status == OrderStatus.cancelled)
-      .toList();
-
+class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen>
+    with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
+  late TabController _tabController;
+  String tab = "신규";
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() {
+      ref.read(orderNotifierProvider.notifier).getNewOrderList();
+    });
+    _tabController = TabController(length: 3, vsync: this);
+
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        setState(() {
+          switch (_tabController.index) {
+            case 0:
+              tab = "신규";
+              ref.read(orderNotifierProvider.notifier).getNewOrderList();
+              break;
+            case 1:
+              tab = "접수";
+              ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+              break;
+            case 2:
+              tab = "완료";
+              ref.read(orderNotifierProvider.notifier).getCompletedOrderList();
+              break;
+          }
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     const toolbarHeight = 64.0;
+    final provider = ref.read(orderNotifierProvider.notifier);
+    final state = ref.watch(orderNotifierProvider);
     return DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -252,9 +182,25 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
                   preferredSize:
                       Size(MediaQuery.of(context).size.width, SGSpacing.p8),
                   child: TabBar(
+                    controller: _tabController,
                     dividerColor: SGColors.lineDark,
                     indicatorColor: SGColors.primary,
-                    tabs: [
+                    onTap: (index) {
+                      setState(() {
+                        switch (index) {
+                          case 0:
+                            tab = "신규";
+                            break;
+                          case 1:
+                            tab = "접수";
+                            break;
+                          case 2:
+                            tab = "완료";
+                            break;
+                        }
+                      });
+                    },
+                    tabs: const [
                       Tab(text: "신규", height: FontSize.xxlarge),
                       Tab(text: "접수", height: FontSize.xxlarge),
                       Tab(text: "완료", height: FontSize.xxlarge),
@@ -285,25 +231,28 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
                     child: TabBarView(
                         physics: const NeverScrollableScrollPhysics(),
                         children: [
-                          _NewOrderListView(orders: ordersNew),
+                          _NewOrderListView(orders: state.newOrderList),
                           // 접수
-                          _InProgressOrderListView(orders: ordersInProgress),
+                          _InProgressOrderListView(
+                              orders: state.acceptOrderList),
                           // 완료
-                          _CompleteOrderListView(orders: ordersCompleted),
+                          _CompleteOrderListView(
+                              orders: state.completeOrderList),
                         ])))));
   }
 }
 
-class _NewOrderListView extends StatelessWidget {
-  List<OrderModel> orders;
+class _NewOrderListView extends ConsumerWidget {
+  List<NewOrderModel> orders;
 
   _NewOrderListView({
     super.key,
     required this.orders,
   });
 
+  int cookTime = 0;
   void showRejectDialog(
-      {required BuildContext context, required OrderModel order}) {
+      {required BuildContext context, required NewOrderModel order}) {
     showSGDialogWithCloseButton(
         context: context,
         childrenBuilder: (ctx) => [
@@ -349,7 +298,7 @@ class _NewOrderListView extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (orders.isEmpty) return _NoOrderScreen();
     return ListView.separated(
         shrinkWrap: true,
@@ -366,7 +315,9 @@ class _NewOrderListView extends StatelessWidget {
                   childrenBuilder: (ctx) => [
                         Center(
                             child: SGTypography.body(
-                                "${orders[index].orderType}",
+                                orders[index].receiveFoodType == 'TAKEOUT'
+                                    ? '포장'
+                                    : '배달',
                                 size: FontSize.medium,
                                 weight: FontWeight.w700)),
                         SizedBox(height: SGSpacing.p4),
@@ -385,7 +336,10 @@ class _NewOrderListView extends StatelessWidget {
                                         size: FontSize.small,
                                         weight: FontWeight.w700,
                                         lineHeight: 1.5),
-                                    SGTypography.body("1398",
+                                    SGTypography.body(
+                                        orders[index]
+                                            .orderInformationId
+                                            .toString(),
                                         size: FontSize.small,
                                         weight: FontWeight.w500,
                                         lineHeight: 1.5),
@@ -398,7 +352,11 @@ class _NewOrderListView extends StatelessWidget {
                                         size: FontSize.small,
                                         weight: FontWeight.w700,
                                         lineHeight: 1.5),
-                                    SGTypography.body("2개",
+                                    SGTypography.body(
+                                        orders[index]
+                                            .orderMenuDTOList
+                                            .length
+                                            .toString(),
                                         size: FontSize.small,
                                         weight: FontWeight.w500,
                                         lineHeight: 1.5),
@@ -411,7 +369,14 @@ class _NewOrderListView extends StatelessWidget {
                                         size: FontSize.small,
                                         weight: FontWeight.w700,
                                         lineHeight: 1.5),
-                                    SGTypography.body("연어 샐러드 외 1개",
+                                    SGTypography.body(
+                                        orders[index].orderMenuDTOList.length >
+                                                1
+                                            ? '${orders[index].orderMenuDTOList[0].menuName}'
+                                                '외 ${orders[index].orderMenuDTOList.length - 1}개'
+                                            : orders[index]
+                                                .orderMenuDTOList[0]
+                                                .menuName,
                                         size: FontSize.small,
                                         weight: FontWeight.w500,
                                         lineHeight: 1.5),
@@ -425,7 +390,7 @@ class _NewOrderListView extends StatelessWidget {
                                         weight: FontWeight.w700,
                                         lineHeight: 1.5),
                                     SGTypography.body(
-                                        "${16000.toKoreanCurrency}원",
+                                        "${orders[index].orderAmount.toKoreanCurrency}원",
                                         size: FontSize.small,
                                         weight: FontWeight.w500,
                                         lineHeight: 1.5),
@@ -436,14 +401,23 @@ class _NewOrderListView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       GestureDetector(
-                                        onTap: () {
+                                        onTap: () async {
                                           Navigator.of(ctx).pop();
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (ctx) =>
-                                                      NewOrderDetailScreen(
-                                                          order:
-                                                              orders[index])));
+                                          bool result = await ref
+                                              .read(orderNotifierProvider
+                                                  .notifier)
+                                              .getNewOrderDetail(orders[index]
+                                                  .orderInformationId);
+                                          if (result) {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (ctx) =>
+                                                        NewOrderDetailScreen(
+                                                            order: ref
+                                                                .watch(
+                                                                    orderNotifierProvider)
+                                                                .orderDetail)));
+                                          }
                                         },
                                         child: SGContainer(
                                             borderColor: SGColors.primary,
@@ -467,10 +441,20 @@ class _NewOrderListView extends StatelessWidget {
                         SizedBox(height: SGSpacing.p2),
                         StepCounter(
                           defaultValue:
-                              orders[index].orderType == "포장" ? 20 : 60,
+                              orders[index].receiveFoodType == "TAKEOUT"
+                                  ? 20
+                                  : 60,
                           step: 5,
-                          maxValue: orders[index].orderType == "포장" ? 60 : 100,
-                          minValue: orders[index].orderType == "포장" ? 5 : 20,
+                          maxValue: orders[index].receiveFoodType == "TAKEOUT"
+                              ? 60
+                              : 100,
+                          minValue: orders[index].receiveFoodType == "TAKEOUT"
+                              ? 5
+                              : 20,
+                          onChanged: (value) {
+                            print('step counter ${value}');
+                            cookTime = value;
+                          },
                         ),
                         SizedBox(height: SGSpacing.p4),
                         Row(
@@ -505,6 +489,11 @@ class _NewOrderListView extends StatelessWidget {
                               child: GestureDetector(
                                 onTap: () {
                                   Navigator.of(ctx).pop();
+                                  ref
+                                      .read(orderNotifierProvider.notifier)
+                                      .acceptOrder(
+                                          orders[index].orderInformationId,
+                                          cookTime);
                                 },
                                 child: SGContainer(
                                   width: double.infinity,
@@ -531,10 +520,13 @@ class _NewOrderListView extends StatelessWidget {
                 order: orders[index],
                 tailing: CircleAvatar(
                     radius: 25,
-                    backgroundColor: orders[index].orderType == "포장"
+                    backgroundColor: orders[index].receiveFoodType == "TAKEOUT"
                         ? SGColors.success
                         : SGColors.warningOrange,
-                    child: SGTypography.body(orders[index].orderType,
+                    child: SGTypography.body(
+                        orders[index].receiveFoodType == "TAKEOUT"
+                            ? '포장'
+                            : '배달',
                         size: FontSize.large,
                         weight: FontWeight.w700,
                         color: SGColors.white))),
@@ -543,30 +535,30 @@ class _NewOrderListView extends StatelessWidget {
   }
 }
 
-class _RejectDialogBody extends StatefulWidget {
+class _RejectDialogBody extends ConsumerStatefulWidget {
   _RejectDialogBody({
     super.key,
     required this.order,
     required this.onReject,
   });
 
-  OrderModel order;
+  NewOrderModel order;
   VoidCallback onReject;
 
   @override
-  State<_RejectDialogBody> createState() => _RejectDialogBodyState();
+  ConsumerState<_RejectDialogBody> createState() => _RejectDialogBodyState();
 }
 
-class _RejectDialogBodyState extends State<_RejectDialogBody> {
+class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
   String rejectReason = "";
 
   @override
   Widget build(BuildContext context) {
     List<String> reasons = [
-      if (widget.order.orderType == '배달') "배달 지역 초과",
+      if (widget.order.receiveFoodType == 'DELIVERY') "배달 지역 초과",
       "재료 소진",
       "가게 사정",
-      if (widget.order.orderType == '배달') "배달 지연",
+      if (widget.order.receiveFoodType == 'DELIVERY') "배달 지연",
       "주문 폭주",
       "기타",
       "영업시간 외",
@@ -593,6 +585,13 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
         onTap: () {
           if (rejectReason.isEmpty) return;
           Navigator.of(context).pop();
+          if (widget.order.receiveFoodType == 'DELIVERY') {
+            ref.read(orderNotifierProvider.notifier).deliveryOrderReject(
+                widget.order.orderInformationId, reasons.indexOf(rejectReason));
+          } else {
+            ref.read(orderNotifierProvider.notifier).takeoutOrderReject(
+                widget.order.orderInformationId, reasons.indexOf(rejectReason));
+          }
           widget.onReject();
         },
         child: SGContainer(
@@ -635,8 +634,8 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
   }
 }
 
-class _CompleteOrderListView extends StatelessWidget {
-  List<OrderModel> orders;
+class _CompleteOrderListView extends ConsumerWidget {
+  List<NewOrderModel> orders;
 
   _CompleteOrderListView({
     super.key,
@@ -644,9 +643,8 @@ class _CompleteOrderListView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (orders.isEmpty) return _NoOrderScreen();
-
     return ListView.separated(
         shrinkWrap: true,
         itemCount: orders.length,
@@ -656,10 +654,15 @@ class _CompleteOrderListView extends StatelessWidget {
             ),
         itemBuilder: (ctx, index) {
           return GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) =>
-                      CompletedOrderDetailScreen(order: orders[index])));
+            onTap: () async {
+              bool result = await ref
+                  .read(orderNotifierProvider.notifier)
+                  .getCompletedOrderDetail(orders[index].orderInformationId);
+              if (result) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => CompletedOrderDetailScreen(
+                        order: ref.watch(orderNotifierProvider).orderDetail)));
+              }
             },
             child: Stack(
               alignment: Alignment.topRight,
@@ -667,15 +670,16 @@ class _CompleteOrderListView extends StatelessWidget {
                 _OrderCard(
                     order: orders[index],
                     tailing: PercentageIndicator(
-                        percentage: orders[index].elapsedTime /
-                            orders[index].estimationTime,
+                        percentage: orders[index].expectedTime /
+                            orders[index].expectedTime,
                         radius: 25,
                         strokeWidth: 3,
                         strokeColor: strokeColor(orders[index]),
                         color: Colors.transparent,
-                        label: orders[index].status != OrderStatus.cancelled
-                            ? "완료"
-                            : "취소")),
+                        label:
+                            orders[index].orderStatus != OrderStatus.cancelled
+                                ? "완료"
+                                : "취소")),
                 Positioned(
                     top: SGSpacing.p4,
                     right: SGSpacing.p2,
@@ -683,7 +687,10 @@ class _CompleteOrderListView extends StatelessWidget {
                         radius: SGSpacing.p3 + SGSpacing.p05,
                         backgroundColor: strokeColor(orders[index]),
                         child: Center(
-                            child: SGTypography.body(orders[index].orderType,
+                            child: SGTypography.body(
+                                orders[index].receiveFoodType == 'DELIVERY'
+                                    ? '배달'
+                                    : '포장',
                                 color: SGColors.white,
                                 weight: FontWeight.w700))))
               ],
@@ -692,16 +699,16 @@ class _CompleteOrderListView extends StatelessWidget {
         });
   }
 
-  Color strokeColor(OrderModel order) {
-    if (order.status == OrderStatus.cancelled) return SGColors.warningRed;
-    if (order.orderType == "포장") return SGColors.success;
-    if (order.orderType == "배달") return SGColors.warningOrange;
+  Color strokeColor(NewOrderModel order) {
+    if (order.orderStatus == OrderStatus.cancelled) return SGColors.warningRed;
+    if (order.receiveFoodType == "DELIVERY") return SGColors.success;
+    if (order.receiveFoodType == "TAKEOUT") return SGColors.warningOrange;
     return SGColors.primary;
   }
 }
 
-class _InProgressOrderListView extends StatelessWidget {
-  List<OrderModel> orders;
+class _InProgressOrderListView extends ConsumerWidget {
+  List<NewOrderModel> orders;
 
   _InProgressOrderListView({
     super.key,
@@ -709,7 +716,7 @@ class _InProgressOrderListView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (orders.isEmpty) return _NoOrderScreen();
     return ListView.separated(
         shrinkWrap: true,
@@ -720,24 +727,29 @@ class _InProgressOrderListView extends StatelessWidget {
             ),
         itemBuilder: (ctx, index) {
           return GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) =>
-                      InProgressOrderDetailScreen(order: orders[index])));
+            onTap: () async {
+              bool result = await ref
+                  .read(orderNotifierProvider.notifier)
+                  .getAcceptedOrderDetail(orders[index].orderInformationId);
+              if (result) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (ctx) => InProgressOrderDetailScreen(
+                        order: ref.watch(orderNotifierProvider).orderDetail)));
+              }
             },
             child: Stack(
               alignment: Alignment.topRight,
               children: [
                 _OrderCard(
                     order: orders[index],
+                    // TODO : 2024.12.10 접수 API 경과 시간 추가 필요 현재 10으로 고정
                     tailing: PercentageIndicator(
-                        percentage: orders[index].elapsedTime /
-                            orders[index].estimationTime,
+                        percentage: 10 / orders[index].expectedTime,
                         radius: 25,
                         strokeWidth: 3,
                         strokeColor: strokeColor(orders[index]),
                         color: Colors.transparent,
-                        label: "${orders[index].estimationTime}분")),
+                        label: "${orders[index].expectedTime}분")),
                 Positioned(
                     top: SGSpacing.p4,
                     right: SGSpacing.p2,
@@ -745,7 +757,10 @@ class _InProgressOrderListView extends StatelessWidget {
                         radius: SGSpacing.p3 + SGSpacing.p05,
                         backgroundColor: strokeColor(orders[index]),
                         child: Center(
-                            child: SGTypography.body(orders[index].orderType,
+                            child: SGTypography.body(
+                                orders[index].receiveFoodType == 'DELIVERY'
+                                    ? '배달'
+                                    : '포장',
                                 color: SGColors.white,
                                 weight: FontWeight.w700))))
               ],
@@ -754,9 +769,9 @@ class _InProgressOrderListView extends StatelessWidget {
         });
   }
 
-  Color strokeColor(OrderModel order) {
-    if (order.orderType == "포장") return SGColors.success;
-    if (order.orderType == "배달") return SGColors.warningOrange;
+  Color strokeColor(NewOrderModel order) {
+    if (order.receiveFoodType == "TAKEOUT") return SGColors.success;
+    if (order.receiveFoodType == "DELIVERY") return SGColors.warningOrange;
     return SGColors.primary;
   }
 }
@@ -838,13 +853,10 @@ class _PercentageIndicatorPainter extends CustomPainter {
 }
 
 class _OrderCard extends StatelessWidget {
-  final OrderModel order;
+  final NewOrderModel order;
   final Widget? tailing;
 
-  const _OrderCard({super.key, required this.order, this.tailing});
-
-  String get timestamp =>
-      "${order.orderTime.hour ~/ 10}${order.orderTime.hour % 10}:${order.orderTime.minute ~/ 10}${order.orderTime.minute % 10}";
+  _OrderCard({super.key, required this.order, this.tailing});
 
   @override
   Widget build(BuildContext context) {
@@ -858,24 +870,24 @@ class _OrderCard extends StatelessWidget {
             Row(
               children: [
                 SGTypography.body(
-                  timestamp,
+                  order.createdDate,
                   size: FontSize.normal,
                   weight: FontWeight.w700,
                   color: SGColors.white,
                 ),
                 SizedBox(width: SGSpacing.p1),
-                if (order.status == OrderStatus.newOrder &&
-                    order.orderType == '포장')
+                if (order.orderStatus == OrderStatus.newOrder.orderStatusName &&
+                    order.receiveFoodType == 'TAKEOUT')
                   SGContainer(
                     color: SGColors.primary.withOpacity(0.1),
                     borderRadius:
                         BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
                     padding: EdgeInsets.symmetric(
                         horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
-                    child: SGTypography.body("포장 ${order.id}",
+                    child: SGTypography.body("포장 ${order.orderInformationId}",
                         weight: FontWeight.w500, color: SGColors.primary),
                   ),
-                if (order.status == OrderStatus.inProgress)
+                if (OrderStatus.inProgress == OrderStatus.inProgress)
                   Row(
                     children: [
                       SGContainer(
@@ -884,11 +896,11 @@ class _OrderCard extends StatelessWidget {
                             BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
                         padding: EdgeInsets.symmetric(
                             horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
-                        child: SGTypography.body("조리중",
+                        child: SGTypography.body(order.orderStatus,
                             weight: FontWeight.w500, color: SGColors.primary),
                       ),
                       SizedBox(width: SGSpacing.p2),
-                      order.orderType == "포장"
+                      order.receiveFoodType == "TAKEOUT"
                           ? SGContainer(
                               color: SGColors.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(
@@ -896,7 +908,8 @@ class _OrderCard extends StatelessWidget {
                               padding: EdgeInsets.symmetric(
                                   horizontal: SGSpacing.p1,
                                   vertical: SGSpacing.p1),
-                              child: SGTypography.body("포장 CYZ1",
+                              child: SGTypography.body(
+                                  "포장 ${order.pickUpNumber}",
                                   weight: FontWeight.w500,
                                   color: SGColors.primary),
                             )
@@ -907,14 +920,17 @@ class _OrderCard extends StatelessWidget {
             ),
             SizedBox(height: SGSpacing.p2),
             SGTypography.body(
-              "${order.orderName}",
+              order.orderMenuDTOList.length > 1
+                  ? '${order.orderMenuDTOList[0].menuName}'
+                      '외 ${order.orderMenuDTOList.length - 1}개'
+                  : order.orderMenuDTOList[0].menuName,
               size: FontSize.large,
               weight: FontWeight.w700,
               color: SGColors.white,
             ),
             SizedBox(height: SGSpacing.p2),
             SGTypography.body(
-              "주문금액 ${order.price.toKoreanCurrency}원",
+              "주문금액 ${order.orderAmount.toKoreanCurrency}원",
               size: FontSize.normal,
               weight: FontWeight.w500,
               color: SGColors.gray4,
