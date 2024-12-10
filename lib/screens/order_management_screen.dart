@@ -23,20 +23,20 @@ class _NoOrderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
         child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Image.asset("assets/images/no-order.png",
-            width: SGSpacing.p16, height: SGSpacing.p16),
-        SizedBox(height: SGSpacing.p4),
-        SGTypography.body("들어온 주문이 없어요..",
-            size: FontSize.medium,
-            weight: FontWeight.w600,
-            color: SGColors.gray3),
-        SizedBox(height: SGSpacing.p16),
-      ],
-    ));
-  }
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset("assets/images/no-order.png",
+                width: SGSpacing.p16, height: SGSpacing.p16),
+            SizedBox(height: SGSpacing.p4),
+            SGTypography.body("들어온 주문이 없어요..",
+                size: FontSize.medium,
+                weight: FontWeight.w600,
+                color: SGColors.gray3),
+            SizedBox(height: SGSpacing.p16),
+          ],
+        ));
+      }
 }
 
 class _OrderManagementScreenState extends State<OrderManagementScreen> {
@@ -622,7 +622,7 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
       },
       child: SGContainer(
         padding: EdgeInsets.symmetric(
-            horizontal: SGSpacing.p5, vertical: SGSpacing.p3 + SGSpacing.p05),
+            horizontal: SGSpacing.p3, vertical: SGSpacing.p3 + SGSpacing.p05),
         borderRadius: BorderRadius.circular(SGSpacing.p3),
         borderColor: rejectReason == reason ? SGColors.primary : SGColors.line3,
         color: SGColors.white,
@@ -854,73 +854,85 @@ class _OrderCard extends StatelessWidget {
         borderWidth: 0,
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(
-              children: [
-                SGTypography.body(
-                  timestamp,
-                  size: FontSize.normal,
-                  weight: FontWeight.w700,
-                  color: SGColors.white,
-                ),
-                SizedBox(width: SGSpacing.p1),
-                if (order.status == OrderStatus.newOrder &&
-                    order.orderType == '포장')
-                  SGContainer(
-                    color: SGColors.primary.withOpacity(0.1),
-                    borderRadius:
-                        BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
-                    child: SGTypography.body("포장 ${order.id}",
-                        weight: FontWeight.w500, color: SGColors.primary),
-                  ),
-                if (order.status == OrderStatus.inProgress)
-                  Row(
-                    children: [
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(
+                  children: [
+                    SGTypography.body(
+                      timestamp,
+                      size: FontSize.normal,
+                      weight: FontWeight.w700,
+                      color: SGColors.white,
+                    ),
+                    SizedBox(width: SGSpacing.p1),
+                    if (order.status == OrderStatus.newOrder &&
+                        order.orderType == '포장')
                       SGContainer(
                         color: SGColors.primary.withOpacity(0.1),
                         borderRadius:
                             BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
                         padding: EdgeInsets.symmetric(
                             horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
-                        child: SGTypography.body("조리중",
+                        child: SGTypography.body("포장 ${order.id}",
                             weight: FontWeight.w500, color: SGColors.primary),
                       ),
-                      SizedBox(width: SGSpacing.p2),
-                      order.orderType == "포장"
-                          ? SGContainer(
-                              color: SGColors.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(
-                                  SGSpacing.p05 + SGSpacing.p1),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: SGSpacing.p1,
-                                  vertical: SGSpacing.p1),
-                              child: SGTypography.body("포장 CYZ1",
-                                  weight: FontWeight.w500,
-                                  color: SGColors.primary),
-                            )
-                          : Container(),
-                    ],
-                  )
-              ],
-            ),
-            SizedBox(height: SGSpacing.p2),
-            SGTypography.body(
-              "${order.orderName}",
-              size: FontSize.large,
-              weight: FontWeight.w700,
-              color: SGColors.white,
-            ),
-            SizedBox(height: SGSpacing.p2),
-            SGTypography.body(
-              "주문금액 ${order.price.toKoreanCurrency}원",
-              size: FontSize.normal,
-              weight: FontWeight.w500,
-              color: SGColors.gray4,
-            ),
-          ]),
-          if (tailing != null) tailing!,
-        ]));
+                    if (order.status == OrderStatus.inProgress)
+                      Row(
+                        children: [
+                          SGContainer(
+                            color: SGColors.primary.withOpacity(0.1),
+                            borderRadius:
+                                BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
+                            child: SGTypography.body("조리중",
+                                weight: FontWeight.w500, color: SGColors.primary),
+                          ),
+                          SizedBox(width: SGSpacing.p2),
+                          order.orderType == "포장"
+                              ? SGContainer(
+                                  color: SGColors.primary.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(
+                                      SGSpacing.p05 + SGSpacing.p1),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: SGSpacing.p1,
+                                      vertical: SGSpacing.p1),
+                                  child: SGTypography.body("포장 CYZ1",
+                                      weight: FontWeight.w500,
+                                      color: SGColors.primary),
+                                )
+                              : Container(),
+                        ],
+                      )
+                  ],
+                ),
+                SizedBox(height: SGSpacing.p2),
+                Container(
+                  height: 20,
+                  width: 236,
+                  child: SGTypography.body(
+                    "${order.orderName}",
+                    size: FontSize.large,
+                    weight: FontWeight.w700,
+                    color: SGColors.white,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                SizedBox(height: SGSpacing.p2),
+                Container(
+                  height: 16,
+                  width: 236,
+                  child: SGTypography.body(
+                    "주문금액 ${order.price.toKoreanCurrency}원",
+                    size: FontSize.normal,
+                    weight: FontWeight.w500,
+                    color: SGColors.gray4,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ]),
+              if (tailing != null) tailing!,
+            ]));
   }
 }

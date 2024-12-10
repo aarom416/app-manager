@@ -45,14 +45,22 @@ class _DataTableRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SGTypography.body(left,
-            color: SGColors.gray4,
-            weight: FontWeight.w500,
-            size: FontSize.small),
-        SGTypography.body(right,
+        SGTypography.body(
+          left,
+          color: SGColors.gray4,
+          weight: FontWeight.w500,
+          size: FontSize.small,
+        ),
+        Container(
+          width: 186,
+          alignment: Alignment.centerRight,
+          child: SGTypography.body(
+            right,
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w500,
-            size: FontSize.small),
+            size: FontSize.small,
+          ),
+        ),
       ],
     );
   }
@@ -684,8 +692,12 @@ class _OrderInformation extends StatelessWidget {
           Row(children: [
             SGFlexible(
                 flex: 2,
-                child: SGTypography.body("연어 샐러드",
-                    size: FontSize.small, color: SGColors.whiteForDarkMode)),
+                child: SGTypography.body(
+                  "연어 샐러드",
+                  size: FontSize.small,
+                  color: SGColors.whiteForDarkMode,
+                  overflow: TextOverflow.ellipsis,
+                )),
             SGFlexible(
                 flex: 1,
                 child: Center(
@@ -709,6 +721,7 @@ class _OrderInformation extends StatelessWidget {
                   "ㄴ 오리 훈제 토핑",
                   size: FontSize.small,
                   color: SGColors.whiteForDarkMode,
+                  overflow: TextOverflow.ellipsis,
                 )),
             SGFlexible(
                 flex: 1,
@@ -734,6 +747,32 @@ class _OrderInformation extends StatelessWidget {
             SGFlexible(
                 flex: 1,
                 child: SGTypography.body("16,000",
+                    align: TextAlign.right,
+                    size: FontSize.small,
+                    color: SGColors.gray4)),
+          ]),
+          SizedBox(height: SGSpacing.p3),
+          Row(children: [
+            SGFlexible(
+                flex: 2,
+                child: SGTypography.body("할인 쿠폰",
+                    size: FontSize.small, color: SGColors.gray4)),
+            SGFlexible(
+                flex: 1,
+                child: SGTypography.body("3,000",
+                    align: TextAlign.right,
+                    size: FontSize.small,
+                    color: SGColors.gray4)),
+          ]),
+          SizedBox(height: SGSpacing.p3),
+          Row(children: [
+            SGFlexible(
+                flex: 2,
+                child: SGTypography.body("포인트",
+                    size: FontSize.small, color: SGColors.gray4)),
+            SGFlexible(
+                flex: 1,
+                child: SGTypography.body("1,000",
                     align: TextAlign.right,
                     size: FontSize.small,
                     color: SGColors.gray4)),
@@ -790,7 +829,8 @@ class _OrderInformation extends StatelessWidget {
           SGTypography.body("배달 정보",
               size: FontSize.normal,
               color: SGColors.whiteForDarkMode,
-              weight: FontWeight.w600),
+              weight: FontWeight.w600,
+        ),
           SizedBox(height: SGSpacing.p4),
           _DataTableRow(left: "배달 주소", right: "강남구 역삼 1동"),
           if (order.orderType == "배달" &&
@@ -915,7 +955,7 @@ class _CancelDialogBodyState extends State<_CancelDialogBody> {
             borderRadius: BorderRadius.circular(SGSpacing.p3),
             color: cancelReason.isEmpty ? SGColors.gray3 : SGColors.primary,
             child: Center(
-              child: SGTypography.body("거절",
+              child: SGTypography.body("취소",
                   size: FontSize.normal,
                   weight: FontWeight.w700,
                   color: SGColors.white),
@@ -937,7 +977,7 @@ class _CancelDialogBodyState extends State<_CancelDialogBody> {
       },
       child: SGContainer(
         padding: EdgeInsets.symmetric(
-            horizontal: SGSpacing.p5, vertical: SGSpacing.p3 + SGSpacing.p05),
+            horizontal: SGSpacing.p3, vertical: SGSpacing.p3 + SGSpacing.p05),
         borderRadius: BorderRadius.circular(SGSpacing.p3),
         borderColor: cancelReason == reason ? SGColors.primary : SGColors.line3,
         color: SGColors.white,
@@ -1028,7 +1068,7 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
       },
       child: SGContainer(
         padding: EdgeInsets.symmetric(
-            horizontal: SGSpacing.p5, vertical: SGSpacing.p3 + SGSpacing.p05),
+            horizontal: SGSpacing.p3, vertical: SGSpacing.p3 + SGSpacing.p05),
         borderRadius: BorderRadius.circular(SGSpacing.p3),
         borderColor: rejectReason == reason ? SGColors.primary : SGColors.line3,
         color: SGColors.white,
