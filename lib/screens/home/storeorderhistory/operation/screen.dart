@@ -368,33 +368,6 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                       SizedBox(height: SGSpacing.p3),
                       Divider(height: 1, thickness: 1, color: SGColors.line1),
                       SizedBox(height: SGSpacing.p4),
-                      /*Row(children: [
-                        SGFlexible(
-                            flex: 2,
-                            child: SGTypography.body(
-                              widget.storeOrderHistory.orderMenuDTOList[0]
-                                  .menuName,
-                              size: FontSize.small,
-                            )),
-                        SGFlexible(
-                            flex: 1,
-                            child: Center(
-                                child: SGTypography.body(
-                              widget.storeOrderHistory.orderMenuDTOList[0].count
-                                  .toString(),
-                              size: FontSize.small,
-                            ))),
-                        SGFlexible(
-                            flex: 1,
-                            child: SGTypography.body(
-                                widget.storeOrderHistory.orderMenuDTOList[0]
-                                    .menuPrice.toKoreanCurrency,
-                                align: TextAlign.right,
-                                size: FontSize.small)),
-                      ]),
-                      SizedBox(height: SGSpacing.p3),
-                      ...widget.storeOrderHistory.orderMenuOptionDTOList[0]
-                          .map((e) => _OrderMenuOptionList(orderMenuOption: e)),*/
                       ...widget.storeOrderHistory.orderMenuDTOList
                           .map((e) => OrderMenuList(
                                 orderMenuOptionDTOList: widget.storeOrderHistory

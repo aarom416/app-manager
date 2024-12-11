@@ -432,55 +432,6 @@ class _ReceiptDetailScreen extends StatelessWidget {
                     SizedBox(height: SGSpacing.p3),
                     Divider(height: 1, thickness: 1, color: SGColors.line1),
                     SizedBox(height: SGSpacing.p4),
-                    /*Row(children: [
-                      SGFlexible(
-                          flex: 2,
-                          child: SGTypography.body(
-                            order.orderMenuDTOList[0].menuName,
-                            size: FontSize.small,
-                          )),
-                      SGFlexible(
-                          flex: 1,
-                          child: Center(
-                              child: SGTypography.body(
-                            "1",
-                            size: FontSize.small,
-                          ))),
-                      SGFlexible(
-                          flex: 1,
-                          child: SGTypography.body(
-                              order.orderMenuDTOList[0].menuPrice
-                                  .toKoreanCurrency,
-                              align: TextAlign.right,
-                              size: FontSize.small)),
-                    ]),
-                    SizedBox(height: SGSpacing.p4),
-                    Row(children: [
-                      SGFlexible(
-                          flex: 2,
-                          child: SGTypography.body(
-                            order.orderMenuOptionDTOList[0].isNotEmpty
-                                ? "ㄴ ${order.orderMenuOptionDTOList[0][0].menuOptionName}"
-                                : '',
-                            size: FontSize.small,
-                          )),
-                      SGFlexible(
-                          flex: 1,
-                          child: Center(
-                              child: SGTypography.body(
-                            "1",
-                            size: FontSize.small,
-                          ))),
-                      SGFlexible(
-                          flex: 1,
-                          child: SGTypography.body(
-                              order.orderMenuOptionDTOList[0].isNotEmpty
-                                  ? order.orderMenuOptionDTOList[0][0]
-                                      .menuOptionPrice.toKoreanCurrency
-                                  : '',
-                              align: TextAlign.right,
-                              size: FontSize.small)),
-                    ]),*/
                     ...order.orderMenuDTOList.map((e) => OrderMenuList(
                           orderMenuOptionDTOList:
                               order.orderMenuOptionDTOList[0],
