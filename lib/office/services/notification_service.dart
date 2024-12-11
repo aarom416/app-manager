@@ -9,10 +9,10 @@ class NotificationService {
 
   NotificationService(this.ref);
 
-  Future<Response<dynamic>> loadNotification() async {
+  Future<Response<dynamic>> loadNotification({required String page}) async {
     try {
       final response = ref.read(requestApiProvider).get(
-            path: RestApiUri.loadNotification.replaceAll('{page}', '0'),
+            path: RestApiUri.loadNotification.replaceAll('{page}', page),
           );
 
       return response;

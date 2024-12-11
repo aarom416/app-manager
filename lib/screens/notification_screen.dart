@@ -6,6 +6,7 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/utils/throttle.dart';
 import 'package:singleeat/office/models/notification_model.dart';
 import 'package:singleeat/office/providers/notification_provider.dart';
 
@@ -17,11 +18,47 @@ class NotificationScreen extends ConsumerStatefulWidget {
 }
 
 class _NotificationScreenState extends ConsumerState<NotificationScreen> {
+  ScrollController scrollController = ScrollController();
+  final throttle = Throttle(
+    delay: const Duration(milliseconds: 300),
+  );
+
   @override
   void initState() {
+    super.initState();
+
+    scrollController.addListener(loadMore);
+
     Future.microtask(() {
-      ref.read(notificationNotifierProvider.notifier).loadNotification();
+      final provider = ref.read(notificationNotifierProvider.notifier);
+      provider.clear();
+      provider.loadNotification();
     });
+  }
+
+  void loadMore() {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      final notificationState = ref.read(notificationNotifierProvider);
+      // 마지막 조회한 페이지에서 데이터 없는 경우 더 조회하지 않음
+      if (!notificationState.hasMoreData) {
+        return;
+      }
+
+      final notificationProvider =
+          ref.read(notificationNotifierProvider.notifier);
+      final page = notificationState.page;
+
+      notificationProvider.onChangePage(page + 1);
+      throttle.run(notificationProvider.loadNotification);
+    }
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -55,7 +92,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                       // half of appbar's height
                       SizedBox(height: SGSpacing.p7),
                     ]))
-              : ListView(children: [
+              : ListView(controller: scrollController, children: [
                   ...state.notification
                       .map((notification) =>
                           _NotificationCard(notification: notification))
