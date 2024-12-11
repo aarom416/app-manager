@@ -14,17 +14,13 @@ import '../model.dart';
 
 class NutritionForm extends StatefulWidget {
   final NutritionModel nutrition;
-  final int servingAmount;
-  final String servingAmountType;
 
-  final Function(NutritionModel, int, String, BuildContext) onChanged;
+  final Function(NutritionModel, BuildContext) onChanged;
 
   const NutritionForm({
     super.key,
     required this.nutrition,
     required this.onChanged,
-    required this.servingAmount,
-    required this.servingAmountType,
   });
 
   @override
@@ -33,8 +29,6 @@ class NutritionForm extends StatefulWidget {
 
 class _NutritionFormState extends State<NutritionForm> {
   late NutritionModel nutrition = widget.nutrition;
-  late int servingAmount = widget.servingAmount;
-  late String servingAmountType = widget.servingAmountType;
   late bool quantityIsNone = false;
 
   @override
@@ -65,7 +59,7 @@ class _NutritionFormState extends State<NutritionForm> {
               child: Column(
                 children: [
                   Row(children: [
-                    SGTypography.body("${quantityIsNone ? '-- ' : servingAmount.toKoreanCurrency}$servingAmountType", size: FontSize.large, weight: FontWeight.w600, color: quantityIsNone ? SGColors.gray3 : SGColors.black),
+                    SGTypography.body("${quantityIsNone ? '-- ' : nutrition.servingAmount.toKoreanCurrency}${nutrition.servingAmountType}", size: FontSize.large, weight: FontWeight.w600, color: quantityIsNone ? SGColors.gray3 : SGColors.black),
                     Spacer(),
                     Row(children: [
                       GestureDetector(
@@ -94,10 +88,10 @@ class _NutritionFormState extends State<NutritionForm> {
                             ],
                             onSelect: (value) {
                               setState(() {
-                                servingAmountType = value;
+                                nutrition = nutrition.copyWith(servingAmountType: value);
                               });
                             },
-                            selected: servingAmountType);
+                            selected: nutrition.servingAmountType);
                       },
                       child: Row(
                         children: [
@@ -119,7 +113,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                       ),
                                       onValueChanged: (inputValue) {
                                         setState(() {
-                                          servingAmount = inputValue;
+                                          nutrition = nutrition.copyWith(servingAmount: inputValue);
                                         });
                                       },
                                     ),
@@ -137,7 +131,7 @@ class _NutritionFormState extends State<NutritionForm> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    SGContainer(child: SGTypography.body(servingAmountType, size: FontSize.normal, weight: FontWeight.w500)),
+                                    SGContainer(child: SGTypography.body(nutrition.servingAmountType, size: FontSize.normal, weight: FontWeight.w500)),
                                     Image.asset("assets/images/dropdown-arrow.png", width: SGSpacing.p4, height: SGSpacing.p4),
                                   ],
                                 ),
@@ -206,16 +200,16 @@ class _NutritionFormState extends State<NutritionForm> {
           NutritionFormField(
               label: "나트륨",
               unit: "mg",
-              value: nutrition.sodium,
+              value: nutrition.natrium,
               onChanged: (value) {
                 setState(() {
-                  nutrition = nutrition.copyWith(sodium: value.toInt());
+                  nutrition = nutrition.copyWith(natrium: value.toInt());
                 });
               }),
           SizedBox(height: SGSpacing.p32),
           SGActionButton(
             onPressed: () {
-              widget.onChanged(nutrition, servingAmount, servingAmountType, context);
+              widget.onChanged(nutrition, context);
             },
             label: "설정하기",
           )

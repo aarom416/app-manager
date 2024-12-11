@@ -133,7 +133,7 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     }
   }
 
-  /// POST - 메뉴 카테고리 삭제
+  /// DELETE - 메뉴 카테고리 삭제
   void deleteMenuCategory(MenuCategoryModel menuCategoryModel) async {
     final response = await ref.read(menuOptionsServiceProvider).deleteMenuCategory(storeId: UserHive.getBox(key: UserKey.storeId), menuCategoryModel: menuCategoryModel);
     if (response.statusCode == 200) {
@@ -153,8 +153,6 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     String selectedUserMenuCategoryIdsFlatString,
     int price,
     NutritionModel nutrition,
-    int servingAmount,
-    String servingAmountType,
     String imagePath,
     String menuBriefDescription,
     String menuDescription,
@@ -167,8 +165,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
           selectedUserMenuCategoryIdsFlatString: selectedUserMenuCategoryIdsFlatString,
           price: price,
           nutrition: nutrition,
-          servingAmount: servingAmount,
-          servingAmountType: servingAmountType,
+          servingAmount: nutrition.servingAmount,
+          servingAmountType: nutrition.servingAmountType,
           imagePath: imagePath,
           menuBriefDescription: menuBriefDescription,
           menuDescription: menuDescription,
@@ -314,7 +312,7 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     }
   }
 
-  /// POST - 메뉴 삭제
+  /// DELETE - 메뉴 삭제
   Future<bool> deleteMenu(MenuModel menuModel) async {
     final response = await ref.read(menuOptionsServiceProvider).deleteMenu(storeId: UserHive.getBox(key: UserKey.storeId), menuModel: menuModel);
     if (response.statusCode == 200) {
@@ -348,6 +346,25 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     }
   }
 
+  /// POST - 메뉴 옵션 카테고리 최대, 최소 개수 변경
+  Future<bool> updateMenuOptionCategoryMaxChoice(int menuOptionCategoryId, int minChoice, int maxChoice) async {
+    final response = await ref
+        .read(menuOptionsServiceProvider)
+        .updateMenuOptionCategoryMaxChoice(storeId: UserHive.getBox(key: UserKey.storeId), menuOptionCategoryId: menuOptionCategoryId, minChoice: minChoice, maxChoice: maxChoice);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          menuOptionCategoryDTOList: state.menuOptionsDataModel.menuOptionCategoryDTOList.map((optionCategory) {
+            return optionCategory.menuOptionCategoryId == menuOptionCategoryId ? optionCategory.copyWith(minChoice: minChoice,maxChoice: maxChoice) : optionCategory;
+          }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
   /// POST - 메뉴 옵션 카테고리 품절 상태 변경
   Future<bool> updateMenuOptionCategorySoldOutStatus(int menuOptionCategoryId, int soldOutStatus) async {
     final response = await ref
@@ -369,6 +386,121 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
       return false;
     }
   }
+
+  /// POST - 메뉴 옵션 카테고리 이름 변경
+  Future<bool> updateMenuOptionCategoryName(int menuOptionCategoryId, String menuOptionCategoryName) async {
+    final response = await ref
+        .read(menuOptionsServiceProvider)
+        .updateMenuOptionCategoryName(storeId: UserHive.getBox(key: UserKey.storeId), menuOptionCategoryId: menuOptionCategoryId, menuOptionCategoryName: menuOptionCategoryName);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          menuOptionCategoryDTOList: state.menuOptionsDataModel.menuOptionCategoryDTOList.map((optionCategory) {
+            return optionCategory.menuOptionCategoryId == menuOptionCategoryId ? optionCategory.copyWith(menuOptionCategoryName: menuOptionCategoryName) : optionCategory;
+          }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  /// POST - 메뉴 옵션 이름 변경
+  Future<bool> updateMenuOptionName(int menuOptionId, String optionContent) async {
+    final response = await ref
+        .read(menuOptionsServiceProvider)
+        .updateMenuOptionName(storeId: UserHive.getBox(key: UserKey.storeId), menuOptionId: menuOptionId, optionContent: optionContent);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          storeMenuOptionDTOList: state.menuOptionsDataModel.storeMenuOptionDTOList.map((option) {
+            return option.menuOptionId == menuOptionId
+                ? option.copyWith(optionContent: optionContent)
+                : option;
+          }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  /// POST - 메뉴 옵션 가격 변경
+  Future<bool> updateMenuOptionPrice(int menuOptionId, int price) async {
+    final response = await ref
+        .read(menuOptionsServiceProvider)
+        .updateMenuOptionPrice(storeId: UserHive.getBox(key: UserKey.storeId), menuOptionId: menuOptionId, price: price);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          storeMenuOptionDTOList: state.menuOptionsDataModel.storeMenuOptionDTOList.map((option) {
+            return option.menuOptionId == menuOptionId
+                ? option.copyWith(price: price)
+                : option;
+          }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  /// POST - 메뉴 옵션 품절 상태 변경
+  Future<bool> updateMenuOptionSoldOutStatus(int menuOptionId, int soldOutStatus) async {
+    final response = await ref
+        .read(menuOptionsServiceProvider)
+        .updateMenuOptionSoldOutStatus(storeId: UserHive.getBox(key: UserKey.storeId), menuOptionId: menuOptionId, soldOutStatus: soldOutStatus);
+    if (response.statusCode == 200) {
+      MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+          storeMenuOptionDTOList: state.menuOptionsDataModel.storeMenuOptionDTOList.map((option) {
+            return option.menuOptionId == menuOptionId
+                ? option.copyWith(soldOutStatus: soldOutStatus)
+                : option;
+          }).toList());
+      setState(updatedMenuOptionsDataModel);
+      state = state.copyWith(error: const ResultFailResponseModel());
+      return true;
+    } else {
+      state = state.copyWith(error: ResultFailResponseModel.fromJson(response.data));
+      return false;
+    }
+  }
+
+  /// GET - 메뉴 옵션 정보 조회
+  Future<NutritionModel> getMenuInfo(int menuOptionId) async {
+    final response = await ref.read(menuOptionsServiceProvider).getMenuInfo(menuOptionId: menuOptionId);
+    if (response.statusCode == 200) {
+      final result = ResultResponseModel.fromJson(response.data);
+      logger.i("getMenuInfo result ${result.toFormattedJson()}");
+      return NutritionModel.fromJson(result.data);
+    } else {
+      return const NutritionModel();
+    }
+  }
+
+  /// POST - 메뉴 옵션 정보 변경
+  Future<bool> updateMenuOptionInfo(int menuOptionId, NutritionModel nutrition) async {
+    final response = await ref
+        .read(menuOptionsServiceProvider)
+        .updateMenuOptionInfo(storeId: UserHive.getBox(key: UserKey.storeId), menuOptionId: menuOptionId, nutrition: nutrition);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /// POST - 메뉴 옵션 삭제
+  Future<int> deleteMenuOption(MenuOptionModel menuOptionModel) async {
+    final response = await ref
+        .read(menuOptionsServiceProvider)
+        .deleteMenuOption(storeId: UserHive.getBox(key: UserKey.storeId), menuOptionModel: menuOptionModel);
+    return response.statusCode ?? 500;
+  }
+
 }
 
 /// state provider

@@ -51,9 +51,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
   MenuCategoryModel selectedMenuCategory = const MenuCategoryModel(storeMenuCategoryId: -1);
   List<String> selectedUserMenuCategories = [];
   int price = 0;
-  NutritionModel nutrition = const NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
-  int servingAmount = 430;
-  String servingAmountType = "g";
+  NutritionModel nutrition = const NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, natrium: 120, saturatedFat: 8);
   String imagePath = "";
   String menuBriefDescription = "연어 500g + 곡물밥 300g";
   String menuDescription = "연어와 곡물 베이스 조화의 오븐에 바싹 구운 연어를 올린 단백질 듬뿍 샐러드";
@@ -111,14 +109,11 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
         ),
         _Page_3_MenuNutrition(
           nutrition: nutrition,
-          servingAmount: servingAmount,
-          servingAmountType: servingAmountType,
           onPrev: () => animateToPage(2),
           onNext: () => animateToPage(4),
-          onEditFunction: (nutrition, servingAmount) {
+          onEditFunction: (nutrition) {
             setState(() {
               this.nutrition = nutrition;
-              this.servingAmount = servingAmount;
             });
           },
         ),
@@ -135,8 +130,6 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
               selectedUserMenuCategories.map((category) => userMenuCategories.indexOf(category)).toList().join(),
               price,
               nutrition,
-              servingAmount,
-              servingAmountType,
               imagePath,
               menuBriefDescription,
               menuDescription,
@@ -662,16 +655,12 @@ class _Page_2_MenuPriceState extends State<_Page_2_MenuPrice> {
 
 class _Page_3_MenuNutrition extends StatefulWidget {
   final NutritionModel nutrition;
-  final int servingAmount;
-  final String servingAmountType;
   final VoidCallback onNext;
   final VoidCallback onPrev;
-  final Function(NutritionModel, int) onEditFunction;
+  final Function(NutritionModel) onEditFunction;
 
   const _Page_3_MenuNutrition({
     required this.nutrition,
-    required this.servingAmount,
-    required this.servingAmountType,
     required this.onNext,
     required this.onPrev,
     required this.onEditFunction,
@@ -683,15 +672,11 @@ class _Page_3_MenuNutrition extends StatefulWidget {
 
 class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
   late NutritionModel nutrition;
-  late int servingAmount;
-  late String servingAmountType;
 
   @override
   void initState() {
     super.initState();
     nutrition = widget.nutrition;
-    servingAmount = widget.servingAmount;
-    servingAmountType = widget.servingAmountType;
   }
 
   @override
@@ -705,7 +690,7 @@ class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
-                    widget.onEditFunction(nutrition, servingAmount);
+                    widget.onEditFunction(nutrition);
                     widget.onPrev();
                   },
                   child: SGContainer(
@@ -718,7 +703,7 @@ class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
-                    widget.onEditFunction(nutrition, servingAmount);
+                    widget.onEditFunction(nutrition);
                     widget.onNext();
                   },
                   child: SGContainer(
@@ -738,21 +723,14 @@ class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
                 SizedBox(height: SGSpacing.p3),
                 NutritionCard(
                     nutrition: nutrition,
-                    servingAmountType: servingAmountType,
-                    servingAmount: servingAmount,
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => NutritionInputScreen(
                                 title: "영양성분 설정",
                                 nutrition: nutrition,
-                                servingAmount: servingAmount,
-                                servingAmountType: servingAmountType,
-                                onConfirm: (nutrition, servingAmount, servingAmountType, context) {
-                                  logger.i("onConfirm servingAmount  $servingAmount ");
-                                  logger.i("onConfirm nutrition.calories ${nutrition.calories}");
+                                onConfirm: (nutrition, context) {
                                   setState(() {
                                     this.nutrition = nutrition;
-                                    this.servingAmount = servingAmount;
                                   });
                                   Navigator.of(context).pop();
                                 },

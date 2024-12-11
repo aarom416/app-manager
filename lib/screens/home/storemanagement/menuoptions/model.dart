@@ -45,17 +45,17 @@ abstract class MenuModel with _$MenuModel {
     @Default(0) int price,
     @Default('https://via.placeholder.com/150') String menuPictureURL,
     @Default(NutritionModel(
+      servingAmount: 500,
+      servingAmountType: 'ml',
       calories: 2400,
       protein: 100,
       fat: 120,
       carbohydrate: 130,
       sugar: 50,
-      sodium: 30,
+      natrium: 30,
       saturatedFat: 120,
     ))
     NutritionModel nutrition, //Nutrition. 필요해 보이나, api 규격에 존재하지 않음.
-    @Default(500) int servingAmount, //제공량. 필요해 보이나, api 규격에 존재하지 않음.
-    @Default('g') String servingAmountType, //제공량 단위. 필요해 보이나, api 규격에 존재하지 않음.
     @Default(<MenuOptionCategoryModel>[]) List<MenuOptionCategoryModel> menuCategoryOptions,
   }) = _MenuModel;
 
@@ -65,13 +65,15 @@ abstract class MenuModel with _$MenuModel {
 @freezed
 abstract class NutritionModel with _$NutritionModel {
   const factory NutritionModel({
+    @Default(0) int servingAmount,
+    @Default('g') String servingAmountType,
     @Default(0) int calories,
+    @Default(0) int carbohydrate,
     @Default(0) int protein,
     @Default(0) int fat,
-    @Default(0) int carbohydrate,
     @Default(0) int sugar,
-    @Default(0) int sodium,
     @Default(0) int saturatedFat,
+    @Default(0) int natrium,
   }) = _NutritionModel;
 
   factory NutritionModel.fromJson(Map<String, dynamic> json) => _$NutritionModelFromJson(json);
@@ -114,4 +116,3 @@ abstract class MenuOptionRelationshipModel with _$MenuOptionRelationshipModel {
 
   factory MenuOptionRelationshipModel.fromJson(Map<String, dynamic> json) => _$MenuOptionRelationshipModelFromJson(json);
 }
-

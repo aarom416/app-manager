@@ -355,9 +355,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                           builder: (nutritionScreenContext) => NutritionInputScreen(
                                 title: "영양성분 수정",
                                 nutrition: menuModel.nutrition,
-                                servingAmount: menuModel.servingAmount,
-                                servingAmountType: menuModel.servingAmountType,
-                                onConfirm: (nutrition, servingAmount, servingAmountType, context) {
+                                onConfirm: (nutrition,  context) {
                                   showSGDialog(
                                       context: context,
                                       childrenBuilder: (ctx) => [
@@ -384,7 +382,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                                 child: GestureDetector(
                                                   onTap: () {
                                                     setState(() {
-                                                      menuModel = menuModel.copyWith(nutrition: nutrition, servingAmount: servingAmount, servingAmountType: servingAmountType);
+                                                      menuModel = menuModel.copyWith(nutrition: nutrition);
                                                     });
                                                     Navigator.of(context).pop();
                                                     Navigator.of(nutritionScreenContext).pop();

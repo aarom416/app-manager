@@ -171,9 +171,8 @@ class _OptionsTabState extends ConsumerState<OptionsTab> {
       ...filterOptionCategories
           .map((optionCategory) => [
                 _OptionCategoryCard(
-                    key: ValueKey(optionCategory.menuOptionCategoryId),
-                    optionCategory: optionCategory,
-                    menuCategoryList: state.menuCategoryList
+                  optionCategory: optionCategory,
+                  menuCategoryList: state.menuCategoryList,
                 ),
                 SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               ])
@@ -194,10 +193,8 @@ class _OptionCategoryCard extends StatefulWidget {
 }
 
 class _OptionCategoryCardState extends State<_OptionCategoryCard> {
-  late String selectionType;
   late List<MenuModel> appliedMenus;
   late bool isExpanded = false;
-  late bool soldOut = false;
 
   @override
   void initState() {
@@ -210,18 +207,25 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
     isExpanded = false;
   }
 
+  bool get soldOut {
+    return widget.optionCategory.menuOptions.any((option) => option.soldOutStatus == 1);
+  }
+
+  String get selectionType {
+    return (widget.optionCategory.essentialStatus == 1) ? (soldOut ? "(품절)" : "(필수)") : "(선택 최대 ${widget.optionCategory.maxChoice}개)";
+  }
+
   @override
   Widget build(BuildContext context) {
-    soldOut = widget.optionCategory.menuOptions.any((option) => option.soldOutStatus == 1);
-    selectionType = (widget.optionCategory.essentialStatus == 1) ? (soldOut ? "(품절)" : "(필수)") : "(선택 최대 ${widget.optionCategory.maxChoice}개)";
-
-
     return MultipleInformationBox(children: [
       Row(
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateOptionCategoryScreen(optionCategoryModel : widget.optionCategory)));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => UpdateOptionCategoryScreen(
+                        optionCategoryModel: widget.optionCategory,
+                      )));
             },
             child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               SGTypography.body(widget.optionCategory.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
@@ -247,7 +251,7 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
             SGTypography.body("이 옵션을 사용하는 메뉴 ${appliedMenus.length}개", size: FontSize.small),
-            Spacer(),
+            const Spacer(),
             appliedMenus.length > 1
                 ? GestureDetector(
                     onTap: () {

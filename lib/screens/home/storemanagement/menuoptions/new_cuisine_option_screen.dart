@@ -185,7 +185,7 @@ class _NewCuisineOptionNutritionStepScreen extends StatefulWidget {
 }
 
 class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionNutritionStepScreen> {
-  NutritionModel nutrition = NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
+  NutritionModel nutrition = NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, natrium: 120, saturatedFat: 8);
 
   @override
   Widget build(BuildContext context) {

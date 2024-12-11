@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import '../components/action_button.dart';
+import '../components/container.dart';
 import '../components/numeric_textfield.dart';
-
+import '../components/sizing.dart';
+import '../components/spacing.dart';
+import '../components/typography.dart';
+import '../constants/colors.dart';
 
 class NumericRangeEditScreen extends StatelessWidget {
   final String title;
@@ -15,6 +20,7 @@ class NumericRangeEditScreen extends StatelessWidget {
   final bool hideMinInput;
   final int minValue;
   final int maxValue;
+  final String confirmButtonLabel;
   final Function(int, int) onConfirm;
 
   const NumericRangeEditScreen({
@@ -23,7 +29,7 @@ class NumericRangeEditScreen extends StatelessWidget {
     required this.description,
     this.minLabel = "최소",
     this.maxLabel = "최대",
-    this.unitLabel= "개",
+    this.unitLabel = "개",
     this.allowMinZero = false,
     this.allowMaxZero = false,
     this.maxMinValue = 99999,
@@ -31,6 +37,7 @@ class NumericRangeEditScreen extends StatelessWidget {
     this.hideMinInput = false,
     this.minValue = 0,
     this.maxValue = 0,
+    this.confirmButtonLabel = "변경하기",
     required this.onConfirm,
   });
 
@@ -68,14 +75,20 @@ class NumericRangeEditScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        backgroundColor: SGColors.white,
+        elevation: 0,
+        title: SGTypography.body(title, size: FontSize.medium, weight: FontWeight.w700, color: SGColors.black),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: SGColors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      floatingActionButton: Builder(builder: (context) {
-        return FloatingActionButton.extended(
+      floatingActionButton: Container(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
+          maxHeight: 58,
+        ),
+        child: SGActionButton(
           onPressed: () {
             validateInputs();
             if (minErrorMessage.isEmpty && maxErrorMessage.isEmpty) {
@@ -92,43 +105,72 @@ class NumericRangeEditScreen extends StatelessWidget {
               );
             }
           },
-          label: const Text("확인"),
-          icon: const Icon(Icons.check),
-        );
-      }),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          disabled: minValueController.text == "0" || maxValueController.text == "0",
+          label: confirmButtonLabel,
+        ),
+      ),
+      body: SGContainer(
+        borderWidth: 0,
+        color: const Color(0xFFFAFAFA),
+        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+        child: ListView(
           children: [
-            Text(description, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
+            SGTypography.body(description, weight: FontWeight.w700, size: FontSize.normal),
+            SizedBox(height: SGSpacing.p4),
             if (!hideMinInput) ...[
-              Text(minLabel, style: const TextStyle(fontSize: 14, color: Colors.grey)),
-              NumericTextField(
-                initialValue: minValue,
-                maxLength: maxMinValue.toString().length,
-                onValueChanged: (value) {
-                  minValueController.text = value.toString();
-                },
+              SGTypography.body(minLabel, size: FontSize.small, color: SGColors.gray4),
+              SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+              SGContainer(
+                color: Colors.white,
+                borderColor: SGColors.line3,
+                borderRadius: BorderRadius.circular(SGSpacing.p3),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: NumericTextField(
+                        initialValue: minValue,
+                        maxLength: maxMinValue.toString().length,
+                        onValueChanged: (value) {
+                          minValueController.text = value.toString();
+                        },
+                      ),
+                    ),
+                    SGTypography.body(unitLabel, size: FontSize.small, color: SGColors.gray4),
+                    SizedBox(width: SGSpacing.p4),
+                  ],
+                ),
               ),
               if (minErrorMessage.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text(minErrorMessage, style: const TextStyle(color: Colors.red, fontSize: 12)),
+                SizedBox(height: SGSpacing.p2),
+                SGTypography.body(minErrorMessage, size: FontSize.small, color: Colors.red),
               ],
-              const SizedBox(height: 16),
+              SizedBox(height: SGSpacing.p3),
             ],
-            Text(maxLabel, style: const TextStyle(fontSize: 14, color: Colors.grey)),
-            NumericTextField(
-              initialValue: maxValue,
-              maxLength: maxMaxValue.toString().length,
-              onValueChanged: (value) {
-                maxValueController.text = value.toString();
-              },
+            SGTypography.body(maxLabel, size: FontSize.small, color: SGColors.gray4),
+            SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+            SGContainer(
+              color: Colors.white,
+              borderColor: SGColors.line3,
+              borderRadius: BorderRadius.circular(SGSpacing.p3),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: NumericTextField(
+                      initialValue: maxValue,
+                      maxLength: maxMaxValue.toString().length,
+                      onValueChanged: (value) {
+                        maxValueController.text = value.toString();
+                      },
+                    ),
+                  ),
+                  SGTypography.body(unitLabel, size: FontSize.small, color: SGColors.gray4),
+                  SizedBox(width: SGSpacing.p4),
+                ],
+              ),
             ),
             if (maxErrorMessage.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(maxErrorMessage, style: const TextStyle(color: Colors.red, fontSize: 12)),
+              SizedBox(height: SGSpacing.p2),
+              SGTypography.body(maxErrorMessage, size: FontSize.small, color: Colors.red),
             ],
           ],
         ),

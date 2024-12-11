@@ -14,23 +14,13 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/dynamic.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/text_field_edit_screen.dart';
+import 'package:singleeat/screens/home/storemanagement/menuoptions/options/updateoptioncategory/update_menuoptions_screen.dart';
 
 import '../../../../../../core/screens/numeric_range_edit_screen.dart';
 import '../../../../../../main.dart';
 import '../../model.dart';
-import '../../new_cuisine_option_screen.dart';
 import '../../nutrition/nutrition_card.dart';
 import '../../provider.dart';
-
-final MenuOptionCategoryModel category = MenuOptionCategoryModel(
-  menuOptionCategoryName: "곡물 베이스 선택",
-  essentialStatus: 1,
-  maxChoice: 1,
-  menuOptions: [
-    MenuOptionModel(optionContent: "채소 베이스", price: 0),
-    MenuOptionModel(optionContent: "오곡 베이스", price: 0),
-  ],
-);
 
 final List<MenuModel> cuisines = [
   MenuModel(
@@ -100,13 +90,19 @@ class UpdateOptionCategoryScreen extends ConsumerStatefulWidget {
 
 class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategoryScreen> {
   late MenuOptionCategoryModel optionCategoryModel;
-  late bool soldOut = false;
 
   @override
   void initState() {
     super.initState();
     optionCategoryModel = widget.optionCategoryModel;
-    soldOut = optionCategoryModel.menuOptions.any((option) => option.soldOutStatus == 1);
+  }
+
+  bool get soldOut {
+    return optionCategoryModel.menuOptions.any((option) => option.soldOutStatus == 1);
+  }
+
+  String get selectionType {
+    return (optionCategoryModel.essentialStatus == 1) ? "(필수)" : "(선택 최대 ${optionCategoryModel.maxChoice}개)";
   }
 
   @override
@@ -115,6 +111,7 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
     final MenuOptionsNotifier provider = ref.read(menuOptionsNotifierProvider.notifier);
 
     return Scaffold(
+      key: ValueKey(state.menuOptionsDataModel.toFormattedJson()),
       appBar: AppBarWithLeftArrow(title: "옵션 카테고리 관리"),
       body: SGContainer(
         color: const Color(0xFFFAFAFA),
@@ -123,7 +120,6 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
           SGTypography.body("곡물 베이스 선택", weight: FontWeight.w700, size: FontSize.normal),
           SizedBox(height: SGSpacing.p3),
           MultipleInformationBox(children: [
-
             // --------------------------- 옵션 필수 여부 ---------------------------
             Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               SGTypography.body("옵션 필수 여부", size: FontSize.normal, weight: FontWeight.w600),
@@ -131,7 +127,7 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
               SGSwitch(
                 value: optionCategoryModel.essentialStatus == 1,
                 onChanged: (value) {
-                  provider.updateMenuOptionCategoryEssential(widget.optionCategoryModel.menuOptionCategoryId, value ? 1 : 0).then((success) {
+                  provider.updateMenuOptionCategoryEssential(optionCategoryModel.menuOptionCategoryId, value ? 1 : 0).then((success) {
                     logger.d("updateMenuOptionCategoryEssential success $success $value");
                     if (success) {
                       setState(() {
@@ -147,28 +143,27 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
             // --------------------------- 옵션 선택 개수 설정 ---------------------------
             GestureDetector(
               onTap: () {
-                // Navigator.of(context).push(
-                //     MaterialPageRoute(
-                //         builder: (context) =>
-                //     CuisionOptionCategoryQuantityEditScreen(isEssential: optionCategoryModel.essentialStatus == 1))
-                // );
-
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => NumericRangeEditScreen(
                           title: "옵션 선택 개수 설정",
                           description: "옵션 선택 개수를 설정해주세요.",
                           minValue: optionCategoryModel.minChoice,
                           maxValue: optionCategoryModel.maxChoice,
-                          onConfirm: (minValue, maxValue) => {
-                            // logger.i("minValue $minValue, maxValue $maxValue");
-                            // provider.updateMenuOptionCategoryMaxChoice(widget.optionCategoryModel.menuOptionCategoryId, value ? 1 : 0).then((success) {
-                            //   logger.d("updateMenuOptionCategoryMaxChoice success $success $value");
-                            //   if (success) {
-                            //     setState(() {
-                            //       optionCategoryModel = optionCategoryModel.copyWith(essentialStatus: value ? 1 : 0);
-                            //     });
-                            //   }
-                            // })
+                          onConfirm: (minValue, maxValue) {
+                            provider
+                                .updateMenuOptionCategoryMaxChoice(
+                              optionCategoryModel.menuOptionCategoryId,
+                              minValue,
+                              maxValue,
+                            )
+                                .then((success) {
+                              logger.i("updateMenuOptionCategoryMaxChoice success minValue $minValue, maxValue $maxValue");
+                              if (success) {
+                                if (mounted) {
+                                  Navigator.of(context).pop();
+                                }
+                              }
+                            });
                           },
                         )));
               },
@@ -201,13 +196,11 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                 SGSwitch(
                   value: soldOut,
                   onChanged: (value) {
-                    provider.updateMenuOptionCategorySoldOutStatus(widget.optionCategoryModel.menuOptionCategoryId, value ? 1 : 0).then((success) {
+                    provider.updateMenuOptionCategorySoldOutStatus(optionCategoryModel.menuOptionCategoryId, value ? 1 : 0).then((success) {
                       logger.d("updateMenuOptionCategorySoldOutStatus success $success $value");
                       if (success) {
                         setState(() {
-                          soldOut = value;
-                          optionCategoryModel =
-                              optionCategoryModel.copyWith(menuOptions: optionCategoryModel.menuOptions.map((menuOption) => menuOption.copyWith(soldOutStatus: value ? 1 : 0)).toList());
+                          optionCategoryModel = optionCategoryModel.copyWith(menuOptions: optionCategoryModel.menuOptions.map((menuOption) => menuOption.copyWith(soldOutStatus: value ? 1 : 0)).toList());
                           logger.d("updateMenuOptionCategorySoldOutStatus success setState ${optionCategoryModel.toFormattedJson()}");
                         });
                       }
@@ -218,7 +211,39 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
           SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
 
           // --------------------------- MenuOptionCategoryModel 편집 ---------------------------
-          _CuisineOptionCategoryCard(category: category),
+          MultipleInformationBox(
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  final updatedOptionCategoryModel = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => UpdateMenuOptionsScreen(
+                        menuOptionCategoryModel: widget.optionCategoryModel,
+                      ),
+                    ),
+                  );
+                  if (updatedOptionCategoryModel != null && mounted) {
+                    setState(() {
+                      optionCategoryModel = updatedOptionCategoryModel;
+                    });
+                  }
+                },
+                child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  SGTypography.body(optionCategoryModel.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
+                  SizedBox(width: SGSpacing.p1),
+                  SGTypography.body(selectionType, size: FontSize.small, color: SGColors.primary, weight: FontWeight.w600),
+                  SizedBox(width: SGSpacing.p1),
+                  const Icon(Icons.edit, size: FontSize.small),
+                ]),
+              ),
+              ...optionCategoryModel.menuOptions
+                  .mapIndexed((index, option) => [
+                        if (index == 0) SizedBox(height: SGSpacing.p5) else SizedBox(height: SGSpacing.p4),
+                        DataTableRow(left: option.optionContent ?? "", right: "${option.price.toKoreanCurrency}원"),
+                      ])
+                  .flattened
+            ],
+          ),
           SizedBox(height: SGSpacing.p7 + SGSpacing.p05),
 
           // --------------------------- 옵션 카테고리 사용 메뉴 ---------------------------
@@ -480,365 +505,6 @@ class _SelectedCuisineCard extends StatelessWidget {
   }
 }
 
-class CuisionOptionCategoryQuantityEditScreen extends StatefulWidget {
-  bool isEssential;
-
-  CuisionOptionCategoryQuantityEditScreen({
-    super.key,
-    this.isEssential = false,
-  });
-
-  @override
-  State<CuisionOptionCategoryQuantityEditScreen> createState() => _CuisionOptionCategoryQuantityEditScreenState();
-}
-
-class _CuisionOptionCategoryQuantityEditScreenState extends State<CuisionOptionCategoryQuantityEditScreen> {
-  TextEditingController minValueController = TextEditingController(text: "1");
-  TextEditingController maxValueController = TextEditingController(text: "1");
-  String minErrorMessage = "";
-  String maxErrorMessage = "";
-
-  TextStyle baseStyle = TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
-
-  void _validateMinInput() {
-    setState(() {
-      if (minValueController.text == "0") {
-        minErrorMessage = "0개는 기입하실 수 없습니다.";
-      } else {
-        minErrorMessage = "";
-      }
-    });
-  }
-
-  void _validateMaxInput() {
-    setState(() {
-      if (maxValueController.text == "0") {
-        maxErrorMessage = "0개는 기입하실 수 없습니다.";
-      } else {
-        maxErrorMessage = "";
-      }
-    });
-  }
-
-  bool get isDisabled => minValueController.text == "0" || maxValueController.text == "0";
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWithLeftArrow(title: "옵션 선택 개수 설정"),
-      floatingActionButton: Container(
-          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
-          child: SGActionButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              disabled: isDisabled,
-              label: "변경하기")),
-      body: SGContainer(
-        borderWidth: 0,
-        color: Color(0xFFFAFAFA),
-        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-        child: ListView(children: [
-          SGTypography.body("옵션 선택 개수를 설정해주세요.", weight: FontWeight.w700, size: FontSize.normal),
-          SizedBox(height: SGSpacing.p4),
-          if (widget.isEssential) ...[
-            SGTypography.body("최소", size: FontSize.small, color: SGColors.gray4),
-            SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-            SGContainer(
-              color: Colors.white,
-              borderColor: SGColors.line3,
-              borderRadius: BorderRadius.circular(SGSpacing.p3),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                        controller: minValueController,
-                        onChanged: (_) {
-                          _validateMinInput();
-                          setState(() {});
-                        },
-                        style: baseStyle.copyWith(color: SGColors.black),
-                        decoration: InputDecoration(
-                          isDense: true,
-                          contentPadding: EdgeInsets.all(SGSpacing.p4),
-                          isCollapsed: true,
-                          hintStyle: baseStyle.copyWith(color: SGColors.gray3),
-                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                        )),
-                  ),
-                  SGTypography.body("개", size: FontSize.small, color: SGColors.gray4),
-                  SizedBox(width: SGSpacing.p4),
-                ],
-              ),
-            ),
-            if (minErrorMessage.isNotEmpty) ...[
-              SizedBox(height: SGSpacing.p2),
-              SGTypography.body(minErrorMessage, size: FontSize.small, color: Colors.red),
-            ],
-            SizedBox(height: SGSpacing.p3),
-          ],
-          SGTypography.body("최대", size: FontSize.small, color: SGColors.gray4),
-          SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-          SGContainer(
-            color: Colors.white,
-            borderColor: SGColors.line3,
-            borderRadius: BorderRadius.circular(SGSpacing.p3),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                      controller: maxValueController,
-                      onChanged: (_) => _validateMaxInput(),
-                      style: baseStyle.copyWith(color: SGColors.black),
-                      decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding: EdgeInsets.all(SGSpacing.p4),
-                        isCollapsed: true,
-                        hintStyle: baseStyle.copyWith(color: SGColors.gray3),
-                        border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                      )),
-                ),
-                SGTypography.body("개", size: FontSize.small, color: SGColors.gray4),
-                SizedBox(width: SGSpacing.p4),
-              ],
-            ),
-          ),
-          if (maxErrorMessage.isNotEmpty) ...[
-            SizedBox(height: SGSpacing.p2),
-            SGTypography.body(maxErrorMessage, size: FontSize.small, color: Colors.red),
-          ],
-        ]),
-      ),
-    );
-  }
-}
-
-class _CuisineOptionCategoryCard extends StatefulWidget {
-  final MenuOptionCategoryModel category;
-
-  const _CuisineOptionCategoryCard({super.key, required this.category});
-
-  @override
-  State<_CuisineOptionCategoryCard> createState() => _CuisineOptionCategoryCardState();
-}
-
-class _CuisineOptionCategoryCardState extends State<_CuisineOptionCategoryCard> {
-  String get selectionType {
-    if (widget.category.essentialStatus == 1) return "(필수)";
-    return "(선택 최대 ${widget.category.maxChoice ?? 0}개)";
-  }
-
-  void showFailDialogWithImage({
-    required String mainTitle,
-    required String subTitle,
-  }) {
-    showSGDialogWithImage(
-        context: context,
-        childrenBuilder: (ctx) => [
-              if (subTitle.isEmpty) ...[
-                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p6),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(ctx);
-                  },
-                  child: SGContainer(
-                    color: SGColors.primary,
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
-                  ),
-                )
-              ] else ...[
-                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p4),
-                Center(child: SGTypography.body(subTitle, color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p6),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(ctx);
-                  },
-                  child: SGContainer(
-                    color: SGColors.primary,
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
-                  ),
-                )
-              ]
-            ]);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MultipleInformationBox(children: [
-      GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CuisineOptionCategoryEditScreen(category: widget.category)));
-        },
-        child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          SGTypography.body(widget.category.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
-          SizedBox(width: SGSpacing.p1),
-          SGTypography.body(selectionType, size: FontSize.small, color: SGColors.primary, weight: FontWeight.w600),
-          SizedBox(width: SGSpacing.p1),
-          Icon(Icons.edit, size: FontSize.small),
-        ]),
-      ),
-      ...widget.category.menuOptions
-          .mapIndexed((index, option) => [
-                if (index == 0) SizedBox(height: SGSpacing.p5) else SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: option.optionContent ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
-              ])
-          .flattened
-    ]);
-  }
-}
-
-class CuisineOptionCategoryEditScreen extends StatefulWidget {
-  final MenuOptionCategoryModel category;
-
-  CuisineOptionCategoryEditScreen({super.key, required this.category});
-
-  @override
-  State<CuisineOptionCategoryEditScreen> createState() => _CuisineOptionCategoryEditScreenState();
-}
-
-class _CuisineOptionCategoryEditScreenState extends State<CuisineOptionCategoryEditScreen> {
-  bool isSoldOut = false;
-
-  NutritionModel nutrition = NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
-
-  late String categoryName = widget.category.menuOptionCategoryName;
-  List<MenuOptionModel> options = [];
-
-  void showFailDialogWithImage({
-    required String mainTitle,
-    required String subTitle,
-  }) {
-    showSGDialogWithImage(
-        context: context,
-        childrenBuilder: (ctx) => [
-              if (subTitle.isEmpty) ...[
-                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p6),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(ctx);
-                  },
-                  child: SGContainer(
-                    color: SGColors.primary,
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
-                  ),
-                )
-              ] else ...[
-                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p4),
-                Center(child: SGTypography.body(subTitle, color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p6),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(ctx);
-                  },
-                  child: SGContainer(
-                    color: SGColors.primary,
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
-                  ),
-                )
-              ]
-            ]);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarWithLeftArrow(title: "옵션 관리"),
-        body: SGContainer(
-            color: Color(0xFFFAFAFA),
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-            child: ListView(children: [
-              MultipleInformationBox(children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => TextFieldEditScreen(
-                              value: categoryName,
-                              title: "옵션 카테고리 변경",
-                              onSubmit: (value) {
-                                setState(() {
-                                  categoryName = value;
-                                });
-                              },
-                              buttonText: "저장하기",
-                              hintText: "옵션 카테고리 이름을 입력해주세요",
-                            )));
-                  },
-                  child: Row(children: [
-                    SGTypography.body(categoryName, size: FontSize.normal, weight: FontWeight.w600),
-                    SizedBox(width: SGSpacing.p1),
-                    Icon(Icons.edit, size: FontSize.small),
-                  ]),
-                )
-              ]),
-              SizedBox(height: SGSpacing.p5),
-              ...widget.category.menuOptions
-                  .mapIndexed((index, option) => [
-                        SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                        MultipleInformationBox(children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => _CuisineOptionEditScreen(option: option)));
-                              showFailDialogWithImage(mainTitle: "해당 옵션은 삭제된 옵션입니다.", subTitle: "");
-                            },
-                            child: Row(children: [
-                              SGTypography.body(option.optionContent ?? "", size: FontSize.normal, weight: FontWeight.w600),
-                              SizedBox(width: SGSpacing.p1),
-                              Icon(Icons.edit, size: FontSize.small),
-                            ]),
-                          ),
-                          SizedBox(height: SGSpacing.p5),
-                          DataTableRow(left: "가격", right: "${(option.price ?? 0).toKoreanCurrency}원"),
-                        ]),
-                      ])
-                  .flattened,
-              SizedBox(height: SGSpacing.p5),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => NewCuisineOptionScreen(
-                              onSubmitCuisineOption: (option) {
-                                setState(() {
-                                  options.add(option);
-                                });
-                              },
-                            )));
-                  },
-                  child: SGContainer(
-                      color: SGColors.white,
-                      padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
-                      borderRadius: BorderRadius.circular(SGSpacing.p2),
-                      borderColor: SGColors.primary,
-                      child: Center(
-                          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                        Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3),
-                        SizedBox(width: SGSpacing.p2),
-                        SGTypography.body("옵션 추가하기", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)
-                      ])))),
-            ])));
-  }
-}
-
 class _CuisineOptionEditScreen extends StatefulWidget {
   final MenuOptionModel option;
 
@@ -854,52 +520,7 @@ class _CuisineOptionEditScreen extends StatefulWidget {
 class _CuisineOptionEditScreenState extends State<_CuisineOptionEditScreen> {
   late String menuPrice = "${(widget.option.price ?? 0).toKoreanCurrency}원";
   bool isSoldOut = false;
-  NutritionModel nutrition = NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
-
-  void showFailDialogWithImage({
-    required String mainTitle,
-    required String subTitle,
-  }) {
-    showSGDialogWithImage(
-        context: context,
-        childrenBuilder: (ctx) => [
-              if (subTitle.isEmpty) ...[
-                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p6),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(ctx);
-                  },
-                  child: SGContainer(
-                    color: SGColors.primary,
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
-                  ),
-                )
-              ] else ...[
-                Center(child: SGTypography.body(mainTitle, size: FontSize.medium, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p4),
-                Center(child: SGTypography.body(subTitle, color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                SizedBox(height: SGSpacing.p6),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(ctx);
-                  },
-                  child: SGContainer(
-                    color: SGColors.primary,
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(child: SGTypography.body("확인", color: SGColors.white, weight: FontWeight.w700, size: FontSize.normal)),
-                  ),
-                )
-              ]
-            ]);
-  }
+  NutritionModel nutrition = NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, natrium: 120, saturatedFat: 8);
 
   @override
   Widget build(BuildContext context) {
@@ -965,7 +586,7 @@ class _CuisineOptionEditScreenState extends State<_CuisineOptionEditScreen> {
               borderRadius: BorderRadius.circular(SGSpacing.p3),
               child: Row(children: [
                 SGTypography.body("품절", size: FontSize.normal),
-                Spacer(),
+                const Spacer(),
                 SGSwitch(
                     value: isSoldOut,
                     onChanged: (value) {
@@ -1044,7 +665,7 @@ class _CuisineOptionEditScreenState extends State<_CuisineOptionEditScreen> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  showFailDialogWithImage(mainTitle: "진행 중인 주문에 선택된 옵션입니다.\n주문 완료 후 삭제 가능합니다.", subTitle: "");
+                                  showFailDialogWithImage(context: context, mainTitle: "진행 중인 주문에 선택된 옵션입니다.\n주문 완료 후 삭제 가능합니다.", subTitle: "");
                                 },
                                 child: SGContainer(
                                   color: SGColors.gray3,
@@ -1107,5 +728,45 @@ class _NutritionEditScreenState extends State<_NutritionEditScreen> {
       appBar: AppBarWithLeftArrow(title: "영양성분 수정"),
       // body: NutritionForm(nutrition: widget.nutrition, onChanged: widget.onConfirm),
     );
+  }
+}
+
+class _MenuOptionCategoryCard extends StatefulWidget {
+  final MenuOptionCategoryModel optionCategoryModel;
+
+  const _MenuOptionCategoryCard({super.key, required this.optionCategoryModel});
+
+  @override
+  State<_MenuOptionCategoryCard> createState() => _MenuOptionCategoryCardState();
+}
+
+class _MenuOptionCategoryCardState extends State<_MenuOptionCategoryCard> {
+  String get selectionType {
+    if (widget.optionCategoryModel.essentialStatus == 1) return "(필수)";
+    return "(선택 최대 ${widget.optionCategoryModel.maxChoice ?? 0}개)";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultipleInformationBox(children: [
+      GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateMenuOptionsScreen(menuOptionCategoryModel: widget.optionCategoryModel)));
+        },
+        child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          SGTypography.body(widget.optionCategoryModel.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
+          SizedBox(width: SGSpacing.p1),
+          SGTypography.body(selectionType, size: FontSize.small, color: SGColors.primary, weight: FontWeight.w600),
+          SizedBox(width: SGSpacing.p1),
+          const Icon(Icons.edit, size: FontSize.small),
+        ]),
+      ),
+      ...widget.optionCategoryModel.menuOptions
+          .mapIndexed((index, option) => [
+                if (index == 0) SizedBox(height: SGSpacing.p5) else SizedBox(height: SGSpacing.p4),
+                DataTableRow(left: option.optionContent ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
+              ])
+          .flattened
+    ]);
   }
 }

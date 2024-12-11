@@ -134,7 +134,7 @@ class RestApiUri {
   // DELETE - 메뉴 카테고리 삭제
   static const String deleteMenuCategory =
       '/api/v1/owner/store-menu/store-menu-category';
-  // DELETE - 메뉴 옵션 삭제 TODO
+  // DELETE - 메뉴 옵션 삭제
   static const String deleteMenuOption = '/api/v1/owner/store-menu/menu-option';
   // DELETE - 메뉴 옵션 카테고리 삭제 TODO
   static const String deleteMenuOptionCategory =
@@ -247,7 +247,7 @@ class RestApiUri {
   /// 가게 메뉴 조회 API
   // GET - 메뉴 정보 조회 TODO
   static const String getMenu = '/api/v1/owner/store-menu/menu/{menuId}';
-  // GET - 메뉴 옵션 정보 조회 TODO
+  // GET - 메뉴 옵션 정보 조회
   static const String getMenuInfo =
       '/api/v1/owner/store-menu/menu-option/{menuOptionId}';
 
@@ -292,17 +292,17 @@ class RestApiUri {
   // POST - 가게 메뉴 사진 등록 및 변경 TODO
   static const String updateMenuPicture =
       '/api/v1/owner/store-menu/menu-picture';
-  // POST - 메뉴 옵션 품절 상태 변경 TODO
+  // POST - 메뉴 옵션 품절 상태 변경
   static const String updateMenuOptionSoldOutStatus =
       '/api/v1/owner/store-menu/menu-option/sold-out';
-  // POST - 메뉴 옵션 가격 변경 TODO
+  // POST - 메뉴 옵션 가격 변경
   static const String updateMenuOptionPrice =
       '/api/v1/owner/store-menu/menu-option/price';
-  // POST - 메뉴 옵션 이름 변경 TODO
+  // POST - 메뉴 옵션 이름 변경
   static const String updateMenuOptionName =
       '/api/v1/owner/store-menu/menu-option/name';
 
-  // POST - 메뉴 옵션 정보 변경 TODO
+  // POST - 메뉴 옵션 정보 변경
   static const String updateMenuOptionInfo =
       '/api/v1/owner/store-menu/menu-option/info';
   // POST - 메뉴 옵션 카테고리 사용 메뉴 변경 TODO
@@ -311,7 +311,7 @@ class RestApiUri {
   // POST - 메뉴 옵션 카테고리 품절 상태 변경
   static const String updateMenuOptionCategorySoldOutStatus =
       '/api/v1/owner/store-menu/menu-option-category/sold-out';
-  // POST - 메뉴 옵션 카테고리 이름 변경 TODO
+  // POST - 메뉴 옵션 카테고리 이름 변경
   static const String updateMenuOptionCategoryName =
       '/api/v1/owner/store-menu/menu-option-category/name';
   // POST - 메뉴 옵션 카테고리 최대, 최소 개수 변경
