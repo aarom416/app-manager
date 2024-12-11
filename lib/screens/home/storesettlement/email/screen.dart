@@ -9,6 +9,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/screens/home/storeVat/operation/provider.dart';
 import 'package:singleeat/screens/home/storesettlement/operation/provider.dart';
 
@@ -22,6 +23,17 @@ class SendEmailScreen extends ConsumerStatefulWidget {
 
 class _SendEmailScreen extends ConsumerState<SendEmailScreen> {
   final TextEditingController emailController = TextEditingController(text: "");
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      emailController.text = UserHive.get().email;
+      ref.read(storeVatNotifierProvider.notifier).onChangeEmail(
+            email: UserHive.get().email,
+          );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +121,7 @@ class _SendEmailScreen extends ConsumerState<SendEmailScreen> {
                                         child: GestureDetector(
                                           onTap: () {
                                             Navigator.of(ctx).pop();
-                                            //Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
                                             if (widget.callScreen == 1) {
                                               provider
                                                   .generateSettlementReport();

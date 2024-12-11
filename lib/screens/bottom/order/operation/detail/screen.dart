@@ -10,6 +10,7 @@ import 'package:singleeat/core/components/step_counter.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
+import 'package:singleeat/core/screens/order_menu_option_screen.dart';
 import 'package:singleeat/office/models/order_model.dart';
 import 'package:singleeat/screens/bottom/myinfo/orderlist/model.dart';
 import 'package:singleeat/screens/bottom/order/operation/provider.dart';
@@ -704,49 +705,11 @@ class _OrderInformation extends StatelessWidget {
           SizedBox(height: SGSpacing.p3),
           Divider(height: 1, thickness: 1, color: SGColors.lineDark2),
           SizedBox(height: SGSpacing.p4),
-          Row(children: [
-            SGFlexible(
-                flex: 2,
-                child: SGTypography.body(order.orderMenuDTOList[0].menuName,
-                    size: FontSize.small, color: SGColors.whiteForDarkMode)),
-            SGFlexible(
-                flex: 1,
-                child: Center(
-                    child: SGTypography.body(
-                  order.orderMenuDTOList[0].count.toString(),
-                  size: FontSize.small,
-                  color: SGColors.whiteForDarkMode,
-                ))),
-            SGFlexible(
-                flex: 1,
-                child: SGTypography.body(
-                    order.orderMenuDTOList[0].menuPrice.toKoreanCurrency,
-                    align: TextAlign.right,
-                    size: FontSize.small,
-                    color: SGColors.whiteForDarkMode)),
-          ]),
-          SizedBox(height: SGSpacing.p3),
-          Row(children: [
-            SGFlexible(
-                flex: 2,
-                child: SGTypography.body(
-                  "ㄴ 오리 훈제 토핑",
-                  size: FontSize.small,
-                  color: SGColors.whiteForDarkMode,
-                )),
-            SGFlexible(
-                flex: 1,
-                child: Center(
-                    child: SGTypography.body("1",
-                        size: FontSize.small,
-                        color: SGColors.whiteForDarkMode))),
-            SGFlexible(
-                flex: 1,
-                child: SGTypography.body("3,000",
-                    align: TextAlign.right,
-                    size: FontSize.small,
-                    color: SGColors.whiteForDarkMode)),
-          ]),
+          ...order.orderMenuDTOList.map((e) => OrderMenuList(
+                orderMenuOptionDTOList: order.orderMenuOptionDTOList[0],
+                orderMenu: e,
+                colorType: SGColors.whiteForDarkMode,
+              )),
           SizedBox(height: SGSpacing.p4),
           Divider(height: 1, thickness: 1, color: SGColors.lineDark2),
           SizedBox(height: SGSpacing.p3),
@@ -757,7 +720,7 @@ class _OrderInformation extends StatelessWidget {
                     size: FontSize.small, color: SGColors.gray4)),
             SGFlexible(
                 flex: 1,
-                child: SGTypography.body(order.orderAmount.toKoreanCurrency,
+                child: SGTypography.body(order.orderAmount.toString(),
                     align: TextAlign.right,
                     size: FontSize.small,
                     color: SGColors.gray4)),
@@ -803,9 +766,7 @@ class _OrderInformation extends StatelessWidget {
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(
-            left: "카카오페이",
-            right: '${order.totalOrderAmount.toKoreanCurrency}원'),
+        _DataTableRow(left: "카카오페이", right: '${order.totalOrderAmount}원'),
       ]),
       if (order.receiveFoodType == 'DELIVERY') ...[
         SizedBox(height: SGSpacing.p3),

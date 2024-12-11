@@ -238,7 +238,7 @@ class RestApiUri {
 
   /// Vat
   /// 부가세 API
-  // POST - 부가세 내역 보고서 생성 및 이메일 전송 TODO
+  // POST - 부가세 내역 보고서 생성 및 이메일 전송
   static const String generateVatReport = '/api/v1/owner/vat/report';
   // GET - 부가세 내역 조회 TODO
   static const String getVatInfo = '/api/v1/owner/vat/{storeId}';
@@ -359,7 +359,7 @@ class RestApiUri {
 
   /// StoreHistory
   /// 가게 이력 API
-  // GET - 가게 이력 조회 TODO
+  // GET - 가게 이력 조회
   static const String getStoreHistory =
       '/api/v1/owner/store-history/{storeId}/{page}/{filter}';
 
@@ -434,9 +434,9 @@ class RestApiUri {
   /// 사장님 전화번호 변경
   static const String identityVerification =
       '/owner/pages/identity-verification';
-  // GET - 매출 부가세 내역 조회 TODO
+  // GET - 매출 부가세 내역 조회
   static const String getVatSalesInfo = '/api/v1/owner/vat/sales/{storeId}';
-  // GET - 매입 부가세 내역 조회 TODO
+  // GET - 매입 부가세 내역 조회
   static const String getVatPurchasesInfo =
       '/api/v1/owner/vat/purchases/{storeId}';
 }

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:singleeat/screens/home/storeorderhistory/operation/model.dart';
 
 part 'model.freezed.dart';
 part 'model.g.dart';
@@ -7,36 +8,6 @@ enum MyInfoOrderHistoryStatus {
   init,
   success,
   error,
-}
-
-@freezed
-class OrderMenuDTO with _$OrderMenuDTO {
-  const factory OrderMenuDTO({
-    @Default(0) int orderMenuId,
-    @Default(0) int orderInformationId,
-    @Default(0) int menuId,
-    @Default('') String menuName,
-    @Default(0) int menuPrice,
-    @Default(0) int count,
-  }) = _OrderMenuDTO;
-
-  factory OrderMenuDTO.fromJson(Map<String, dynamic> json) =>
-      _$OrderMenuDTOFromJson(json);
-}
-
-@freezed
-class OrderMenuOptionDTO with _$OrderMenuOptionDTO {
-  const factory OrderMenuOptionDTO({
-    @Default(0) int orderMenuOptionId,
-    @Default(0) int orderMenuId,
-    @Default(0) int menuOptionId,
-    @Default('') String menuOptionName,
-    @Default(0) int menuOptionPrice,
-    @Default(0) int count,
-  }) = _OrderMenuOptionDTO;
-
-  factory OrderMenuOptionDTO.fromJson(Map<String, dynamic> json) =>
-      _$OrderMenuOptionDTOFromJson(json);
 }
 
 @freezed

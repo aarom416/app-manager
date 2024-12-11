@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:singleeat/screens/bottom/myinfo/orderlist/model.dart';
+import 'package:singleeat/screens/home/storeorderhistory/operation/model.dart';
 
 part 'model.freezed.dart';
 part 'model.g.dart';

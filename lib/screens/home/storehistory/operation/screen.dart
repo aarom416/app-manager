@@ -12,6 +12,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
+import 'package:singleeat/core/utils/throttle.dart';
 import 'package:singleeat/screens/home/storeHistory/operation/model.dart';
 import 'package:singleeat/screens/home/storeHistory/operation/provider.dart';
 
@@ -44,18 +45,64 @@ class EventHistoryScreen extends ConsumerStatefulWidget {
 
 class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
   late DateRange dateRange;
-  late String currentTab;
 
   Map<String, List<StoreHistoryModel>> events = {};
 
-  //List<Event> get currentEvents => events[currentTab] ?? [];
   List<StoreHistoryModel> currentEvents = [];
+  ScrollController scrollController = ScrollController();
+  final throttle = Throttle(
+    delay: const Duration(milliseconds: 300),
+  );
 
   @override
   void initState() {
     super.initState();
-    dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
-    currentTab = '가게';
+    dateRange = DateRange(
+      start: DateTime.now().subtract(const Duration(days: 1)),
+      end: DateTime.now(),
+    );
+
+    scrollController.addListener(loadMore);
+
+    Future.microtask(() {
+      final provider = ref.read(storeHistoryNotifierProvider.notifier);
+
+      provider.clear();
+      provider.getStoreHistory(
+        dateRange.start.toShortDateStringWithZeroPadding,
+        dateRange.end.toShortDateStringWithZeroPadding,
+      );
+    });
+  }
+
+  void loadMore() {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      final storeHistoryState = ref.read(storeHistoryNotifierProvider);
+      // 마지막 조회한 페이지에서 데이터 없는 경우 더 조회하지 않음
+      if (!storeHistoryState.hasMoreData) {
+        return;
+      }
+
+      final storeHistoryProvider =
+          ref.read(storeHistoryNotifierProvider.notifier);
+      final page = storeHistoryState.page;
+
+      storeHistoryProvider.onChangePage(page + 1);
+      throttle.run(
+        () => storeHistoryProvider.getStoreHistory(
+          dateRange.start.toShortDateStringWithZeroPadding,
+          dateRange.end.toShortDateStringWithZeroPadding,
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -68,78 +115,100 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
         body: SGContainer(
           color: Color(0xFFFAFAFA),
           borderWidth: 0,
-          child: ListView(shrinkWrap: false, children: [
-            SGContainer(
-                padding: EdgeInsets.symmetric(
-                    horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
-                borderWidth: 0,
-                color: Colors.white,
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      DateRangePicker(
-                        dateRange: dateRange,
-                        onStartDateChanged: (DateTime startDate) {
-                          setState(() {
-                            dateRange = dateRange.copyWith(start: startDate);
-                          });
-                        },
-                        onEndDateChanged: (DateTime endDate) {
-                          setState(() {
-                            dateRange = dateRange.copyWith(end: endDate);
-                          });
-                        },
-                      ),
-                      SizedBox(height: SGSpacing.p4),
-                      SGContainer(
-                        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
-                        width: double.infinity,
-                        color: SGColors.primary,
-                        borderRadius: BorderRadius.circular(SGSpacing.p2),
-                        child: SGActionButton(
-                            onPressed: () {
+          child: ListView(
+              shrinkWrap: false,
+              controller: scrollController,
+              children: [
+                SGContainer(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
+                    borderWidth: 0,
+                    color: Colors.white,
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DateRangePicker(
+                            dateRange: dateRange,
+                            onStartDateChanged: (DateTime startDate) {
+                              setState(() {
+                                dateRange =
+                                    dateRange.copyWith(start: startDate);
+                              });
+
+                              provider.clearFilter();
                               provider.getStoreHistory(
-                                  '0',
-                                  currentTab,
-                                  dateRange
-                                      .start.toShortDateStringWithZeroPadding,
-                                  dateRange
-                                      .end.toShortDateStringWithZeroPadding);
+                                dateRange
+                                    .start.toShortDateStringWithZeroPadding,
+                                dateRange.end.toShortDateStringWithZeroPadding,
+                              );
                             },
-                            label: "조회"),
-                      ),
-                      SizedBox(height: SGSpacing.p4),
-                      MenuTabBar(
-                          currentTab: currentTab,
-                          tabs: ["가게", "메뉴"],
-                          onTabChanged: (String tab) {
-                            setState(() {
-                              currentTab = tab;
+                            onEndDateChanged: (DateTime endDate) {
+                              setState(() {
+                                dateRange = dateRange.copyWith(end: endDate);
+                              });
+
+                              provider.clearFilter();
                               provider.getStoreHistory(
-                                  '0',
-                                  currentTab,
+                                dateRange
+                                    .start.toShortDateStringWithZeroPadding,
+                                dateRange.end.toShortDateStringWithZeroPadding,
+                              );
+                            },
+                          ),
+                          SizedBox(height: SGSpacing.p4),
+                          SGContainer(
+                            padding:
+                                EdgeInsets.symmetric(horizontal: SGSpacing.p4),
+                            width: double.infinity,
+                            color: SGColors.primary,
+                            borderRadius: BorderRadius.circular(SGSpacing.p2),
+                            child: SGActionButton(
+                                onPressed: () {
+                                  provider.clearFilter();
+                                  provider.getStoreHistory(
+                                    dateRange
+                                        .start.toShortDateStringWithZeroPadding,
+                                    dateRange
+                                        .end.toShortDateStringWithZeroPadding,
+                                  );
+                                },
+                                label: "조회"),
+                          ),
+                          SizedBox(height: SGSpacing.p4),
+                          MenuTabBar(
+                              currentTab: state.filter,
+                              tabs: ["가게", "메뉴"],
+                              onTabChanged: (String tab) {
+                                provider.onChangeFilter(tab);
+                                provider.clearFilter();
+                                provider.getStoreHistory(
                                   dateRange
                                       .start.toShortDateStringWithZeroPadding,
                                   dateRange
-                                      .end.toShortDateStringWithZeroPadding);
-                            });
-                          }),
-                    ])),
-            SGContainer(
-                color: Colors.transparent,
-                padding: EdgeInsets.all(SGSpacing.p4),
-                borderWidth: 0,
-                child: Column(
+                                      .end.toShortDateStringWithZeroPadding,
+                                );
+                              }),
+                        ])),
+                SGContainer(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.all(SGSpacing.p4),
+                  borderWidth: 0,
+                  child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ...state.storeHistoryList.map((StoreHistoryModel event) {
-                        return _EventCard(
-                            key: Key(event.hashCode.toString()), event: event);
-                      }),
-                    ]))
-          ]),
+                      ...state.storeHistoryList.map(
+                        (StoreHistoryModel event) {
+                          return _EventCard(
+                              key: Key(event.hashCode.toString()),
+                              event: event);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ]),
         ));
   }
 }
