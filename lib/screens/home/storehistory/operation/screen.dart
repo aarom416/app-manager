@@ -128,11 +128,25 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
                                 dateRange =
                                     dateRange.copyWith(start: startDate);
                               });
+
+                              provider.clearFilter();
+                              provider.getStoreHistory(
+                                dateRange
+                                    .start.toShortDateStringWithZeroPadding,
+                                dateRange.end.toShortDateStringWithZeroPadding,
+                              );
                             },
                             onEndDateChanged: (DateTime endDate) {
                               setState(() {
                                 dateRange = dateRange.copyWith(end: endDate);
                               });
+
+                              provider.clearFilter();
+                              provider.getStoreHistory(
+                                dateRange
+                                    .start.toShortDateStringWithZeroPadding,
+                                dateRange.end.toShortDateStringWithZeroPadding,
+                              );
                             },
                           ),
                           SizedBox(height: SGSpacing.p4),
