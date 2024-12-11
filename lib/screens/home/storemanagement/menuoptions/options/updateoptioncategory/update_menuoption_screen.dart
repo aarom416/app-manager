@@ -1,7 +1,5 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
@@ -11,15 +9,12 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/extensions/dynamic.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 
-import '../../../../../../core/screens/numeric_range_edit_screen.dart';
 import '../../../../../../core/screens/price_field_edit_screen.dart';
 import '../../../../../../main.dart';
 import '../../model.dart';
-import '../../new_cuisine_option_screen.dart';
 import '../../nutrition/nutrition_card.dart';
 import '../../nutrition/screen.dart';
 import '../../provider.dart';

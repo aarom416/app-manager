@@ -13,7 +13,7 @@ import 'package:singleeat/core/extensions/integer.dart';
 
 import '../../menu_selection_bottom_sheet.dart';
 import '../../model.dart';
-import '../../new_cuisine_option_screen.dart';
+import '../addoption/screen.dart';
 
 final selectableCuisines = [
   MenuModel(
@@ -235,8 +235,8 @@ class _NewCuisineOptionsStepScreenState extends State<_NewCuisineOptionsStepScre
                 GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => NewCuisineOptionScreen(
-                                onSubmitCuisineOption: (option) {
+                          builder: (context) => AddOptionScreen(
+                                onSubmit: (option) {
                                   setState(() {
                                     options.add(option);
                                   });

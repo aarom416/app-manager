@@ -8,13 +8,14 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/extensions/dynamic.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 import 'package:singleeat/screens/home/storemanagement/menuoptions/options/updateoptioncategory/update_menuoption_screen.dart';
 
 import '../../../../../../main.dart';
 import '../../model.dart';
-import '../../new_cuisine_option_screen.dart';
+import '../addoption/screen.dart';
 import '../../provider.dart';
 
 class UpdateMenuOptionsScreen extends ConsumerStatefulWidget {
@@ -132,11 +133,10 @@ class _UpdateMenuOptionsScreenState extends ConsumerState<UpdateMenuOptionsScree
                   GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => NewCuisineOptionScreen(
-                                  onSubmitCuisineOption: (option) {
-                                    setState(() {
-                                      // options.add(option);
-                                    });
+                            builder: (context) => AddOptionScreen(
+                                  onSubmit: (menuOptionModel) {
+                                    logger.d("onSubmit option ${menuOptionModel.toFormattedJson()}");
+                                    // todo 옵션추가 api
                                   },
                                 )));
                       },

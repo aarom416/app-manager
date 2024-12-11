@@ -38,7 +38,7 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                               delegate: CustomTabBar(
                                   tabBar: TabBar(
                                 indicatorColor: SGColors.primary,
-                                tabs: [
+                                tabs: const [
                                   Tab(text: "가게 정보"),
                                   Tab(text: "영업"),
                                   Tab(text: "배달/포장"),
@@ -49,7 +49,7 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                                   fontWeight: FontWeight.w600,
                                   color: SGColors.primary,
                                 ),
-                                unselectedLabelStyle: TextStyle(
+                                unselectedLabelStyle: const TextStyle(
                                   fontSize: FontSize.normal,
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xFFBEBEBE),
@@ -63,14 +63,14 @@ class _StoreManagementScreenState extends State<StoreManagementScreen> {
                               ))))
                     ],
                 body: SGContainer(
-                    color: Color(0xFFFAFAFA),
+                    color: const Color(0xFFFAFAFA),
                     padding: EdgeInsets.only(top: SGSpacing.p15)
                         .copyWith(left: SGSpacing.p4, right: SGSpacing.p4),
-                    child: TabBarView(
-                      physics: const NeverScrollableScrollPhysics(),
+                    child: const TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
                       children: [
-                        const StoreManagementBasicInfoScreen(),
-                        const OperationScreen(),
+                        StoreManagementBasicInfoScreen(),
+                        OperationScreen(),
                         DeliveryScreen(),
                         MenuOptionsScreen(),
                       ],

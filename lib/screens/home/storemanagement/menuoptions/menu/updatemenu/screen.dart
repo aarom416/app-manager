@@ -17,7 +17,7 @@ import 'package:singleeat/core/screens/textarea_edit_screen.dart';
 
 import '../../../../../../core/screens/image_upload_screen.dart';
 import '../../../../../../main.dart';
-import '../../cuisine_option_category_card.dart';
+import 'menu_option_category_card.dart';
 import '../../model.dart';
 import '../../nutrition/nutrition_card.dart';
 import '../../nutrition/screen.dart';
@@ -334,7 +334,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                   ...widget.menuModel.menuCategoryOptions
                       .mapIndexed((idx, category) => [
                             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                            CuisineOptionCategoryCard(category: category),
+                            MenuOptionCategoryCard(category: category),
                           ])
                       .flattened
                 ])),

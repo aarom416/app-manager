@@ -615,7 +615,7 @@ class _Page_2_MenuPriceState extends State<_Page_2_MenuPrice> {
               ],
             )),
         body: SGContainer(
-            color: Color(0xFFFAFAFA),
+            color: const Color(0xFFFAFAFA),
             padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
             child: ListView(
               children: [
