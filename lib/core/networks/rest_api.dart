@@ -359,7 +359,7 @@ class RestApiUri {
 
   /// StoreHistory
   /// 가게 이력 API
-  // GET - 가게 이력 조회 TODO
+  // GET - 가게 이력 조회
   static const String getStoreHistory =
       '/api/v1/owner/store-history/{storeId}/{page}/{filter}';
 
