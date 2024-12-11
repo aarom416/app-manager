@@ -20,6 +20,7 @@ abstract class UserModel with _$UserModel {
     @Default('') String phone,
     @Default('') String accessToken,
     @Default('') String refreshToken,
+    @Default(0.5) double volume,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

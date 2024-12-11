@@ -169,6 +169,7 @@ class LoginNotifier extends _$LoginNotifier {
         modifiedData['accessToken'] ?? UserHive.get().accessToken;
     modifiedData['refreshToken'] =
         modifiedData['refreshToken'] ?? UserHive.get().refreshToken;
+    modifiedData['volume'] = modifiedData['volume'] ?? UserHive.get().volume;
 
     final user = UserModel.fromJson(modifiedData);
     UserHive.set(user: user.copyWith(status: status));

@@ -25,14 +25,15 @@ class _NotificationConfigurationScreenState
     extends ConsumerState<NotificationConfigurationScreen> {
   @override
   void initState() {
+    super.initState();
     Future.microtask(() {
-      ref
-          .read(notificationConfigurationNotifierProvider.notifier)
-          .notificationStatus();
+      final provider =
+          ref.read(notificationConfigurationNotifierProvider.notifier);
+
+      provider.notificationStatus();
+      provider.updateVolume();
     });
   }
-
-  double notificationVolume = 0.5;
 
   @override
   Widget build(BuildContext context) {
@@ -101,11 +102,9 @@ class _NotificationConfigurationScreenState
                               RoundSliderOverlayShape(overlayRadius: 1),
                         ),
                         child: Slider(
-                          value: notificationVolume,
+                          value: state.volume,
                           onChanged: (double value) {
-                            setState(() {
-                              notificationVolume = value;
-                            });
+                            provider.onChangeVolume(volume: value);
                           },
                         ),
                       )
