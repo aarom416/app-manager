@@ -17,15 +17,21 @@ class StoreHistoryNotifier extends _$StoreHistoryNotifier {
     return const StoreHistoryState();
   }
 
+  void clear() {
+    state = build();
+  }
+
   /// GET - 영업 정보 조회
   void getStoreHistory(
-      String page, String filter, String startDate, String endDate) async {
+    String startDate,
+    String endDate,
+  ) async {
     final response = await ref
         .read(storeHistoryServiceProvider)
         .getStoreHistory(
             storeId: UserHive.getBox(key: UserKey.storeId),
-            page: page,
-            filter: filter == '가게' ? '0' : '1',
+            page: state.page.toString(),
+            filter: state.filter == '가게' ? '0' : '1',
             startDate: startDate,
             endDate: endDate);
 
@@ -33,20 +39,51 @@ class StoreHistoryNotifier extends _$StoreHistoryNotifier {
       final result = ResultResponseListModel.fromJson(response.data);
       List<StoreHistoryModel> storeHistoryList = [];
 
+      if (result.data.isEmpty) {
+        onChangeHasMoreData(false);
+        return;
+      }
+
       for (var item in result.data) {
         StoreHistoryModel storeHistoryModel = StoreHistoryModel.fromJson(item);
         storeHistoryList.add(storeHistoryModel);
       }
-      //final storeHistory = StoreHistoryModel.fromJson(result.data);
+
       state = state.copyWith(
-          status: StoreHistoryStatus.success,
-          storeHistoryList: storeHistoryList,
-          error: const ResultFailResponseModel());
+        status: StoreHistoryStatus.success,
+        storeHistoryList: state.page == 0
+            ? storeHistoryList
+            : [
+                ...state.storeHistoryList,
+                ...storeHistoryList,
+              ],
+        error: const ResultFailResponseModel(),
+      );
     } else {
       state = state.copyWith(
           status: StoreHistoryStatus.error,
           error: ResultFailResponseModel.fromJson(response.data));
     }
+  }
+
+  void onChangeHasMoreData(bool hasMoreData) {
+    state = state.copyWith(hasMoreData: hasMoreData);
+  }
+
+  void onChangePage(int page) {
+    state = state.copyWith(page: page);
+  }
+
+  void onChangeFilter(String filter) {
+    state = state.copyWith(filter: filter);
+  }
+
+  void clearFilter() {
+    state = state.copyWith(
+      hasMoreData: true,
+      page: 0,
+      storeHistoryList: [],
+    );
   }
 }
 
@@ -59,6 +96,9 @@ enum StoreHistoryStatus {
 @freezed
 abstract class StoreHistoryState with _$StoreHistoryState {
   const factory StoreHistoryState({
+    @Default(true) bool hasMoreData,
+    @Default(0) int page,
+    @Default('가게') String filter,
     @Default(StoreHistoryStatus.init) StoreHistoryStatus status,
     @Default([]) List<StoreHistoryModel> storeHistoryList,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
