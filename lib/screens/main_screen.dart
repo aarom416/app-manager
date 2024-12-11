@@ -11,7 +11,6 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/main_provider.dart';
-import 'package:singleeat/screens/home/couponinformation/operation/screen.dart';
 import 'package:singleeat/screens/home/storeHistory/operation/screen.dart';
 import 'package:singleeat/screens/home/storesettlement/operation/screen.dart';
 import 'package:singleeat/screens/notice_screen.dart';
@@ -92,7 +91,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(ctx).pop();
-                        provider.onChangeOperationStatus(0);
+                        provider.onChangeOperationStatus(1);
                       },
                       child: SGContainer(
                         width: double.infinity,
@@ -186,11 +185,11 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                                       value: state.operationStatus == 1,
                                       onChanged: (toggled) {
                                         if (state.operationStatus == 1) {
+                                          provider.onChangeOperationStatus(0);
+                                        } else {
                                           showOperationStopDialog(
                                               context: context,
                                               provider: provider);
-                                        } else {
-                                          provider.onChangeOperationStatus(1);
                                         }
                                       })),
                             ]),
