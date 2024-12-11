@@ -14,6 +14,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
 import 'package:singleeat/core/extensions/integer.dart';
+import 'package:singleeat/core/screens/order_menu_option_screen.dart';
 import 'package:singleeat/office/models/order_model.dart';
 import 'package:singleeat/screens/bottom/myinfo/orderlist/provider.dart';
 
@@ -285,12 +286,8 @@ class _ReceiptCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 시간대
-              SGTypography.body(
-                  order.createdDate.toString().substring(
-                      order.createdDate.length - 8,
-                      order.createdDate.length - 3),
-                  size: FontSize.normal,
-                  weight: FontWeight.w600),
+              SGTypography.body(order.orderDate,
+                  size: FontSize.normal, weight: FontWeight.w600),
               SizedBox(height: SGSpacing.p3 + SGSpacing.p05),
               Row(
                 children: [
@@ -366,7 +363,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                         children: [
                           SGTypography.body("주문 상태",
                               size: FontSize.small, weight: FontWeight.w600),
-                          SGTypography.body(order.createdDate.substring(0, 10),
+                          SGTypography.body(order.orderDate,
                               size: FontSize.small,
                               weight: FontWeight.w600,
                               color: SGColors.gray4),
@@ -435,7 +432,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                     SizedBox(height: SGSpacing.p3),
                     Divider(height: 1, thickness: 1, color: SGColors.line1),
                     SizedBox(height: SGSpacing.p4),
-                    Row(children: [
+                    /*Row(children: [
                       SGFlexible(
                           flex: 2,
                           child: SGTypography.body(
@@ -483,7 +480,13 @@ class _ReceiptDetailScreen extends StatelessWidget {
                                   : '',
                               align: TextAlign.right,
                               size: FontSize.small)),
-                    ]),
+                    ]),*/
+                    ...order.orderMenuDTOList.map((e) => OrderMenuList(
+                          orderMenuOptionDTOList:
+                              order.orderMenuOptionDTOList[0],
+                          orderMenu: e,
+                          colorType: SGColors.whiteForDarkMode,
+                        )),
                     SizedBox(height: SGSpacing.p4),
                     Divider(height: 1, thickness: 1, color: SGColors.line1),
                     SizedBox(height: SGSpacing.p3),

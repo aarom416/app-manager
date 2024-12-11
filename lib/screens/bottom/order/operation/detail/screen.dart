@@ -708,6 +708,7 @@ class _OrderInformation extends StatelessWidget {
           ...order.orderMenuDTOList.map((e) => OrderMenuList(
                 orderMenuOptionDTOList: order.orderMenuOptionDTOList[0],
                 orderMenu: e,
+                colorType: SGColors.whiteForDarkMode,
               )),
           SizedBox(height: SGSpacing.p4),
           Divider(height: 1, thickness: 1, color: SGColors.lineDark2),
@@ -719,7 +720,7 @@ class _OrderInformation extends StatelessWidget {
                     size: FontSize.small, color: SGColors.gray4)),
             SGFlexible(
                 flex: 1,
-                child: SGTypography.body(order.orderAmount.toKoreanCurrency,
+                child: SGTypography.body(order.orderAmount.toString(),
                     align: TextAlign.right,
                     size: FontSize.small,
                     color: SGColors.gray4)),
@@ -765,9 +766,7 @@ class _OrderInformation extends StatelessWidget {
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(
-            left: "카카오페이",
-            right: '${order.totalOrderAmount.toKoreanCurrency}원'),
+        _DataTableRow(left: "카카오페이", right: '${order.totalOrderAmount}원'),
       ]),
       if (order.receiveFoodType == 'DELIVERY') ...[
         SizedBox(height: SGSpacing.p3),

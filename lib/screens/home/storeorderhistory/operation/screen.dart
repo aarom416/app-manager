@@ -12,6 +12,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
 import 'package:singleeat/core/extensions/integer.dart';
+import 'package:singleeat/core/screens/order_menu_option_screen.dart';
 import 'package:singleeat/core/utils/time_utils.dart';
 import 'package:singleeat/screens/home/storeorderhistory/operation/model.dart';
 import 'package:singleeat/screens/home/storeorderhistory/operation/provider.dart';
@@ -367,7 +368,7 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                       SizedBox(height: SGSpacing.p3),
                       Divider(height: 1, thickness: 1, color: SGColors.line1),
                       SizedBox(height: SGSpacing.p4),
-                      Row(children: [
+                      /*Row(children: [
                         SGFlexible(
                             flex: 2,
                             child: SGTypography.body(
@@ -393,7 +394,14 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                       ]),
                       SizedBox(height: SGSpacing.p3),
                       ...widget.storeOrderHistory.orderMenuOptionDTOList[0]
-                          .map((e) => _OrderMenuOptionList(orderMenuOption: e)),
+                          .map((e) => _OrderMenuOptionList(orderMenuOption: e)),*/
+                      ...widget.storeOrderHistory.orderMenuDTOList
+                          .map((e) => OrderMenuList(
+                                orderMenuOptionDTOList: widget.storeOrderHistory
+                                    .orderMenuOptionDTOList[0],
+                                orderMenu: e,
+                                colorType: Colors.black,
+                              )),
                       SizedBox(height: SGSpacing.p4),
                       Divider(height: 1, thickness: 1, color: SGColors.line1),
                       SizedBox(height: SGSpacing.p3),
@@ -464,44 +472,6 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
             ),
           ]
         ]));
-  }
-}
-
-class _OrderMenuOptionList extends StatefulWidget {
-  _OrderMenuOptionList({super.key, required this.orderMenuOption});
-  final OrderMenuOptionDTO orderMenuOption;
-
-  @override
-  State<_OrderMenuOptionList> createState() => _OrderMenuOptionListState();
-}
-
-class _OrderMenuOptionListState extends State<_OrderMenuOptionList> {
-  @override
-  Widget build(BuildContext context) {
-    return SGContainer(
-      child: Row(children: [
-        SGFlexible(
-            flex: 2,
-            child: SGTypography.body(
-              "ㄴ ${widget.orderMenuOption.menuOptionName}",
-              size: FontSize.small,
-              color: SGColors.gray3,
-            )),
-        SGFlexible(
-            flex: 1,
-            child: Center(
-                child: SGTypography.body(
-              widget.orderMenuOption.count.toString(),
-              size: FontSize.small,
-            ))),
-        SGFlexible(
-            flex: 1,
-            child: SGTypography.body(
-                widget.orderMenuOption.menuOptionPrice.toKoreanCurrency,
-                align: TextAlign.right,
-                size: FontSize.small)),
-      ]),
-    );
   }
 }
 

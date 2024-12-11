@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/flex.dart';
@@ -6,15 +7,18 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
-import 'package:singleeat/screens/bottom/myinfo/orderlist/model.dart';
+import 'package:singleeat/screens/home/storeorderhistory/operation/model.dart';
 
 class OrderMenuList extends StatefulWidget {
   OrderMenuList(
       {super.key,
       required this.orderMenuOptionDTOList,
-      required this.orderMenu});
+      required this.orderMenu,
+      required this.colorType});
   final List<OrderMenuOptionDTO> orderMenuOptionDTOList;
   final OrderMenuDTO orderMenu;
+  final Color colorType;
+
   @override
   State<OrderMenuList> createState() => _OrderMenuListState();
 }
@@ -29,14 +33,14 @@ class _OrderMenuListState extends State<OrderMenuList> {
             SGFlexible(
                 flex: 2,
                 child: SGTypography.body(widget.orderMenu.menuName,
-                    size: FontSize.small, color: SGColors.whiteForDarkMode)),
+                    size: FontSize.small, color: widget.colorType)),
             SGFlexible(
                 flex: 1,
                 child: Center(
                     child: SGTypography.body(
                   widget.orderMenu.count.toString(),
                   size: FontSize.small,
-                  color: SGColors.whiteForDarkMode,
+                  color: widget.colorType,
                 ))),
             SGFlexible(
                 flex: 1,
@@ -44,7 +48,7 @@ class _OrderMenuListState extends State<OrderMenuList> {
                     widget.orderMenu.menuPrice.toKoreanCurrency,
                     align: TextAlign.right,
                     size: FontSize.small,
-                    color: SGColors.whiteForDarkMode)),
+                    color: widget.colorType)),
           ]),
           SizedBox(height: SGSpacing.p3),
           ...widget.orderMenuOptionDTOList
