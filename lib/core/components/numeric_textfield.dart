@@ -73,7 +73,6 @@ class _NumericTextFieldState extends State<NumericTextField> {
         _controller.text = formattedValue;
         _controller.selection = TextSelection.collapsed(offset: formattedValue.length);
 
-        // 값 저장 콜백 호출
         widget.onValueChanged(numericValue.toIntFromCurrency);
       },
     );

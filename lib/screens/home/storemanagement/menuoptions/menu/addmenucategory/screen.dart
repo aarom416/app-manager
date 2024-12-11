@@ -44,7 +44,6 @@ class _AddMenuCategoryScreenState extends ConsumerState<AddMenuCategoryScreen> {
   Widget build(BuildContext context) {
     final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
     final MenuOptionsNotifier provider = ref.read(menuOptionsNotifierProvider.notifier);
-    // logger.i("selectedMenuList.toFormattedJson ${selectedMenuList.toFormattedJson()}");
 
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: "메뉴 카테고리 추가"),
@@ -54,7 +53,6 @@ class _AddMenuCategoryScreenState extends ConsumerState<AddMenuCategoryScreen> {
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
           child: SGActionButton(
               onPressed: () {
-                // todo !!정의된 삭제된 메뉴 판단기준이 발견되지 않음.
                 // showFailDialogWithImage(context: context, mainTitle: "해당 메뉴는 삭제된 메뉴입니다.", subTitle: "삭제된 메뉴가 포함되어있습니다.\n다시 한 번 시도해주세요.");
                 provider.createMenuCategory(MenuCategoryModel(
                   menuCategoryName: menuCategoryName,

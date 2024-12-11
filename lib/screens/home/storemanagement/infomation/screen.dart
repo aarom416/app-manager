@@ -38,8 +38,6 @@ class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagement
     final state = ref.watch(storeManagementBasicInfoNotifierProvider);
     final provider = ref.read(storeManagementBasicInfoNotifierProvider.notifier);
 
-    logger.i("=== state.storeInfo.thumbnail ${state.storeInfo.thumbnail}");
-
     return ListView(shrinkWrap: true, children: [
       SGContainer(
         padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),

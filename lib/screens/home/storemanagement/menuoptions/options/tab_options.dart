@@ -201,8 +201,8 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
     super.initState();
     appliedMenus = widget.menuCategoryList
         .expand((menuCategory) => menuCategory.menuList)
-        .where((menu) => menu.menuCategoryOptions.any((option) => option.menuOptionCategoryId == widget.optionCategory.menuOptionCategoryId)) // 조건 필터링
-        .toSet() // 중복 제거
+        .where((menu) => menu.menuCategoryOptions.any((option) => option.menuOptionCategoryId == widget.optionCategory.menuOptionCategoryId))
+        .toSet()
         .toList();
     isExpanded = false;
   }

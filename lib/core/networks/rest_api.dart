@@ -136,7 +136,7 @@ class RestApiUri {
       '/api/v1/owner/store-menu/store-menu-category';
   // DELETE - 메뉴 옵션 삭제
   static const String deleteMenuOption = '/api/v1/owner/store-menu/menu-option';
-  // DELETE - 메뉴 옵션 카테고리 삭제 TODO
+  // DELETE - 메뉴 옵션 카테고리 삭제
   static const String deleteMenuOptionCategory =
       '/api/v1/owner/store-menu/menu-option-category';
 
@@ -305,7 +305,7 @@ class RestApiUri {
   // POST - 메뉴 옵션 정보 변경
   static const String updateMenuOptionInfo =
       '/api/v1/owner/store-menu/menu-option/info';
-  // POST - 메뉴 옵션 카테고리 사용 메뉴 변경 TODO
+  // POST - 메뉴 옵션 카테고리 사용 메뉴 변경
   static const String updateMenuOptionCategoryUseMenu =
       '/api/v1/owner/store-menu/menu-option-category/use-menu';
   // POST - 메뉴 옵션 카테고리 품절 상태 변경

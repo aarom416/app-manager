@@ -466,6 +466,60 @@ class MenuOptionsService {
     }
   }
 
+  /// POST - 메뉴 옵션 카테고리 사용 메뉴 변경
+  /*
+    {
+      "storeId": 1,
+      "menuOptionCategoryId": 1,
+      "addMenuIdList": [
+        1,
+        2
+      ],
+      "removeMenuIdList": [
+        3,
+        4
+      ]
+    }
+   */
+  Future<Response<dynamic>> updateMenuOptionCategoryUseMenu({required String storeId, required int menuOptionCategoryId, required List<int> addMenuIdList , required List<int> removeMenuIdList}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuOptionCategoryUseMenu,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'addMenuIdList': addMenuIdList,
+          'removeMenuIdList': removeMenuIdList,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// DELETE - 메뉴 옵션 카테고리 삭제
+  Future<Response<dynamic>> deleteMenuOptionCategory({required String storeId, required MenuOptionCategoryModel optionCategoryModel}) async {
+    try {
+      return await ref.read(requestApiProvider).delete(
+        RestApiUri.deleteMenuOptionCategory,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'optionCategoryId': optionCategoryModel.menuOptionCategoryId,
+          'optionCategoryName': optionCategoryModel.menuOptionCategoryName,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
   /// POST - 메뉴 옵션 이름 변경
   Future<Response<dynamic>> updateMenuOptionName({required String storeId, required int menuOptionId, required String optionContent}) async {
     try {
