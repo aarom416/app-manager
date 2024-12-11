@@ -11,17 +11,18 @@ class StoreVatService {
   StoreVatService(this.ref);
 
   /// GET - 사업자 매출 부가세 정보를 조회
-  Future<Response<dynamic>> getVatSalesInfo({required String storeId}) async {
+  Future<Response<dynamic>> getVatSalesInfo({
+    required String storeId,
+    required Map<String, String> queryParameters,
+  }) async {
     try {
       final response = ref.read(requestApiProvider).get(
-          path: RestApiUri.getVatSalesInfo.replaceAll('{storeId}', storeId),
-          data: {
-            'storeId': UserHive.getBox(key: UserKey.storeId),
-          },
-          queryParameters: {
-            'startDateString': '2024-12-01',
-            'endDateString': '2024-12-31'
-          });
+            path: RestApiUri.getVatSalesInfo.replaceAll('{storeId}', storeId),
+            data: {
+              'storeId': UserHive.getBox(key: UserKey.storeId),
+            },
+            queryParameters: queryParameters,
+          );
 
       return response;
     } on DioException catch (e) {
@@ -34,18 +35,19 @@ class StoreVatService {
   }
 
   /// GET - 사업자 매출 부가세 정보를 조회
-  Future<Response<dynamic>> getVatPurchasesInfo(
-      {required String storeId}) async {
+  Future<Response<dynamic>> getVatPurchasesInfo({
+    required String storeId,
+    required Map<String, String> queryParameters,
+  }) async {
     try {
       final response = ref.read(requestApiProvider).get(
-          path: RestApiUri.getVatPurchasesInfo.replaceAll('{storeId}', storeId),
-          data: {
-            'storeId': UserHive.getBox(key: UserKey.storeId),
-          },
-          queryParameters: {
-            'startDateString': '2024-12-01',
-            'endDateString': '2024-12-31'
-          });
+            path:
+                RestApiUri.getVatPurchasesInfo.replaceAll('{storeId}', storeId),
+            data: {
+              'storeId': UserHive.getBox(key: UserKey.storeId),
+            },
+            queryParameters: queryParameters,
+          );
 
       return response;
     } on DioException catch (e) {
@@ -57,21 +59,14 @@ class StoreVatService {
     }
   }
 
-  Future<Response<dynamic>> generateVatReport(
-      {required String storeId,
-      required String email,
-      required String startDate,
-      required String endDate}) {
+  Future<Response<dynamic>> generateVatReport({
+    required Object data,
+  }) {
     try {
-      final response = ref
-          .read(requestApiProvider)
-          .post(RestApiUri.generateVatReport, data: {
-        'storeId': storeId,
-        'email': email,
-        'searchMonth': null,
-        'startDateString': startDate,
-        'endDateString': endDate
-      });
+      final response = ref.read(requestApiProvider).post(
+            RestApiUri.generateVatReport,
+            data: data,
+          );
 
       return response;
     } on DioException catch (e) {
