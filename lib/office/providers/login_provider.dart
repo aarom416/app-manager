@@ -12,7 +12,6 @@ import 'package:singleeat/office/providers/authenticate_with_phone_number_provid
 import 'package:singleeat/office/providers/find_account_webview_provider.dart';
 import 'package:singleeat/office/providers/find_by_password_provider.dart';
 import 'package:singleeat/office/providers/find_by_password_webview_provider.dart';
-import 'package:singleeat/office/providers/home_provider.dart';
 import 'package:singleeat/office/providers/login_webview_provider.dart';
 import 'package:singleeat/office/providers/signup_provider.dart';
 import 'package:singleeat/office/providers/signup_webview_provider.dart';
@@ -244,7 +243,6 @@ class LoginNotifier extends _$LoginNotifier {
     ref.invalidate(signupWebViewNotifierProvider);
     ref.invalidate(signupNotifierProvider);
     ref.invalidate(findByPasswordNotifierProvider);
-    ref.invalidate(homeNotifierProvider);
 
     ref.read(goRouterProvider).go(AppRoutes.login, extra: UniqueKey());
   }
