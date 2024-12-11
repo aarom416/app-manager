@@ -14,7 +14,11 @@ part 'provider.g.dart';
 class StoreOrderHistoryNotifier extends _$StoreOrderHistoryNotifier {
   @override
   StoreOrderHistoryState build() {
-    return StoreOrderHistoryState();
+    return const StoreOrderHistoryState();
+  }
+
+  void clear() {
+    state = build();
   }
 
   void getOrderHistoryByFilter() async {
@@ -31,7 +35,26 @@ class StoreOrderHistoryNotifier extends _$StoreOrderHistoryNotifier {
 
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);
+
       var storeOrderHistory = StoreOrderHistoryModel.fromJson(result.data);
+
+      if (storeOrderHistory.orderHistoryDTOList.isEmpty) {
+        onChangeHasMoreData(hasMoreData: false);
+        return;
+      }
+
+      // 페이징의 경우 데이터 append
+      if (state.pageNumber != 0) {
+        final copiedOrderHistoryDTOList =
+            state.storeOrderHistory.orderHistoryDTOList.toList();
+        copiedOrderHistoryDTOList.addAll(storeOrderHistory.orderHistoryDTOList);
+
+        storeOrderHistory = state.storeOrderHistory.copyWith(
+          totalOrderCount: storeOrderHistory.totalOrderCount,
+          totalOrderAmount: storeOrderHistory.totalOrderAmount,
+          orderHistoryDTOList: copiedOrderHistoryDTOList,
+        );
+      }
 
       state = state.copyWith(
         storeOrderHistory: storeOrderHistory,
@@ -44,6 +67,7 @@ class StoreOrderHistoryNotifier extends _$StoreOrderHistoryNotifier {
 
   Future<void> onChangeFilter({required String filter}) async {
     state = state.copyWith(filter: filter);
+    clearFilter();
     getOrderHistoryByFilter();
   }
 
@@ -53,6 +77,22 @@ class StoreOrderHistoryNotifier extends _$StoreOrderHistoryNotifier {
 
   void onChangeEndDate({required String endDate}) async {
     state = state.copyWith(endDate: endDate);
+  }
+
+  void onChangeHasMoreData({required bool hasMoreData}) {
+    state = state.copyWith(hasMoreData: hasMoreData);
+  }
+
+  void onChangePageNumber({required int pageNumber}) {
+    state = state.copyWith(pageNumber: pageNumber);
+  }
+
+  void clearFilter() {
+    state = state.copyWith(
+      pageNumber: 0,
+      hasMoreData: true,
+      storeOrderHistory: const StoreOrderHistoryModel(),
+    );
   }
 }
 
@@ -65,6 +105,7 @@ enum StoreOrderHistoryStatus {
 @freezed
 abstract class StoreOrderHistoryState with _$StoreOrderHistoryState {
   const factory StoreOrderHistoryState({
+    @Default(true) bool hasMoreData,
     @Default(StoreOrderHistoryStatus.init) StoreOrderHistoryStatus status,
     @Default(StoreOrderHistoryModel()) StoreOrderHistoryModel storeOrderHistory,
     @Default(0) int pageNumber,
