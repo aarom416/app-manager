@@ -232,6 +232,7 @@ class _ReceiptListScreenState extends ConsumerState<ReceiptListScreen>
                             .copyWith(left: SGSpacing.p4, right: SGSpacing.p4),
                         borderWidth: 0,
                         child: TabBarView(
+                          controller: _tabController,
                           physics: const NeverScrollableScrollPhysics(),
                           children: [
                             renderOrderList(state.orderHistory),
