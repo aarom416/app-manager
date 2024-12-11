@@ -104,6 +104,9 @@ class _ReceiptListScreenState extends ConsumerState<ReceiptListScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    scrollController.dispose();
+    dataScrollController.dispose();
+
     super.dispose();
   }
 

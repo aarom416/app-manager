@@ -99,6 +99,13 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
   }
 
   @override
+  void dispose() {
+    scrollController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = ref.watch(storeHistoryNotifierProvider);
     final provider = ref.read(storeHistoryNotifierProvider.notifier);

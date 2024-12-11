@@ -72,6 +72,13 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   }
 
   @override
+  void dispose() {
+    scrollController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = ref.watch(storeOrderHistoryNotifierProvider);
     final provider = ref.read(storeOrderHistoryNotifierProvider.notifier);

@@ -64,6 +64,13 @@ class _CouponInformationScreenState
   }
 
   @override
+  void dispose() {
+    scrollController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final provider = ref.read(couponInformationNotifierProvider.notifier);
     final state = ref.watch(couponInformationNotifierProvider);
