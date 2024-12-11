@@ -11,14 +11,16 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/extensions/dynamic.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 
+import '../../../../../../core/screens/numeric_range_edit_screen.dart';
+import '../../../../../../main.dart';
 import '../../model.dart';
 import '../../new_cuisine_option_screen.dart';
 import '../../nutrition/nutrition_card.dart';
 import '../../provider.dart';
-
 
 final MenuOptionCategoryModel category = MenuOptionCategoryModel(
   menuOptionCategoryName: "곡물 베이스 선택",
@@ -87,9 +89,6 @@ final List<MenuModel> cuisines = [
   )
 ];
 
-
-
-
 class UpdateOptionCategoryScreen extends ConsumerStatefulWidget {
   final MenuOptionCategoryModel optionCategoryModel;
 
@@ -101,14 +100,13 @@ class UpdateOptionCategoryScreen extends ConsumerStatefulWidget {
 
 class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategoryScreen> {
   late MenuOptionCategoryModel optionCategoryModel;
-
-  // bool isEssential = true;
-  bool isSoldOut = true;
+  late bool soldOut = false;
 
   @override
   void initState() {
     super.initState();
     optionCategoryModel = widget.optionCategoryModel;
+    soldOut = optionCategoryModel.menuOptions.any((option) => option.soldOutStatus == 1);
   }
 
   @override
@@ -117,14 +115,11 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
     final MenuOptionsNotifier provider = ref.read(menuOptionsNotifierProvider.notifier);
 
     return Scaffold(
-
       appBar: AppBarWithLeftArrow(title: "옵션 카테고리 관리"),
-
       body: SGContainer(
         color: const Color(0xFFFAFAFA),
         padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
         child: ListView(children: [
-
           SGTypography.body("곡물 베이스 선택", weight: FontWeight.w700, size: FontSize.normal),
           SizedBox(height: SGSpacing.p3),
           MultipleInformationBox(children: [
@@ -135,9 +130,14 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
               const Spacer(),
               SGSwitch(
                 value: optionCategoryModel.essentialStatus == 1,
-                onChanged: (boolEssential) {
-                  setState(() {
-                    optionCategoryModel = optionCategoryModel.copyWith(essentialStatus : boolEssential ? 1: 0);
+                onChanged: (value) {
+                  provider.updateMenuOptionCategoryEssential(widget.optionCategoryModel.menuOptionCategoryId, value ? 1 : 0).then((success) {
+                    logger.d("updateMenuOptionCategoryEssential success $success $value");
+                    if (success) {
+                      setState(() {
+                        optionCategoryModel = optionCategoryModel.copyWith(essentialStatus: value ? 1 : 0);
+                      });
+                    }
                   });
                 },
               ),
@@ -147,13 +147,42 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
             // --------------------------- 옵션 선택 개수 설정 ---------------------------
             GestureDetector(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CuisionOptionCategoryQuantityEditScreen(isEssential: optionCategoryModel.essentialStatus == 1)));
+                // Navigator.of(context).push(
+                //     MaterialPageRoute(
+                //         builder: (context) =>
+                //     CuisionOptionCategoryQuantityEditScreen(isEssential: optionCategoryModel.essentialStatus == 1))
+                // );
+
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => NumericRangeEditScreen(
+                          title: "옵션 선택 개수 설정",
+                          description: "옵션 선택 개수를 설정해주세요.",
+                          minValue: optionCategoryModel.minChoice,
+                          maxValue: optionCategoryModel.maxChoice,
+                          onConfirm: (minValue, maxValue) => {
+                            // logger.i("minValue $minValue, maxValue $maxValue");
+                            // provider.updateMenuOptionCategoryMaxChoice(widget.optionCategoryModel.menuOptionCategoryId, value ? 1 : 0).then((success) {
+                            //   logger.d("updateMenuOptionCategoryMaxChoice success $success $value");
+                            //   if (success) {
+                            //     setState(() {
+                            //       optionCategoryModel = optionCategoryModel.copyWith(essentialStatus: value ? 1 : 0);
+                            //     });
+                            //   }
+                            // })
+                          },
+                        )));
               },
               child: SGContainer(
                 borderColor: SGColors.line2,
                 borderRadius: BorderRadius.circular(SGSpacing.p2),
                 padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                child: Row(children: [SGTypography.body("옵션 선택 개수 설정", size: FontSize.small), SizedBox(width: SGSpacing.p1), Icon(Icons.edit, size: FontSize.small), Spacer(), SGTypography.body("최소 1개, 최대 1개", size: FontSize.small)]),
+                child: Row(children: [
+                  SGTypography.body("옵션 선택 개수 설정", size: FontSize.small),
+                  SizedBox(width: SGSpacing.p1),
+                  Icon(Icons.edit, size: FontSize.small),
+                  Spacer(),
+                  SGTypography.body("최소${optionCategoryModel.minChoice}개, 최대 ${optionCategoryModel.maxChoice}개", size: FontSize.small)
+                ]),
               ),
             ),
           ]), // end of 곡물 베이스 선택
@@ -168,12 +197,20 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
               borderRadius: BorderRadius.circular(SGSpacing.p3),
               child: Row(children: [
                 SGTypography.body("품절", size: FontSize.normal),
-                Spacer(),
+                const Spacer(),
                 SGSwitch(
-                  value: isSoldOut,
+                  value: soldOut,
                   onChanged: (value) {
-                    setState(() {
-                      isSoldOut = value;
+                    provider.updateMenuOptionCategorySoldOutStatus(widget.optionCategoryModel.menuOptionCategoryId, value ? 1 : 0).then((success) {
+                      logger.d("updateMenuOptionCategorySoldOutStatus success $success $value");
+                      if (success) {
+                        setState(() {
+                          soldOut = value;
+                          optionCategoryModel =
+                              optionCategoryModel.copyWith(menuOptions: optionCategoryModel.menuOptions.map((menuOption) => menuOption.copyWith(soldOutStatus: value ? 1 : 0)).toList());
+                          logger.d("updateMenuOptionCategorySoldOutStatus success setState ${optionCategoryModel.toFormattedJson()}");
+                        });
+                      }
                     });
                   },
                 ),
@@ -285,7 +322,6 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                 )),
           ),
           SizedBox(height: SGSpacing.p32),
-
         ]),
       ),
     );

@@ -170,7 +170,11 @@ class _OptionsTabState extends ConsumerState<OptionsTab> {
       // --------------------------- 단품 메뉴 list ---------------------------
       ...filterOptionCategories
           .map((optionCategory) => [
-                _OptionCategoryCard(optionCategory: optionCategory, menuCategoryList: state.menuCategoryList),
+                _OptionCategoryCard(
+                    key: ValueKey(optionCategory.menuOptionCategoryId),
+                    optionCategory: optionCategory,
+                    menuCategoryList: state.menuCategoryList
+                ),
                 SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               ])
           .flattened,
@@ -198,18 +202,20 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
   @override
   void initState() {
     super.initState();
-    selectionType = (widget.optionCategory.essentialStatus == 1) ? (soldOut ? "(품절)" : "(필수)") : "(선택 최대 ${widget.optionCategory.maxChoice}개)";
     appliedMenus = widget.menuCategoryList
         .expand((menuCategory) => menuCategory.menuList)
         .where((menu) => menu.menuCategoryOptions.any((option) => option.menuOptionCategoryId == widget.optionCategory.menuOptionCategoryId)) // 조건 필터링
         .toSet() // 중복 제거
         .toList();
     isExpanded = false;
-    soldOut = widget.optionCategory.menuOptions.any((option) => option.soldOutStatus == 1);
   }
 
   @override
   Widget build(BuildContext context) {
+    soldOut = widget.optionCategory.menuOptions.any((option) => option.soldOutStatus == 1);
+    selectionType = (widget.optionCategory.essentialStatus == 1) ? (soldOut ? "(품절)" : "(필수)") : "(선택 최대 ${widget.optionCategory.maxChoice}개)";
+
+
     return MultipleInformationBox(children: [
       Row(
         children: [
@@ -220,7 +226,7 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
             child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               SGTypography.body(widget.optionCategory.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
               SizedBox(width: SGSpacing.p1),
-              SGTypography.body(selectionType, size: FontSize.small, color: soldOut ? SGColors.gray2 : SGColors.primary, weight: FontWeight.w600),
+              SGTypography.body(selectionType, size: FontSize.small, color: soldOut ? SGColors.gray4 : SGColors.primary, weight: FontWeight.w600),
               SizedBox(width: SGSpacing.p1),
               const Icon(Icons.edit, size: FontSize.small),
             ]),
@@ -230,7 +236,7 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
       ...widget.optionCategory.menuOptions
           .mapIndexed((index, option) => [
                 if (index == 0) SizedBox(height: SGSpacing.p5) else SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: ("${option.optionContent}${option.soldOutStatus == 1 ? "품절" : ""}") ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
+                DataTableRow(left: ("${option.optionContent}${option.soldOutStatus == 1 ? " (품절)" : ""}") ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
               ])
           .flattened,
       SizedBox(height: SGSpacing.p5),

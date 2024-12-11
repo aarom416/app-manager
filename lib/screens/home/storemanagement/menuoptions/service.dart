@@ -386,6 +386,46 @@ class MenuOptionsService {
       return Future.error(e);
     }
   }
+
+  /// POST - 메뉴 옵션 카테고리 필수 여부 변경
+  Future<Response<dynamic>> updateMenuOptionCategoryEssential({required String storeId, required int menuOptionCategoryId, required int essentialStatus}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuOptionCategoryEssential,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'menuOptionCategoryId': menuOptionCategoryId,
+          'essentialStatus': essentialStatus,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 옵션 카테고리 품절 상태 변경
+  Future<Response<dynamic>> updateMenuOptionCategorySoldOutStatus({required String storeId, required int menuOptionCategoryId, required int soldOutStatus}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuOptionCategorySoldOutStatus,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'menuOptionCategoryId': menuOptionCategoryId,
+          'menuOptionCategorySoldOutStatus': soldOutStatus,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final menuOptionsServiceProvider = Provider<MenuOptionsService>((ref) => MenuOptionsService(ref));

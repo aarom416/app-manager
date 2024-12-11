@@ -308,16 +308,16 @@ class RestApiUri {
   // POST - 메뉴 옵션 카테고리 사용 메뉴 변경 TODO
   static const String updateMenuOptionCategoryUseMenu =
       '/api/v1/owner/store-menu/menu-option-category/use-menu';
-  // POST - 메뉴 옵션 카테고리 품절 상태 변경 TODO
+  // POST - 메뉴 옵션 카테고리 품절 상태 변경
   static const String updateMenuOptionCategorySoldOutStatus =
       '/api/v1/owner/store-menu/menu-option-category/sold-out';
   // POST - 메뉴 옵션 카테고리 이름 변경 TODO
   static const String updateMenuOptionCategoryName =
       '/api/v1/owner/store-menu/menu-option-category/name';
-  // POST - 메뉴 옵션 카테고리 최대, 최소 개수 변경 TODO
+  // POST - 메뉴 옵션 카테고리 최대, 최소 개수 변경
   static const String updateMenuOptionCategoryMaxChoice =
       '/api/v1/owner/store-menu/menu-option-category/max-choice';
-  // POST - 메뉴 옵션 카테고리 필수 여부 변경 TODO
+  // POST - 메뉴 옵션 카테고리 필수 여부 변경
   static const String updateMenuOptionCategoryEssential =
       '/api/v1/owner/store-menu/menu-option-category/essential';
   // POST - 메뉴 이름 변경

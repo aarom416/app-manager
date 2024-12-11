@@ -58,6 +58,26 @@ class NetworkImageContainer extends StatelessWidget {
                   );
                 }
               },
+              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                return Container(
+                  width: width,
+                  height: height,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFEEEEEE),
+                    borderRadius: BorderRadius.circular(borderRadius),
+                  ),
+                  child: const Text(
+                    "이미지 로드 실패",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
             ),
           ),
       ],
