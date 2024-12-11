@@ -15,6 +15,7 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/order_menu_option_screen.dart';
+import 'package:singleeat/core/utils/throttle.dart';
 import 'package:singleeat/office/models/order_model.dart';
 import 'package:singleeat/screens/bottom/myinfo/orderlist/provider.dart';
 
@@ -32,6 +33,10 @@ class _ReceiptListScreenState extends ConsumerState<ReceiptListScreen>
   DateRange dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
 
   ScrollController scrollController = ScrollController();
+  ScrollController dataScrollController = ScrollController();
+  final throttle = Throttle(
+    delay: const Duration(milliseconds: 300),
+  );
 
   String tab = "오늘";
 
@@ -42,50 +47,64 @@ class _ReceiptListScreenState extends ConsumerState<ReceiptListScreen>
     super.initState();
 
     Future.microtask(() {
-      ref.read(myInfoOrderHistoryNotifierProvider.notifier).getOrderHistory();
+      var provider = ref.read(myInfoOrderHistoryNotifierProvider.notifier);
+      provider.clear();
+      provider.getOrderHistory();
     });
+
+    dataScrollController.addListener(loadMore);
 
     _tabController = TabController(length: 3, vsync: this);
 
     _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        setState(() {
-          switch (_tabController.index) {
-            case 0:
-              tab = "오늘";
-              ref
-                  .read(myInfoOrderHistoryNotifierProvider.notifier)
-                  .onChangeFilter(filter: '0');
-              break;
-            case 1:
-              tab = "어제";
-              ref
-                  .read(myInfoOrderHistoryNotifierProvider.notifier)
-                  .onChangeFilter(filter: '1');
-              break;
-            case 2:
-              tab = "일주일";
-              ref
-                  .read(myInfoOrderHistoryNotifierProvider.notifier)
-                  .onChangeFilter(filter: '2');
-              break;
-          }
-        });
-      }
+      setState(() {
+        switch (_tabController.index) {
+          case 0:
+            tab = "오늘";
+            ref
+                .read(myInfoOrderHistoryNotifierProvider.notifier)
+                .onChangeFilter(filter: '0');
+            break;
+          case 1:
+            tab = "어제";
+            ref
+                .read(myInfoOrderHistoryNotifierProvider.notifier)
+                .onChangeFilter(filter: '1');
+            break;
+          case 2:
+            tab = "일주일";
+            ref
+                .read(myInfoOrderHistoryNotifierProvider.notifier)
+                .onChangeFilter(filter: '2');
+            break;
+        }
+      });
     });
+  }
+
+  void loadMore() {
+    if (dataScrollController.position.pixels ==
+        dataScrollController.position.maxScrollExtent) {
+      final myInfoOrderHistoryState =
+          ref.read(myInfoOrderHistoryNotifierProvider);
+      // 마지막 조회한 페이지에서 데이터 없는 경우 더 조회하지 않음
+      if (!myInfoOrderHistoryState.hasMoreData) {
+        return;
+      }
+
+      final myInfoOrderHistoryProvider =
+          ref.read(myInfoOrderHistoryNotifierProvider.notifier);
+      final pageNumber = myInfoOrderHistoryState.pageNumber;
+
+      myInfoOrderHistoryProvider.onChangePageNumber(pageNumber: pageNumber + 1);
+      throttle.run(myInfoOrderHistoryProvider.getOrderHistory);
+    }
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
-  }
-
-  Future<void> loadMoreData() async {
-    final state = ref.read(myInfoOrderHistoryNotifierProvider);
-    ref
-        .read(myInfoOrderHistoryNotifierProvider.notifier)
-        .onChangePageNumber(pageNumber: state.pageNumber + 1);
   }
 
   @override
@@ -248,7 +267,7 @@ class _ReceiptListScreenState extends ConsumerState<ReceiptListScreen>
   }
 
   ListView renderOrderList(List<MyInfoOrderHistoryModel> orders) {
-    return ListView(children: [
+    return ListView(controller: dataScrollController, children: [
       SGContainer(
           child: Column(children: [
         ...orders
