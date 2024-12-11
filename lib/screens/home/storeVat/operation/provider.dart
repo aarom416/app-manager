@@ -18,11 +18,29 @@ class StoreVatNotifier extends _$StoreVatNotifier {
     return const StoreVatState();
   }
 
+  void clear() {
+    state = build();
+  }
+
+  void getVat(String type) {
+    if (type == '매출') {
+      getVatSalesInfo();
+    } else {
+      getVatPurchasesInfo();
+    }
+  }
+
   /// 매출 부가세 조회
   void getVatSalesInfo() async {
-    final response = await ref
-        .read(storeVatServiceProvider)
-        .getVatSalesInfo(storeId: UserHive.getBox(key: UserKey.storeId));
+    final queryParameters = {
+      'startDateString': state.startDate,
+      'endDateString': state.endDate,
+    };
+
+    final response = await ref.read(storeVatServiceProvider).getVatSalesInfo(
+          storeId: UserHive.getBox(key: UserKey.storeId),
+          queryParameters: queryParameters,
+        );
 
     try {
       if (response.statusCode == 200) {
@@ -41,9 +59,16 @@ class StoreVatNotifier extends _$StoreVatNotifier {
   }
 
   void getVatPurchasesInfo() async {
-    final response = await ref
-        .read(storeVatServiceProvider)
-        .getVatPurchasesInfo(storeId: UserHive.getBox(key: UserKey.storeId));
+    final queryParameters = {
+      'startDateString': state.startDate,
+      'endDateString': state.endDate,
+    };
+
+    final response =
+        await ref.read(storeVatServiceProvider).getVatPurchasesInfo(
+              storeId: UserHive.getBox(key: UserKey.storeId),
+              queryParameters: queryParameters,
+            );
 
     try {
       if (response.statusCode == 200) {
@@ -62,27 +87,21 @@ class StoreVatNotifier extends _$StoreVatNotifier {
     }
   }
 
-  Future<void> onChangeEndDate({required String endDate}) async {
-    state = state.copyWith(endDate: endDate);
-    getVatSalesInfo();
-  }
-
-  Future<void> onChangeMonth(
-      {required String startDate, required String endDate}) async {
-    state = state.copyWith(startDate: startDate, endDate: endDate);
-    getVatSalesInfo();
-  }
-
-  Future<void> onChangeEmail({required String email}) async {
-    state = state.copyWith(email: email);
-  }
-
   void generateVatReport() async {
-    final response = await ref.read(storeVatServiceProvider).generateVatReport(
-        storeId: UserHive.getBox(key: UserKey.storeId),
-        email: state.email,
-        startDate: state.startDate,
-        endDate: state.endDate);
+    final searchMonth =
+        '${DateTime.parse(state.startDate).year}-${DateTime.parse(state.startDate).month.toString().padLeft(2, '0')}';
+
+    final request = {
+      'storeId': UserHive.getBox(key: UserKey.storeId),
+      'email': state.email,
+      if (state.currentDateRangeType == '월별') 'searchMonth': searchMonth,
+      'searchStartDate': state.startDate,
+      'searchEndDate': state.endDate,
+    };
+
+    final response = await ref
+        .read(storeVatServiceProvider)
+        .generateVatReport(data: request);
 
     if (response.statusCode == 200) {
       state = state.copyWith(
@@ -95,6 +114,22 @@ class StoreVatNotifier extends _$StoreVatNotifier {
           status: StoreVatStatus.error,
           error: ResultFailResponseModel.fromJson(response.data));
     }
+  }
+
+  void onChangeCurrentDateRangeType(String currentDateRangeType) {
+    state = state.copyWith(currentDateRangeType: currentDateRangeType);
+  }
+
+  void onChangeStartDate({required String startDate}) {
+    state = state.copyWith(startDate: startDate);
+  }
+
+  void onChangeEndDate({required String endDate}) {
+    state = state.copyWith(endDate: endDate);
+  }
+
+  void onChangeEmail({required String email}) {
+    state = state.copyWith(email: email);
   }
 }
 
@@ -111,6 +146,7 @@ abstract class StoreVatState with _$StoreVatState {
     @Default('') String email,
     @Default('') String startDate,
     @Default('') String endDate,
+    @Default('월별') String currentDateRangeType,
     @Default(StoreVatSaleModel()) StoreVatSaleModel storeVatSale,
     @Default(StoreVatPurchasesModel()) StoreVatPurchasesModel storeVatPurchases,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
