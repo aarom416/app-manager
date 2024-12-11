@@ -107,8 +107,6 @@ class StoreVatNotifier extends _$StoreVatNotifier {
       state = state.copyWith(
           status: StoreVatStatus.success,
           error: const ResultFailResponseModel());
-
-      ref.read(goRouterProvider).push(AppRoutes.vat);
     } else {
       state = state.copyWith(
           status: StoreVatStatus.error,
