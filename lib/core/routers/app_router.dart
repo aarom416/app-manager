@@ -42,7 +42,7 @@ final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: AppRoutes.home,
+    initialLocation: AppRoutes.login,
     navigatorKey: rootNavKey,
     debugLogDiagnostics: true,
     routes: <RouteBase>[

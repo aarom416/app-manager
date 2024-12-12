@@ -54,7 +54,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   void showOperationStopDialog(
       {required BuildContext context, required MainNotifier provider}) {
-    showSGDialog(
+    showOperationSGDialog(
         context: context,
         childrenBuilder: (ctx) => [
               SGTypography.body("영업 임시 중지 시",

@@ -362,7 +362,6 @@ class _ReceiptCard extends StatelessWidget {
 
                   ],
                 ),
-              ),
               SizedBox(height: SGSpacing.p3 + SGSpacing.p05),
               Container(
                 height: 15,
@@ -389,9 +388,8 @@ class _ReceiptCard extends StatelessWidget {
                       color: SGColors.gray5),
                 ],
               ),
-            ],
-          )),
-    );
+      ],
+    )));
   }
 }
 

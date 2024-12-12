@@ -45,14 +45,14 @@ class _ProfileDeleteSessionScreenState
             SizedBox(height: SGSpacing.p3),
             GestureDetector(
               onTap: () {
-                showSGDialog(
+                showLogOutSGDialog(
                     context: context,
                     childrenBuilder: (ctx) => [
                           Center(
                               child: SGTypography.body("로그아웃 하시겠습니까?",
                                   size: FontSize.large,
                                   weight: FontWeight.w700)),
-                          SizedBox(height: SGSpacing.p5),
+                          SizedBox(height: SGSpacing.p4),
                           Row(children: [
                             Expanded(
                               child: GestureDetector(
@@ -130,7 +130,7 @@ class _ProfileDeleteSessionScreenState
             SizedBox(height: SGSpacing.p3),
             GestureDetector(
               onTap: () {
-                showSGDialog(
+                showAccountDeleteSGDialog(
                     context: context,
                     childrenBuilder: (ctx) => [
                           // 로그아웃 하시겠습니까.
@@ -146,7 +146,7 @@ class _ProfileDeleteSessionScreenState
                               size: FontSize.small,
                             ),
                           ),
-                          SizedBox(height: SGSpacing.p5),
+                          SizedBox(height: SGSpacing.p8),
                           Row(children: [
                             Expanded(
                               child: GestureDetector(

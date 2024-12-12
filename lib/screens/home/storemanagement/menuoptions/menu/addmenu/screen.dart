@@ -900,66 +900,28 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                                   ),
                                 ),
                               ),
-                            ),
                             SizedBox(height: SGSpacing.p2),
                             SGTypography.body("이미지 등록", weight: FontWeight.w600, color: SGColors.gray5),
                           ],
                         ),
-                      )
-                          : SGContainer(
-                        borderColor: SGColors.line2,
-                        color: SGColors.white,
-                        borderRadius: BorderRadius.circular(SGSpacing.p2),
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(SGSpacing.p2),
-                                child: Image.file(
-                                  File(imagePath),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              top: 4,
-                              right: 4,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    imagePath = "";
-                                  });
-                                },
-                                child: const Icon(
-                                  Icons.close,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: SGSpacing.p3),
-            SGTypography.body("10MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.", color: SGColors.gray4, weight: FontWeight.w500),
-            SizedBox(height: SGSpacing.p8),
+                    ))),
+                    SizedBox(height: SGSpacing.p3),
+                    SGTypography.body("10MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.", color: SGColors.gray4, weight: FontWeight.w500),
+                    SizedBox(height: SGSpacing.p8),
 
-            // --------------------------- 메뉴 구성 ---------------------------
-            SGTypography.body("메뉴 구성 및 설명을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
-            SizedBox(height: SGSpacing.p3),
-            MultipleInformationBox(children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => TextAreaScreen(
-                            value: menuBriefDescription,
-                            title: "메뉴 구성",
-                            fieldLabel: "메뉴 구성을 입력해주세요.",
-                            buttonText: "변경하기",
+                    // --------------------------- 메뉴 구성 ---------------------------
+                    SGTypography.body("메뉴 구성 및 설명을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+                    SizedBox(height: SGSpacing.p3),
+                    MultipleInformationBox(children: [
+                      GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => TextAreaScreen(
+                                  value: menuBriefDescription,
+                                  title: "메뉴 구성",
+                                  fieldLabel: "메뉴 구성을 입력해주세요.",
+                                  buttonText: "변경하기",
                             hintText: "메뉴 구성을 입력해주세요.",
                             onSubmit: (value) {
                               setState(() {

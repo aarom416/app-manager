@@ -189,8 +189,79 @@ void showSGDialogWithImageBoth({
     },
   );
 }
+void showAccountDeleteSGDialog({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: SGContainer(
+          height: 193,
+          width: 303,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding:
+                  EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
+        ),
+      );
+    },
+  );
+}
 
-void showNewOrderSGDialog({
+void showLogOutSGDialog({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: SGContainer(
+          height: 153,
+          width: 303,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding:
+                  EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
+        ),
+      );
+    },
+  );
+}
+
+void showSGDialog({
   required BuildContext context,
   required List<Widget> Function(BuildContext) childrenBuilder,
 }) {
@@ -211,7 +282,77 @@ void showNewOrderSGDialog({
               children: [
                 SGContainer(
                   padding:
-                      EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
+        ),
+      );
+    },
+  );
+}
+
+void showOperationSGDialog({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: SGContainer(
+          height: 178,
+          width: 303,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding:
+                  EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
+        ),
+      );
+    },
+  );
+}
+
+void showNewOrderSGDialog({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: SGContainer(
+          height: 420,
+          width: 303,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
