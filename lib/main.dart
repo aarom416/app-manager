@@ -35,14 +35,14 @@ const AndroidNotificationChannel deliveryChannel = AndroidNotificationChannel(
   'delivery_channel',
   'Delivery Notifications',
   importance: Importance.high,
-  sound: RawResourceAndroidNotificationSound('delivery-alarm'),
+  sound: RawResourceAndroidNotificationSound('delivery_alarm'),
 );
 
 const AndroidNotificationChannel takeoutChannel = AndroidNotificationChannel(
   'takeout_channel',
   'Takeout Notifications',
   importance: Importance.high,
-  sound: RawResourceAndroidNotificationSound('takeout-alarm'),
+  sound: RawResourceAndroidNotificationSound('takeout_alarm'),
 );
 
 Future<void> _showNotification(RemoteMessage message) async {
@@ -55,7 +55,7 @@ Future<void> _showNotification(RemoteMessage message) async {
       'Delivery Notifications',
       importance: Importance.high,
       priority: Priority.high,
-      sound: RawResourceAndroidNotificationSound('delivery-alarm'),
+      sound: RawResourceAndroidNotificationSound('delivery_alarm'),
     );
   } else {
     androidPlatformChannelSpecifics = const AndroidNotificationDetails(
@@ -63,14 +63,14 @@ Future<void> _showNotification(RemoteMessage message) async {
       'Takeout Notifications',
       importance: Importance.high,
       priority: Priority.high,
-      sound: RawResourceAndroidNotificationSound('takeout-alarm'),
+      sound: RawResourceAndroidNotificationSound('takeout_alarm'),
     );
   }
 
   final DarwinNotificationDetails iOSPlatformChannelSpecifics = DarwinNotificationDetails(
     sound: notificationType == 'DELIVERY'
-        ? 'delivery-alarm.wav'
-        : 'takeout-alarm.wav',
+        ? 'delivery_alarm.wav'
+        : 'takeout_alarm.wav',
   );
 
   final NotificationDetails platformChannelSpecifics = NotificationDetails(
@@ -105,7 +105,7 @@ void main() async {
 
   await flutterLocalNotificationsPlugin.initialize(
     const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      android: AndroidInitializationSettings('@mipmap/launcher_icon'),
       iOS: DarwinInitializationSettings(),
     ),
   );
@@ -143,33 +143,33 @@ class RunApp extends ConsumerWidget {
   }
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-        providers: [
-          BlocProvider<ManagerBloc>(
-            create: (BuildContext context) => ManagerBloc(),
-          ),
-          BlocProvider<StoreListBloc>(
-              create: (BuildContext context) => StoreListBloc()),
-          BlocProvider<StoreBloc>(
-              create: (BuildContext context) => StoreBloc()),
-          BlocProvider<CouponListBloc>(
-              create: (BuildContext context) => CouponListBloc()),
-        ],
-        child: MaterialApp(
-            title: 'Flutter Demo',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              colorSchemeSeed: Colors.black,
-              appBarTheme: const AppBarTheme(
-                backgroundColor: Colors.white,
-              ),
-              useMaterial3: true,
-            ),
-            home: HomeScreen(title: 'Flutter Demo Home Page')));
-  }
-}
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return MultiBlocProvider(
+//         providers: [
+//           BlocProvider<ManagerBloc>(
+//             create: (BuildContext context) => ManagerBloc(),
+//           ),
+//           BlocProvider<StoreListBloc>(
+//               create: (BuildContext context) => StoreListBloc()),
+//           BlocProvider<StoreBloc>(
+//               create: (BuildContext context) => StoreBloc()),
+//           BlocProvider<CouponListBloc>(
+//               create: (BuildContext context) => CouponListBloc()),
+//         ],
+//         child: MaterialApp(
+//             title: 'Flutter Demo',
+//             debugShowCheckedModeBanner: false,
+//             theme: ThemeData(
+//               colorSchemeSeed: Colors.black,
+//               appBarTheme: const AppBarTheme(
+//                 backgroundColor: Colors.white,
+//               ),
+//               useMaterial3: true,
+//             ),
+//             home: HomeScreen(title: 'Flutter Demo Home Page')));
+//   }
+// }
