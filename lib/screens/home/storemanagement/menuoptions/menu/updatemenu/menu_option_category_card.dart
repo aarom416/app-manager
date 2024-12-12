@@ -7,12 +7,12 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 
-import 'model.dart';
+import '../../model.dart';
 
-class CuisineOptionCategoryCard extends StatelessWidget {
+class MenuOptionCategoryCard extends StatelessWidget {
   final MenuOptionCategoryModel category;
 
-  const CuisineOptionCategoryCard({super.key, required this.category});
+  const MenuOptionCategoryCard({super.key, required this.category});
 
   String get selectionType {
     if (category.essentialStatus==1) return "(필수)";

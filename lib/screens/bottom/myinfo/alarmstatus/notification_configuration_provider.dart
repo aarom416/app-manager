@@ -83,6 +83,24 @@ class NotificationConfigurationNotifier
           error: ResultFailResponseModel.fromJson(response.data));
     }
   }
+
+  Future<void> onChangeVolume({required double volume}) async {
+    state = state.copyWith(
+      volume: volume,
+    );
+
+    UserHive.set(
+      user: UserHive.get().copyWith(
+        volume: volume,
+      ),
+    );
+  }
+
+  void updateVolume() {
+    state = state.copyWith(
+      volume: UserHive.get().volume,
+    );
+  }
 }
 
 enum NotificationConfigurationStatus {
@@ -100,6 +118,7 @@ abstract class NotificationConfigurationState
     @Default(false) bool isOrderNotificationStatus,
     @Default(false) bool isSingleatResearchStatus,
     @Default(false) bool isAdditionalServiceStatus,
+    @Default(0.0) double volume,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
   }) = _NotificationConfigurationState;
 

@@ -49,6 +49,7 @@ class _UpdateMenuCategoryScreenState extends ConsumerState<UpdateMenuCategoryScr
 
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: "메뉴 카테고리 변경"),
+
       floatingActionButton: Container(
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
           child: SGActionButton(
@@ -62,11 +63,13 @@ class _UpdateMenuCategoryScreenState extends ConsumerState<UpdateMenuCategoryScr
               },
               disabled: menuCategoryName.isEmpty || menuCategoryDescription.isEmpty || (menuCategoryDescription == widget.menuCategoryModel.menuDescription && menuCategoryName == widget.menuCategoryModel.menuCategoryName),
               label: "변경하기")),
+
       body: SGContainer(
           width: double.infinity,
-          color: Color(0xFFFAFAFA),
+          color: const Color(0xFFFAFAFA),
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
           child: ListView(children: [
+
             SGTypography.body("메뉴 카테고리명", size: FontSize.normal, weight: FontWeight.w700),
             SizedBox(height: SGSpacing.p3),
             SGTextFieldWrapper(

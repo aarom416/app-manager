@@ -12,6 +12,8 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/datetime.dart';
 import 'package:singleeat/core/extensions/integer.dart';
+import 'package:singleeat/core/screens/order_menu_option_screen.dart';
+import 'package:singleeat/core/utils/throttle.dart';
 import 'package:singleeat/core/utils/time_utils.dart';
 import 'package:singleeat/screens/home/storeorderhistory/operation/model.dart';
 import 'package:singleeat/screens/home/storeorderhistory/operation/provider.dart';
@@ -28,16 +30,52 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   List<String> dateRangeType = ["월별", "기간 선택"];
   String filterValue = '처리 중';
   DateRange dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
+  ScrollController scrollController = ScrollController();
+  final throttle = Throttle(
+    delay: const Duration(milliseconds: 300),
+  );
 
   @override
   void initState() {
     super.initState();
+
+    scrollController.addListener(loadMore);
+
     Future.microtask(() {
-      ref.read(storeOrderHistoryNotifierProvider.notifier).onChangeStartDate(
+      final provider = ref.read(storeOrderHistoryNotifierProvider.notifier);
+      provider.clear();
+
+      provider.onChangeStartDate(
           startDate: getFirstDayOfMonthWithDateTime(dateRange.start));
-      ref.read(storeOrderHistoryNotifierProvider.notifier).onChangeEndDate(
+      provider.onChangeEndDate(
           endDate: getLastDayOfMonthWithDateTime(dateRange.end));
     });
+  }
+
+  void loadMore() {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      final storeOrderHistoryState =
+          ref.read(storeOrderHistoryNotifierProvider);
+      // 마지막 조회한 페이지에서 데이터 없는 경우 더 조회하지 않음
+      if (!storeOrderHistoryState.hasMoreData) {
+        return;
+      }
+
+      final storeOrderProvider =
+          ref.read(storeOrderHistoryNotifierProvider.notifier);
+      final pageNumber = storeOrderHistoryState.pageNumber;
+
+      storeOrderProvider.onChangePageNumber(pageNumber: pageNumber + 1);
+      throttle.run(storeOrderProvider.getOrderHistoryByFilter);
+    }
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -49,7 +87,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
         body: SGContainer(
             borderWidth: 0,
             color: Color(0xFFFAFAFA),
-            child: ListView(children: [
+            child: ListView(controller: scrollController, children: [
               SGContainer(
                   color: SGColors.white,
                   padding: EdgeInsets.all(SGSpacing.p4),
@@ -70,7 +108,42 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                   onTap: () {
                                     setState(() {
                                       currentDateRangeType = e;
+
+                                      if (e == '월별') {
+                                        dateRange = DateRange(
+                                          start: DateTime.now(),
+                                          end: DateTime.now(),
+                                        );
+                                      } else {
+                                        dateRange = DateRange(
+                                          start: DateTime.now(),
+                                          end: DateTime.now().subtract(
+                                            const Duration(days: 1),
+                                          ),
+                                        );
+                                      }
                                     });
+
+                                    if (e == '월별') {
+                                      provider.onChangeStartDate(
+                                        startDate:
+                                            getFirstDayOfMonthWithDateTime(
+                                                dateRange.start),
+                                      );
+                                      provider.onChangeEndDate(
+                                        endDate: getLastDayOfMonthWithDateTime(
+                                            dateRange.end),
+                                      );
+                                    } else {
+                                      provider.onChangeStartDate(
+                                        startDate: dateRange.start
+                                            .toShortDateStringWithZeroPadding,
+                                      );
+                                      provider.onChangeEndDate(
+                                        endDate: dateRange.end
+                                            .toShortDateStringWithZeroPadding,
+                                      );
+                                    }
                                   },
                                   child: Row(children: [
                                     if (e == currentDateRangeType)
@@ -103,6 +176,9 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                     startDate: dateRange.start
                                         .toShortDateStringWithZeroPadding);
                               });
+
+                              provider.clearFilter();
+                              provider.getOrderHistoryByFilter();
                             },
                             onEndDateChanged: (date) {
                               setState(() {
@@ -111,6 +187,9 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                     endDate: dateRange
                                         .end.toShortDateStringWithZeroPadding);
                               });
+
+                              provider.clearFilter();
+                              provider.getOrderHistoryByFilter();
                             },
                           )
                         else
@@ -124,11 +203,18 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                 dateRange = dateRange.copyWith(
                                     start: startDate, end: endDate);
                                 provider.onChangeStartDate(
-                                    startDate: getFirstDayOfMonthWithDateTime(
-                                        dateRange.start));
+                                  startDate: getFirstDayOfMonthWithDateTime(
+                                    dateRange.start,
+                                  ),
+                                );
                                 provider.onChangeEndDate(
-                                    endDate: getLastDayOfMonthWithDateTime(
-                                        dateRange.start));
+                                  endDate: getLastDayOfMonthWithDateTime(
+                                    dateRange.start,
+                                  ),
+                                );
+
+                                provider.clearFilter();
+                                provider.getOrderHistoryByFilter();
                               }),
                         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
                         SGTypography.body(
@@ -145,7 +231,7 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                           borderRadius: BorderRadius.circular(SGSpacing.p2),
                           child: InkWell(
                             onTap: () {
-                              print('tab');
+                              provider.clearFilter();
                               provider.getOrderHistoryByFilter();
                             },
                             child: Center(
@@ -446,33 +532,13 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                       SizedBox(height: SGSpacing.p3),
                       Divider(height: 1, thickness: 1, color: SGColors.line1),
                       SizedBox(height: SGSpacing.p4),
-                      Row(children: [
-                        SGFlexible(
-                            flex: 2,
-                            child: SGTypography.body(
-                              widget.storeOrderHistory.orderMenuDTOList[0]
-                                  .menuName,
-                              size: FontSize.small,
-                            )),
-                        SGFlexible(
-                            flex: 1,
-                            child: Center(
-                                child: SGTypography.body(
-                              widget.storeOrderHistory.orderMenuDTOList[0].count
-                                  .toString(),
-                              size: FontSize.small,
-                            ))),
-                        SGFlexible(
-                            flex: 1,
-                            child: SGTypography.body(
-                                widget.storeOrderHistory.orderMenuDTOList[0]
-                                    .menuPrice.toKoreanCurrency,
-                                align: TextAlign.right,
-                                size: FontSize.small)),
-                      ]),
-                      SizedBox(height: SGSpacing.p3),
-                      ...widget.storeOrderHistory.orderMenuOptionDTOList[0]
-                          .map((e) => _OrderMenuOptionList(orderMenuOption: e)),
+                      ...widget.storeOrderHistory.orderMenuDTOList
+                          .map((e) => OrderMenuList(
+                                orderMenuOptionDTOList: widget.storeOrderHistory
+                                    .orderMenuOptionDTOList[0],
+                                orderMenu: e,
+                                colorType: Colors.black,
+                              )),
                       SizedBox(height: SGSpacing.p4),
                       Divider(height: 1, thickness: 1, color: SGColors.line1),
                       SizedBox(height: SGSpacing.p3),
@@ -576,44 +642,6 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
             ),
           ]
         ]));
-  }
-}
-
-class _OrderMenuOptionList extends StatefulWidget {
-  _OrderMenuOptionList({super.key, required this.orderMenuOption});
-  final OrderMenuOptionDTO orderMenuOption;
-
-  @override
-  State<_OrderMenuOptionList> createState() => _OrderMenuOptionListState();
-}
-
-class _OrderMenuOptionListState extends State<_OrderMenuOptionList> {
-  @override
-  Widget build(BuildContext context) {
-    return SGContainer(
-      child: Row(children: [
-        SGFlexible(
-            flex: 2,
-            child: SGTypography.body(
-              "ㄴ ${widget.orderMenuOption.menuOptionName}",
-              size: FontSize.small,
-              color: SGColors.gray3,
-            )),
-        SGFlexible(
-            flex: 1,
-            child: Center(
-                child: SGTypography.body(
-              widget.orderMenuOption.count.toString(),
-              size: FontSize.small,
-            ))),
-        SGFlexible(
-            flex: 1,
-            child: SGTypography.body(
-                widget.orderMenuOption.menuOptionPrice.toKoreanCurrency,
-                align: TextAlign.right,
-                size: FontSize.small)),
-      ]),
-    );
   }
 }
 

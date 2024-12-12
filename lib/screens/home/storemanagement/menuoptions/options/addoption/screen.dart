@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/app_bar_with_step_indicator.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
@@ -9,25 +7,26 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/utils/formatter.dart';
+import 'package:singleeat/core/extensions/integer.dart';
 
-import 'model.dart';
-import 'nutrition_card.dart';
-import 'nutrition_form.dart';
+import '../../../../../../core/components/numeric_textfield.dart';
+import '../../model.dart';
+import '../../nutrition/nutrition_card.dart';
+import '../../nutrition/screen.dart';
 
-class NewCuisineOptionScreen extends StatefulWidget {
-  final Function(MenuOptionModel) onSubmitCuisineOption;
+class AddOptionScreen extends StatefulWidget {
+  final Function(MenuOptionModel) onSubmit;
 
-  const NewCuisineOptionScreen({super.key, required this.onSubmitCuisineOption});
+  const AddOptionScreen({super.key, required this.onSubmit});
 
   @override
-  State<NewCuisineOptionScreen> createState() => _NewCuisineOptionScreenState();
+  State<AddOptionScreen> createState() => _AddOptionScreenState();
 }
 
-class _NewCuisineOptionScreenState extends State<NewCuisineOptionScreen> {
+class _AddOptionScreenState extends State<AddOptionScreen> {
   PageController pageController = PageController();
 
-  MenuOptionModel option = MenuOptionModel(optionContent: "", price: 0);
+  MenuOptionModel menuOptionModel = const MenuOptionModel();
 
   void animateToPage(int index) => pageController.animateToPage(
         index,
@@ -39,41 +38,61 @@ class _NewCuisineOptionScreenState extends State<NewCuisineOptionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: PageView(controller: pageController, physics: const NeverScrollableScrollPhysics(), children: [
-          _NewCuisineOptionNameStepScreen(onPrev: () {
-            Navigator.of(context).pop();
-          }, onNext: () {
-            animateToPage(1);
-          }, onSubmit: (value) {
-            setState(() {
-              option = value;
-            });
-          }),
-          _NewCuisineOptionNutritionStepScreen(onPrev: () {
-            animateToPage(0);
-          }, onNext: () {
-            widget.onSubmitCuisineOption(option);
-            Navigator.of(context).pop();
-          }),
-        ]));
-      }
-    }
+      _Page_0_OptionName(
+        menuOptionModel: menuOptionModel,
+        onPrev: () => Navigator.pop(context),
+        onNext: () => animateToPage(1),
+        onSubmit: (value) {
+          setState(() {
+            menuOptionModel = value;
+          });
+        },
+      ),
+      _Page_1_Nutrition(
+        menuOptionModel: menuOptionModel,
+        onPrev: () => animateToPage(0),
+        onNext: () {
+          widget.onSubmit(menuOptionModel);
+          Navigator.of(context).pop();
+        },
+        onSubmit: (value) {
+          widget.onSubmit(value);
+        },
+      ),
+    ]));
+  }
+}
 
-class _NewCuisineOptionNameStepScreen extends StatefulWidget {
+class _Page_0_OptionName extends StatefulWidget {
+  final MenuOptionModel menuOptionModel;
   final VoidCallback onNext;
   final VoidCallback onPrev;
   final Function(MenuOptionModel) onSubmit;
 
-  _NewCuisineOptionNameStepScreen({super.key, required this.onNext, required this.onPrev, required this.onSubmit});
+  _Page_0_OptionName({required this.menuOptionModel, required this.onNext, required this.onPrev, required this.onSubmit});
 
   @override
-  State<_NewCuisineOptionNameStepScreen> createState() => _NewCuisineOptionNameStepScreenState();
+  State<_Page_0_OptionName> createState() => _Page_0_OptionNameState();
 }
 
-class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameStepScreen> {
-  String optionName = "";
-  String optionPrice = "";
+class _Page_0_OptionNameState extends State<_Page_0_OptionName> {
+  late MenuOptionModel menuOptionModel;
+  late TextEditingController optionContentController;
 
-  bool get isFormValid => optionName.isNotEmpty && optionPrice.isNotEmpty;
+  bool get isFormValid => menuOptionModel.optionContent.isNotEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    menuOptionModel = widget.menuOptionModel;
+    optionContentController = TextEditingController(text: menuOptionModel.optionContent);
+  }
+
+  @override
+  void dispose() {
+    optionContentController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +118,7 @@ class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameSt
                     child: GestureDetector(
                   onTap: () {
                     if (!isFormValid) return;
-                    widget.onSubmit(MenuOptionModel(optionContent: optionName, price: int.parse(optionPrice.replaceAll(",", ""))));
+                    widget.onSubmit(menuOptionModel);
                     widget.onNext();
                   },
                   child: SGContainer(
@@ -111,7 +130,7 @@ class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameSt
               ],
             )),
         body: SGContainer(
-            color: Color(0xFFFAFAFA),
+            color: const Color(0xFFFAFAFA),
             padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
             child: ListView(
               children: [
@@ -122,9 +141,10 @@ class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameSt
                   padding: EdgeInsets.all(SGSpacing.p4),
                   width: double.infinity,
                   child: TextField(
+                      controller: optionContentController,
                       onChanged: (value) {
                         setState(() {
-                          optionName = value;
+                          menuOptionModel = menuOptionModel.copyWith(optionContent: value);
                         });
                       },
                       style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
@@ -141,30 +161,26 @@ class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameSt
                 SizedBox(height: SGSpacing.p3),
                 SGTextFieldWrapper(
                     child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              onChanged: (value) {
-                                setState(() {
-                                  optionPrice = value;
-                                });
-                              },
-                              keyboardType: TextInputType.number,
-                              style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), comparableNumericInputFormatter(1000000000)],
-                              decoration: InputDecoration(
-                                isDense: true,
-                                isCollapsed: true,
-                                hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                                hintText: "0",
-                                border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                              )),
+                  padding: EdgeInsets.all(SGSpacing.p4),
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: NumericTextField(
+                          initialValue: menuOptionModel.price,
+                          decoration: InputDecoration(
+                            isDense: true,
+                            isCollapsed: true,
+                            hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                            hintText: menuOptionModel.price.toKoreanCurrency,
+                            border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
                           ),
-                          SGTypography.body("원", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
-                        ],
+                          onValueChanged: (price) {
+                            setState(() {
+                              menuOptionModel = menuOptionModel.copyWith(price: price);
+                            });
+                          },
+                        ),
                       ),
                 )),
               ],
@@ -172,22 +188,26 @@ class _NewCuisineOptionNameStepScreenState extends State<_NewCuisineOptionNameSt
   }
 }
 
-class _NewCuisineOptionNutritionStepScreen extends StatefulWidget {
+class _Page_1_Nutrition extends StatefulWidget {
+  final MenuOptionModel menuOptionModel;
   final VoidCallback onNext;
   final VoidCallback onPrev;
+  final Function(MenuOptionModel) onSubmit;
 
-  const _NewCuisineOptionNutritionStepScreen({
-    super.key,
-    required this.onNext,
-    required this.onPrev,
-  });
+  const _Page_1_Nutrition({required this.menuOptionModel, required this.onNext, required this.onPrev, required this.onSubmit});
 
   @override
-  State<_NewCuisineOptionNutritionStepScreen> createState() => _NewCuisineOptionNutritionStepScreenState();
+  State<_Page_1_Nutrition> createState() => _Page_1_NutritionState();
 }
 
-class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionNutritionStepScreen> {
-  Nutrition nutrition = Nutrition(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, sodium: 120, saturatedFat: 8);
+class _Page_1_NutritionState extends State<_Page_1_Nutrition> {
+  late MenuOptionModel menuOptionModel;
+
+  @override
+  void initState() {
+    super.initState();
+    menuOptionModel = widget.menuOptionModel;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -223,22 +243,23 @@ class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionN
               ],
             )),
         body: SGContainer(
-            color: Color(0xFFFAFAFA),
+            color: const Color(0xFFFAFAFA),
             padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
             child: ListView(
               children: [
                 SGTypography.body("옵션의 영양성분을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
                 SizedBox(height: SGSpacing.p3),
                 NutritionCard(
-                  nutrition: nutrition,
+                  nutrition: menuOptionModel.nutrition,
                   onTap: () {
                     final nutritionScreenContext = context;
                     Navigator.of(nutritionScreenContext).push(MaterialPageRoute(
-                        builder: (context) => _NutritionInputScreen(
-                              nutrition: nutrition,
-                              onConfirm: (value, quantity, ctx) {
+                        builder: (context) => NutritionInputScreen(
+                              title: "영양성분 설정",
+                              nutrition: menuOptionModel.nutrition,
+                              onConfirm: (nutrition, context) {
                                 showSGDialog(
-                                    context: ctx,
+                                    context: context,
                                     childrenBuilder: (_ctx) => [
                                           Center(child: SGTypography.body("영양성분을\n정말 설정하시겠습니까?", size: FontSize.large, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
                                           SizedBox(height: SGSpacing.p5),
@@ -262,7 +283,8 @@ class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionN
                                             Expanded(
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  Navigator.of(ctx).pop();
+                                                  widget.onSubmit(menuOptionModel.copyWith(nutrition: nutrition));
+                                                  Navigator.of(context).pop();
                                                   Navigator.of(nutritionScreenContext).pop();
                                                 },
                                                 child: SGContainer(
@@ -283,25 +305,5 @@ class _NewCuisineOptionNutritionStepScreenState extends State<_NewCuisineOptionN
                 )
               ],
             )));
-  }
-}
-
-class _NutritionInputScreen extends StatefulWidget {
-  Nutrition nutrition;
-  Function(Nutrition, int, BuildContext) onConfirm;
-
-  _NutritionInputScreen({super.key, required this.nutrition, required this.onConfirm});
-
-  @override
-  State<_NutritionInputScreen> createState() => _NutritionInputScreenState();
-}
-
-class _NutritionInputScreenState extends State<_NutritionInputScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWithLeftArrow(title: "영양성분 설정"),
-      // body: NutritionForm(nutrition: widget.nutrition, onChanged: widget.onConfirm),
-    );
   }
 }

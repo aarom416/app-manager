@@ -9,7 +9,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/screens/bottom/myinfo/operationstatus/provider.dart';
+import 'package:singleeat/office/providers/main_provider.dart';
 
 class TemporaryClosedScreen extends ConsumerStatefulWidget {
   const TemporaryClosedScreen({super.key});
@@ -21,9 +21,15 @@ class TemporaryClosedScreen extends ConsumerStatefulWidget {
 
 class _TemporaryClosedScreenState extends ConsumerState<TemporaryClosedScreen> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final state = ref.watch(myInfoOperationNotifierProvider);
-    final provider = ref.read(myInfoOperationNotifierProvider.notifier);
+    final state = ref.watch(mainNotifierProvider);
+    final provider = ref.read(mainNotifierProvider.notifier);
+
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: "영업 임시중지"),
       body: SGContainer(
@@ -45,11 +51,11 @@ class _TemporaryClosedScreenState extends ConsumerState<TemporaryClosedScreen> {
                   SGTypography.body("영업 임시중지",
                       size: FontSize.normal, weight: FontWeight.w500),
                   SGSwitch(
-                      value: state.operationStatus == 1 ? true : false,
+                      value: state.operationStatus == 1,
                       onChanged: (value) {
                         setState(() {
                           if (state.operationStatus == 1) {
-                            provider.onChangeStatus(0);
+                            provider.onChangeOperationStatus(0);
                           } else {
                             showDialog(context: context, provider: provider);
                           }
@@ -116,8 +122,7 @@ class _TemporaryClosedScreenState extends ConsumerState<TemporaryClosedScreen> {
   }
 
   void showDialog(
-      {required BuildContext context,
-      required MyInfoOperationNotifier provider}) {
+      {required BuildContext context, required MainNotifier provider}) {
     showSGDialog(
         context: context,
         childrenBuilder: (ctx) => [
@@ -154,8 +159,8 @@ class _TemporaryClosedScreenState extends ConsumerState<TemporaryClosedScreen> {
                     flex: 2,
                     child: GestureDetector(
                       onTap: () {
-                        provider.operationStatus(0);
                         Navigator.of(ctx).pop();
+                        provider.onChangeOperationStatus(1);
                       },
                       child: SGContainer(
                         width: double.infinity,

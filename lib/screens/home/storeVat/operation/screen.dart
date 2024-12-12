@@ -10,6 +10,7 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/extensions/datetime.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/extensions/string.dart';
 import 'package:singleeat/screens/home/storeVat/operation/provider.dart';
@@ -26,7 +27,6 @@ class SaleHistoryModel {
   final String sellType;
   final String price;
   final String tax;
-  //int get total => int.parse(price) + int.parse(tax);
 
   SaleHistoryModel(
       {required this.sellType, required this.price, required this.tax});
@@ -49,15 +49,25 @@ class PurchaseHistoryModel {
 class _TaxesScreenState extends ConsumerState<TaxesScreen> {
   String currentTab = "매출";
 
-  String currentDateRangeType = "월별";
   List<String> dateRangeType = ["월별", "기간 선택"];
-
-  DateRange dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
+  DateRange dateRange = DateRange(
+    start: DateTime(DateTime.now().year, DateTime.now().month, 1),
+    end: DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
+  );
 
   @override
   void initState() {
     Future.microtask(() {
-      ref.read(storeVatNotifierProvider.notifier).getVatSalesInfo();
+      final provider = ref.read(storeVatNotifierProvider.notifier);
+      provider.clear();
+      provider.onChangeStartDate(
+        startDate: dateRange.start.toShortDateStringWithZeroPadding,
+      );
+      provider.onChangeEndDate(
+        endDate: dateRange.end.toShortDateStringWithZeroPadding,
+      );
+
+      provider.getVat(currentTab);
     });
   }
 
@@ -112,12 +122,34 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                             children: [
                               ...dateRangeType.map((e) => GestureDetector(
                                     onTap: () {
+                                      final startDate = DateTime(
+                                          DateTime.now().year,
+                                          DateTime.now().month,
+                                          1);
+                                      final endDate = DateTime(
+                                          DateTime.now().year,
+                                          DateTime.now().month + 1,
+                                          0);
+
                                       setState(() {
-                                        currentDateRangeType = e;
+                                        dateRange = DateRange(
+                                          start: startDate,
+                                          end: endDate,
+                                        );
                                       });
+
+                                      provider.onChangeCurrentDateRangeType(e);
+                                      provider.onChangeStartDate(
+                                        startDate: startDate
+                                            .toShortDateStringWithZeroPadding,
+                                      );
+                                      provider.onChangeEndDate(
+                                        endDate: endDate
+                                            .toShortDateStringWithZeroPadding,
+                                      );
                                     },
                                     child: Row(children: [
-                                      if (e == currentDateRangeType)
+                                      if (e == state.currentDateRangeType)
                                         Image.asset(
                                             "assets/images/checkbox-on.png",
                                             width: 24,
@@ -137,18 +169,32 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                             ],
                           ),
                           SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                          if (currentDateRangeType == "기간 선택")
+                          if (state.currentDateRangeType == "기간 선택")
                             DateRangePicker(
                               dateRange: dateRange,
                               onStartDateChanged: (date) {
                                 setState(() {
                                   dateRange = dateRange.copyWith(start: date);
                                 });
+
+                                provider.onChangeStartDate(
+                                  startDate:
+                                      date.toShortDateStringWithZeroPadding,
+                                );
+
+                                provider.getVat(currentTab);
                               },
                               onEndDateChanged: (date) {
                                 setState(() {
                                   dateRange = dateRange.copyWith(end: date);
                                 });
+
+                                provider.onChangeEndDate(
+                                  endDate:
+                                      date.toShortDateStringWithZeroPadding,
+                                );
+
+                                provider.getVat(currentTab);
                               },
                             )
                           else
@@ -162,6 +208,17 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                                       .subtract(Duration(days: 1));
                                   dateRange = dateRange.copyWith(
                                       start: startDate, end: endDate);
+
+                                  provider.onChangeStartDate(
+                                    startDate: startDate
+                                        .toShortDateStringWithZeroPadding,
+                                  );
+                                  provider.onChangeEndDate(
+                                    endDate: endDate
+                                        .toShortDateStringWithZeroPadding,
+                                  );
+
+                                  provider.getVat(currentTab);
                                 }),
                           SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
                           SGTypography.body(
@@ -170,18 +227,23 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                               weight: FontWeight.w500,
                               color: SGColors.gray4),
                           SizedBox(height: SGSpacing.p4),
-                          SGContainer(
-                            width: double.infinity,
-                            color: SGColors.primary,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: SGSpacing.p4,
-                                vertical: SGSpacing.p3),
-                            borderRadius: BorderRadius.circular(SGSpacing.p2),
-                            child: Center(
-                                child: SGTypography.body("조회",
-                                    color: SGColors.white,
-                                    weight: FontWeight.w700,
-                                    size: FontSize.normal)),
+                          GestureDetector(
+                            onTap: () {
+                              provider.getVat(currentTab);
+                            },
+                            child: SGContainer(
+                              width: double.infinity,
+                              color: SGColors.primary,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: SGSpacing.p4,
+                                  vertical: SGSpacing.p3),
+                              borderRadius: BorderRadius.circular(SGSpacing.p2),
+                              child: Center(
+                                  child: SGTypography.body("조회",
+                                      color: SGColors.white,
+                                      weight: FontWeight.w700,
+                                      size: FontSize.normal)),
+                            ),
                           )
                         ])),
                 SGContainer(
@@ -197,11 +259,8 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                             setState(() {
                               currentTab = tab;
                             });
-                            if (currentTab == '매출') {
-                              provider.getVatSalesInfo();
-                            } else {
-                              provider.getVatPurchasesInfo();
-                            }
+
+                            provider.getVat(currentTab);
                           }),
                       SizedBox(height: SGSpacing.p5),
                       Column(

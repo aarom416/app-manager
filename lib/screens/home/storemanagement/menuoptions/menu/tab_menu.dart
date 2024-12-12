@@ -11,14 +11,13 @@ import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/screens/home/storemanagement/menuoptions/menu/updatemenucategory/screen.dart';
 
-import '../../../../../core/components/dialog.dart';
 import '../../../../../core/components/multiple_information_box.dart';
 import '../../../../../main.dart';
-import '../cuisine_screen.dart';
 import '../model.dart';
 import '../provider.dart';
 import 'addmenu/screen.dart';
 import 'addmenucategory/screen.dart';
+import 'updatemenu/screen.dart';
 
 
 class MenuTab extends ConsumerStatefulWidget {
@@ -276,10 +275,7 @@ class _MenuCategoryCard extends StatelessWidget {
             ],
           ),
         ),
-        ...menuCategory.menuList.mapIndexed((idx, cuisine) =>
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+        ...menuCategory.menuList.mapIndexed((idx, menu) => Column(mainAxisSize: MainAxisSize.min, children: [
           if (idx != 0) ...[
             SizedBox(height: SGSpacing.p4),
             Divider(height: 1, color: SGColors.line1, thickness: 1),
@@ -287,43 +283,30 @@ class _MenuCategoryCard extends StatelessWidget {
           SizedBox(height: SGSpacing.p4),
           GestureDetector(
             onTap: () {
-              showFailDialogWithImage(
-                context: context,
-                mainTitle: "해당 메뉴는 삭제된 메뉴입니다.",
-                onTapFunction: () {
-                  Navigator.pop(context); // 현재 다이얼로그를 닫음
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const CuisineScreen()),
-                  );
-                },
-                onNonEmptySubTitleTapFunction: () {
-                  Navigator.pop(context); // 현재 다이얼로그를 닫음
-                },
+              // showFailDialogWithImage(
+              //   context: context,
+              //   mainTitle: "해당 메뉴는 삭제된 메뉴입니다.",
+              //   onTapFunction: () {
+              //     Navigator.pop(context); // 현재 다이얼로그를 닫음
+              //     Navigator.of(context).push(
+              //       MaterialPageRoute(builder: (context) => const UpdateMenuScreen()),
+              //     );
+              //   },
+              //   onNonEmptySubTitleTapFunction: () {
+              //     Navigator.pop(context); // 현재 다이얼로그를 닫음
+              //   },
+              // );
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => UpdateMenuScreen(menuModel: menu)),
               );
             },
             child: Row(children: [
-              ClipRRect(borderRadius: BorderRadius.circular(SGSpacing.p4), child: Image.network(cuisine.menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18)),
+              ClipRRect(borderRadius: BorderRadius.circular(SGSpacing.p4), child: Image.network(menu.menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18)),
               SizedBox(width: SGSpacing.p4),
-              Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                Container(
-                  width: MediaQuery.of(context).size.width <= 320 ? 130 : 191,
-                  child: SGTypography.body(
-                    cuisine.menuName,
-                    size: FontSize.normal,
-                    weight: FontWeight.w700,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
+              Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                SGTypography.body(menu.menuName, size: FontSize.normal, weight: FontWeight.w700),
                 SizedBox(height: SGSpacing.p2),
-                SGTypography.body(
-                    "${cuisine.price.toKoreanCurrency}원",
-                    size: FontSize.normal,
-                    weight: FontWeight.w400,
-                    color: SGColors.gray4,
-                ),
+                SGTypography.body("${menu.price.toKoreanCurrency}원", size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray4),
               ]),
             ]),
           ),

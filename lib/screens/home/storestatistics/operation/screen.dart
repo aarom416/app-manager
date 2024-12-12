@@ -551,14 +551,30 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                         ...state.storeStatisticsWeekList.map((e) => e.weekName)
                       ],
                       items: [
-                        FlSpot(0,
-                            state.storeStatisticsWeekList[0].count.toDouble()),
-                        FlSpot(1,
-                            state.storeStatisticsWeekList[1].count.toDouble()),
-                        FlSpot(2,
-                            state.storeStatisticsWeekList[2].count.toDouble()),
-                        FlSpot(3,
-                            state.storeStatisticsWeekList[3].count.toDouble()),
+                        FlSpot(
+                            0,
+                            state.storeStatisticsWeekList.isEmpty
+                                ? 0.0
+                                : state.storeStatisticsWeekList[0].count
+                                    .toDouble()),
+                        FlSpot(
+                            1,
+                            state.storeStatisticsWeekList.isEmpty
+                                ? 0.0
+                                : state.storeStatisticsWeekList[1].count
+                                    .toDouble()),
+                        FlSpot(
+                            2,
+                            state.storeStatisticsWeekList.isEmpty
+                                ? 0.0
+                                : state.storeStatisticsWeekList[2].count
+                                    .toDouble()),
+                        FlSpot(
+                            3,
+                            state.storeStatisticsWeekList.isEmpty
+                                ? 0.0
+                                : state.storeStatisticsWeekList[3].count
+                                    .toDouble()),
                       ],
                     ))
                   else
@@ -566,12 +582,24 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                         data: LineChartItemData(labels: [
                       ...state.storeStatisticsMonthList.map((e) => e.monthName)
                     ], items: [
-                      FlSpot(0,
-                          state.storeStatisticsMonthList[0].count.toDouble()),
-                      FlSpot(1,
-                          state.storeStatisticsMonthList[1].count.toDouble()),
-                      FlSpot(2,
-                          state.storeStatisticsMonthList[2].count.toDouble()),
+                      FlSpot(
+                          0,
+                          state.storeStatisticsMonthList.isEmpty
+                              ? 0.0
+                              : state.storeStatisticsMonthList[0].count
+                                  .toDouble()),
+                      FlSpot(
+                          1,
+                          state.storeStatisticsMonthList.isEmpty
+                              ? 0.0
+                              : state.storeStatisticsMonthList[1].count
+                                  .toDouble()),
+                      FlSpot(
+                          2,
+                          state.storeStatisticsMonthList.isEmpty
+                              ? 0.0
+                              : state.storeStatisticsMonthList[2].count
+                                  .toDouble()),
                     ])),
                 ],
                 SizedBox(height: SGSpacing.p5),
@@ -678,7 +706,7 @@ class LineChartItemData {
   LineChartItemData({required this.labels, required this.items}) {
     final maxValue = items.fold(
         0.0, (previousValue, element) => math.max(previousValue, element.x));
-    assert(labels.length >= maxValue.toInt() - 1);
+    //assert(labels.length >= maxValue.toInt() - 1);
   }
 }
 

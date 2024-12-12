@@ -18,7 +18,6 @@ import '../provider.dart';
 import 'updateoptioncategory/screen.dart';
 import 'addcategory/screen.dart';
 
-
 class OptionsTab extends ConsumerStatefulWidget {
   const OptionsTab({super.key});
 
@@ -33,7 +32,6 @@ class _OptionsTabState extends ConsumerState<OptionsTab> {
     SelectionOption<int>(value: 1, label: "품절"),
   ];
 
-  // String selectedOption = "판매 상태 전체";
   late List<MenuOptionCategoryModel> optionCategoryList;
   late int selectedSoldOutStatusOptionValue;
   late String selectedSoldOutStatusOptionLabel;
@@ -142,7 +140,9 @@ class _OptionsTabState extends ConsumerState<OptionsTab> {
         Align(
             alignment: Alignment.centerRight,
             child: ReloadButton(onReload: () {
-              print("hello");
+              Future.microtask(() {
+                ref.read(menuOptionsNotifierProvider.notifier).getMenuOptionInfo();
+              });
             }))
       ]),
       SizedBox(height: SGSpacing.p4),
@@ -169,8 +169,11 @@ class _OptionsTabState extends ConsumerState<OptionsTab> {
 
       // --------------------------- 단품 메뉴 list ---------------------------
       ...filterOptionCategories
-          .map((category) => [
-                _OptionCategoryCard(category: category),
+          .map((optionCategory) => [
+                _OptionCategoryCard(
+                  optionCategory: optionCategory,
+                  menuCategoryList: state.menuCategoryList,
+                ),
                 SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               ])
           .flattened,
@@ -180,23 +183,37 @@ class _OptionsTabState extends ConsumerState<OptionsTab> {
 }
 
 class _OptionCategoryCard extends StatefulWidget {
-  final MenuOptionCategoryModel category;
+  final MenuOptionCategoryModel optionCategory;
+  final List<MenuCategoryModel> menuCategoryList;
 
-  const _OptionCategoryCard({super.key, required this.category});
+  const _OptionCategoryCard({super.key, required this.optionCategory, required this.menuCategoryList});
 
   @override
   State<_OptionCategoryCard> createState() => _OptionCategoryCardState();
 }
 
 class _OptionCategoryCardState extends State<_OptionCategoryCard> {
-  String get selectionType {
-    if (widget.category.essentialStatus == 1) return "(필수)";
-    return "(선택 최대 ${widget.category.maxChoice ?? 0}개)";
+  late List<MenuModel> appliedMenus;
+  late bool isExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    appliedMenus = widget.menuCategoryList
+        .expand((menuCategory) => menuCategory.menuList)
+        .where((menu) => menu.menuCategoryOptions.any((option) => option.menuOptionCategoryId == widget.optionCategory.menuOptionCategoryId))
+        .toSet()
+        .toList();
+    isExpanded = false;
   }
 
-  bool isExpanded = false;
+  bool get soldOut {
+    return widget.optionCategory.menuOptions.any((option) => option.soldOutStatus == 1);
+  }
 
-  List<String> hardcodedMenus = ["연어 샐러드", "훈제 오리 샐러드", "탄단지 샐러드"];
+  String get selectionType {
+    return (widget.optionCategory.essentialStatus == 1) ? (soldOut ? "(품절)" : "(필수)") : "(선택 최대 ${widget.optionCategory.maxChoice}개)";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,37 +222,25 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
         children: [
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateOptionCategoryScreen()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => UpdateOptionCategoryScreen(
+                        optionCategoryModel: widget.optionCategory,
+                      )));
             },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: 223,
-                  child: SGTypography.body(
-                      widget.category.menuOptionCategoryName,
-                      size: FontSize.normal,
-                      weight: FontWeight.w600
-                  )),
-                const Icon(Icons.edit, size: FontSize.small),
-              ]),
-          ),
-          SizedBox(
-            height: SGSpacing.p2,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Spacer(),
-              SGTypography.body(selectionType, size: FontSize.small, color: SGColors.primary, weight: FontWeight.w600),
-            ],
+            child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              SGTypography.body(widget.optionCategory.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
+              SizedBox(width: SGSpacing.p1),
+              SGTypography.body(selectionType, size: FontSize.small, color: soldOut ? SGColors.gray4 : SGColors.primary, weight: FontWeight.w600),
+              SizedBox(width: SGSpacing.p1),
+              const Icon(Icons.edit, size: FontSize.small),
+            ]),
           ),
         ],
       ),
-      ...widget.category.menuOptions
+      ...widget.optionCategory.menuOptions
           .mapIndexed((index, option) => [
-                if (index == 0) SizedBox(height: SGSpacing.p4) else SizedBox(height: SGSpacing.p4),
-                OptionDataTableRow(left: option.optionContent ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
+                if (index == 0) SizedBox(height: SGSpacing.p5) else SizedBox(height: SGSpacing.p4),
+                DataTableRow(left: ("${option.optionContent}${option.soldOutStatus == 1 ? " (품절)" : ""}") ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
               ])
           .flattened,
       SizedBox(height: SGSpacing.p5),
@@ -245,43 +250,36 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
         padding: EdgeInsets.symmetric(vertical: SGSpacing.p3 + SGSpacing.p05, horizontal: SGSpacing.p4),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Container(
-              width: 191,
-              child: SGTypography.body(
-                "이 옵션을 사용하는 메뉴 2개",
-                size: FontSize.small,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Spacer(),
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  isExpanded = !isExpanded;
-                });
-              },
-              child: SGTypography.body(isExpanded ? "접기" : "보기", color: SGColors.primary, weight: FontWeight.w500, size: FontSize.small),
-            ),
+            SGTypography.body("이 옵션을 사용하는 메뉴 ${appliedMenus.length}개", size: FontSize.small),
+            const Spacer(),
+            appliedMenus.length > 1
+                ? GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isExpanded = !isExpanded;
+                      });
+                    },
+                    child: SGTypography.body(
+                      isExpanded ? "접기" : "펼치기",
+                      color: SGColors.primary,
+                      weight: FontWeight.w500,
+                      size: FontSize.small,
+                    ),
+                  )
+                : const SizedBox.shrink(),
           ]),
           SizedBox(height: SGSpacing.p05),
           if (isExpanded) ...[
             SizedBox(height: SGSpacing.p05),
-            ...hardcodedMenus
+            ...appliedMenus
                 .map((menu) => [
-                    SizedBox(height: SGSpacing.p2),
-                    Container(
-                      width: 279,
-                      child: SGTypography.body(
-                          menu,
-                          size: FontSize.small,
-                          color: SGColors.gray4
-                        ),
-                      ),
+                      SizedBox(height: SGSpacing.p2),
+                      SGTypography.body(menu.menuName, size: FontSize.small, color: SGColors.gray4),
                     ])
                 .flattened,
-          ] else ...[
+          ] else if (appliedMenus.isNotEmpty) ...[
             SizedBox(height: SGSpacing.p2),
-            SGTypography.body(hardcodedMenus.sublist(0, 2).join(", "), size: FontSize.small, color: SGColors.gray4),
+            SGTypography.body(appliedMenus.map((menu) => menu.menuName).join(", "), size: FontSize.small, color: SGColors.gray4),
           ]
         ]),
       )

@@ -18,36 +18,38 @@ void showSGDialogWithCloseButton({
         child: SGContainer(
           color: Colors.white,
           borderRadius: BorderRadius.circular(SGSpacing.p3),
-          padding: EdgeInsets.all(SGSpacing.p4 - SGSpacing.p05).copyWith(bottom: 0),
-          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+          padding:
+              EdgeInsets.all(SGSpacing.p4 - SGSpacing.p05).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
-                    onTap: () {
-                      Navigator.of(ctx).pop();
-                    },
-                    child: Icon(Icons.close, color: Colors.black)),
-              ],
-            ),
-            SGContainer(
-              padding:
-                  EdgeInsets.symmetric(horizontal: SGSpacing.p05).copyWith(bottom: SGSpacing.p5, top: SGSpacing.p3),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...childrenBuilder(ctx),
-                ],
-              ),
-            )
-          ]),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.of(ctx).pop();
+                        },
+                        child: Icon(Icons.close, color: Colors.black)),
+                  ],
+                ),
+                SGContainer(
+                  padding: EdgeInsets.symmetric(horizontal: SGSpacing.p05)
+                      .copyWith(bottom: SGSpacing.p5, top: SGSpacing.p3),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
         ),
       );
     },
   );
 }
-
-
 
 void showSGDialogWithImage({
   required BuildContext context,
@@ -61,26 +63,27 @@ void showSGDialogWithImage({
         child: SGContainer(
           color: Colors.white,
           borderRadius: BorderRadius.circular(SGSpacing.p3),
-          padding: EdgeInsets.all(SGSpacing.p4 - SGSpacing.p05).copyWith(bottom: 0),
-          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SGContainer(
-              padding:
-              EdgeInsets.symmetric(horizontal: SGSpacing.p05).copyWith(bottom: SGSpacing.p5, top: SGSpacing.p3),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                      height: SGSpacing.p2
+          padding:
+              EdgeInsets.all(SGSpacing.p4 - SGSpacing.p05).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding: EdgeInsets.symmetric(horizontal: SGSpacing.p05)
+                      .copyWith(bottom: SGSpacing.p5, top: SGSpacing.p3),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: SGSpacing.p2),
+                      Image.asset("assets/images/warning.png",
+                          width: SGSpacing.p12),
+                      SizedBox(height: SGSpacing.p3),
+                      ...childrenBuilder(ctx),
+                    ],
                   ),
-                  Image.asset("assets/images/warning.png", width: SGSpacing.p12),
-                  SizedBox(
-                    height: SGSpacing.p3
-                  ),
-                  ...childrenBuilder(ctx),
-                ],
-              ),
-            )
-          ]),
+                )
+              ]),
         ),
       );
     },
@@ -160,26 +163,27 @@ void showSGDialogWithImageBoth({
         child: SGContainer(
           color: Colors.white,
           borderRadius: BorderRadius.circular(SGSpacing.p3),
-          padding: EdgeInsets.all(SGSpacing.p4 - SGSpacing.p05).copyWith(bottom: 0),
-          child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SGContainer(
-              padding:
-              EdgeInsets.symmetric(horizontal: SGSpacing.p05).copyWith(bottom: SGSpacing.p5, top: SGSpacing.p3),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                      height: SGSpacing.p2
+          padding:
+              EdgeInsets.all(SGSpacing.p4 - SGSpacing.p05).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding: EdgeInsets.symmetric(horizontal: SGSpacing.p05)
+                      .copyWith(bottom: SGSpacing.p5, top: SGSpacing.p3),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: SGSpacing.p2),
+                      Image.asset("assets/images/warning.png",
+                          width: SGSpacing.p12),
+                      SizedBox(height: SGSpacing.p3),
+                      ...childrenBuilder(ctx),
+                    ],
                   ),
-                  Image.asset("assets/images/warning.png", width: SGSpacing.p12),
-                  SizedBox(
-                      height: SGSpacing.p3
-                  ),
-                  ...childrenBuilder(ctx),
-                ],
-              ),
-            )
-          ]),
+                )
+              ]),
         ),
       );
     },
@@ -201,50 +205,23 @@ void showNewOrderSGDialog({
           color: Colors.white,
           borderRadius: BorderRadius.circular(SGSpacing.p3),
           padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
-          child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SGContainer(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...childrenBuilder(ctx),
-                ],
-              ),
-            )
-          ]),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding:
+                      EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
         ),
       );
     },
   );
 }
-
-void showSGDialog({
-  required BuildContext context,
-  required List<Widget> Function(BuildContext) childrenBuilder,
-}) {
-  showDialog(
-    context: context,
-    builder: (ctx) {
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        child: SGContainer(
-          height: MediaQuery.of(context).size.width <= 320 ? 175 : 155,
-          width: 303,
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(SGSpacing.p3),
-          padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
-          child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SGContainer(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...childrenBuilder(ctx),
-                ],
-              ),
-            )
-          ]),
-        ),
-      );
-    },
-  );
-}
-

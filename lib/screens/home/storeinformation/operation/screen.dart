@@ -11,8 +11,8 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/extensions/string.dart';
 import 'package:singleeat/screens/home/storeinformation/operation/emailchange/screen.dart';
-import 'package:singleeat/screens/home/storeinformation/operation/phonechange/screen.dart';
 import 'package:singleeat/screens/home/storeinformation/operation/provider.dart';
 
 class StoreInformationScreen extends ConsumerStatefulWidget {
@@ -96,10 +96,12 @@ class _StoreInformationScreenState
                 GestureDetector(
                     child: SingleInformationBox(
                         label: '전화번호',
-                        value: state.storeInformation.ownerPhoneNumber,
-                        editable: true),
+                        value: state.storeInformation.ownerPhoneNumber
+                            .toPhoneNumberFormat,
+                        editable: false),
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
+                      // 전화번호 변경 주석 처리
+                      /*Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => PhoneEditScreen(
                               value: state.storeInformation.ownerPhoneNumber,
                               title: "사장님 전화번호 변경",
@@ -109,7 +111,7 @@ class _StoreInformationScreenState
                                 setState(() {
                                   phoneNumber = value;
                                 });
-                              })));
+                              })));*/
                     }),
                 SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
                 GestureDetector(
@@ -154,7 +156,8 @@ class _StoreInformationScreenState
                   SizedBox(height: SGSpacing.p4),
                   BusinessInformationDataTableRow(
                       left: "사업자등록번호",
-                      right: state.storeInformation.businessNumber),
+                      right: state
+                          .storeInformation.businessNumber.toBizNumberFormat),
                   SizedBox(height: SGSpacing.p4),
                   BusinessInformationDataTableRow(
                       left: "세금신고자료 발행정보",
@@ -199,7 +202,8 @@ class _StoreInformationScreenState
                   SizedBox(height: SGSpacing.p5),
                   BusinessInformationDataTableRow(
                       left: "영업신고증 고유번호",
-                      right: state.storeInformation.businessRegistrationNumber),
+                      right: state.storeInformation.businessRegistrationNumber
+                          .toBizNumberFormat),
                   SizedBox(height: SGSpacing.p4),
                   BusinessInformationDataTableRow(
                       left: "대표자명", right: state.storeInformation.ceoName),

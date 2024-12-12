@@ -10,11 +10,11 @@ class RestApiUri {
 
   /// Coupon
   /// 쿠폰 발급 API
-  // POST - 쿠폰 발급 TODO
+  // POST - 쿠폰 발급
   static const String issueCoupon = '/api/v1/owner/coupon';
-  // GET - 쿠폰 정보 조회 TODO
+  // GET - 쿠폰 정보 조회
   static const String getCouponInfo = '/api/v1/owner/coupon/{storeId}/{page}';
-  // DELETE - 발급 쿠폰 삭제 TODO
+  // DELETE - 발급 쿠폰 삭제
   static const String deleteIssuedCoupon = '/api/v1/owner/coupon/{couponId}';
   // DELETE - 발급 쿠폰 선택 삭제 - 관리자 제한 API TODO
   static const String adminDeleteIssuedCoupon =
@@ -34,10 +34,10 @@ class RestApiUri {
 
   /// StoreInfoUpdate
   /// 가게 정보 수정 API
-  // POST - 가게 로고 등록 및 변경 TODO
+  // POST - 가게 로고 등록 및 변경
   static const String updateStoreThumbnail =
       '/api/v1/owner/store-info/thumbnail';
-  // POST - 가게 사진 등록 및 변경 TODO
+  // POST - 가게 사진 등록 및 변경
   static const String updateStorePicture =
       '/api/v1/owner/store-info/store-picture';
   // POST - 가게 번호 변경
@@ -59,7 +59,7 @@ class RestApiUri {
   // POST - 가게 소개 변경
   static const String storeIntroduction =
       '/api/v1/owner/store-info/introduction';
-  // POST - 가게 소개 사진 등록 및 변경 TODO
+  // POST - 가게 소개 사진 등록 및 변경
   static const String updateIntroductionPicture =
       '/api/v1/owner/store-info/introduction-picture';
   // POST - 가게 휴무일 변경
@@ -92,7 +92,7 @@ class RestApiUri {
 
   /// StoreMenuCreate
   /// 가게 메뉴 추가 API
-  // POST - 옵션 카테고리 추가 TODO
+  // POST - 옵션 카테고리 추가
   static const String createOptionCategory =
       '/api/v1/owner/store-menu/option-category';
   // POST - 메뉴 추가
@@ -129,14 +129,14 @@ class RestApiUri {
 
   /// StoreMenuDelete
   /// 가게 메뉴 삭제 API
-  // DELETE - 메뉴 삭제 TODO
+  // DELETE - 메뉴 삭제
   static const String deleteMenu = '/api/v1/owner/store-menu/menu';
   // DELETE - 메뉴 카테고리 삭제
   static const String deleteMenuCategory =
       '/api/v1/owner/store-menu/store-menu-category';
-  // DELETE - 메뉴 옵션 삭제 TODO
+  // DELETE - 메뉴 옵션 삭제
   static const String deleteMenuOption = '/api/v1/owner/store-menu/menu-option';
-  // DELETE - 메뉴 옵션 카테고리 삭제 TODO
+  // DELETE - 메뉴 옵션 카테고리 삭제
   static const String deleteMenuOptionCategory =
       '/api/v1/owner/store-menu/menu-option-category';
 
@@ -238,7 +238,7 @@ class RestApiUri {
 
   /// Vat
   /// 부가세 API
-  // POST - 부가세 내역 보고서 생성 및 이메일 전송 TODO
+  // POST - 부가세 내역 보고서 생성 및 이메일 전송
   static const String generateVatReport = '/api/v1/owner/vat/report';
   // GET - 부가세 내역 조회 TODO
   static const String getVatInfo = '/api/v1/owner/vat/{storeId}';
@@ -247,7 +247,7 @@ class RestApiUri {
   /// 가게 메뉴 조회 API
   // GET - 메뉴 정보 조회 TODO
   static const String getMenu = '/api/v1/owner/store-menu/menu/{menuId}';
-  // GET - 메뉴 옵션 정보 조회 TODO
+  // GET - 메뉴 옵션 정보 조회
   static const String getMenuInfo =
       '/api/v1/owner/store-menu/menu-option/{menuOptionId}';
 
@@ -281,51 +281,51 @@ class RestApiUri {
 
   /// StoreMenuUpdate
   /// 가게 메뉴 수정 API
-  // POST - 메뉴 품절 상태 변경 TODO
+  // POST - 메뉴 품절 상태 변경
   static const String updateMenuSoldOutStatus =
       '/api/v1/owner/store-menu/menu-sold-out';
-  // POST - 메뉴 가격 변경 TODO
+  // POST - 메뉴 가격 변경
   static const String updateMenuPrice = '/api/v1/owner/store-menu/menu-price';
-  // POST - 메뉴 인기 상태 변경 TODO
+  // POST - 메뉴 인기 상태 변경
   static const String updateMenuPopularity =
       '/api/v1/owner/store-menu/menu-popularity';
   // POST - 가게 메뉴 사진 등록 및 변경 TODO
   static const String updateMenuPicture =
       '/api/v1/owner/store-menu/menu-picture';
-  // POST - 메뉴 옵션 품절 상태 변경 TODO
+  // POST - 메뉴 옵션 품절 상태 변경
   static const String updateMenuOptionSoldOutStatus =
       '/api/v1/owner/store-menu/menu-option/sold-out';
-  // POST - 메뉴 옵션 가격 변경 TODO
+  // POST - 메뉴 옵션 가격 변경
   static const String updateMenuOptionPrice =
       '/api/v1/owner/store-menu/menu-option/price';
-  // POST - 메뉴 옵션 이름 변경 TODO
+  // POST - 메뉴 옵션 이름 변경
   static const String updateMenuOptionName =
       '/api/v1/owner/store-menu/menu-option/name';
 
-  // POST - 메뉴 옵션 정보 변경 TODO
+  // POST - 메뉴 옵션 정보 변경
   static const String updateMenuOptionInfo =
       '/api/v1/owner/store-menu/menu-option/info';
-  // POST - 메뉴 옵션 카테고리 사용 메뉴 변경 TODO
+  // POST - 메뉴 옵션 카테고리 사용 메뉴 변경
   static const String updateMenuOptionCategoryUseMenu =
       '/api/v1/owner/store-menu/menu-option-category/use-menu';
-  // POST - 메뉴 옵션 카테고리 품절 상태 변경 TODO
+  // POST - 메뉴 옵션 카테고리 품절 상태 변경
   static const String updateMenuOptionCategorySoldOutStatus =
       '/api/v1/owner/store-menu/menu-option-category/sold-out';
-  // POST - 메뉴 옵션 카테고리 이름 변경 TODO
+  // POST - 메뉴 옵션 카테고리 이름 변경
   static const String updateMenuOptionCategoryName =
       '/api/v1/owner/store-menu/menu-option-category/name';
-  // POST - 메뉴 옵션 카테고리 최대, 최소 개수 변경 TODO
+  // POST - 메뉴 옵션 카테고리 최대, 최소 개수 변경
   static const String updateMenuOptionCategoryMaxChoice =
       '/api/v1/owner/store-menu/menu-option-category/max-choice';
-  // POST - 메뉴 옵션 카테고리 필수 여부 변경 TODO
+  // POST - 메뉴 옵션 카테고리 필수 여부 변경
   static const String updateMenuOptionCategoryEssential =
       '/api/v1/owner/store-menu/menu-option-category/essential';
-  // POST - 메뉴 이름 변경 TODO
+  // POST - 메뉴 이름 변경
   static const String updateMenuName = '/api/v1/owner/store-menu/menu-name';
-  // POST - 메뉴 구성 변경 TODO
+  // POST - 메뉴 구성 변경
   static const String updateMenuMadeOf =
       '/api/v1/owner/store-menu/menu-made-of';
-  // POST - 메뉴 설명 변경 TODO
+  // POST - 메뉴 설명 변경
   static const String updateMenuIntroduction =
       '/api/v1/owner/store-menu/menu-introduction';
   // POST - 메뉴 정보 변경 TODO
@@ -333,10 +333,10 @@ class RestApiUri {
   // POST - 메뉴 카테고리 이름 및 설명 수정
   static const String updateMenuCategoryName =
       '/api/v1/owner/store-menu/menu-category/name';
-  // POST - 메뉴 베스트 상태 변경 TODO
+  // POST - 메뉴 베스트 상태 변경
   static const String updateMenuBestStatus =
       '/api/v1/owner/store-menu/menu-best';
-  // POST - 메뉴 사진 변경 - 관리자 제한 API TODO
+  // POST - 메뉴 사진 변경 - 관리자 제한 API
   static const String adminUpdateMenuPicture =
       '/api/v1/owner/admin/menu-picture';
 
@@ -359,7 +359,7 @@ class RestApiUri {
 
   /// StoreHistory
   /// 가게 이력 API
-  // GET - 가게 이력 조회 TODO
+  // GET - 가게 이력 조회
   static const String getStoreHistory =
       '/api/v1/owner/store-history/{storeId}/{page}/{filter}';
 
@@ -431,12 +431,12 @@ class RestApiUri {
   // GET - 헬스 체크 TODO
   static const String healthCheck = '/api/v1/owner/health-check';
 
-  /// ???
+  /// 사장님 전화번호 변경
   static const String identityVerification =
       '/owner/pages/identity-verification';
-  // GET - 매출 부가세 내역 조회 TODO
+  // GET - 매출 부가세 내역 조회
   static const String getVatSalesInfo = '/api/v1/owner/vat/sales/{storeId}';
-  // GET - 매입 부가세 내역 조회 TODO
+  // GET - 매입 부가세 내역 조회
   static const String getVatPurchasesInfo =
       '/api/v1/owner/vat/purchases/{storeId}';
 }

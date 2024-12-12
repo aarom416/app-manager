@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
@@ -8,9 +9,12 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/step_counter.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/extensions/datetime.dart';
 import 'package:singleeat/core/extensions/integer.dart';
+import 'package:singleeat/core/screens/order_menu_option_screen.dart';
 import 'package:singleeat/office/models/order_model.dart';
+import 'package:singleeat/screens/bottom/myinfo/orderlist/model.dart';
+import 'package:singleeat/screens/bottom/order/operation/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class _DataTable extends StatelessWidget {
   const _DataTable({super.key, this.children = const []});
@@ -66,12 +70,12 @@ class _DataTableRow extends StatelessWidget {
   }
 }
 
-class NewOrderDetailScreen extends StatelessWidget {
-  final OrderModel order;
+class NewOrderDetailScreen extends ConsumerWidget {
+  final MyInfoOrderHistoryModel order;
   const NewOrderDetailScreen({super.key, required this.order});
 
   void showRejectDialog(
-      {required BuildContext context, required OrderModel order}) {
+      {required BuildContext context, required MyInfoOrderHistoryModel order}) {
     showSGDialogWithCloseButton(
         context: context,
         childrenBuilder: (ctx) => [
@@ -117,7 +121,7 @@ class NewOrderDetailScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: SGColors.black,
@@ -125,7 +129,7 @@ class NewOrderDetailScreen extends StatelessWidget {
           surfaceTintColor: Colors.transparent,
           elevation: 0.0,
           title: SGTypography.body(
-            "${order.receiveFoodType} 신규 접수",
+            order.receiveFoodType == 'TAKEOUT' ? '포장 신규 접수' : '배달 신규 접수',
             size: FontSize.medium,
             weight: FontWeight.w800,
             color: SGColors.white,
@@ -143,7 +147,7 @@ class NewOrderDetailScreen extends StatelessWidget {
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
                   Spacer(),
-                  SGTypography.body("${order.orderTime.toShortDateTimeString}",
+                  SGTypography.body(order.orderDate,
                       size: FontSize.normal,
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
@@ -151,21 +155,19 @@ class NewOrderDetailScreen extends StatelessWidget {
                 SizedBox(height: SGSpacing.p4),
                 Row(children: [
                   SGContainer(
-                      color: order.status != OrderStatus.cancelled
+                      color: order.orderStatus != OrderStatus.cancelled
                           ? SGColors.primary.withOpacity(0.1)
                           : SGColors.warningRed.withOpacity(0.1),
                       padding: EdgeInsets.all(SGSpacing.p1),
                       borderRadius: BorderRadius.circular(SGSpacing.p1),
                       child: SGTypography.body(
-                        order.status != OrderStatus.cancelled
-                            ? "신규 접수"
-                            : "주문 취소",
-                        color: order.status != OrderStatus.cancelled
+                        "신규 접수",
+                        color: order.orderStatus != OrderStatus.cancelled
                             ? SGColors.primary
                             : SGColors.warningRed,
                       )),
                   Spacer(),
-                  SGTypography.body("${order.orderTime.toShortTimeString}",
+                  SGTypography.body(order.orderTime,
                       size: FontSize.normal,
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
@@ -175,10 +177,10 @@ class NewOrderDetailScreen extends StatelessWidget {
               _OrderInformation(order: order),
               SizedBox(height: SGSpacing.p32),
               StepCounter(
-                defaultValue: order.receiveFoodType == "포장" ? 20 : 60,
+                defaultValue: order.receiveFoodType == "TAKEOUT" ? 20 : 60,
                 step: 5,
-                maxValue: order.receiveFoodType == "포장" ? 60 : 100,
-                minValue: order.receiveFoodType == "포장" ? 5 : 20,
+                maxValue: order.receiveFoodType == "TAKEOUT" ? 60 : 100,
+                minValue: order.receiveFoodType == "TAKEOUT" ? 5 : 20,
               ),
               SizedBox(height: SGSpacing.p4),
               Row(
@@ -230,12 +232,12 @@ class NewOrderDetailScreen extends StatelessWidget {
   }
 }
 
-class CompletedOrderDetailScreen extends StatelessWidget {
-  final OrderModel order;
+class CompletedOrderDetailScreen extends ConsumerWidget {
+  final MyInfoOrderHistoryModel order;
   const CompletedOrderDetailScreen({super.key, required this.order});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: SGColors.black,
@@ -243,7 +245,7 @@ class CompletedOrderDetailScreen extends StatelessWidget {
           surfaceTintColor: Colors.transparent,
           elevation: 0.0,
           title: SGTypography.body(
-            "${order.orderType} 주문 내역",
+            order.receiveFoodType == 'DELIVERY' ? '배달 주문 내역' : '포장 주문 내역',
             size: FontSize.medium,
             weight: FontWeight.w800,
             color: SGColors.white,
@@ -261,7 +263,7 @@ class CompletedOrderDetailScreen extends StatelessWidget {
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
                   Spacer(),
-                  SGTypography.body("${order.orderTime.toShortDateTimeString}",
+                  SGTypography.body("${order.createdDate}",
                       size: FontSize.normal,
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
@@ -269,21 +271,23 @@ class CompletedOrderDetailScreen extends StatelessWidget {
                 SizedBox(height: SGSpacing.p4),
                 Row(children: [
                   SGContainer(
-                      color: order.status != OrderStatus.cancelled
+                      color: order.orderStatus != OrderStatus.cancelled
                           ? SGColors.primary.withOpacity(0.1)
                           : SGColors.warningRed.withOpacity(0.1),
                       padding: EdgeInsets.all(SGSpacing.p1),
                       borderRadius: BorderRadius.circular(SGSpacing.p1),
                       child: SGTypography.body(
-                        order.status != OrderStatus.cancelled
-                            ? "${order.orderType} 접수"
+                        order.orderStatus != OrderStatus.cancelled
+                            ? order.receiveFoodType == 'DELIVERY'
+                                ? '배달 접수'
+                                : '포장 접수'
                             : "주문 취소",
-                        color: order.status != OrderStatus.cancelled
+                        color: order.orderStatus != OrderStatus.cancelled
                             ? SGColors.primary
                             : SGColors.warningRed,
                       )),
                   Spacer(),
-                  SGTypography.body("${order.orderTime.toShortTimeString}",
+                  SGTypography.body("${order.createdDate}",
                       size: FontSize.normal,
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
@@ -292,15 +296,20 @@ class CompletedOrderDetailScreen extends StatelessWidget {
               SizedBox(height: SGSpacing.p3),
               _OrderInformation(order: order),
               SizedBox(height: SGSpacing.p20),
-              SGActionButton(onPressed: () {
-
-              }, label: "고객 센터"),
+              SGActionButton(
+                  onPressed: () {
+                    launchUrl(Uri.parse(
+                      'tel://1600-7723',
+                    ));
+                  },
+                  label: "고객 센터"),
+              SizedBox(height: SGSpacing.p20),
             ])));
   }
 }
 
-class InProgressOrderDetailScreen extends StatelessWidget {
-  final OrderModel order;
+class InProgressOrderDetailScreen extends ConsumerWidget {
+  final MyInfoOrderHistoryModel order;
   const InProgressOrderDetailScreen({super.key, required this.order});
 
   void showSnackBar(BuildContext context, String text) {
@@ -408,7 +417,7 @@ class InProgressOrderDetailScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: SGColors.black,
@@ -416,7 +425,9 @@ class InProgressOrderDetailScreen extends StatelessWidget {
           surfaceTintColor: Colors.transparent,
           elevation: 0.0,
           title: SGTypography.body(
-            "${order.orderType} | ${order.id}",
+            order.receiveFoodType == 'DELIVERY'
+                ? '배달 | ${order.orderNumber}'
+                : '포장 | ${order.orderNumber}',
             size: FontSize.medium,
             weight: FontWeight.w800,
             color: SGColors.white,
@@ -427,7 +438,7 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                 horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
             color: SGColors.black,
             child: ListView(children: [
-              if (order.orderType == "포장")
+              if (order.receiveFoodType == "TAKEOUT")
                 SGTypography.body("음식을 준비하고 있어요",
                     color: SGColors.whiteForDarkMode,
                     size: FontSize.xlarge,
@@ -437,9 +448,16 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                     color: SGColors.whiteForDarkMode,
                     size: FontSize.xlarge,
                     weight: FontWeight.w700),
+              if (order.receiveFoodType == "DELIVERY") ...[
+                SizedBox(height: SGSpacing.p2),
+                SGTypography.body("배달 대행사 : 바로고",
+                    size: FontSize.normal,
+                    weight: FontWeight.w400,
+                    color: SGColors.gray4),
+              ],
               SizedBox(height: SGSpacing.p6),
               SizedBox(height: SGSpacing.p2),
-              if (order.orderType == "배달")
+              if (order.receiveFoodType == "DELIVERY")
                 Image.asset(
                     "assets/images/order-progress-indicator-delivery.png",
                     width: double.infinity)
@@ -457,7 +475,7 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                     weight: FontWeight.w700),
               ),
               SizedBox(height: SGSpacing.p4),
-              if (order.orderType == "포장") ...[
+              if (order.receiveFoodType == "TAKEOUT") ...[
                 SGActionButton(
                     onPressed: () {
                       showSGDialog(
@@ -508,8 +526,14 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                                       child: GestureDetector(
                                         onTap: () {
                                           Navigator.of(ctx).pop();
+                                          ref
+                                              .read(orderNotifierProvider
+                                                  .notifier)
+                                              .notifyCookingComplete(order
+                                                  .orderMenuDTOList[0]
+                                                  .orderInformationId);
                                           showSnackBar(
-                                              context, "포장 완료 알림 전송 성공!");
+                                              context, "준비 완료 알림 전송 성공!");
                                         },
                                         child: SGContainer(
                                           width: double.infinity,
@@ -534,7 +558,7 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                     label: "준비 완료 알림 보내기"),
                 SizedBox(height: SGSpacing.p5),
               ],
-              if (order.orderType == "배달") ...[
+              if (order.receiveFoodType == "DELIVERY") ...[
                 SGActionButton(
                     onPressed: () {
                       showSGDialog(
@@ -585,6 +609,12 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                                       child: GestureDetector(
                                         onTap: () {
                                           Navigator.of(ctx).pop();
+                                          ref
+                                              .read(orderNotifierProvider
+                                                  .notifier)
+                                              .notifyDeliveryComplete(order
+                                                  .orderMenuDTOList[0]
+                                                  .orderInformationId);
                                           showSnackBar(
                                               context, "배달 완료 알림 전송 성공!");
                                         },
@@ -637,7 +667,7 @@ class _OrderInformation extends StatelessWidget {
     required this.order,
   });
 
-  final OrderModel order;
+  final MyInfoOrderHistoryModel order;
 
   @override
   Widget build(BuildContext context) {
@@ -648,10 +678,10 @@ class _OrderInformation extends StatelessWidget {
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(left: "가게", right: "요청 사항 없음"),
-        if (order.orderType == '배달') ...[
+        _DataTableRow(left: "가게", right: order.toOwner),
+        if (order.receiveFoodType == 'DELIVERY') ...[
           SizedBox(height: SGSpacing.p4),
-          _DataTableRow(left: "배달", right: "문 앞에 두고 벨 눌러 주세요"),
+          _DataTableRow(left: "배달", right: order.toRider),
         ]
       ]),
       SizedBox(height: SGSpacing.p3),
@@ -682,53 +712,11 @@ class _OrderInformation extends StatelessWidget {
           SizedBox(height: SGSpacing.p3),
           Divider(height: 1, thickness: 1, color: SGColors.lineDark2),
           SizedBox(height: SGSpacing.p4),
-          Row(children: [
-            SGFlexible(
-                flex: 2,
-                child: SGTypography.body(
-                  "연어 샐러드",
-                  size: FontSize.small,
-                  color: SGColors.whiteForDarkMode,
-                  overflow: TextOverflow.ellipsis,
-                )),
-            SGFlexible(
-                flex: 1,
-                child: Center(
-                    child: SGTypography.body(
-                  "1",
-                  size: FontSize.small,
-                  color: SGColors.whiteForDarkMode,
-                ))),
-            SGFlexible(
-                flex: 1,
-                child: SGTypography.body("13,000",
-                    align: TextAlign.right,
-                    size: FontSize.small,
-                    color: SGColors.whiteForDarkMode)),
-          ]),
-          SizedBox(height: SGSpacing.p3),
-          Row(children: [
-            SGFlexible(
-                flex: 2,
-                child: SGTypography.body(
-                  "ㄴ 오리 훈제 토핑",
-                  size: FontSize.small,
-                  color: SGColors.whiteForDarkMode,
-                  overflow: TextOverflow.ellipsis,
-                )),
-            SGFlexible(
-                flex: 1,
-                child: Center(
-                    child: SGTypography.body("1",
-                        size: FontSize.small,
-                        color: SGColors.whiteForDarkMode))),
-            SGFlexible(
-                flex: 1,
-                child: SGTypography.body("3,000",
-                    align: TextAlign.right,
-                    size: FontSize.small,
-                    color: SGColors.whiteForDarkMode)),
-          ]),
+          ...order.orderMenuDTOList.map((e) => OrderMenuList(
+                orderMenuOptionDTOList: order.orderMenuOptionDTOList[0],
+                orderMenu: e,
+                colorType: SGColors.whiteForDarkMode,
+              )),
           SizedBox(height: SGSpacing.p4),
           Divider(height: 1, thickness: 1, color: SGColors.lineDark2),
           SizedBox(height: SGSpacing.p3),
@@ -739,38 +727,12 @@ class _OrderInformation extends StatelessWidget {
                     size: FontSize.small, color: SGColors.gray4)),
             SGFlexible(
                 flex: 1,
-                child: SGTypography.body("16,000",
+                child: SGTypography.body(order.orderAmount.toString(),
                     align: TextAlign.right,
                     size: FontSize.small,
                     color: SGColors.gray4)),
           ]),
-          SizedBox(height: SGSpacing.p3),
-          Row(children: [
-            SGFlexible(
-                flex: 2,
-                child: SGTypography.body("할인 쿠폰",
-                    size: FontSize.small, color: SGColors.gray4)),
-            SGFlexible(
-                flex: 1,
-                child: SGTypography.body("3,000",
-                    align: TextAlign.right,
-                    size: FontSize.small,
-                    color: SGColors.gray4)),
-          ]),
-          SizedBox(height: SGSpacing.p3),
-          Row(children: [
-            SGFlexible(
-                flex: 2,
-                child: SGTypography.body("포인트",
-                    size: FontSize.small, color: SGColors.gray4)),
-            SGFlexible(
-                flex: 1,
-                child: SGTypography.body("1,000",
-                    align: TextAlign.right,
-                    size: FontSize.small,
-                    color: SGColors.gray4)),
-          ]),
-          if (order.orderType == '배달') ...[
+          if (order.receiveFoodType == 'DELIVERY') ...[
             SizedBox(height: SGSpacing.p3),
             Row(children: [
               SGFlexible(
@@ -779,7 +741,7 @@ class _OrderInformation extends StatelessWidget {
                       size: FontSize.small, color: SGColors.gray4)),
               SGFlexible(
                   flex: 1,
-                  child: SGTypography.body("3,000",
+                  child: SGTypography.body(order.deliveryTip.toKoreanCurrency,
                       align: TextAlign.right,
                       size: FontSize.small,
                       color: SGColors.gray4)),
@@ -796,7 +758,7 @@ class _OrderInformation extends StatelessWidget {
             SGFlexible(
                 flex: 1,
                 child: SGTypography.body(
-                    order.receiveFoodType == '배달' ? "19,000원" : '16,000원',
+                    order.totalOrderAmount.toKoreanCurrency,
                     align: TextAlign.right,
                     size: FontSize.medium,
                     weight: FontWeight.w700,
@@ -811,12 +773,9 @@ class _OrderInformation extends StatelessWidget {
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(
-            left: "카카오페이",
-            right:
-                "${(order.receiveFoodType == '배달' ? 19000 : 16000).toKoreanCurrency}원"),
+        _DataTableRow(left: "카카오페이", right: '${order.totalOrderAmount}원'),
       ]),
-      if (order.orderType == '배달') ...[
+      if (order.receiveFoodType == 'DELIVERY') ...[
         SizedBox(height: SGSpacing.p3),
         _DataTable(children: [
           SGTypography.body("배달 정보",
@@ -825,16 +784,16 @@ class _OrderInformation extends StatelessWidget {
               weight: FontWeight.w600,
         ),
           SizedBox(height: SGSpacing.p4),
-          _DataTableRow(left: "배달 주소", right: "강남구 역삼 1동"),
-          if (order.orderType == "배달" &&
-                  order.status == OrderStatus.inProgress ||
-              order.status == OrderStatus.completed ||
-              order.status == OrderStatus.cancelled) ...[
+          _DataTableRow(left: "배달 주소", right: order.address.substring(0, 20)),
+          if (order.receiveFoodType == "DELIVERY" &&
+                  order.orderStatus == OrderStatus.inProgress ||
+              order.orderStatus == OrderStatus.completed ||
+              order.orderStatus == OrderStatus.cancelled) ...[
             SizedBox(height: SGSpacing.p3),
             _DataTableRow(
                 left: "연락처",
                 right: [OrderStatus.newOrder, OrderStatus.inProgress]
-                        .contains(order.status)
+                        .contains(OrderStatus.newOrder)
                     ? "010-0000-1111"
                     : "010-****-****"),
           ],
@@ -847,12 +806,12 @@ class _OrderInformation extends StatelessWidget {
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(left: "주문 일시", right: "00.00(일) 00:00"),
-        if (order.status != OrderStatus.newOrder) ...[
+        _DataTableRow(left: "주문 일시", right: order.orderDate),
+        if (/*order.status != OrderStatus.newOrder*/ true) ...[
           SizedBox(height: SGSpacing.p4),
           _DataTableRow(left: "접수 일시", right: "00.00(일) 00:00"),
         ],
-        if (order.status == OrderStatus.completed) ...[
+        if (/*order.status == OrderStatus.completed*/ true) ...[
           SizedBox(height: SGSpacing.p4),
           _DataTableRow(left: "전달 완료", right: "00.00(일) 00:00"),
         ],
@@ -864,14 +823,14 @@ class _OrderInformation extends StatelessWidget {
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(left: "가게명", right: "샐러디 역삼점"),
+        _DataTableRow(left: "가게명", right: order.storeName),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(left: "주문번호", right: "ABCDEFGH"),
+        _DataTableRow(left: "주문번호", right: order.orderNumber),
       ]),
-      if (order.orderType == '포장' &&
-          (order.status == OrderStatus.inProgress ||
-              order.status == OrderStatus.completed ||
-              order.status == OrderStatus.cancelled)) ...[
+      if (order.receiveFoodType == 'TAKEOUT' &&
+          (order.orderStatus == OrderStatus.inProgress ||
+              order.orderStatus == OrderStatus.completed ||
+              order.orderStatus == OrderStatus.cancelled)) ...[
         SizedBox(height: SGSpacing.p3),
         _DataTable(children: [
           SGTypography.body("주문자 정보",
@@ -882,7 +841,7 @@ class _OrderInformation extends StatelessWidget {
           _DataTableRow(
               left: "연락처",
               right: [OrderStatus.newOrder, OrderStatus.inProgress]
-                      .contains(order.status)
+                      .contains(OrderStatus.newOrder)
                   ? "010-0000-1111"
                   : "010-****-****"),
         ]),
@@ -891,7 +850,7 @@ class _OrderInformation extends StatelessWidget {
   }
 }
 
-class _CancelDialogBody extends StatefulWidget {
+class _CancelDialogBody extends ConsumerStatefulWidget {
   _CancelDialogBody({
     super.key,
     required this.onCancel,
@@ -899,13 +858,13 @@ class _CancelDialogBody extends StatefulWidget {
   });
 
   VoidCallback onCancel;
-  OrderModel order;
+  MyInfoOrderHistoryModel order;
 
   @override
-  State<_CancelDialogBody> createState() => _CancelDialogBodyState();
+  ConsumerState<_CancelDialogBody> createState() => _CancelDialogBodyState();
 }
 
-class _CancelDialogBodyState extends State<_CancelDialogBody> {
+class _CancelDialogBodyState extends ConsumerState<_CancelDialogBody> {
   String cancelReason = "";
 
   @override
@@ -913,7 +872,7 @@ class _CancelDialogBodyState extends State<_CancelDialogBody> {
     List<String> reasons = [
       "고객 사정",
       "주문 폭주",
-      if (widget.order.orderType == '배달') "배달 지연",
+      if (widget.order.receiveFoodType == 'DELIVERY') "배달 지연",
       "재료 소진",
       "가게 사정",
       "기타 사정",
@@ -941,7 +900,15 @@ class _CancelDialogBodyState extends State<_CancelDialogBody> {
             return;
           }
           Navigator.of(context).pop();
-          widget.onCancel();
+          if (widget.order.receiveFoodType == 'DELIVERY') {
+            ref.read(orderNotifierProvider.notifier).deliveryOrderCancel(
+                widget.order.orderMenuDTOList[0].orderInformationId,
+                reasons.indexOf(cancelReason));
+          } else {
+            ref.read(orderNotifierProvider.notifier).takeoutOrderCancel(
+                widget.order.orderMenuDTOList[0].orderInformationId,
+                reasons.indexOf(cancelReason));
+          }
         },
         child: SGContainer(
             padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
@@ -990,7 +957,7 @@ class _RejectDialogBody extends StatefulWidget {
     required this.onReject,
   });
 
-  OrderModel order;
+  MyInfoOrderHistoryModel order;
   VoidCallback onReject;
 
   @override
@@ -1003,10 +970,10 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
   @override
   Widget build(BuildContext context) {
     List<String> reasons = [
-      if (widget.order.orderType == '배달') "배달 지역 초과",
+      if (widget.order.receiveFoodType == 'DELIVERY') "배달 지역 초과",
       "재료 소진",
       "가게 사정",
-      if (widget.order.orderType == '배달') "배달 지연",
+      if (widget.order.receiveFoodType == 'DELIVERY') "배달 지연",
       "주문 폭주",
       "기타",
       "영업시간 외",
