@@ -481,7 +481,7 @@ class MenuOptionsService {
       ]
     }
    */
-  Future<Response<dynamic>> updateMenuOptionCategoryUseMenu({required String storeId, required int menuOptionCategoryId, required List<int> addMenuIdList , required List<int> removeMenuIdList}) async {
+  Future<Response<dynamic>> updateMenuOptionCategoryUseMenu({required String storeId, required int menuOptionCategoryId, required List<int> addMenuIdList, required List<int> removeMenuIdList}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionCategoryUseMenu,
@@ -489,6 +489,82 @@ class MenuOptionsService {
           'storeId': UserHive.getBox(key: UserKey.storeId),
           'addMenuIdList': addMenuIdList,
           'removeMenuIdList': removeMenuIdList,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 옵션 카테고리 추가
+  /*
+      {
+        "storeId": 1,
+        "optionCategoryName": "샐러드 추가",
+        "createMenuOptionInfoDTOList": [
+          {
+            "menuOptionName": "당근 추가",
+            "menuOptionPrice": 1000,
+            "servingAmount": 100,
+            "servingAmountType": "g",
+            "calories": 100,
+            "carbohydrate": 0,
+            "protein": 0,
+            "fat": 0,
+            "sugar": 0,
+            "saturatedFat": 0,
+            "natrium": 0
+          }
+        ],
+        "essentialStatus": 1,
+        "minChoice": 1,
+        "maxChoice": 2,
+        "menuIdList": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+   */
+  Future<Response<dynamic>> createOptionCategory({
+    required String storeId,
+    required String menuOptionCategoryName,
+    required List<MenuOptionModel> selectedMenuOptions,
+    required int essentialStatus,
+    required int minChoice,
+    required int maxChoice,
+    required List<MenuModel> appliedMenus,
+  }) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuOptionCategoryUseMenu,
+        data: {
+          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'optionCategoryName': menuOptionCategoryName,
+          'createMenuOptionInfoDTOList': selectedMenuOptions.map((menuOption) => {
+                {
+                  "menuOptionName": menuOption.optionContent,
+                  "menuOptionPrice": menuOption.price,
+                  "servingAmount": menuOption.nutrition.servingAmount,
+                  "servingAmountType": menuOption.nutrition.servingAmountType,
+                  "calories": menuOption.nutrition.calories,
+                  "carbohydrate": menuOption.nutrition.carbohydrate,
+                  "protein": menuOption.nutrition.protein,
+                  "fat": menuOption.nutrition.fat,
+                  "sugar": menuOption.nutrition.sugar,
+                  "saturatedFat": menuOption.nutrition.saturatedFat,
+                  "natrium": menuOption.nutrition.natrium,
+                }
+              }).toList(),
+          'essentialStatus': essentialStatus,
+          'minChoice': minChoice,
+          'maxChoice': maxChoice,
+          'menuIdList': appliedMenus.map((menu) => menu.menuId).toList(),
         },
       );
     } on DioException catch (e) {

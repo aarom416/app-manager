@@ -6,7 +6,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 
-import 'model.dart';
+import '../model.dart';
 
 void showSelectableMenuModelsBottomSheet({
   required BuildContext context,

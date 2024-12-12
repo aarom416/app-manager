@@ -8,9 +8,9 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
-import 'package:singleeat/core/extensions/integer.dart';
 
-import '../../menu_selection_bottom_sheet.dart';
+import '../../menu/menu_model_card.dart';
+import '../../menu/menu_selection_bottom_sheet.dart';
 import '../../model.dart';
 
 class SetAppliedMenusScreen extends StatefulWidget {
@@ -108,9 +108,9 @@ class _SetAppliedMenusScreenState extends State<SetAppliedMenusScreen> {
               SGTypography.body("고객은 해당 메뉴 주문 시 다음 옵션 카테고리를\n선택할 수 있습니다.", color: SGColors.gray4),
               SizedBox(height: SGSpacing.p3),
               ...appliedMenus
-                  .mapIndexed((index, cuisine) => [
-                        _MenuModelCard(
-                            cuisine: cuisine,
+                  .mapIndexed((index, menuModel) => [
+                        MenuModelCard(
+                            menuModel: menuModel,
                             onRemove: () {
                               final updatedAppliedMenus = List<MenuModel>.from(appliedMenus);
                               updatedAppliedMenus.removeAt(index);
@@ -148,51 +148,3 @@ class _SetAppliedMenusScreenState extends State<SetAppliedMenusScreen> {
             ])));
   }
 }
-
-class _MenuModelCard extends StatelessWidget {
-  final MenuModel cuisine;
-  final VoidCallback onRemove;
-
-  const _MenuModelCard({super.key, required this.cuisine, required this.onRemove});
-
-  @override
-  Widget build(BuildContext context) {
-    return SGContainer(
-      color: SGColors.white,
-      borderRadius: BorderRadius.circular(SGSpacing.p4),
-      boxShadow: SGBoxShadow.large,
-      padding: EdgeInsets.symmetric(vertical: SGSpacing.p4, horizontal: SGSpacing.p4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              ClipRRect(borderRadius: BorderRadius.circular(SGSpacing.p4), child: Image.network(cuisine.menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18)),
-              SizedBox(width: SGSpacing.p3),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SGTypography.body(cuisine.menuName, color: SGColors.black, size: FontSize.normal, weight: FontWeight.w700),
-                  SizedBox(height: SGSpacing.p2),
-                  SGTypography.body("${cuisine.price.toKoreanCurrency}원", color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w400),
-                ],
-              ),
-            ],
-          ),
-          GestureDetector(
-              onTap: onRemove,
-              child: SGContainer(
-                borderWidth: 0,
-                width: SGSpacing.p5,
-                height: SGSpacing.p5,
-                borderRadius: BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
-                color: SGColors.warningRed,
-                child: Center(child: Image.asset('assets/images/minus-white.png', width: 16, height: 16)),
-              )),
-        ],
-      ),
-    );
-  }
-}
-

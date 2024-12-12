@@ -158,7 +158,7 @@ class _Page_0_MenuName extends StatefulWidget {
   final VoidCallback onPrev;
   final Function(String) onEditFunction;
 
-  _Page_0_MenuName({required this.menuName, required this.onNext, required this.onPrev, required this.onEditFunction});
+  const _Page_0_MenuName({required this.menuName, required this.onNext, required this.onPrev, required this.onEditFunction});
 
   @override
   State<_Page_0_MenuName> createState() => _Page_0_MenuNameState();
@@ -561,13 +561,11 @@ class _Page_2_MenuPrice extends StatefulWidget {
 
 class _Page_2_MenuPriceState extends State<_Page_2_MenuPrice> {
   late int price;
-  late TextEditingController priceController;
 
   @override
   void initState() {
     super.initState();
     price = widget.price;
-    priceController = TextEditingController(text: price.toKoreanCurrency);
   }
 
   @override
@@ -1041,7 +1039,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                                 __MenuOptionCataegoryCard(
                                   category: category,
                                   onRemove: (_) {
-                                    final updatedSelectedMenuOptionCategories = List<MenuOptionCategoryModel>.from(widget.selectedMenuOptionCategories);
+                                    final updatedSelectedMenuOptionCategories = List<MenuOptionCategoryModel>.from(selectedMenuOptionCategories);
                                     updatedSelectedMenuOptionCategories.removeAt(index);
                                     setState(() {
                                       selectedMenuOptionCategories = updatedSelectedMenuOptionCategories;
@@ -1169,7 +1167,7 @@ class __MenuOptionCataegoryCard extends StatelessWidget {
   final MenuOptionCategoryModel category;
   final Function(MenuOptionCategoryModel) onRemove;
 
-  __MenuOptionCataegoryCard({
+  const __MenuOptionCataegoryCard({
     super.key,
     required this.category,
     required this.onRemove,
