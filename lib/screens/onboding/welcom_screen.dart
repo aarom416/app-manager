@@ -10,12 +10,14 @@ import 'package:singleeat/screens/onboding/views/onboding_third_view.dart';
 import '../../core/components/sizing.dart';
 import '../../core/constants/colors.dart';
 
-class OnbodingPage extends StatefulWidget {
+class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({super.key});
+
   @override
-  _OnbodingPageState createState() => _OnbodingPageState();
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _OnbodingPageState extends State<OnbodingPage> {
+class _WelcomeScreenState extends State<WelcomeScreen> {
   final PageController _controller = PageController();
   double _currentPage = 0.0;
 
@@ -55,7 +57,6 @@ class _OnbodingPageState extends State<OnbodingPage> {
               ),
             ),
           ),
-
           DotsIndicator(
             dotsCount: pages.length,
             position: _currentPage,

@@ -14,7 +14,7 @@ class OnbodingSecondView extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            height: SGSpacing.p14,
+            height: SGSpacing.p10,
           ),
           SGTypography.body(
             "이제는 가게의 메뉴만 등록해도",

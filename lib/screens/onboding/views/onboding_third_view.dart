@@ -14,7 +14,7 @@ class OnbodingThirdView extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(
-            height: SGSpacing.p11,
+            height: SGSpacing.p7,
           ),
           SGTypography.body(
             "영양성분을 토대로",
