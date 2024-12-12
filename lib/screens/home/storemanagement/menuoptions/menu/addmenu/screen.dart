@@ -23,8 +23,8 @@ import 'package:singleeat/core/screens/textarea_screen.dart';
 import '../../../../../../core/components/numeric_textfield.dart';
 import '../../../../../../main.dart';
 import '../../model.dart';
-import '../../nutrition/nutrition_card.dart';
-import '../../nutrition/screen.dart';
+import '../../updatenutrition/nutrition_card.dart';
+import '../../updatenutrition/screen.dart';
 import '../../provider.dart';
 import '../addmenucategory/screen.dart';
 import 'menu_option_category_selection_bottom_sheet.dart';
@@ -732,7 +732,7 @@ class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
                     nutrition: nutrition,
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => NutritionInputScreen(
+                          builder: (context) => UpdateNutritionScreen(
                                 title: "영양성분 설정",
                                 nutrition: nutrition,
                                 onConfirm: (nutrition, context) {

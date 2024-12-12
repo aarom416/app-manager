@@ -14,6 +14,7 @@ class NumericTextField extends StatefulWidget {
   final InputDecoration? decoration;
   final int maxLength;
   final int? initialValue;
+  final TextEditingController? controller;
 
   const NumericTextField({
     super.key,
@@ -22,6 +23,7 @@ class NumericTextField extends StatefulWidget {
     this.decoration,
     this.maxLength = 10, // 기본 최대 입력 길이
     this.initialValue,
+    this.controller,
   });
 
   @override
@@ -29,19 +31,28 @@ class NumericTextField extends StatefulWidget {
 }
 
 class _NumericTextFieldState extends State<NumericTextField> {
-  late TextEditingController _controller;
+  late TextEditingController _internalController; // 내부 컨트롤러
+
+  TextEditingController get _controller =>
+      widget.controller ?? _internalController; // 외부 컨트롤러 우선 사용
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(
-      text: widget.initialValue?.toKoreanCurrency ?? '',
-    );
+    if (widget.controller == null) {
+      _internalController = TextEditingController(
+        text: widget.initialValue?.toKoreanCurrency ?? '',
+      );
+    } else if (widget.initialValue != null) {
+      widget.controller!.text = widget.initialValue!.toKoreanCurrency;
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (widget.controller == null) {
+      _internalController.dispose(); // 내부 컨트롤러 해제
+    }
     super.dispose();
   }
 
@@ -49,7 +60,12 @@ class _NumericTextFieldState extends State<NumericTextField> {
   Widget build(BuildContext context) {
     return TextField(
       controller: _controller,
-      style: widget.style ?? TextStyle(color: SGColors.black, fontSize: FontSize.small, fontWeight: FontWeight.w500),
+      style: widget.style ??
+          TextStyle(
+            color: SGColors.black,
+            fontSize: FontSize.small,
+            fontWeight: FontWeight.w500,
+          ),
       keyboardType: TextInputType.number,
       inputFormatters: [
         FilteringTextInputFormatter.digitsOnly,
@@ -59,7 +75,10 @@ class _NumericTextFieldState extends State<NumericTextField> {
           InputDecoration(
             hintStyle: TextStyle(color: SGColors.gray4),
             contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
-            border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+            border: const OutlineInputBorder(
+              borderRadius: BorderRadius.zero,
+              borderSide: BorderSide.none,
+            ),
           ),
       onChanged: (input) {
         // 숫자 형식으로 변환

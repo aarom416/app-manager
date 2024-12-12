@@ -542,25 +542,25 @@ class MenuOptionsService {
   }) async {
     try {
       return await ref.read(requestApiProvider).post(
-        RestApiUri.updateMenuOptionCategoryUseMenu,
+        RestApiUri.createOptionCategory,
         data: {
           'storeId': UserHive.getBox(key: UserKey.storeId),
           'optionCategoryName': menuOptionCategoryName,
-          'createMenuOptionInfoDTOList': selectedMenuOptions.map((menuOption) => {
-                {
-                  "menuOptionName": menuOption.optionContent,
-                  "menuOptionPrice": menuOption.price,
-                  "servingAmount": menuOption.nutrition.servingAmount,
-                  "servingAmountType": menuOption.nutrition.servingAmountType,
-                  "calories": menuOption.nutrition.calories,
-                  "carbohydrate": menuOption.nutrition.carbohydrate,
-                  "protein": menuOption.nutrition.protein,
-                  "fat": menuOption.nutrition.fat,
-                  "sugar": menuOption.nutrition.sugar,
-                  "saturatedFat": menuOption.nutrition.saturatedFat,
-                  "natrium": menuOption.nutrition.natrium,
-                }
-              }).toList(),
+          'createMenuOptionInfoDTOList': selectedMenuOptions
+              .map((menuOption) => {
+                    "menuOptionName": menuOption.optionContent,
+                    "menuOptionPrice": menuOption.price,
+                    "servingAmount": menuOption.nutrition.servingAmount,
+                    "servingAmountType": menuOption.nutrition.servingAmountType,
+                    "calories": menuOption.nutrition.calories,
+                    "carbohydrate": menuOption.nutrition.carbohydrate,
+                    "protein": menuOption.nutrition.protein,
+                    "fat": menuOption.nutrition.fat,
+                    "sugar": menuOption.nutrition.sugar,
+                    "saturatedFat": menuOption.nutrition.saturatedFat,
+                    "natrium": menuOption.nutrition.natrium,
+                  })
+              .toList(),
           'essentialStatus': essentialStatus,
           'minChoice': minChoice,
           'maxChoice': maxChoice,

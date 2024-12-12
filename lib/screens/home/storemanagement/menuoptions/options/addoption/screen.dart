@@ -7,12 +7,14 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/extensions/dynamic.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 
 import '../../../../../../core/components/numeric_textfield.dart';
+import '../../../../../../main.dart';
 import '../../model.dart';
-import '../../nutrition/nutrition_card.dart';
-import '../../nutrition/screen.dart';
+import '../../updatenutrition/nutrition_card.dart';
+import '../../updatenutrition/screen.dart';
 
 class AddOptionScreen extends StatefulWidget {
   final Function(MenuOptionModel) onSubmit;
@@ -28,16 +30,20 @@ class _AddOptionScreenState extends State<AddOptionScreen> {
 
   MenuOptionModel menuOptionModel = const MenuOptionModel();
 
-  void animateToPage(int index) => pageController.animateToPage(
-    index,
-    duration: const Duration(milliseconds: 400),
-    curve: Curves.easeInOut,
-  );
+  void animateToPage(int index) =>
+      pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: PageView(controller: pageController, physics: const NeverScrollableScrollPhysics(), children: [
+      body: PageView(
+        controller: pageController,
+        physics: const NeverScrollableScrollPhysics(),
+        children: [
           _Page_0_OptionName(
             menuOptionModel: menuOptionModel,
             onPrev: () => Navigator.pop(context),
@@ -56,10 +62,14 @@ class _AddOptionScreenState extends State<AddOptionScreen> {
               Navigator.of(context).pop();
             },
             onSubmit: (value) {
-              widget.onSubmit(value);
+              setState(() {
+                menuOptionModel = value;
+              });
             },
           ),
-        ]));
+        ],
+      ),
+    );
   }
 }
 
@@ -99,7 +109,10 @@ class _Page_0_OptionNameState extends State<_Page_0_OptionName> {
     return Scaffold(
         appBar: AppBarWithStepIndicator(title: "옵션 추가", currentStep: 1, totalStep: 2, onTap: widget.onPrev),
         floatingActionButton: Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+            constraints: BoxConstraints(maxWidth: MediaQuery
+                .of(context)
+                .size
+                .width - SGSpacing.p8, maxHeight: 58),
             child: Row(
               children: [
                 Expanded(
@@ -217,7 +230,10 @@ class _Page_1_NutritionState extends State<_Page_1_Nutrition> {
     return Scaffold(
         appBar: AppBarWithStepIndicator(title: "옵션 추가", currentStep: 2, totalStep: 2, onTap: widget.onPrev),
         floatingActionButton: Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+            constraints: BoxConstraints(maxWidth: MediaQuery
+                .of(context)
+                .size
+                .width - SGSpacing.p8, maxHeight: 58),
             child: Row(
               children: [
                 Expanded(
@@ -253,57 +269,63 @@ class _Page_1_NutritionState extends State<_Page_1_Nutrition> {
                 SGTypography.body("옵션의 영양성분을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
                 SizedBox(height: SGSpacing.p3),
                 NutritionCard(
+                  // key: ValueKey(menuOptionModel.toFormattedJson()),
                   nutrition: menuOptionModel.nutrition,
                   onTap: () {
                     final nutritionScreenContext = context;
                     Navigator.of(nutritionScreenContext).push(MaterialPageRoute(
-                        builder: (context) => NutritionInputScreen(
-                          title: "영양성분 설정",
-                          nutrition: menuOptionModel.nutrition,
-                          onConfirm: (nutrition, context) {
-                            showSGDialog(
-                                context: context,
-                                childrenBuilder: (_ctx) => [
-                                  Center(child: SGTypography.body("영양성분을\n정말 설정하시겠습니까?", size: FontSize.large, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
-                                  SizedBox(height: SGSpacing.p5),
-                                  Row(children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(_ctx).pop();
-                                        },
-                                        child: SGContainer(
-                                          color: SGColors.gray3,
-                                          padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                          borderRadius: BorderRadius.circular(SGSpacing.p3),
-                                          child: Center(
-                                            child: SGTypography.body("취소", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                        builder: (context) =>
+                            UpdateNutritionScreen(
+                              title: "영양성분 설정",
+                              nutrition: menuOptionModel.nutrition,
+                              onConfirm: (nutrition, context) {
+                                showSGDialog(
+                                    context: context,
+                                    childrenBuilder: (_ctx) =>
+                                    [
+                                      Center(child: SGTypography.body("영양성분을\n정말 설정하시겠습니까?", size: FontSize.large, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
+                                      SizedBox(height: SGSpacing.p5),
+                                      Row(children: [
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(_ctx).pop();
+                                            },
+                                            child: SGContainer(
+                                              color: SGColors.gray3,
+                                              padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                                              borderRadius: BorderRadius.circular(SGSpacing.p3),
+                                              child: Center(
+                                                child: SGTypography.body("취소", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(width: SGSpacing.p2),
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          widget.onSubmit(menuOptionModel.copyWith(nutrition: nutrition));
-                                          Navigator.of(context).pop();
-                                          Navigator.of(nutritionScreenContext).pop();
-                                        },
-                                        child: SGContainer(
-                                          color: SGColors.primary,
-                                          padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                          borderRadius: BorderRadius.circular(SGSpacing.p3),
-                                          child: Center(
-                                            child: SGTypography.body("확인", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                        SizedBox(width: SGSpacing.p2),
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                menuOptionModel = menuOptionModel.copyWith(nutrition: nutrition);
+                                              });
+                                              widget.onSubmit(menuOptionModel.copyWith(nutrition: nutrition));
+                                              Navigator.of(context).pop();
+                                              Navigator.of(nutritionScreenContext).pop();
+                                            },
+                                            child: SGContainer(
+                                              color: SGColors.primary,
+                                              padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                                              borderRadius: BorderRadius.circular(SGSpacing.p3),
+                                              child: Center(
+                                                child: SGTypography.body("확인", size: FontSize.normal, weight: FontWeight.w700, color: SGColors.white),
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ]),
-                                ]);
-                          },
-                        )));
+                                      ]),
+                                    ]);
+                              },
+                            )));
                   },
                 )
               ],
