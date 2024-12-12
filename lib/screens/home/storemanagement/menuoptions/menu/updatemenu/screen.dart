@@ -19,8 +19,8 @@ import '../../../../../../core/screens/image_upload_screen.dart';
 import '../../../../../../main.dart';
 import 'menu_option_category_card.dart';
 import '../../model.dart';
-import '../../nutrition/nutrition_card.dart';
-import '../../nutrition/screen.dart';
+import '../../updatenutrition/nutrition_card.dart';
+import '../../updatenutrition/screen.dart';
 import '../../provider.dart';
 
 class UpdateMenuScreen extends ConsumerStatefulWidget {
@@ -352,7 +352,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                     onTap: () {
                       final screenContext = context;
                       Navigator.of(screenContext).push(MaterialPageRoute(
-                          builder: (nutritionScreenContext) => NutritionInputScreen(
+                          builder: (nutritionScreenContext) => UpdateNutritionScreen(
                                 title: "영양성분 수정",
                                 nutrition: menuModel.nutrition,
                                 onConfirm: (nutrition,  context) {

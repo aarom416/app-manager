@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_step_indicator.dart';
@@ -286,10 +286,11 @@ class _Page_1_MenuOptionsState extends State<_Page_1_MenuOptions> {
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => AddOptionScreen(
-                                onSubmit: (option) {
+                                onSubmit: (menuOptionModel) {
                                   setState(() {
-                                    selectedMenuOptions.add(option);
+                                    selectedMenuOptions.add(menuOptionModel);
                                   });
+                                  widget.onEditFunction(selectedMenuOptions);
                                 },
                               )));
                     },
@@ -410,10 +411,7 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
                   widget.onPrev();
                 },
                 child: SGContainer(
-                    color: SGColors.gray3,
-                    padding: EdgeInsets.all(SGSpacing.p4),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                    color: SGColors.gray3, padding: EdgeInsets.all(SGSpacing.p4), borderRadius: BorderRadius.circular(SGSpacing.p3), child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
               )),
               SizedBox(width: SGSpacing.p3),
               Expanded(
@@ -625,9 +623,7 @@ class _Page_3_AppliedMenusState extends State<_Page_3_AppliedMenus> {
                           padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
                           borderRadius: BorderRadius.circular(SGSpacing.p2),
                           borderColor: SGColors.primary,
-                          child: Center(
-                              child:
-                                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [SGTypography.body("메뉴 선택하기", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)]))))
+                          child: Center(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [SGTypography.body("메뉴 선택하기", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)]))))
                 ] else ...[
                   ...appliedMenus
                       .mapIndexed(
@@ -755,15 +751,22 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                 SGTypography.body("옵션명", size: FontSize.normal, weight: FontWeight.w700),
                 SizedBox(height: SGSpacing.p5 / 2),
                 SGContainer(
-                    color: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
-                    borderColor: SGColors.line3,
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Row(children: [
-                      SGTypography.body("훈제오리 토핑", size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray5),
-                      Spacer(),
-                      SGTypography.body("3,000원", size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray4),
-                    ])),
+                  color: Colors.white,
+                  padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
+                  borderColor: SGColors.line3,
+                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                  child: Column(
+                    children: selectedMenuOptions.map((menuOption) {
+                      return Row(
+                        children: [
+                          SGTypography.body(menuOption.optionContent, size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray5),
+                          const Spacer(),
+                          SGTypography.body("${menuOption.price.toKoreanCurrency}원", size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray4),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
                 SGContainer(),
                 SizedBox(height: SGSpacing.p15 / 2),
                 SGTypography.body("필수 여부", size: FontSize.normal, weight: FontWeight.w700),

@@ -15,8 +15,8 @@ import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 import '../../../../../../core/screens/price_field_edit_screen.dart';
 import '../../../../../../main.dart';
 import '../../model.dart';
-import '../../nutrition/nutrition_card.dart';
-import '../../nutrition/screen.dart';
+import '../../updatenutrition/nutrition_card.dart';
+import '../../updatenutrition/screen.dart';
 import '../../provider.dart';
 
 class UpdateMenuOptionModelScreen extends ConsumerStatefulWidget {
@@ -165,7 +165,7 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                     onTap: () {
                       final screenContext = context;
                       Navigator.of(screenContext).push(MaterialPageRoute(
-                          builder: (nutritionScreenContext) => NutritionInputScreen(
+                          builder: (nutritionScreenContext) => UpdateNutritionScreen(
                                 title: "영양성분 설정",
                                 nutrition: nutrition,
                                 onConfirm: (nutrition, context) {
