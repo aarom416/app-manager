@@ -156,44 +156,48 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                           ),
                         ),
                         SizedBox(height: SGSpacing.p6),
-                        Row(children: [
-                          ...["처리 중", "배달/픽업 완료", "주문 취소"]
-                              .map((e) => [
-                                    GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            filterValue = e;
-                                            provider.onChangeFilter(
-                                                filter: filterValue == '처리 중'
-                                                    ? '0'
-                                                    : filterValue == '배달/픽업 완료'
-                                                        ? '1'
-                                                        : '2');
-                                          });
-                                        },
-                                        child: SGContainer(
-                                            borderRadius: BorderRadius.circular(
-                                                SGSpacing.p24),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: SGSpacing.p4,
-                                                vertical: SGSpacing.p3),
-                                            borderColor: e == filterValue
-                                                ? Color(0xFF79DF70)
-                                                    .withOpacity(0.2)
-                                                : SGColors.line2,
-                                            color: e == filterValue
-                                                ? Color(0xFF79DF70)
-                                                    .withOpacity(0.12)
-                                                : SGColors.white,
-                                            child: SGTypography.body(e,
-                                                size: FontSize.small,
-                                                color: e == filterValue
-                                                    ? SGColors.primary
-                                                    : SGColors.gray5))),
-                                    SizedBox(width: SGSpacing.p2)
-                                  ])
-                              .flattened
-                        ]),
+                        SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          child: Row(children: [
+                            ...["처리 중", "배달/픽업 완료", "주문 취소"]
+                                .map((e) => [
+                                      GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              filterValue = e;
+                                              provider.onChangeFilter(
+                                                  filter: filterValue == '처리 중'
+                                                      ? '0'
+                                                      : filterValue == '배달/픽업 완료'
+                                                          ? '1'
+                                                          : '2');
+                                            });
+                                          },
+                                          child: SGContainer(
+                                              borderRadius: BorderRadius.circular(
+                                                  SGSpacing.p24),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: SGSpacing.p4,
+                                                  vertical: SGSpacing.p3),
+                                              borderColor: e == filterValue
+                                                  ? Color(0xFF79DF70)
+                                                      .withOpacity(0.2)
+                                                  : SGColors.line2,
+                                              color: e == filterValue
+                                                  ? Color(0xFF79DF70)
+                                                      .withOpacity(0.12)
+                                                  : SGColors.white,
+                                              child: SGTypography.body(e,
+                                                  size: FontSize.small,
+                                                  color: e == filterValue
+                                                      ? SGColors.primary
+                                                      : SGColors.gray5))),
+                                      SizedBox(width: SGSpacing.p2)
+                                    ])
+                                .flattened
+                          ]),
+                        ),
                       ])),
               SGContainer(
                 padding: EdgeInsets.symmetric(
@@ -654,13 +658,13 @@ class _OrderHistoryDetailScreen extends StatelessWidget {
                 ],
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "주문 시각", right: storeOrderHistory.createdDate, overflow: false, width: 224),
+                    left: "주문 시각", right: storeOrderHistory.createdDate, overflow: false, width: 201),
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "접수 시각", right: storeOrderHistory.receivedDate, overflow: false, width: 224),
+                    left: "접수 시각", right: storeOrderHistory.receivedDate, overflow: false, width: 201),
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "완료 시각", right: storeOrderHistory.completedDate, overflow: false, width: 224),
+                    left: "완료 시각", right: storeOrderHistory.completedDate, overflow: false, width: 201),
               ],
             )
           ])),

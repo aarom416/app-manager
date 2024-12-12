@@ -436,52 +436,60 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                   )),
                   SizedBox(height: SGSpacing.p5),
                   SGContainer(
+                    width: double.infinity,
                       borderColor: SGColors.line3,
                       borderRadius: BorderRadius.circular(SGSpacing.p2),
                       padding: EdgeInsets.symmetric(
-                          horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                      child: Row(children: [
-                        SGContainer(
-                          width: SGSpacing.p7 / 2,
-                          height: SGSpacing.p7 / 2,
-                          color: SGColors.warningOrange,
-                          borderRadius: BorderRadius.circular(SGSpacing.p1),
-                        ),
-                        SizedBox(width: SGSpacing.p2),
-                        SGTypography.body("배달",
-                            size: FontSize.small,
-                            color: SGColors.gray5,
-                            weight: FontWeight.w700),
-                        SizedBox(width: SGSpacing.p2),
-                        SGTypography.body(
-                            "최근 7일, ${state.deliveryCount}명이 배달 주문 했어요.",
-                            size: FontSize.small,
-                            color: SGColors.gray4),
-                      ])),
+                          horizontal: SGSpacing.p3, vertical: SGSpacing.p3),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(children: [
+                          SGContainer(
+                            width: SGSpacing.p7 / 2,
+                            height: SGSpacing.p7 / 2,
+                            color: SGColors.warningOrange,
+                            borderRadius: BorderRadius.circular(SGSpacing.p1),
+                          ),
+                          SizedBox(width: SGSpacing.p2),
+                          SGTypography.body("배달",
+                              size: FontSize.small,
+                              color: SGColors.gray5,
+                              weight: FontWeight.w700),
+                          SizedBox(width: SGSpacing.p2),
+                          SGTypography.body(
+                              "최근 7일, ${state.deliveryCount}명이 배달 주문 했어요.",
+                              size: FontSize.small,
+                              color: SGColors.gray4),
+                        ]),
+                      )),
                   SizedBox(height: SGSpacing.p2),
                   SGContainer(
+                    width: double.infinity,
                       borderColor: SGColors.line3,
                       borderRadius: BorderRadius.circular(SGSpacing.p2),
                       padding: EdgeInsets.symmetric(
-                          horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                      child: Row(children: [
-                        SGContainer(
-                          width: SGSpacing.p7 / 2,
-                          height: SGSpacing.p7 / 2,
-                          color: SGColors.success,
-                          borderRadius: BorderRadius.circular(SGSpacing.p1),
-                        ),
-                        SizedBox(width: SGSpacing.p2),
-                        SGTypography.body("포장",
-                            size: FontSize.small,
-                            color: SGColors.gray5,
-                            weight: FontWeight.w700),
-                        SizedBox(width: SGSpacing.p2),
-                        SGTypography.body(
-                            "최근 7일, ${state.takeoutCount}명이 포장 주문 했어요.",
-                            size: FontSize.small,
-                            color: SGColors.gray4),
-                      ])),
+                          horizontal: SGSpacing.p3, vertical: SGSpacing.p3),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(children: [
+                          SGContainer(
+                            width: SGSpacing.p7 / 2,
+                            height: SGSpacing.p7 / 2,
+                            color: SGColors.success,
+                            borderRadius: BorderRadius.circular(SGSpacing.p1),
+                          ),
+                          SizedBox(width: SGSpacing.p2),
+                          SGTypography.body("포장",
+                              size: FontSize.small,
+                              color: SGColors.gray5,
+                              weight: FontWeight.w700),
+                          SizedBox(width: SGSpacing.p2),
+                          SGTypography.body(
+                              "최근 7일, ${state.takeoutCount}명이 포장 주문 했어요.",
+                              size: FontSize.small,
+                              color: SGColors.gray4),
+                        ]),
+                      )),
                   SizedBox(height: SGSpacing.p5),
                 ],
                 if (!collapsed) ...[
@@ -538,7 +546,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                         ]))
                   else if (selectedOrderStatisticsPeriodLabel == '주간')
                     SolidLineChart(
-                        data: LineChartItemData(
+                      data: LineChartItemData(
                       labels: [
                         ...state.storeStatisticsWeekList.map((e) => e.weekName)
                       ],

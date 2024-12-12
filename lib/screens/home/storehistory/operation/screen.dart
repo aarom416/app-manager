@@ -97,7 +97,7 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
                         width: double.infinity,
                         color: SGColors.primary,
                         borderRadius: BorderRadius.circular(SGSpacing.p2),
-                        child: SGActionButton(
+                        child: SearchButton(
                             onPressed: () {
                               provider.getStoreHistory(
                                 '0',
@@ -235,5 +235,37 @@ class _EventCardState extends State<_EventCard> {
             ],
           ],
         )));
+  }
+}
+
+class SearchButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String label;
+  final bool disabled;
+  final SGActionButtonVariant variant;
+
+  SearchButton(
+      {required this.onPressed,
+        required this.label,
+        this.variant = SGActionButtonVariant.primary,
+        this.disabled = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: SGContainer(
+          padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+          width: double.infinity,
+          color: disabled
+              ? SGColors.gray3
+              : (variant == SGActionButtonVariant.danger ? SGColors.warningRed.withOpacity(0.08) : SGColors.primary),
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          child: Center(
+              child: SGTypography.body(label,
+                  color: SGActionButtonVariant.primary == variant ? Colors.white : SGColors.warningRed,
+                  weight: FontWeight.w700,
+                  size: FontSize.medium))),
+    );
   }
 }
