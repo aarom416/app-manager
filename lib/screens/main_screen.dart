@@ -128,6 +128,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       appBar: AppBar(
         shadowColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: SGContainer(
             padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
@@ -155,6 +156,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         ],
       ),
       body: SGContainer(
+        height: double.infinity,
         color: const Color(0xFFFAFAFA),
         child: ListView(
           shrinkWrap: true,

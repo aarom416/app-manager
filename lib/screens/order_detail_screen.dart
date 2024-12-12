@@ -226,7 +226,6 @@ class NewOrderDetailScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: SGSpacing.p20),
             ])));
   }
 }
@@ -293,8 +292,9 @@ class CompletedOrderDetailScreen extends StatelessWidget {
               SizedBox(height: SGSpacing.p3),
               _OrderInformation(order: order),
               SizedBox(height: SGSpacing.p20),
-              SGActionButton(onPressed: () {}, label: "고객 센터"),
-              SizedBox(height: SGSpacing.p20),
+              SGActionButton(onPressed: () {
+
+              }, label: "고객 센터"),
             ])));
   }
 }
@@ -437,13 +437,6 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                     color: SGColors.whiteForDarkMode,
                     size: FontSize.xlarge,
                     weight: FontWeight.w700),
-              if (order.orderType == "배달") ...[
-                SizedBox(height: SGSpacing.p2),
-                SGTypography.body("배달 대행사 : 바로고",
-                    size: FontSize.normal,
-                    weight: FontWeight.w400,
-                    color: SGColors.gray4),
-              ],
               SizedBox(height: SGSpacing.p6),
               SizedBox(height: SGSpacing.p2),
               if (order.orderType == "배달")
@@ -561,7 +554,7 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                                     size: FontSize.small,
                                     weight: FontWeight.w700,
                                     color: SGColors.gray4),
-                                SizedBox(height: SGSpacing.p5),
+                                SizedBox(height: SGSpacing.p2),
                                 Row(
                                   children: [
                                     SGFlexible(
@@ -613,6 +606,7 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+                                SizedBox(height: SGSpacing.p2),
                               ]);
                     },
                     label: "배달 완료 처리하기"),
@@ -633,7 +627,6 @@ class InProgressOrderDetailScreen extends StatelessWidget {
                             weight: FontWeight.w700,
                             size: FontSize.medium))),
               ),
-              SizedBox(height: SGSpacing.p32),
             ])));
   }
 }
@@ -1034,7 +1027,7 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
               size: FontSize.small,
               weight: FontWeight.w700,
               color: SGColors.gray4)),
-      SizedBox(height: SGSpacing.p4),
+      SizedBox(height: SGSpacing.p3),
       GestureDetector(
         onTap: () {
           if (rejectReason.isEmpty) return;

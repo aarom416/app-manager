@@ -18,6 +18,7 @@ import 'package:singleeat/office/providers/signup_provider.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/store_registration_form_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SignupScreen extends ConsumerStatefulWidget {
   const SignupScreen({super.key});
@@ -625,137 +626,189 @@ class _Term {
 }
 
 class _TermCheckScreenState extends ConsumerState<_TermCheckScreen> {
+  final Map<String, String> termsUrls = {
+    "계약서 정보 작성 확인":
+    "https://octagonal-expansion-359.notion.site/159e8511142480b28cf1d28240d4dcad?pvs=4",
+    "서비스 이용약관":
+    "https://octagonal-expansion-359.notion.site/146e8511142480319139d2865e99063a?pvs=4",
+    "개인정보 처리방침":
+    "https://octagonal-expansion-359.notion.site/159e85111424809a9622ddf5d6cf6dd9?pvs=4",
+    "전자금융거래 이용약관 동의":
+    "https://octagonal-expansion-359.notion.site/145e8511142480cbbe03fd7bf7326bed?pvs=4",
+    "싱그릿 식단 연구소 수신 동의":
+    "https://octagonal-expansion-359.notion.site/159e8511142480d5a3b6cc5f520969e3?pvs=4",
+    "부가 서비스 및 혜택 안내 동의":
+    "https://octagonal-expansion-359.notion.site/159e85111424807bb2f1eac76f44bcc2?pvs=4",
+  };
+
   List<(String, bool)> _terms = [
-    ("개인정보 수집 및 이용 동의", true),
+    ("계약서 정보 작성 확인", true),
+    ("서비스 이용약관", true),
+    ("개인정보 처리방침", true),
     ("전자금융거래 이용약관 동의", true),
-    ("고유식별정보 처리 동의", true),
-    ("통신사 이용약관 동의", true),
     ("싱그릿 식단 연구소 수신 동의", false),
     ("부가 서비스 및 혜택 안내 동의", false),
   ];
 
   late List<_Term> terms = [
-    ..._terms.map((e) => _Term(isRequired: e.$2, title: e.$1))
+  ..._terms.map((e) => _Term(isRequired: e.$2, title: e.$1))
   ];
 
   bool get isAllChecked => terms.every((element) => element.checked);
 
   bool get isAllRequiredChecked =>
-      terms
-          .where((element) => element.isRequired)
-          .every((element) => element.checked);
+  terms.where((element) => element.isRequired).every((element) => element.checked);
+
+  Future<void> _launchUrl(String url) async {
+    final uri = Uri.parse(url);
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final provider = ref.read(signupNotifierProvider.notifier);
-    return Scaffold(
-        appBar: AppBarWithLeftArrow(title: "싱그릿 식단 연구소", onTap: widget.onPrev),
-        body: SGContainer(
-            color: SGColors.white,
-            padding: EdgeInsets.symmetric(
-                horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-            child: ListView(children: [
-              SGTypography.body("이용약관 동의",
-                  size: FontSize.xlarge,
-                  weight: FontWeight.w700,
-                  color: SGColors.black),
+  final provider = ref.read(signupNotifierProvider.notifier);
+  return Scaffold(
+      appBar: AppBarWithLeftArrow(title: "싱그릿 식단 연구소", onTap: widget.onPrev),
+      body: SGContainer(
+        color: SGColors.white,
+        padding: EdgeInsets.symmetric(
+        horizontal: SGSpacing.p4,
+        vertical: SGSpacing.p6,
+        ),
+          child: ListView(
+              children: [
+                SGTypography.body(
+                "이용약관 동의",
+                size: FontSize.xlarge,
+                weight: FontWeight.w700,
+                color: SGColors.black,
+                ),
               SizedBox(height: SGSpacing.p6),
               GestureDetector(
-                onTap: () {
-                  setState(() {
-                    terms = terms
-                        .map((e) => e.copyWith(checked: !isAllChecked))
-                        .toList();
-                  });
-                },
-                child: SGContainer(
-                    borderColor: SGColors.line2,
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    padding: EdgeInsets.all(SGSpacing.p4),
-                    child: Row(children: [
-                      Image.asset(
-                          isAllChecked
-                              ? "assets/images/checkbox-on.png"
-                              : "assets/images/checkbox-off.png",
-                          width: SGSpacing.p6,
-                          height: SGSpacing.p6),
-                      SizedBox(width: SGSpacing.p2),
-                      SGTypography.body("모든 이용약관에 동의합니다.",
-                          size: FontSize.medium,
-                          weight: FontWeight.w600,
-                          color: SGColors.black),
-                    ])),
-              ),
-              ...terms
-                  .mapIndexed((index, term) =>
-              [
-                SizedBox(height: SGSpacing.p3),
-                GestureDetector(
                   onTap: () {
-                    setState(() {
-                      terms = terms
-                          .mapIndexed((i, e) =>
-                      i == index
-                          ? e.copyWith(checked: !e.checked)
-                          : e)
-                          .toList();
-                    });
+                  setState(() {
+                  terms = terms
+                      .map((e) => e.copyWith(checked: !isAllChecked))
+                      .toList();
+                  });
                   },
                   child: SGContainer(
+                      borderColor: SGColors.line2,
+                      borderRadius: BorderRadius.circular(SGSpacing.p3),
                       padding: EdgeInsets.all(SGSpacing.p4),
-                      child: Row(children: [
-                        Image.asset(
-                            term.checked
-                                ? "assets/images/checkbox-on.png"
-                                : "assets/images/checkbox-off.png",
-                            width: SGSpacing.p6,
-                            height: SGSpacing.p6),
-                        SizedBox(width: SGSpacing.p2),
-                        SGTypography.body(term.title,
-                            size: FontSize.normal,
+                      child: Row(
+                          children: [
+                          Image.asset(
+                          isAllChecked ? "assets/images/checkbox-on.png"
+                              : "assets/images/checkbox-off.png",
+                          width: SGSpacing.p6,
+                          height: SGSpacing.p6,
+                           ),
+                          SizedBox(width: SGSpacing.p2),
+                            SGTypography.body(
+                            "모든 이용약관에 동의합니다.",
+                            size: FontSize.medium,
                             weight: FontWeight.w600,
-                            color: SGColors.gray5),
-                        SizedBox(width: SGSpacing.p1),
-                        if (term.isRequired)
-                          SGTypography.body("(필수)",
-                              size: FontSize.normal,
-                              color: SGColors.primary,
-                              weight: FontWeight.w400)
-                        else
-                          SGTypography.body("(선택)",
-                              size: FontSize.normal,
-                              color: SGColors.gray3,
-                              weight: FontWeight.w400),
-                        Spacer(),
-                        Icon(Icons.arrow_forward_ios,
-                            size: FontSize.small,
-                            color: SGColors.gray3),
-                      ])),
-                ),
-              ])
-                  .flattened,
-              SizedBox(height: SGSpacing.p15),
-              SGActionButton(
+                            color: SGColors.black,
+                          ),],),),),
+              ...terms.asMap().entries.map((entry) {
+              final index = entry.key;
+              final term = entry.value;
+              return Column(
+                  children: [
+                      SizedBox(height: SGSpacing.p3),
+                      GestureDetector(
+                          onTap: () {
+                          setState(() {
+                          terms = terms
+                              .asMap()
+                              .entries
+                              .map((e) => e.key == index
+                          ? e.value.copyWith(checked: !e.value.checked)
+                              : e.value)
+                              .toList();
+                  });
+              },
+                child: SGContainer(
+                padding: EdgeInsets.all(SGSpacing.p4),
+                child: Row(
+                children: [
+                    Image.asset(
+                          term.checked
+                          ? "assets/images/checkbox-on.png"
+                              : "assets/images/checkbox-off.png",
+                          width: SGSpacing.p6,
+                          height: SGSpacing.p6,
+                          ),
+                    SizedBox(width: SGSpacing.p2),
+                    SGTypography.body(
+                      term.title,
+                      size: FontSize.normal,
+                      weight: FontWeight.w600,
+                      color: SGColors.gray5,
+                    ),
+                    SizedBox(width: SGSpacing.p1),
+                    if (term.isRequired)
+                    SGTypography.body(
+                      "(필수)",
+                      size: FontSize.normal,
+                      color: SGColors.primary,
+                      weight: FontWeight.w400,
+                    )
+                    else
+                    SGTypography.body(
+                      "(선택)",
+                      size: FontSize.normal,
+                      color: SGColors.gray3,
+                      weight: FontWeight.w400,
+                    ),
+                    Spacer(),
+                    InkWell(
+                      onTap: () {
+                        final url = termsUrls[term.title];
+                          if (url != null) {
+                          _launchUrl(url);
+                           }
+                          },
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          size: FontSize.small,
+                          color: SGColors.gray3,
+                      ),
+                    ),
+                   ],
+                   ),
+                  ),
+                  ),
+                  ],
+                );
+                }).toList(),
+                SizedBox(height: SGSpacing.p15),
+                SGActionButton(
                 onPressed: () {
-                  for (int i = 0; i < terms.length; i++) {
-                    if (terms[i].title == '싱그릿 식단 연구소 수신 동의') {
-                      provider.onChangeIsSingleeatAgree(terms[i].checked);
-                    } else if (terms[i].title == '부가 서비스 및 혜택 안내 동의') {
-                      provider.onChangeIsAdditionalAgree(terms[i].checked);
-                    }
-                  }
-
-                  if (isAllRequiredChecked) {
-                    provider.changeStatus();
+                for (int i = 0; i < terms.length; i++) {
+                  if (terms[i].title == '싱그릿 식단 연구소 수신 동의') {
+                    provider.onChangeIsSingleeatAgree(terms[i].checked);
+                  } else if (terms[i].title == '부가 서비스 및 혜택 안내 동의') {
+                    provider.onChangeIsAdditionalAgree(terms[i].checked);
+                   }
+                }
+                if (isAllRequiredChecked) {
+                  provider.changeStatus();
                   }
                 },
                 label: "확인",
                 disabled: !isAllRequiredChecked,
               ),
               SizedBox(height: SGSpacing.p10),
-            ])));
-  }
+              ],
+             ),
+            ),
+          );
+        }
 }
+
+
 
 class SignupFormScreen extends ConsumerStatefulWidget {
   VoidCallback onPrev;
@@ -769,7 +822,6 @@ class SignupFormScreen extends ConsumerStatefulWidget {
 
 class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
   final loginIdFocusNode = FocusNode();
-  final passwordFocusNode = FocusNode();
   final passwordConfirmFocusNode = FocusNode();
 
   late TextEditingController emailDomainController = TextEditingController();
@@ -803,18 +855,7 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
   String? _idErrorText;
   String? _passwordErrorText;
 
-  void _validateId(String value) {
-    final idRegex = RegExp(r'^[a-zA-Z0-9]{6,12}$');
-    setState(() {
-      if (idRegex.hasMatch(value)) {
-        _idErrorText = null; // Valid ID
-      } else {
-        _idErrorText = "아이디는 6~12자 이내, 영문, 숫자만 사용 가능합니다.";
-      }
-    });
-  }
-
-  void _validatePassword(String value) {
+  void passwordValidation(String value) {
     final passwordRegex = RegExp(r'^[a-zA-Z0-9!@#$%^&*()_+]{8,16}$');
     setState(() {
       if (passwordRegex.hasMatch(value)) {
@@ -833,17 +874,6 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
       }
     });
 
-    passwordFocusNode.addListener(() {
-      if (!passwordFocusNode.hasFocus) {
-        ref.read(signupNotifierProvider.notifier).passwordValidation();
-      }
-    });
-
-    passwordConfirmFocusNode.addListener(() {
-      if (!passwordConfirmFocusNode.hasFocus) {
-        ref.read(signupNotifierProvider.notifier).passwordConfirmValidation();
-      }
-    });
 
     Future.microtask(() {
       ref.read(signupNotifierProvider.notifier).reset();
@@ -854,6 +884,7 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
   Widget build(BuildContext context) {
     SignupState state = ref.watch(signupNotifierProvider);
     SignupNotifier provider = ref.read(signupNotifierProvider.notifier);
+
     ref.listen(signupNotifierProvider, (previous, next) {
       if (previous?.emailStatus != next.emailStatus) {
         switch (next.emailStatus) {
@@ -973,9 +1004,10 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                         children: [
                           Expanded(
                             child: TextField(
-                                focusNode: passwordFocusNode,
+                                controller: _passwordController,
                                 onChanged: (value) {
                                   provider.onChangePassword(value);
+                                  passwordValidation(value);
                                 },
                                 style: TextStyle(
                                     fontSize: FontSize.small,
@@ -1010,11 +1042,11 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                     ],
                   ),
                 )),
-            if (state.passwordValidError.errorMessage.isNotEmpty)
+            if (_passwordController.text.isNotEmpty && _passwordErrorText != null)
               Padding(
                 padding: EdgeInsets.only(top: SGSpacing.p2),
                 child: Text(
-                  state.passwordValidError.errorMessage,
+                  _passwordErrorText!,
                   style: TextStyle(
                     fontSize: FontSize.small,
                     color: SGColors.warningRed,
@@ -1070,9 +1102,9 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
                     ],
                   ),
                 )),
-            if (state.password.isNotEmpty &&
+            if (_passwordController.text.isNotEmpty &&
                 state.passwordConfirm.isNotEmpty &&
-                state.password != state.passwordConfirm) ...{
+                _passwordController.text != state.passwordConfirm) ...{
               SizedBox(height: SGSpacing.p2),
               SGTypography.body("다시 한 번 확인해주세요.",
                   size: FontSize.small, color: SGColors.warningRed),

@@ -137,6 +137,7 @@ class _NoticeScreenState extends ConsumerState<NoticeScreen>
                         return SGContainer(
                             color: SGColors.white,
                             borderColor: SGColors.gray2,
+                            borderRadius: BorderRadius.circular(6),
                             padding: EdgeInsets.all(SGSpacing.p3)
                                 .copyWith(bottom: SGSpacing.p4),
                             child: Column(

@@ -103,6 +103,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     ref.listen(loginNotifierProvider, (previous, next) {
       switch (next.status) {
+
         case LoginStatus.direct:
           ref.read(goRouterProvider).push(
             AppRoutes.authenticateWithPhoneNumber,
@@ -152,158 +153,163 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SGContainer(
+        height: MediaQuery.of(context).size.height,
         color: SGColors.white,
         padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
-        child: Column(children: [
-          SizedBox(height: SGSpacing.p20),
-          Image.asset("assets/images/app-logo.png",
-              height: SGSpacing.p4 * 10, width: SGSpacing.p4 * 10),
-          SizedBox(height: SGSpacing.p10),
-          SGTextFieldWrapper(
-              child: SGContainer(
-            padding: EdgeInsets.all(SGSpacing.p4),
-            width: double.infinity,
-            child: TextField(
-                controller: _loginController,
-                onChanged: (value) {
-                  ref
-                      .read(loginNotifierProvider.notifier)
-                      .onChangeLoginId(value);
-                },
-                style:
-                    TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                decoration: InputDecoration(
-                  isDense: true,
-                  isCollapsed: true,
-                  hintStyle: TextStyle(
-                      color: SGColors.gray3,
-                      fontSize: FontSize.small,
-                      fontWeight: FontWeight.w400),
-                  hintText: "아이디",
-                  border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.zero,
-                      borderSide: BorderSide.none),
-                )),
-          )),
-          SizedBox(height: SGSpacing.p3),
-          SGTextFieldWrapper(
-              child: SGContainer(
-            padding: EdgeInsets.all(SGSpacing.p4),
-            width: double.infinity,
-            child: Row(
+        child: SingleChildScrollView(
+          child: Column(
               children: [
-                Expanded(
-                  child: TextField(
-                      onChanged: (value) {
-                        ref
-                            .read(loginNotifierProvider.notifier)
-                            .onChangePassword(value);
+            SizedBox(height: SGSpacing.p20),
+            Image.asset("assets/images/app-logo.png",
+                height: SGSpacing.p4 * 10, width: SGSpacing.p4 * 10),
+            SizedBox(height: SGSpacing.p10),
+            SGTextFieldWrapper(
+                child: SGContainer(
+              padding: EdgeInsets.all(SGSpacing.p4),
+              width: double.infinity,
+              child: TextField(
+                  controller: _loginController,
+                  onChanged: (value) {
+                    ref
+                        .read(loginNotifierProvider.notifier)
+                        .onChangeLoginId(value);
+                  },
+                  style:
+                      TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    isCollapsed: true,
+                    hintStyle: TextStyle(
+                        color: SGColors.gray3,
+                        fontSize: FontSize.small,
+                        fontWeight: FontWeight.w400),
+                    hintText: "아이디",
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.zero,
+                        borderSide: BorderSide.none),
+                  )),
+            )),
+            SizedBox(height: SGSpacing.p3),
+            SGTextFieldWrapper(
+                child: SGContainer(
+              padding: EdgeInsets.all(SGSpacing.p4),
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                        onChanged: (value) {
+                          ref
+                              .read(loginNotifierProvider.notifier)
+                              .onChangePassword(value);
+                        },
+                        style: TextStyle(
+                            fontSize: FontSize.small, color: SGColors.gray5),
+                        obscureText: !passwordVisible,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          isCollapsed: true,
+                          hintStyle: TextStyle(
+                              color: SGColors.gray3,
+                              fontSize: FontSize.small,
+                              fontWeight: FontWeight.w400),
+                          hintText: "비밀번호",
+                          border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.zero,
+                              borderSide: BorderSide.none),
+                        )),
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          passwordVisible = !passwordVisible;
+                        });
                       },
-                      style: TextStyle(
-                          fontSize: FontSize.small, color: SGColors.gray5),
-                      obscureText: !passwordVisible,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        isCollapsed: true,
-                        hintStyle: TextStyle(
-                            color: SGColors.gray3,
-                            fontSize: FontSize.small,
-                            fontWeight: FontWeight.w400),
-                        hintText: "비밀번호",
-                        border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.zero,
-                            borderSide: BorderSide.none),
-                      )),
-                ),
-                GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        passwordVisible = !passwordVisible;
-                      });
-                    },
-                    child: Icon(
-                        passwordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: SGColors.gray3)),
-              ],
-            ),
-          )),
-          SizedBox(height: SGSpacing.p4),
-          GestureDetector(
-            onTap: () {
-              ref
-                  .read(loginNotifierProvider.notifier)
-                  .onChangeRememberLoginId();
-            },
-            child: Row(
-              children: [
-                (state.isRememberLoginId) ? checkboxOn : checkboxOff,
-                SizedBox(width: SGSpacing.p1),
-                SGTypography.body("아이디 저장",
-                    size: FontSize.normal, color: SGColors.gray4),
-              ],
-            ),
-          ),
-          if (!state.error.success && state.showTitleMessage.isEmpty) ...[
-            const SizedBox(height: 10),
-            Container(
-              alignment: Alignment.topLeft,
-              child: SGTypography.body(
-                state.error.errorMessage,
-                color: SGColors.warningRed,
-                size: FontSize.small,
+                      child: Icon(
+                          passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: SGColors.gray3)),
+                ],
               ),
-            )
-          ],
-          SizedBox(height: SGSpacing.p5),
-          SGActionButton(
-              onPressed: () {
-                ref.read(loginNotifierProvider.notifier).directLogin();
-                /*이
-                showFailDialogWithImageNoSecondTitle("5분만 로그인이 제한됩니다.");
-                showFailDialogWithImage(
-                    "회원 탈퇴가 완료된 계정입니다.", "회원 탈퇴 후 21일 이내에는 로그인할 수 없습니다.");
-                showFailDialogWithImage("해당 계정이 3일간 정지되었습니다.",
-                    "비정상적인 행동이 감지되었습니다.\n자세한 사항은 고객센터로 문의하시길 바랍니다.");
-                showFailDialogWithImage("해당 계정이 7일간 정지되었습니다.",
-                    "비정상적인 행동이 감지되었습니다.\n자세한 사항은 고객센터로 문의하시길 바랍니다.");
-                showFailDialogWithImage(
-                    "비정상적인 행동이 감지되었습니다.", "고객센터(1600-7723)로 문의하시길 바랍니다.");
-                 */
+            )),
+            SizedBox(height: SGSpacing.p4),
+            GestureDetector(
+              onTap: () {
+                ref
+                    .read(loginNotifierProvider.notifier)
+                    .onChangeRememberLoginId();
               },
-              label: "로그인"),
-          SizedBox(height: SGSpacing.p8),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-            GestureDetector(
-                onTap: () {
-                  ref.read(goRouterProvider).push(AppRoutes.signup);
+              child: Row(
+                children: [
+                  (state.isRememberLoginId) ? checkboxOn : checkboxOff,
+                  SizedBox(width: SGSpacing.p1),
+                  SGTypography.body("아이디 저장",
+                      size: FontSize.normal, color: SGColors.gray4),
+                ],
+              ),
+            ),
+            if (!state.error.success && state.showTitleMessage.isEmpty) ...[
+              const SizedBox(height: 10),
+              Container(
+                alignment: Alignment.topLeft,
+                child: SGTypography.body(
+                  state.error.errorMessage,
+                  color: SGColors.warningRed,
+                  size: FontSize.small,
+                ),
+              )
+            ],
+            SizedBox(height: SGSpacing.p5),
+            SGActionButton(
+                onPressed: () {
+                  ref.read(loginNotifierProvider.notifier).directLogin();
+                  /*이
+                  showFailDialogWithImageNoSecondTitle("5분만 로그인이 제한됩니다.");
+                  showFailDialogWithImage(
+                      "회원 탈퇴가 완료된 계정입니다.", "회원 탈퇴 후 21일 이내에는 로그인할 수 없습니다.");
+                  showFailDialogWithImage("해당 계정이 3일간 정지되었습니다.",
+                      "비정상적인 행동이 감지되었습니다.\n자세한 사항은 고객센터로 문의하시길 바랍니다.");
+                  showFailDialogWithImage("해당 계정이 7일간 정지되었습니다.",
+                      "비정상적인 행동이 감지되었습니다.\n자세한 사항은 고객센터로 문의하시길 바랍니다.");
+                  showFailDialogWithImage(
+                      "비정상적인 행동이 감지되었습니다.", "고객센터(1600-7723)로 문의하시길 바랍니다.");
+                   */
                 },
-                child: Center(
-                    child: SGTypography.body("회원가입",
-                        color: SGColors.gray4, size: FontSize.normal))),
-            SGContainer(
-                height: SGSpacing.p3, color: SGColors.line3, borderWidth: 0.5),
-            GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-
-                  ref.read(goRouterProvider).push(AppRoutes.findByAccount);
-                },
-                child: Center(
-                    child: SGTypography.body("아이디 찾기",
-                        color: SGColors.gray4, size: FontSize.normal))),
-            SGContainer(
-                height: SGSpacing.p3, color: SGColors.line3, borderWidth: 0.5),
-            GestureDetector(
-                onTap: () {
-                  ref.read(goRouterProvider).push(AppRoutes.findByPassword);
-                },
-                child: Center(
-                    child: SGTypography.body("비밀번호 찾기",
-                        color: SGColors.gray4, size: FontSize.normal))),
-          ])
-        ]),
+                label: "로그인"),
+            SizedBox(height: SGSpacing.p8),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              GestureDetector(
+                  onTap: () {
+                    ref.read(goRouterProvider).push(AppRoutes.signup);
+                  },
+                  child: Center(
+                      child: SGTypography.body("회원가입",
+                          color: SGColors.gray4, size: FontSize.normal))),
+              SGContainer(
+                  height: SGSpacing.p3, color: SGColors.line3, borderWidth: 0.5),
+              GestureDetector(
+                  onTap: () {
+                    FocusScope.of(context).unfocus();
+          
+                    ref.read(goRouterProvider).push(AppRoutes.findByAccount);
+                  },
+                  child: Center(
+                      child: SGTypography.body("아이디 찾기",
+                          color: SGColors.gray4, size: FontSize.normal))),
+              SGContainer(
+                  height: SGSpacing.p3, color: SGColors.line3, borderWidth: 0.5),
+              GestureDetector(
+                  onTap: () {
+                    ref.read(goRouterProvider).push(AppRoutes.findByPassword);
+                  },
+                  child: Center(
+                      child: SGTypography.body("비밀번호 찾기",
+                          color: SGColors.gray4, size: FontSize.normal))),
+            ]),
+                Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
+          ]),
+        ),
       ),
     );
   }

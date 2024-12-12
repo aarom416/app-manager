@@ -184,70 +184,6 @@ class _OrderManagementScreenState extends State<OrderManagementScreen> {
                         ])),
                 toolbarHeight: toolbarHeight,
                 leadingWidth: 200,
-                actions: [
-                  GestureDetector(
-                    onTap: () {
-                      showSGDialogWithCloseButton(
-                          context: context,
-                          childrenBuilder: (ctx) => [
-                                Center(
-                                    child: SGTypography.body(
-                                        "사장님 신규 주문이 도착했습니다.",
-                                        size: FontSize.medium,
-                                        weight: FontWeight.w700)),
-                                SizedBox(height: SGSpacing.p4),
-                                SGContainer(
-                                    width: double.infinity,
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: SGSpacing.p4),
-                                    borderRadius:
-                                        BorderRadius.circular(SGSpacing.p3),
-                                    color: SGColors.gray1,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        SGTypography.body("연어 샐러드 외 1개",
-                                            size: FontSize.normal,
-                                            weight: FontWeight.w700,
-                                            lineHeight: 1.5),
-                                        SizedBox(height: SGSpacing.p1),
-                                        SGTypography.body(
-                                            "${16000.toKoreanCurrency}원",
-                                            size: FontSize.normal,
-                                            weight: FontWeight.w500,
-                                            lineHeight: 1.5),
-                                      ],
-                                    )),
-                                // 연어 외 1개
-                                SizedBox(height: SGSpacing.p4),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(ctx).pop();
-                                  },
-                                  child: SGContainer(
-                                    width: double.infinity,
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: SGSpacing.p4),
-                                    borderRadius:
-                                        BorderRadius.circular(SGSpacing.p3),
-                                    color: SGColors.primary,
-                                    child: Center(
-                                      child: SGTypography.body("확인",
-                                          size: FontSize.normal,
-                                          weight: FontWeight.w700,
-                                          color: SGColors.white),
-                                    ),
-                                  ),
-                                )
-                                // 확인
-                              ]);
-                    },
-                    child: SGContainer(
-                        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
-                        child: Image.asset("assets/images/alarm-dark.png",
-                            width: 24, height: 24)),
-                  ),
-                ],
                 bottom: PreferredSize(
                   preferredSize:
                       Size(MediaQuery.of(context).size.width, SGSpacing.p8),
@@ -361,171 +297,171 @@ class _NewOrderListView extends StatelessWidget {
         itemBuilder: (ctx, index) {
           return GestureDetector(
             onTap: () {
-              showSGDialog(
+              showNewOrderSGDialog(
                   context: context,
                   childrenBuilder: (ctx) => [
-                        Center(
-                            child: SGTypography.body(
-                                "${orders[index].orderType}",
-                                size: FontSize.medium,
-                                weight: FontWeight.w700)),
-                        SizedBox(height: SGSpacing.p4),
-                        SGContainer(
-                            width: double.infinity,
-                            padding: EdgeInsets.all(SGSpacing.p4),
-                            borderColor: SGColors.primary,
-                            borderRadius: BorderRadius.circular(SGSpacing.p3),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
+                      Center(
+                          child: SGTypography.body(
+                              "${orders[index].orderType}",
+                              size: FontSize.medium,
+                              weight: FontWeight.w700)),
+                      SizedBox(height: SGSpacing.p4),
+                      SGContainer(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          borderColor: SGColors.primary,
+                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  SGTypography.body("주문 번호 : ",
+                                      size: FontSize.small,
+                                      weight: FontWeight.w700,
+                                      lineHeight: 1.5),
+                                  SGTypography.body("1398",
+                                      size: FontSize.small,
+                                      weight: FontWeight.w500,
+                                      lineHeight: 1.5),
+                                ],
+                              ),
+                              SizedBox(height: SGSpacing.p1),
+                              Row(
+                                children: [
+                                  SGTypography.body("메뉴 개수 : ",
+                                      size: FontSize.small,
+                                      weight: FontWeight.w700,
+                                      lineHeight: 1.5),
+                                  SGTypography.body("2개",
+                                      size: FontSize.small,
+                                      weight: FontWeight.w500,
+                                      lineHeight: 1.5),
+                                ],
+                              ),
+                              SizedBox(height: SGSpacing.p1),
+                              Row(
+                                children: [
+                                  SGTypography.body("메뉴 : ",
+                                      size: FontSize.small,
+                                      weight: FontWeight.w700,
+                                      lineHeight: 1.5),
+                                  SGTypography.body("연어 샐러드 외 1개",
+                                      size: FontSize.small,
+                                      weight: FontWeight.w500,
+                                      lineHeight: 1.5),
+                                ],
+                              ),
+                              SizedBox(height: SGSpacing.p1),
+                              Row(
+                                children: [
+                                  SGTypography.body("가격 : ",
+                                      size: FontSize.small,
+                                      weight: FontWeight.w700,
+                                      lineHeight: 1.5),
+                                  SGTypography.body(
+                                      "${16000.toKoreanCurrency}원",
+                                      size: FontSize.small,
+                                      weight: FontWeight.w500,
+                                      lineHeight: 1.5),
+                                ],
+                              ),
+                              SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    SGTypography.body("주문 번호 : ",
-                                        size: FontSize.small,
-                                        weight: FontWeight.w700,
-                                        lineHeight: 1.5),
-                                    SGTypography.body("1398",
-                                        size: FontSize.small,
-                                        weight: FontWeight.w500,
-                                        lineHeight: 1.5),
-                                  ],
-                                ),
-                                SizedBox(height: SGSpacing.p1),
-                                Row(
-                                  children: [
-                                    SGTypography.body("메뉴 개수 : ",
-                                        size: FontSize.small,
-                                        weight: FontWeight.w700,
-                                        lineHeight: 1.5),
-                                    SGTypography.body("2개",
-                                        size: FontSize.small,
-                                        weight: FontWeight.w500,
-                                        lineHeight: 1.5),
-                                  ],
-                                ),
-                                SizedBox(height: SGSpacing.p1),
-                                Row(
-                                  children: [
-                                    SGTypography.body("메뉴 : ",
-                                        size: FontSize.small,
-                                        weight: FontWeight.w700,
-                                        lineHeight: 1.5),
-                                    SGTypography.body("연어 샐러드 외 1개",
-                                        size: FontSize.small,
-                                        weight: FontWeight.w500,
-                                        lineHeight: 1.5),
-                                  ],
-                                ),
-                                SizedBox(height: SGSpacing.p1),
-                                Row(
-                                  children: [
-                                    SGTypography.body("가격 : ",
-                                        size: FontSize.small,
-                                        weight: FontWeight.w700,
-                                        lineHeight: 1.5),
-                                    SGTypography.body(
-                                        "${16000.toKoreanCurrency}원",
-                                        size: FontSize.small,
-                                        weight: FontWeight.w500,
-                                        lineHeight: 1.5),
-                                  ],
-                                ),
-                                SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(ctx).pop();
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (ctx) =>
-                                                      NewOrderDetailScreen(
-                                                          order:
-                                                              orders[index])));
-                                        },
-                                        child: SGContainer(
-                                            borderColor: SGColors.primary,
-                                            borderRadius: BorderRadius.circular(
-                                                SGSpacing.p2),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: SGSpacing.p4,
-                                                vertical: SGSpacing.p3),
-                                            child: Row(children: [
-                                              SGTypography.body("자세히",
-                                                  size: FontSize.small,
-                                                  color: SGColors.primary),
-                                            ])),
-                                      )
-                                    ])
-                              ],
-                            )),
-                        SizedBox(height: SGSpacing.p5),
-                        SGTypography.body("예상 소요시간",
-                            size: FontSize.small, weight: FontWeight.w700),
-                        SizedBox(height: SGSpacing.p2),
-                        StepCounter(
-                          defaultValue:
-                              orders[index].orderType == "포장" ? 20 : 60,
-                          step: 5,
-                          maxValue: orders[index].orderType == "포장" ? 60 : 100,
-                          minValue: orders[index].orderType == "포장" ? 5 : 20,
-                        ),
-                        SizedBox(height: SGSpacing.p4),
-                        Row(
-                          children: [
-                            SGFlexible(
-                              flex: 1,
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(ctx).pop();
-                                  showRejectDialog(
-                                      order: orders[index], context: context);
-                                },
-                                child: SGContainer(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: SGSpacing.p4),
-                                  borderRadius:
-                                      BorderRadius.circular(SGSpacing.p3),
-                                  color: SGColors.gray3,
-                                  child: Center(
-                                    child: SGTypography.body("거절",
-                                        size: FontSize.normal,
-                                        weight: FontWeight.w700,
-                                        color: SGColors.white),
-                                  ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.of(ctx).pop();
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (ctx) =>
+                                                    NewOrderDetailScreen(
+                                                        order:
+                                                            orders[index])));
+                                      },
+                                      child: SGContainer(
+                                          borderColor: SGColors.primary,
+                                          borderRadius: BorderRadius.circular(
+                                              SGSpacing.p2),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: SGSpacing.p4,
+                                              vertical: SGSpacing.p3),
+                                          child: Row(children: [
+                                            SGTypography.body("자세히",
+                                                size: FontSize.small,
+                                                color: SGColors.primary),
+                                          ])),
+                                    )
+                                  ])
+                            ],
+                          )),
+                      SizedBox(height: SGSpacing.p5),
+                      SGTypography.body("예상 소요시간",
+                          size: FontSize.small, weight: FontWeight.w700),
+                      SizedBox(height: SGSpacing.p2),
+                      StepCounter(
+                        defaultValue:
+                            orders[index].orderType == "포장" ? 20 : 60,
+                        step: 5,
+                        maxValue: orders[index].orderType == "포장" ? 60 : 100,
+                        minValue: orders[index].orderType == "포장" ? 5 : 20,
+                      ),
+                      SizedBox(height: SGSpacing.p3),
+                      Row(
+                        children: [
+                          SGFlexible(
+                            flex: 1,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(ctx).pop();
+                                showRejectDialog(
+                                    order: orders[index], context: context);
+                              },
+                              child: SGContainer(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: SGSpacing.p4),
+                                borderRadius:
+                                    BorderRadius.circular(SGSpacing.p3),
+                                color: SGColors.gray3,
+                                child: Center(
+                                  child: SGTypography.body("거절",
+                                      size: FontSize.normal,
+                                      weight: FontWeight.w700,
+                                      color: SGColors.white),
                                 ),
                               ),
                             ),
-                            SizedBox(width: SGSpacing.p2),
-                            SGFlexible(
-                              flex: 2,
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(ctx).pop();
-                                },
-                                child: SGContainer(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: SGSpacing.p4),
-                                  borderRadius:
-                                      BorderRadius.circular(SGSpacing.p3),
-                                  color: SGColors.primary,
-                                  child: Center(
-                                    child: SGTypography.body("확인",
-                                        size: FontSize.normal,
-                                        weight: FontWeight.w700,
-                                        color: SGColors.white),
-                                  ),
+                          ),
+                          SizedBox(width: SGSpacing.p2),
+                          SGFlexible(
+                            flex: 2,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(ctx).pop();
+                              },
+                              child: SGContainer(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: SGSpacing.p4),
+                                borderRadius:
+                                    BorderRadius.circular(SGSpacing.p3),
+                                color: SGColors.primary,
+                                child: Center(
+                                  child: SGTypography.body("확인",
+                                      size: FontSize.normal,
+                                      weight: FontWeight.w700,
+                                      color: SGColors.white),
                                 ),
                               ),
                             ),
-                          ],
-                        )
-                        // 확인
-                      ]);
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: SGSpacing.p2),
+                    ]);
             },
             child: _OrderCard(
                 order: orders[index],
@@ -850,7 +786,7 @@ class _OrderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SGContainer(
         padding: EdgeInsets.symmetric(
-            vertical: SGSpacing.p4, horizontal: SGSpacing.p4),
+            vertical: SGSpacing.p4, horizontal: SGSpacing.p3),
         borderWidth: 0,
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

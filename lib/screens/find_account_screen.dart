@@ -235,80 +235,83 @@ class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
               disabled: username.isEmpty,
               label: "다음")),
       body: SGContainer(
+        height: double.infinity,
         color: Color(0xFFFFFFFF),
         padding: EdgeInsets.symmetric(
             horizontal: SGSpacing.p4, vertical: SGSpacing.p8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SGTypography.body("아이디 찾기",
-                    size: FontSize.xlarge,
-                    weight: FontWeight.w700,
-                    lineHeight: 1.35),
-              ],
-            ),
-            SizedBox(height: SGSpacing.p8),
-            SGTypography.body("이름",
-                size: FontSize.small,
-                weight: FontWeight.w500,
-                color: SGColors.gray4),
-            SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-            SGTextFieldWrapper(
-              child: SGContainer(
-                padding: EdgeInsets.all(SGSpacing.p4),
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
-                      onChanged: (value) {
-                        final validCharacters =
-                            RegExp(r'^[a-zA-Z0-9ㄱ-ㅎ가-힣\s]*$');
-                        if (validCharacters.hasMatch(value)) {
-                          setState(() {
-                            username = value;
-                            errorMessage = "";
-                          });
-                        } else {
-                          setState(() {
-                            errorMessage =
-                                "특수문자는 입력하실 수 없습니다.\n한글, 영문, 숫자, 띄어쓰기만 입력해주세요";
-                          });
-                        }
-                      },
-                      controller: controller,
-                      style: TextStyle(
-                          fontSize: FontSize.small, color: SGColors.gray5),
-                      decoration: InputDecoration(
-                        isDense: true,
-                        isCollapsed: true,
-                        hintStyle: TextStyle(
-                            color: SGColors.gray3,
-                            fontSize: FontSize.small,
-                            fontWeight: FontWeight.w400),
-                        hintText: "이름을 입력해주세요.",
-                        border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.zero,
-                            borderSide: BorderSide.none),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  SGTypography.body("아이디 찾기",
+                      size: FontSize.xlarge,
+                      weight: FontWeight.w700,
+                      lineHeight: 1.35),
+                ],
+              ),
+              SizedBox(height: SGSpacing.p8),
+              SGTypography.body("이름",
+                  size: FontSize.small,
+                  weight: FontWeight.w500,
+                  color: SGColors.gray4),
+              SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+              SGTextFieldWrapper(
+                child: SGContainer(
+                  padding: EdgeInsets.all(SGSpacing.p4),
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        onChanged: (value) {
+                          final validCharacters =
+                              RegExp(r'^[a-zA-Z0-9ㄱ-ㅎ가-힣\s]*$');
+                          if (validCharacters.hasMatch(value)) {
+                            setState(() {
+                              username = value;
+                              errorMessage = "";
+                            });
+                          } else {
+                            setState(() {
+                              errorMessage =
+                                  "특수문자는 입력하실 수 없습니다.\n한글, 영문, 숫자, 띄어쓰기만 입력해주세요";
+                            });
+                          }
+                        },
+                        controller: controller,
+                        style: TextStyle(
+                            fontSize: FontSize.small, color: SGColors.gray5),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          isCollapsed: true,
+                          hintStyle: TextStyle(
+                              color: SGColors.gray3,
+                              fontSize: FontSize.small,
+                              fontWeight: FontWeight.w400),
+                          hintText: "이름을 입력해주세요.",
+                          border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.zero,
+                              borderSide: BorderSide.none),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: SGSpacing.p2),
-            if (errorMessage.isNotEmpty)
-              Text(
-                errorMessage,
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: FontSize.small,
-                  fontWeight: FontWeight.w400,
+              SizedBox(height: SGSpacing.p2),
+              if (errorMessage.isNotEmpty)
+                Text(
+                  errorMessage,
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: FontSize.small,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
