@@ -58,36 +58,43 @@ class _TemporaryClosedScreenState extends ConsumerState<TemporaryClosedScreen> {
                 ],
               )),
           SizedBox(height: SGSpacing.p5),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Column(
+              crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row( 
+              children: [
               SGTypography.body("1. ",
                   size: FontSize.small,
                   weight: FontWeight.w500,
                   lineHeight: 1.5,
                   color: SGColors.gray4),
               SizedBox(width: SGSpacing.p2),
-              SGTypography.body("임시 중지 상태에선 싱그릿 앱에 '준비 중'으로 보여요.",
-                  size: FontSize.small,
-                  weight: FontWeight.w500,
-                  lineHeight: 1.5,
-                  color: SGColors.gray4),
+              Expanded(
+                child: SGTypography.body("임시 중지 상태에선 싱그릿 앱에 '준비 중'으로 보여요.",
+                    size: FontSize.small,
+                    weight: FontWeight.w500,
+                    lineHeight: 1.5,
+                    color: SGColors.gray4
+                ),
+              ),
             ]),
             SizedBox(height: SGSpacing.p1),
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
               SGTypography.body("2.",
                   size: FontSize.small,
                   weight: FontWeight.w500,
                   lineHeight: 1.5,
                   color: SGColors.gray4),
               SizedBox(width: SGSpacing.p2),
-              SGTypography.body("가게 영업 임시 중지 시 신규 주문 접수는 어려워요.",
-                  size: FontSize.small,
-                  weight: FontWeight.w500,
-                  lineHeight: 1.5,
-                  color: SGColors.gray4),
+              Expanded(
+                child: SGTypography.body("가게 영업 임시 중지 시 신규 주문 접수는 어려워요.",
+                    size: FontSize.small,
+                    weight: FontWeight.w500,
+                    lineHeight: 1.5,
+                    color: SGColors.gray4),
+              ),
             ]),
             SizedBox(height: SGSpacing.p1),
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Row(children: [
               SGTypography.body("3.",
                   size: FontSize.small,
                   weight: FontWeight.w500,
