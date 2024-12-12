@@ -309,7 +309,7 @@ class _MenuCategoryCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                 Container(
-                  width: 191,
+                  width: MediaQuery.of(context).size.width <= 320 ? 130 : 191,
                   child: SGTypography.body(
                     cuisine.menuName,
                     size: FontSize.normal,

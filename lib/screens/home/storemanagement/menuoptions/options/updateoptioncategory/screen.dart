@@ -127,7 +127,7 @@ class _UpdateOptionCategoryScreenState extends State<UpdateOptionCategoryScreen>
               child: SGContainer(
                 borderColor: SGColors.line2,
                 borderRadius: BorderRadius.circular(SGSpacing.p2),
-                padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p3),
                 child: Row(children: [SGTypography.body("옵션 선택 개수 설정", size: FontSize.small), SizedBox(width: SGSpacing.p1), Icon(Icons.edit, size: FontSize.small), Spacer(), SGTypography.body("최소 1개, 최대 1개", size: FontSize.small)]),
               ),
             ),
@@ -187,7 +187,15 @@ class _UpdateOptionCategoryScreenState extends State<UpdateOptionCategoryScreen>
                         ),
                         SizedBox(width: SGSpacing.p4),
                         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          SGTypography.body(cuisine.menuName, size: FontSize.normal, weight: FontWeight.w700),
+                          Container(
+                            width: 163,
+                            child: SGTypography.body(
+                              cuisine.menuName,
+                              size: FontSize.normal,
+                              weight: FontWeight.w700,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                           SizedBox(height: SGSpacing.p2),
                           SGTypography.body("${cuisine.price.toKoreanCurrency}원", size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray4),
                         ])
@@ -250,7 +258,6 @@ class _UpdateOptionCategoryScreenState extends State<UpdateOptionCategoryScreen>
                   child: SGTypography.body("옵션 카테고리 삭제", color: SGColors.warningRed, weight: FontWeight.w600, size: FontSize.small),
                 )),
           ),
-          SizedBox(height: SGSpacing.p32),
         ]),
       ),
     );
@@ -602,6 +609,7 @@ class _CuisineOptionCategoryCardState extends State<_CuisineOptionCategoryCard> 
             ]);
   }
 
+
   @override
   Widget build(BuildContext context) {
     return MultipleInformationBox(children: [
@@ -620,10 +628,43 @@ class _CuisineOptionCategoryCardState extends State<_CuisineOptionCategoryCard> 
       ...widget.category.menuOptions
           .mapIndexed((index, option) => [
                 if (index == 0) SizedBox(height: SGSpacing.p5) else SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: option.optionContent ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
+                OptionDataTableRow(left: option.optionContent ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
               ])
           .flattened
     ]);
+  }
+}
+
+class OptionDataTableRow extends StatelessWidget {
+  const OptionDataTableRow({Key? key, required this.left, required this.right}) : super(key: key);
+
+  final String left;
+  final String right;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SGTypography.body(
+          left,
+          color: SGColors.gray4,
+          weight: FontWeight.w500,
+          size: FontSize.small,
+        ),
+        Container(
+          alignment: Alignment.centerRight,
+          width: 187,
+          child: SGTypography.body(
+            right,
+            color: SGColors.gray5,
+            weight: FontWeight.w500,
+            size: FontSize.small,
+            align: TextAlign.end,
+          ),
+        ),
+      ],
+    );
   }
 }
 

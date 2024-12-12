@@ -158,7 +158,7 @@ class _SelectableMenuModelsBottomSheetState extends State<_SelectableMenuModelsB
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      width: 159,
+                                      width: MediaQuery.of(context).size.width <= 320 ? 120 : 159,
                                       child: SGTypography.body(
                                         selectableMenus[idx].menuName,
                                         color: SGColors.black,
@@ -169,7 +169,7 @@ class _SelectableMenuModelsBottomSheetState extends State<_SelectableMenuModelsB
                                     ),
                                     SizedBox(height: SGSpacing.p2),
                                     Container(
-                                      width: 159,
+                                      width: MediaQuery.of(context).size.width <= 320 ? 120 : 159,
                                       child: SGTypography.body(
                                         "${selectableMenus[idx].price.toKoreanCurrency}원",
                                         color: SGColors.gray4,
@@ -215,7 +215,6 @@ class _SelectableMenuModelsBottomSheetState extends State<_SelectableMenuModelsB
                     ],
                   )),
             )),
-        SizedBox(height: SGSpacing.p10),
       ]),
     );
   }

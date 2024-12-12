@@ -351,7 +351,8 @@ class _Page_1_MenuCategoryState extends State<_Page_1_MenuCategory> {
                           child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [SGTypography.body("추가하실 카테고리를 선택해주세요.", size: FontSize.normal, color: SGColors.gray3), Image.asset("assets/images/dropdown-arrow.png", width: SGSpacing.p5, height: SGSpacing.p5)]))),
+                              children: [
+                                SGTypography.body("추가하실 카테고리를 선택해주세요.", size: FontSize.normal, color: SGColors.gray3), Image.asset("assets/images/dropdown-arrow.png", width: SGSpacing.p5, height: SGSpacing.p5)]))),
                 ),
               ],
             )));
@@ -386,7 +387,7 @@ class __SelectMenuCategoryDialogState extends ConsumerState<__SelectMenuCategory
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SGTypography.body("추가하실 카테고리를 선택해 주세요.", size: FontSize.medium, weight: FontWeight.w700),
+          Expanded(child: SGTypography.body("추가하실 카테고리를 선택해 주세요.", size: FontSize.medium, weight: FontWeight.w700)),
         ],
       ),
       SizedBox(height: SGSpacing.p4),
@@ -475,7 +476,7 @@ class __SelectUserMenuCategoryDialogState extends State<__SelectUserMenuCategory
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SGTypography.body("메뉴의 카테고리를 선택해 주세요.", size: FontSize.medium, weight: FontWeight.w700),
+          Expanded(child: SGTypography.body("메뉴의 카테고리를 선택해 주세요.", size: FontSize.medium, weight: FontWeight.w700)),
         ],
       ),
       SizedBox(height: SGSpacing.p4),
@@ -499,7 +500,7 @@ class __SelectUserMenuCategoryDialogState extends State<__SelectUserMenuCategory
                     },
                     child: __CategoryOptionRadioButton(category: userMenuCategory, isSelected: selectedUserMenuCategories.contains(userMenuCategory)))),
               ])),
-          SizedBox(height: SGSpacing.p4),
+          SizedBox(height: SGSpacing.p2),
           GestureDetector(
             onTap: () {
               if (selectedUserMenuCategories.isNotEmpty) {
@@ -544,7 +545,14 @@ class __CategoryOptionRadioButton extends StatelessWidget {
                   children: [
                     Image.asset("assets/images/radio-${isSelected ? "on" : "off"}.png", width: SGSpacing.p5, height: SGSpacing.p5),
                     SizedBox(width: SGSpacing.p1 + SGSpacing.p05),
-                    SGTypography.body(category, size: FontSize.normal, color: isSelected ? SGColors.primary : SGColors.gray5, weight: FontWeight.w500),
+                    Container(
+                      width: 175,
+                      child: SGTypography.body(
+                          category,
+                        size: FontSize.normal,
+                        color: isSelected ? SGColors.primary : SGColors.gray5, weight: FontWeight.w500,
+                        overflow: TextOverflow.ellipsis,
+                      )),
                   ],
                 )),
           ],

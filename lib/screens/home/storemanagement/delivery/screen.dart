@@ -166,13 +166,33 @@ class _DeliveryScreenState extends ConsumerState<DeliveryScreen> {
             SizedBox(height: SGSpacing.p3),
 
             // --------------------------- 배달 지역 card ---------------------------
-            MultipleInformationBox(children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                SGTypography.body("배달 지역", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w600),
-                SGTypography.body("현재는 ${state.deliveryAddress}에서만 배달 가능해요.", color: SGColors.gray4, size: FontSize.normal)
-              ])
-            ])
-          ],
+            MultipleInformationBox(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SGTypography.body(
+                      "배달 지역",
+                      color: SGColors.black,
+                      size: FontSize.normal,
+                      weight: FontWeight.w600,
+                    ),
+                    SizedBox(
+                      width: SGSpacing.p2,
+                    ),
+                    Flexible(
+                      child: SGTypography.body(
+                        "현재는 ${state.deliveryAddress}에서만 배달 가능해요.",
+                        color: SGColors.gray4,
+                        size: FontSize.normal,
+                        align: TextAlign.end
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+      ],
         ),
       ),
     );

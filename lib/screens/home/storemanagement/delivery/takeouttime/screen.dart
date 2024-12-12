@@ -68,49 +68,81 @@ class _TakeOutTimeScreenState extends State<TakeOutTimeScreen> {
           child: ListView(children: [
             SGTypography.body("변경 전", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w600),
             SizedBox(height: SGSpacing.p3),
-            MultipleInformationBox(children: [
-              Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SGTypography.body("최소", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w600),
-                      SizedBox(height: SGSpacing.p3),
-                      Container(
-                          height: 42,
-                          width: SGSpacing.p32 + SGSpacing.p6,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: SGColors.line3)),
-                          child: Row(
-                            children: [
-                              SizedBox(width: SGSpacing.p2),
-                              SGTypography.body("${widget.minTakeOutTime}분", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w600),
-                            ],
-                          )),
-                    ],
-                  ),
-                  SizedBox(
-                    width: SGSpacing.p4,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SGTypography.body("최대", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w600),
-                      SizedBox(height: SGSpacing.p3),
-                      Container(
-                          height: 42,
-                          width: SGSpacing.p32 + SGSpacing.p6,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: SGColors.line3)),
-                          child: Row(
-                            children: [
-                              SizedBox(width: SGSpacing.p2),
-                              SGTypography.body("${widget.maxTakeOutTime}분", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w600),
-                            ],
-                          )),
-                    ],
-                  )
-                ],
-              )
-            ]),
+            MultipleInformationBox(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SGTypography.body(
+                            "최소",
+                            color: SGColors.gray4,
+                            size: FontSize.small,
+                            weight: FontWeight.w600,
+                          ),
+                          SizedBox(height: SGSpacing.p3),
+                          Container(
+                            height: SGSpacing.p10,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: SGColors.line3),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(width: SGSpacing.p2),
+                                SGTypography.body(
+                                  "${widget.minTakeOutTime}분",
+                                  color: SGColors.gray4,
+                                  size: FontSize.small,
+                                  weight: FontWeight.w600,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: SGSpacing.p2),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SGTypography.body(
+                            "최대",
+                            color: SGColors.gray4,
+                            size: FontSize.small,
+                            weight: FontWeight.w600,
+                          ),
+                          SizedBox(height: SGSpacing.p3),
+                          Container(
+                            height: SGSpacing.p10,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: SGColors.line3),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(width: SGSpacing.p2),
+                                SGTypography.body(
+                                  "${widget.maxTakeOutTime}분",
+                                  color: SGColors.gray4,
+                                  size: FontSize.small,
+                                  weight: FontWeight.w600,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
             SizedBox(height: SGSpacing.p5),
             SGTypography.body("변경 후", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w600),
             SizedBox(height: SGSpacing.p3),

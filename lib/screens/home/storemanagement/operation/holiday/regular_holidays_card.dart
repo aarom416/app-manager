@@ -87,7 +87,10 @@ class _RegularHolidayCardState extends State<RegularHolidayCard> {
                                 },
                                 child: SGTextFieldWrapper(
                                     child: SGContainer(
-                                  padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: MediaQuery.of(context).size.width <= 320 ? SGSpacing.p1 : SGSpacing.p3,
+                                      vertical: SGSpacing.p3
+                                  ),
                                   child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                     SGTypography.body(regularHolidayTypes[regularHoliday.cycle], color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w500),
                                     Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16, color: SGColors.gray4),

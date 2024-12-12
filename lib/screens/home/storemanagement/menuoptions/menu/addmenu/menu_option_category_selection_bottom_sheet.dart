@@ -69,7 +69,7 @@ class _MenuOptionCategorySelectionBottomSheetState extends State<_MenuOptionCate
     }).toList();
 
     return Container(
-      height: MediaQuery.of(context).viewInsets.bottom + SGSpacing.p24 * 4,
+      height: MediaQuery.of(context).viewInsets.bottom,
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         SGContainer(
           color: Colors.transparent,

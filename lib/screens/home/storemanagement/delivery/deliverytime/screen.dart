@@ -66,49 +66,81 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
           child: ListView(children: [
             SGTypography.body("변경 전", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w600),
             SizedBox(height: SGSpacing.p3),
-            MultipleInformationBox(children: [
+            MultipleInformationBox(
+              children: [
               Row(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SGTypography.body("최소", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w600),
-                      SizedBox(height: SGSpacing.p3),
-                      Container(
-                          height: 42,
-                          width: SGSpacing.p32 + SGSpacing.p6,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: SGColors.line3)),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SGTypography.body(
+                          "최소",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w600,
+                        ),
+                        SizedBox(height: SGSpacing.p3),
+                        Container(
+                          height: SGSpacing.p10,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: SGColors.line3),
+                          ),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(width: SGSpacing.p2),
-                              SGTypography.body("${widget.minDeliveryTime}분", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w600),
+                              SGTypography.body(
+                                "${widget.minDeliveryTime}분",
+                                color: SGColors.gray4,
+                                size: FontSize.small,
+                                weight: FontWeight.w600,
+                              ),
                             ],
-                          )),
-                    ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(
-                    width: SGSpacing.p4,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SGTypography.body("최대", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w600),
-                      SizedBox(height: SGSpacing.p3),
-                      Container(
-                          height: 42,
-                          width: SGSpacing.p32 + SGSpacing.p6,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), border: Border.all(color: SGColors.line3)),
+                  SizedBox(width: SGSpacing.p2),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SGTypography.body(
+                          "최대",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w600,
+                        ),
+                        SizedBox(height: SGSpacing.p3),
+                        Container(
+                          height: SGSpacing.p10,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: SGColors.line3),
+                          ),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               SizedBox(width: SGSpacing.p2),
-                              SGTypography.body("${widget.maxDeliveryTime}분", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w600),
+                              SGTypography.body(
+                                "${widget.maxDeliveryTime}분",
+                                color: SGColors.gray4,
+                                size: FontSize.small,
+                                weight: FontWeight.w600,
+                              ),
                             ],
-                          )),
-                    ],
-                  )
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
-              )
-            ]),
+              ),
+            ],
+          ),
             SizedBox(height: SGSpacing.p5),
             SGTypography.body("변경 후", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w600),
             SizedBox(height: SGSpacing.p3),
@@ -136,10 +168,12 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
                         },
                         child: SGTextFieldWrapper(
                             child: SGContainer(
-                          padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p3),
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            SGTypography.body(minDeliveryTime.toString(), color: SGColors.black, size: FontSize.small, weight: FontWeight.w500),
-                            Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
+                              padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p3),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                    SGTypography.body(minDeliveryTime.toString(), color: SGColors.black, size: FontSize.small, weight: FontWeight.w500),
+                                    Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
                           ]),
                         )),
                       ),

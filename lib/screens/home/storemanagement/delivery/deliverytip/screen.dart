@@ -196,10 +196,7 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
             ),
 
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [SGTypography.body("*", color: SGColors.gray3, lineHeight: 1.25), SizedBox(width: SGSpacing.p1), SGTypography.body(widget.deliveryTipInfo, color: SGColors.gray3, lineHeight: 1.25)]),
+            SGTypography.body("* ${widget.deliveryTipInfo}", color: SGColors.gray3, lineHeight: 1.25),
             SizedBox(height: SGSpacing.p20),
           ])),
     );

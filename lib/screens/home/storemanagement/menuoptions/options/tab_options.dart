@@ -201,26 +201,41 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
   @override
   Widget build(BuildContext context) {
     return MultipleInformationBox(children: [
-      Row(
+      Column(
         children: [
           GestureDetector(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateOptionCategoryScreen()));
             },
-            child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              SGTypography.body(widget.category.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
-              SizedBox(width: SGSpacing.p1),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 223,
+                  child: SGTypography.body(
+                      widget.category.menuOptionCategoryName,
+                      size: FontSize.normal,
+                      weight: FontWeight.w600
+                  )),
+                const Icon(Icons.edit, size: FontSize.small),
+              ]),
+          ),
+          SizedBox(
+            height: SGSpacing.p2,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Spacer(),
               SGTypography.body(selectionType, size: FontSize.small, color: SGColors.primary, weight: FontWeight.w600),
-              SizedBox(width: SGSpacing.p1),
-              Icon(Icons.edit, size: FontSize.small),
-            ]),
+            ],
           ),
         ],
       ),
       ...widget.category.menuOptions
           .mapIndexed((index, option) => [
-                if (index == 0) SizedBox(height: SGSpacing.p5) else SizedBox(height: SGSpacing.p4),
-                DataTableRow(left: option.optionContent ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
+                if (index == 0) SizedBox(height: SGSpacing.p4) else SizedBox(height: SGSpacing.p4),
+                OptionDataTableRow(left: option.optionContent ?? "", right: "${(option.price ?? 0).toKoreanCurrency}원"),
               ])
           .flattened,
       SizedBox(height: SGSpacing.p5),
@@ -230,7 +245,14 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
         padding: EdgeInsets.symmetric(vertical: SGSpacing.p3 + SGSpacing.p05, horizontal: SGSpacing.p4),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            SGTypography.body("이 옵션을 사용하는 메뉴 2개", size: FontSize.small),
+            Container(
+              width: 191,
+              child: SGTypography.body(
+                "이 옵션을 사용하는 메뉴 2개",
+                size: FontSize.small,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
             Spacer(),
             GestureDetector(
               onTap: () {
@@ -238,7 +260,7 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
                   isExpanded = !isExpanded;
                 });
               },
-              child: SGTypography.body(isExpanded ? "접기" : "펼치기", color: SGColors.primary, weight: FontWeight.w500, size: FontSize.small),
+              child: SGTypography.body(isExpanded ? "접기" : "보기", color: SGColors.primary, weight: FontWeight.w500, size: FontSize.small),
             ),
           ]),
           SizedBox(height: SGSpacing.p05),
@@ -246,8 +268,15 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
             SizedBox(height: SGSpacing.p05),
             ...hardcodedMenus
                 .map((menu) => [
-                      SizedBox(height: SGSpacing.p2),
-                      SGTypography.body(menu, size: FontSize.small, color: SGColors.gray4),
+                    SizedBox(height: SGSpacing.p2),
+                    Container(
+                      width: 279,
+                      child: SGTypography.body(
+                          menu,
+                          size: FontSize.small,
+                          color: SGColors.gray4
+                        ),
+                      ),
                     ])
                 .flattened,
           ] else ...[
@@ -257,5 +286,43 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
         ]),
       )
     ]);
+  }
+}
+
+class OptionDataTableRow extends StatelessWidget {
+  const OptionDataTableRow({Key? key, required this.left, required this.right}) : super(key: key);
+
+  final String left;
+  final String right;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          width: 191,
+          child: SGTypography.body(
+            left,
+            color: SGColors.gray4,
+            weight: FontWeight.w500,
+            size: FontSize.small,
+            align: TextAlign.start,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Container(
+          alignment: Alignment.centerRight,
+          child: SGTypography.body(
+            right,
+            color: SGColors.gray5,
+            weight: FontWeight.w500,
+            size: FontSize.small,
+            align: TextAlign.end,
+          ),
+        ),
+      ],
+    );
   }
 }
