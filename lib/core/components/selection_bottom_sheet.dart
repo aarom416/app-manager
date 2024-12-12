@@ -58,17 +58,23 @@ class _SelectionBottomSheet<T> extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(child: Container()),
-            SGTypography.body(title, size: FontSize.medium, weight: FontWeight.w700),
+            MediaQuery.of(context).size.width <= 480 ?
+            Container(
+              alignment: Alignment.center,
+              width: 205,
+                child: SGTypography.body(title, size: FontSize.medium, weight: FontWeight.w700)) :
+            Container(
+              child: SGTypography.body(title, size: FontSize.medium, weight: FontWeight.w700)),
             Expanded(
                 child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Container(
-                    child: IconButton(
-                        iconSize: SGSpacing.p6,
-                        icon: Icon(Icons.close),
-                        onPressed: () {
-                          Navigator.of(context).pop();
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                  Container(
+                      child: IconButton(
+                          iconSize: SGSpacing.p6,
+                          icon: Icon(Icons.close),
+                          onPressed: () {
+                            Navigator.of(context).pop();
                         })),
               ],
             )),
