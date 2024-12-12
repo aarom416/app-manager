@@ -33,6 +33,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     final List<Widget> pages = [
       const OnbodingFirstView(),
       const OnbodingSecondView(),
@@ -42,14 +45,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            height: SGSpacing.p32,
+            height: screenHeight * 0.12,
           ),
           Flexible(
             child: SizedBox(
-              height: SGSpacing.p32 * 3 + SGSpacing.p4 * 6,
+              height: screenHeight * 0.6,
               child: PageView.builder(
                 controller: _controller,
                 itemCount: pages.length,
@@ -63,16 +65,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             decorator: DotsDecorator(
               color: SGColors.gray2,
               activeColor: SGColors.primary,
-              size: const Size(10, 10),
-              activeSize: const Size(10, 10),
+              size: Size(screenWidth * 0.02, screenWidth * 0.02),
+              activeSize: Size(screenWidth * 0.02, screenWidth * 0.02),
             ),
           ),
           SizedBox(
-            height: SGSpacing.p24,
+            height: screenHeight * 0.12,
           ),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
             child: ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(
@@ -80,7 +82,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: SGColors.primary,
-                padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -94,7 +96,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
           ),
           SizedBox(
-            height: SGSpacing.p14,
+            height: screenHeight * 0.03,
           )
         ],
       ),

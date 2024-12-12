@@ -10,11 +10,15 @@ class OnbodingSecondView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
       child: Column(
         children: [
           SizedBox(
-            height: SGSpacing.p10,
+            height: screenHeight * 0.08,
           ),
           SGTypography.body(
             "이제는 가게의 메뉴만 등록해도",
@@ -23,21 +27,21 @@ class OnbodingSecondView extends StatelessWidget {
             color: Colors.black,
           ),
           SizedBox(
-            height: SGSpacing.p11,
+            height: screenHeight * 0.04,
           ),
           Stack(
             alignment: Alignment.center,
             children: [
               Container(
-                height: 340,
-                width: 360,
+                height: screenHeight * 0.4,
+                width: screenWidth * 0.8,
                 color: Colors.white,
               ),
               Positioned(
-                top: 15,
+                top: screenHeight * 0.02,
                 child: Container(
-                  height: 540,
-                  width: 255,
+                  height: screenHeight * 0.6,
+                  width: screenWidth * 0.7,
                   child: Image.asset(
                     "assets/images/onboding-second.png",
                   ),
