@@ -224,6 +224,14 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Container(
+                  width: 223,
+                  child: SGTypography.body(
+                      widget.optionCategory.menuOptionCategoryName,
+                      size: FontSize.normal,
+                      weight: FontWeight.w600
+                  )
+                ),
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -231,16 +239,7 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
                           optionCategoryModel: widget.optionCategory,
                         )));
                   },
-                  child: Container(
-                    width: 223,
-                    child: SGTypography.body(
-                        widget.optionCategory.menuOptionCategoryName,
-                        size: FontSize.normal,
-                        weight: FontWeight.w600
-                    )
-                  ),
-                ),
-                const Icon(Icons.edit, size: FontSize.normal),
+                  child: const Icon(Icons.edit, size: FontSize.normal)),
               ],
             ),
           ),

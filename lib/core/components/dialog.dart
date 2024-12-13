@@ -297,6 +297,43 @@ void showSGDialog({
   );
 }
 
+void showCouponIssueSGDialog({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: SGContainer(
+          height: 155,
+          width: 303,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding:
+                  EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
+        ),
+      );
+    },
+  );
+}
+
+
 void showOperationSGDialog({
   required BuildContext context,
   required List<Widget> Function(BuildContext) childrenBuilder,
