@@ -221,16 +221,19 @@ class _CouponInformationScreenState
                   ])),
               Expanded(
                   child: SGContainer(
-                padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4)
+                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4)
                     .copyWith(top: SGSpacing.p4),
-                child: ListView(
-                    shrinkWrap: true,
-                    controller: scrollController,
-                    children: [
-                      ...state.couponInformationList
-                          .map((coupon) => _CouponCard(coupon: coupon))
-                    ]),
-              )),
+                    child: ListView(
+                        shrinkWrap: true,
+                        controller: scrollController,
+                        children: [
+                          ...state.couponInformationList
+                              .map((coupon) => _CouponCard(coupon: coupon)),
+                          Container(
+                            height: 80,
+                          )
+                        ]),
+                  )),
             ],
           ),
         ));

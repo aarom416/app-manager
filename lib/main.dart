@@ -85,6 +85,7 @@ Future<void> _showNotification(RemoteMessage message) async {
     platformChannelSpecifics,
   );
 }
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -135,6 +136,7 @@ class RunApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
+      scaffoldMessengerKey: scaffoldMessengerKey,
       debugShowCheckedModeBanner: false,
       title: 'singleat',
       routerConfig: ref.watch(goRouterProvider),

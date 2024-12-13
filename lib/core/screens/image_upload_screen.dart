@@ -12,6 +12,8 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
+import '../components/snackbar.dart';
+
 class ImageUploadScreen extends StatefulWidget {
   List<String> imagePaths = [];
   final String title;
@@ -110,7 +112,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         child: SGActionButton(
           onPressed: () {
             widget.onSubmit(widget.imagePaths);
-            Navigator.pop(context);
+            showGlobalSnackBar(context, "성공적-으로 변경되었습니다.");
           },
           label: widget.buttonText,
         ),

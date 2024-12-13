@@ -10,6 +10,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
 import '../../../../../core/components/multiple_information_box.dart';
+import '../../../../../core/components/snackbar.dart';
 
 class TakeOutTimeScreen extends StatefulWidget {
   final int minTakeOutTime;
@@ -59,7 +60,7 @@ class _TakeOutTimeScreenState extends State<TakeOutTimeScreen> {
               onPressed: () {
                 FocusScope.of(context).unfocus();
                 widget.onSaveFunction(minTakeOutTime, maxTakeOutTime);
-                Navigator.pop(context);
+                showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
               },
               label: "변경하기")),
       body: SGContainer(

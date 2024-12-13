@@ -6,6 +6,7 @@ import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -173,7 +174,7 @@ class _UpdateMenuCategoryScreenState extends ConsumerState<UpdateMenuCategoryScr
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  Navigator.of(ctx).pop();
+                                  showGlobalSnackBar(ctx, "성공적으로 삭제되었습니다.");
                                 },
                                 child: SGContainer(
                                   color: SGColors.primary,

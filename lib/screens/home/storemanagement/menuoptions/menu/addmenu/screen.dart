@@ -11,6 +11,7 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -30,7 +31,7 @@ import '../addmenucategory/screen.dart';
 import 'menu_option_category_selection_bottom_sheet.dart';
 
 List<String> userMenuCategories = [
-  "샐러드",
+  "ㅌ",
   "포케",
   "샌드위치",
   "카페",
@@ -54,8 +55,8 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
   int price = 0;
   NutritionModel nutrition = const NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, natrium: 120, saturatedFat: 8);
   String imagePath = "";
-  String menuBriefDescription = "연어 500g + 곡물밥 300g";
-  String menuDescription = "연어와 곡물 베이스 조화의 오븐에 바싹 구운 연어를 올린 단백질 듬뿍 샐러드";
+  String menuBriefDescription = "";
+  String menuDescription = "";
   List<MenuOptionCategoryModel> selectedMenuOptionCategories = [];
 
   void animateToPage(int index) => pageController.animateToPage(
@@ -136,7 +137,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
               menuDescription,
               selectedMenuOptionCategories,
             ),
-            Navigator.of(context).pop()
+            showGlobalSnackBar(context, "성공적으로 등록되었습니다."),
           },
           onEditFunction: (imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories) {
             logger.d("_Page_4_MenuRegistration onEditFunction selectedMenuOptionCategories ${selectedMenuOptionCategories.toFormattedJson()} ");
@@ -855,25 +856,17 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                  if (imagePath.isNotEmpty && menuBriefDescription.isNotEmpty && menuDescription.isNotEmpty && selectedMenuOptionCategories.isNotEmpty) {
-                    // todo 중복메뉴 확인
-                    // showFailDialogWithImage(
-                    //   context: context,
-                    //   mainTitle: "메뉴 추가 실패",
-                    //   subTitle: "이미 동일한 메뉴가 등록되어있습니다.\n다시 한번 확인해주세요.",
-                    // );
-                    widget.onNext();
-                  }
+                  widget.onNext();
                 },
                 child: SGContainer(
-                    color: imagePath.isEmpty || menuBriefDescription.isEmpty || menuDescription.isEmpty || selectedMenuOptionCategories.isEmpty ? SGColors.gray2 : SGColors.primary,
+                    color: SGColors.primary,
                     padding: EdgeInsets.all(SGSpacing.p4),
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Center(
                         child: SGTypography.body(
                       "등록",
                       size: FontSize.large,
-                      color: imagePath.isEmpty || menuBriefDescription.isEmpty || menuDescription.isEmpty || selectedMenuOptionCategories.isEmpty ? SGColors.gray5 : SGColors.white,
+                      color: SGColors.white,
                       weight: FontWeight.w700,
                     ))),
               )),

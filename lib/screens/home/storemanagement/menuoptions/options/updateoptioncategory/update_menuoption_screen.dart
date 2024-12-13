@@ -5,6 +5,7 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -81,11 +82,11 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                                       });
                                     }
                                     if (mounted) {
-                                      Navigator.of(context).pop();
+                                      showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                                     }
                                   });
                                 },
-                                buttonText: "저장하기",
+                                buttonText: "변경하기",
                                 hintText: "옵션 이름을 입력해주세요",
                               )));
                     },
@@ -115,6 +116,7 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                                       setState(() {
                                         menuOptionModel = menuOptionModel.copyWith(price: value);
                                       });
+                                      showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                                     }
                                   });
                                 },
@@ -169,7 +171,7 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                                 title: "영양성분 설정",
                                 nutrition: nutrition,
                                 onConfirm: (nutrition, context) {
-                                  showSGDialog(
+                                  showNutritionSGDialog(
                                       context: context,
                                       childrenBuilder: (_ctx) => [
                                             Center(child: SGTypography.body("영양성분을\n정말 설정하시겠습니까?", size: FontSize.large, weight: FontWeight.w700, lineHeight: 1.25, align: TextAlign.center)),
@@ -204,7 +206,7 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                                                         }
                                                         if (mounted) {
                                                           Navigator.of(context).pop();
-                                                          Navigator.of(nutritionScreenContext).pop();
+                                                          showGlobalSnackBar(nutritionScreenContext, "성공적으로 변경되었습니다.");
                                                         }
                                                       },
                                                     );
@@ -231,7 +233,7 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                 // --------------------------- 옵션 삭제 ---------------------------
                 GestureDetector(
                   onTap: () {
-                    showSGDialog(
+                    showDeleteOptionSGDialog(
                         context: context,
                         childrenBuilder: (ctx) => [
                               Center(child: SGTypography.body("해당 옵션을\n정말 삭제하시겠습니까?", size: FontSize.large, weight: FontWeight.w700, align: TextAlign.center, lineHeight: 1.25)),
@@ -248,7 +250,7 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                                           if (responseStatusCode == 200) {
                                             if (mounted) {
                                               Navigator.of(ctx).pop();
-                                              Navigator.of(context).pop();
+                                              showGlobalSnackBar(context, "성공적으로 삭제되었습니다.");
                                             }
                                           } else {
                                             if (responseStatusCode == 409) {
@@ -300,4 +302,76 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
               ])),
         ));
   }
+}
+
+void showDeleteOptionSGDialog({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: SGContainer(
+          height: 210,
+          width: 303,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding:
+                  EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
+        ),
+      );
+    },
+  );
+}
+
+void showNutritionSGDialog({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: SGContainer(
+          height: 190,
+          width: 303,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding:
+                  EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
+        ),
+      );
+    },
+  );
 }

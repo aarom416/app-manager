@@ -11,6 +11,7 @@ import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
+import '../../../../../core/components/snackbar.dart';
 import '../../../../../core/utils/time_utils.dart';
 import '../model.dart';
 
@@ -80,7 +81,7 @@ class _BreakTimeScreenState extends State<BreakTimeScreen> {
               SGActionButton(
                   onPressed: () {
                     widget.onSaveFunction(breakTimeDetailDTOList);
-                    Navigator.of(context).pop();
+                    showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                   },
                   label: "변경하기",
                   disabled: const DeepCollectionEquality().equals(widget.breakTimeDetailDTOList, breakTimeDetailDTOList))

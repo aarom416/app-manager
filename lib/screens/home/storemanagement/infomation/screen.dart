@@ -5,6 +5,7 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/single_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
@@ -96,18 +97,43 @@ class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagement
                     hintText: "가게 전화번호를 입력해주세요",
                     buttonText: "변경하기",
                     onSubmit: (value) {
-                      provider.storePhone(value).then((value) {
-                        if (value) {
-                          context.pop();
-                        } else {
-                          showFailDialogWithImage(
-                            context: context,
-                            mainTitle: "가게 번호 변경 실패",
-                            subTitle: "가게 번호 변경이 실패 하였습니다.",
-                          );
-                        }
-                      });
-                    })));
+                      showUpdatePhoneSGDialog(
+                          context: context,
+                          childrenBuilder: (ctx) => [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SGTypography.body("가게 전화번호 변경 희망 시", size: FontSize.large, weight: FontWeight.w500),
+                                SizedBox(height: SGSpacing.p1),
+                                SGTypography.body("고객센터로 연락주세요.", size: FontSize.large, weight: FontWeight.w500),
+                                SizedBox(height: SGSpacing.p3),
+                                SGTypography.body("싱그릿 식단 연구소 고객센터(1600-7723)", color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w500),
+                                SizedBox(height: SGSpacing.p5),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    Navigator.pop(ctx);
+                                  },
+                                  child: SGContainer(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                                    color: SGColors.primary,
+                                    child: Center(
+                                      child: SGTypography.body("확인",
+                                          size: FontSize.normal,
+                                          weight: FontWeight.w700,
+                                          color: SGColors.white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ]
+                      );
+                    }))
+            );
           }),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       SGContainer(
@@ -226,4 +252,39 @@ class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagement
       SizedBox(height: SGSpacing.p32),
     ]);
   }
+}
+
+void showUpdatePhoneSGDialog({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.all(SGSpacing.p5),
+        child: SGContainer(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding:
+                  EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
+        ),
+      );
+    },
+  );
 }

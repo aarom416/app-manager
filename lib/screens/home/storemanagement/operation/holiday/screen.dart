@@ -73,7 +73,7 @@ class _HolidayScreenState extends State<HolidayScreen> {
                   showDefaultSnackBar(context, '날짜가 겹치는 임시휴무일이 있습니다.');
                 } else if (_isStateChanged()){
                   widget.onSaveFunction(holidayStatus, regularHolidays, temporaryHolidays);
-                  Navigator.of(context).pop();
+                  showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                 }
               },
               label: "변경하기",

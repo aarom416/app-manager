@@ -6,6 +6,7 @@ import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -59,7 +60,7 @@ class _AddMenuCategoryScreenState extends ConsumerState<AddMenuCategoryScreen> {
                   menuDescription: menuCategoryDescription,
                   menuList: selectedMenuList,
                 ));
-                Navigator.of(context).pop();
+                showGlobalSnackBar(context, "성공적으로 등록되었습니다.");
               },
               label: "추가하기",
               disabled: menuCategoryDescription == '' || menuCategoryName == '' || selectedMenuList.isEmpty)),

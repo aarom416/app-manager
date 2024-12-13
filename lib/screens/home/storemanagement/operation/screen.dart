@@ -200,7 +200,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
 
       SizedBox(height: SGSpacing.p3),
 
-      // --------------------------- 영업시간 card ---------------------------
+      // --------------------------- 간 card ---------------------------
       MultipleInformationBox(children: [
         Row(children: [
           SGTypography.body("영업시간", size: FontSize.normal, weight: FontWeight.w700),

@@ -10,6 +10,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
 import '../../../../../core/components/multiple_information_box.dart';
+import '../../../../../core/components/snackbar.dart';
 
 class DeliveryTimeScreen extends StatefulWidget {
   final int minDeliveryTime;
@@ -57,7 +58,7 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
               onPressed: () {
                 FocusScope.of(context).unfocus();
                 widget.onSaveFunction(minDeliveryTime, maxDeliveryTime);
-                Navigator.pop(context);
+                showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
               },
               label: "변경하기")),
       body: SGContainer(

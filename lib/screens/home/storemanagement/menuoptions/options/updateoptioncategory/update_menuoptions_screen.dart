@@ -13,6 +13,7 @@ import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/screens/text_field_edit_screen.dart';
 import 'package:singleeat/screens/home/storemanagement/menuoptions/options/updateoptioncategory/update_menuoption_screen.dart';
 
+import '../../../../../../core/components/snackbar.dart';
 import '../../../../../../main.dart';
 import '../../model.dart';
 import '../addoption/screen.dart';
@@ -74,11 +75,12 @@ class _UpdateMenuOptionsScreenState extends ConsumerState<UpdateMenuOptionsScree
                                         });
                                       }
                                       if (mounted) {
+                                        showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
                                         Navigator.pop(context, menuOptionCategoryModel);
                                       }
                                     });
                                   },
-                                  buttonText: "저장하기",
+                                  buttonText: "변경하기",
                                   hintText: "옵션 카테고리 이름을 입력해주세요",
                                 )));
                       },
