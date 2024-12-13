@@ -44,8 +44,8 @@ class StoreSettlementService {
         'storeId': storeId,
         'email': email,
         'searchMonth': null,
-        'startDateString': startDate,
-        'endDateString': endDate
+        'searchStartDate': startDate,
+        'searchEndDate': endDate
       });
 
       return response;
