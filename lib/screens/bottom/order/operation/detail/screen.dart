@@ -258,7 +258,7 @@ class CompletedOrderDetailScreen extends ConsumerWidget {
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
                   Spacer(),
-                  SGTypography.body("${order.createdDate}",
+                  SGTypography.body(order.createdDate,
                       size: FontSize.normal,
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
@@ -266,23 +266,26 @@ class CompletedOrderDetailScreen extends ConsumerWidget {
                 SizedBox(height: SGSpacing.p4),
                 Row(children: [
                   SGContainer(
-                      color: order.orderStatus != OrderStatus.cancelled
+                      color: order.orderStatus !=
+                              OrderStatus.cancelled.orderStatusName
                           ? SGColors.primary.withOpacity(0.1)
                           : SGColors.warningRed.withOpacity(0.1),
                       padding: EdgeInsets.all(SGSpacing.p1),
                       borderRadius: BorderRadius.circular(SGSpacing.p1),
                       child: SGTypography.body(
-                        order.orderStatus != OrderStatus.cancelled
+                        order.orderStatus !=
+                                OrderStatus.cancelled.orderStatusName
                             ? order.receiveFoodType == 'DELIVERY'
                                 ? '배달 접수'
                                 : '포장 접수'
                             : "주문 취소",
-                        color: order.orderStatus != OrderStatus.cancelled
+                        color: order.orderStatus !=
+                                OrderStatus.cancelled.orderStatusName
                             ? SGColors.primary
                             : SGColors.warningRed,
                       )),
                   Spacer(),
-                  SGTypography.body("${order.createdDate}",
+                  SGTypography.body(order.createdDate,
                       size: FontSize.normal,
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
