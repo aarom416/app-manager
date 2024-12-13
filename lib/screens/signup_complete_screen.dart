@@ -136,16 +136,6 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "싱그릿 식단 연구소"),
-        floatingActionButton: Container(
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
-                maxHeight: 58),
-            child: SGActionButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                disabled: emailAuthRequested && !emailAuthConfirmed,
-                label: "저장")),
         body: SGContainer(
           color: SGColors.white,
           padding: EdgeInsets.symmetric(

@@ -266,7 +266,8 @@ class _ProfileEditScreenState extends State<_ProfileEditScreen> {
           color: SGColors.white,
           padding: EdgeInsets.symmetric(
               horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-          child: ListView(children: [
+          child: ListView(
+              children: [
             ...[
               SGTypography.body("아이디",
                   size: FontSize.small,
@@ -667,6 +668,8 @@ class _TermCheckScreenState extends ConsumerState<_TermCheckScreen> {
   @override
   Widget build(BuildContext context) {
   final provider = ref.read(signupNotifierProvider.notifier);
+  bool isSmalled = MediaQuery.of(context).size.width <= 320;
+
   return Scaffold(
       appBar: AppBarWithLeftArrow(title: "싱그릿 식단 연구소", onTap: widget.onPrev),
       body: SGContainer(
@@ -732,53 +735,49 @@ class _TermCheckScreenState extends ConsumerState<_TermCheckScreen> {
                 child: SGContainer(
                 padding: EdgeInsets.all(SGSpacing.p4),
                 child: Row(
-                children: [
-                    Image.asset(
-                          term.checked
-                          ? "assets/images/checkbox-on.png"
-                              : "assets/images/checkbox-off.png",
-                          width: SGSpacing.p6,
-                          height: SGSpacing.p6,
-                          ),
+                  children: [
+                  Image.asset(
+                    term.checked ? "assets/images/checkbox-on.png"
+                        : "assets/images/checkbox-off.png",
+                      width: SGSpacing.p6,
+                      height: SGSpacing.p6,
+                    ),
                     SizedBox(width: SGSpacing.p2),
-                    SGTypography.body(
-                      term.title,
-                      size: FontSize.normal,
-                      weight: FontWeight.w600,
-                      color: SGColors.gray5,
-                    ),
-                    SizedBox(width: SGSpacing.p1),
-                    if (term.isRequired)
-                    SGTypography.body(
-                      "(필수)",
-                      size: FontSize.normal,
-                      color: SGColors.primary,
-                      weight: FontWeight.w400,
-                    )
-                    else
-                    SGTypography.body(
-                      "(선택)",
-                      size: FontSize.normal,
-                      color: SGColors.gray3,
-                      weight: FontWeight.w400,
-                    ),
-                    Spacer(),
-                    InkWell(
-                      onTap: () {
-                        final url = termsUrls[term.title];
-                          if (url != null) {
-                          _launchUrl(url);
-                           }
-                          },
-                        child: Icon(
-                          Icons.arrow_forward_ios,
-                          size: FontSize.small,
-                          color: SGColors.gray3,
+                    Expanded(
+                      child: Row(
+                        children: [
+                        SGTypography.body(
+                            term.title,
+                            size: isSmalled ? FontSize.small : FontSize.normal,
+                            weight: FontWeight.w600,
+                            color: SGColors.gray5,
+                        ),
+                      SizedBox(height: SGSpacing.p1),
+                      SGTypography.body(
+                        term.isRequired ? " (필수)" : " (선택)",
+                        size: isSmalled ? FontSize.small : FontSize.normal,
+                        color: term.isRequired ? SGColors.primary : SGColors.gray3,
+                        weight: FontWeight.w400,
+                          ),
+                        ],
                       ),
                     ),
-                   ],
-                   ),
-                  ),
+                    InkWell(
+                    onTap: () {
+                      final url = termsUrls[term.title];
+                        if (url != null) {
+                        _launchUrl(url);
+                        }
+                    },
+                    child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: FontSize.small,
+                        color: SGColors.gray3,
+                        ),
+                      ),
+                      ],
+                    ),
+                    ),
                   ),
                   ],
                 );
@@ -889,11 +888,11 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
       if (previous?.emailStatus != next.emailStatus) {
         switch (next.emailStatus) {
           case SignupEmailStatus.push:
-            showDialog("사장님 이메일로 인증메일을\n보내드렸습니다.");
+            showSignUpDialog("사장님 이메일로 인증메일을\n보내드렸습니다.");
             break;
 
           case SignupEmailStatus.success:
-            showDialog("이메일 인증이 완료되었습니다.");
+            showSignUpDialog("이메일 인증이 완료되었습니다.");
             break;
 
           case SignupEmailStatus.error:
@@ -1295,6 +1294,7 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
               GestureDetector(
                 onTap: () {
                   provider.verifyCode();
+                  showSignUpDialog("asdfasdfasdfasdf");
                 },
                 child: SGContainer(
                     padding: EdgeInsets.symmetric(
@@ -1342,36 +1342,56 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
         ));
   }
 
-  void showDialog(String message) {
-    showSGDialog(
-        context: context,
-        childrenBuilder: (ctx) =>
-        [
+  void showSignUpDialog(String message) {
+    showSignUpSGDialog(
+      context: context,
+      childrenBuilder: (ctx) {
+        final screenWidth = MediaQuery.of(context).size.width;
+
+        return [
           Center(
-              child: SGTypography.body(message,
-                  size: FontSize.medium,
-                  weight: FontWeight.w700,
-                  lineHeight: 1.25,
-                  align: TextAlign.center)),
+            child: SGTypography.body(
+              message,
+              size: FontSize.medium,
+              weight: FontWeight.w700,
+              lineHeight: 1.25,
+              align: TextAlign.center,
+            ),
+          ),
           SizedBox(height: SGSpacing.p8),
           GestureDetector(
             onTap: () {
               Navigator.pop(ctx);
             },
-            child: SGContainer(
-              color: SGColors.primary,
-              width: double.infinity,
-              borderColor: SGColors.primary,
-              padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-              borderRadius: BorderRadius.circular(SGSpacing.p3),
-              child: Center(
-                  child: SGTypography.body("확인",
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                final buttonWidth = constraints.maxWidth * 0.8;
+                final isSmallScreen = screenWidth < 360;
+
+                return SGContainer(
+                  color: SGColors.primary,
+                  width: isSmallScreen ? buttonWidth : double.infinity,
+                  borderColor: SGColors.primary,
+                  padding: EdgeInsets.symmetric(
+                    vertical: SGSpacing.p5,
+                    horizontal: isSmallScreen ? SGSpacing.p3 : 0,
+                  ),
+                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                  child: Center(
+                    child: SGTypography.body(
+                      "확인",
                       color: SGColors.white,
                       weight: FontWeight.w700,
-                      size: FontSize.normal)),
+                      size: FontSize.normal,
+                    ),
+                  ),
+                );
+              },
             ),
-          )
-        ]);
+          ),
+        ];
+      },
+    );
   }
 
   void showFailDialogWithImage(String mainTitle, String subTitle) {
@@ -1412,4 +1432,40 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
           )
         ]);
   }
+}
+
+void showSignUpSGDialog({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: SGContainer(
+          height: 180,
+          width: 303,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding:
+                  EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
+        ),
+      );
+    },
+  );
 }

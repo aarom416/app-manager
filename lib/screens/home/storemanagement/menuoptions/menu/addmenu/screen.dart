@@ -352,6 +352,7 @@ class _Page_1_MenuCategoryState extends State<_Page_1_MenuCategory> {
   }
 }
 
+
 class __SelectMenuCategoryDialog extends ConsumerStatefulWidget {
   final BuildContext context;
   final MenuCategoryModel selectedMenuCategory;
@@ -376,70 +377,119 @@ class __SelectMenuCategoryDialogState extends ConsumerState<__SelectMenuCategory
   Widget build(BuildContext context) {
     final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
 
-    return Column(children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(child: SGTypography.body("추가하실 카테고리를 선택해 주세요.", size: FontSize.medium, weight: FontWeight.w700)),
-        ],
-      ),
-      SizedBox(height: SGSpacing.p4),
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 2 / 5),
-              child: ListView(shrinkWrap: true, children: [
-                ...state.storeMenuCategoryDTOList.map((menuCategory) => GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedMenuCategory = menuCategory;
-                      });
-                    },
-                    child: __CategoryOptionRadioButton(category: menuCategory.menuCategoryName, isSelected: selectedMenuCategory.storeMenuCategoryId == menuCategory.storeMenuCategoryId))),
-              ])),
-          SizedBox(height: SGSpacing.p4),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddMenuCategoryScreen()));
-            },
-            child: SGContainer(
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: SGTypography.body(
+                "추가하실 카테고리를 선택해 주세요.",
+                size: FontSize.medium * (screenWidth / 375),
+                weight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: SGSpacing.p4 * (screenHeight / 812)),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              constraints: BoxConstraints(
+                maxHeight: screenHeight * 0.4,
+              ),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  ...state.storeMenuCategoryDTOList.map(
+                        (menuCategory) => GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedMenuCategory = menuCategory;
+                        });
+                      },
+                      child: __CategoryOptionRadioButton(
+                        category: menuCategory.menuCategoryName,
+                        isSelected: selectedMenuCategory.storeMenuCategoryId == menuCategory.storeMenuCategoryId,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: SGSpacing.p4 * (screenHeight / 812)),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AddMenuCategoryScreen(),
+                  ),
+                );
+              },
+              child: SGContainer(
                 color: SGColors.white,
-                padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
-                borderRadius: BorderRadius.circular(SGSpacing.p2),
+                padding: EdgeInsets.symmetric(
+                  vertical: SGSpacing.p3 * (screenHeight / 812),
+                ),
+                borderRadius: BorderRadius.circular(SGSpacing.p2 * (screenWidth / 375)),
                 borderColor: SGColors.primary,
                 child: Center(
-                    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3),
-                  SizedBox(width: SGSpacing.p2),
-                  SGTypography.body("메뉴 카테고리 추가", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)
-                ]))),
-          ),
-          SizedBox(height: SGSpacing.p4),
-          GestureDetector(
-            onTap: () {
-              if (selectedMenuCategory.storeMenuCategoryId != -1) {
-                Navigator.of(context).pop();
-                widget.onConfirm(selectedMenuCategory);
-              }
-            },
-            child: SGContainer(
-              color: selectedMenuCategory.storeMenuCategoryId == -1 ? SGColors.gray2 : SGColors.primary, // 비활성화 시 색상 변경
-              padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-              borderRadius: BorderRadius.circular(SGSpacing.p3),
-              child: Center(
-                child: SGTypography.body(
-                  "확인",
-                  size: FontSize.normal,
-                  color: selectedMenuCategory.storeMenuCategoryId == -1 ? SGColors.gray5 : SGColors.white, // 비활성화 시 텍스트 색상 변경
-                  weight: FontWeight.w700,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/plus.png",
+                        width: SGSpacing.p3 * (screenWidth / 375),
+                        height: SGSpacing.p3 * (screenWidth / 375),
+                      ),
+                      SizedBox(width: SGSpacing.p2 * (screenWidth / 375)),
+                      SGTypography.body(
+                        "메뉴 카테고리 추가",
+                        size: FontSize.small * (screenWidth / 375),
+                        weight: FontWeight.w500,
+                        color: SGColors.primary,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    ]);
+            SizedBox(height: SGSpacing.p4 * (screenHeight / 812)),
+            GestureDetector(
+              onTap: () {
+                if (selectedMenuCategory.storeMenuCategoryId != -1) {
+                  Navigator.of(context).pop();
+                  widget.onConfirm(selectedMenuCategory);
+                }
+              },
+              child: SGContainer(
+                color: selectedMenuCategory.storeMenuCategoryId == -1
+                    ? SGColors.gray2
+                    : SGColors.primary,
+                padding: EdgeInsets.symmetric(
+                  vertical: SGSpacing.p4 * (screenHeight / 812),
+                ),
+                borderRadius: BorderRadius.circular(SGSpacing.p3 * (screenWidth / 375)),
+                child: Center(
+                  child: SGTypography.body(
+                    "확인",
+                    size: FontSize.normal * (screenWidth / 375),
+                    color: selectedMenuCategory.storeMenuCategoryId == -1
+                        ? SGColors.gray5
+                        : SGColors.white,
+                    weight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
 

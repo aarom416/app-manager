@@ -15,6 +15,8 @@ import 'package:singleeat/core/extensions/string.dart';
 import 'package:singleeat/screens/home/storeinformation/operation/emailchange/screen.dart';
 import 'package:singleeat/screens/home/storeinformation/operation/provider.dart';
 
+import '../../../../core/components/snackbar.dart';
+
 class StoreInformationScreen extends ConsumerStatefulWidget {
   const StoreInformationScreen({super.key});
 
@@ -383,8 +385,10 @@ class _EditBusinessProfileScreenState
               SGActionButton(
                   onPressed: () {
                     provider.updateBusinessInformation(int.parse(businessType));
+                    showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                   },
-                  label: "변경하기")
+                  label: "변경하기",
+              )
             ])));
   }
 }

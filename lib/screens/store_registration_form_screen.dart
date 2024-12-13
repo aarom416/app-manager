@@ -411,7 +411,7 @@ class _StoreRegistrationFormScreenState
                     });
                     provider.onChangeCategory(selectedValues);
                   },
-                  selected: List.from(selectedCategories), // 선택된 카테고리 전달
+                  selected: List.from(selectedCategories),
                 );
               },
               child: SGTextFieldWrapper(
@@ -419,15 +419,18 @@ class _StoreRegistrationFormScreenState
                   padding: EdgeInsets.all(SGSpacing.p4),
                   child: Row(
                     children: [
-                      SGTypography.body(
-                        selectedCategories.isNotEmpty
-                            ? selectedCategories.join(', ')
-                            : '가게가 어떤 카테고리에 속하는지 골라주세요.',
-                        color: selectedCategories.isNotEmpty
-                            ? SGColors.black
-                            : SGColors.gray3,
-                        size: FontSize.small,
-                        weight: FontWeight.w400,
+                      Container(
+                        width: MediaQuery.of(context).size.width <= 320 ? 234 : 250,
+                        child: SGTypography.body(
+                          selectedCategories.isNotEmpty
+                              ? selectedCategories.join(', ')
+                              : '가게가 어떤 카테고리에 속하는지 골라주세요.',
+                          color: selectedCategories.isNotEmpty
+                              ? SGColors.black
+                              : SGColors.gray3,
+                          size: FontSize.small,
+                          weight: FontWeight.w400,
+                        ),
                       ),
                       Spacer(),
                       Image.asset('assets/images/dropdown-arrow.png',
@@ -504,13 +507,18 @@ class _StoreRegistrationFormScreenState
                     padding: EdgeInsets.all(SGSpacing.p4),
                     child: Row(
                       children: [
-                        SGTypography.body(
+                        Container(
+                          width: 220,
+                          child: SGTypography.body(
                             (state.accountPicture == null)
                                 ? "파일 업로드"
                                 : state.accountPicture!.name,
                             color: SGColors.primary,
                             size: FontSize.small,
-                            weight: FontWeight.w400),
+                            weight: FontWeight.w400,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                         Spacer(),
                         Image.asset("assets/images/upload.png",
                             width: SGSpacing.p4, height: SGSpacing.p4),
@@ -532,9 +540,11 @@ class _StoreRegistrationFormScreenState
               SizedBox(height: SGSpacing.p8),
               Row(children: [
                 SGTypography.body("사업자등록증 사본",
-                    size: FontSize.small,
-                    weight: FontWeight.w500,
-                    color: SGColors.gray4),
+                  size: FontSize.small,
+                  weight: FontWeight.w500,
+                  color: SGColors.gray4,
+                  overflow: TextOverflow.ellipsis
+                ),
                 SizedBox(width: SGSpacing.p1),
                 SGTypography.body("(필수)",
                     size: FontSize.small,
@@ -554,13 +564,18 @@ class _StoreRegistrationFormScreenState
                     padding: EdgeInsets.all(SGSpacing.p4),
                     child: Row(
                       children: [
-                        SGTypography.body(
+                        Container(
+                          width: 230,
+                          child: SGTypography.body(
                             (state.businessRegistrationPicture == null)
                                 ? "반드시 금년도에 발급한 사본을 보내주세요."
                                 : state.businessRegistrationPicture!.name,
                             color: SGColors.primary,
                             size: FontSize.small,
-                            weight: FontWeight.w400),
+                            weight: FontWeight.w400,
+                            overflow: TextOverflow.ellipsis
+                          ),
+                        ),
                         Spacer(),
                         Image.asset("assets/images/upload.png",
                             width: SGSpacing.p4, height: SGSpacing.p4),
@@ -604,13 +619,18 @@ class _StoreRegistrationFormScreenState
                     padding: EdgeInsets.all(SGSpacing.p4),
                     child: Row(
                       children: [
-                        SGTypography.body(
+                        Container(
+                          width: 230,
+                          child: SGTypography.body(
                             (state.businessPermitPicture == null)
                                 ? "반드시 금년도에 발급한 사본을 보내주세요."
                                 : state.businessPermitPicture!.name,
                             color: SGColors.primary,
                             size: FontSize.small,
-                            weight: FontWeight.w400),
+                            weight: FontWeight.w400,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
                         const Spacer(),
                         Image.asset("assets/images/upload.png",
                             width: SGSpacing.p4, height: SGSpacing.p4),
@@ -660,7 +680,7 @@ class _StoreRegistrationFormScreenState
   }
 
   void showDialog(String message) {
-    showSGDialog(
+    showStoreRegistrationSGDialog(
         context: context,
         childrenBuilder: (ctx) => [
               Center(
@@ -727,4 +747,40 @@ class _StoreRegistrationFormScreenState
               )
             ]);
   }
+}
+
+void showStoreRegistrationSGDialog({
+  required BuildContext context,
+  required List<Widget> Function(BuildContext) childrenBuilder,
+}) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: SGContainer(
+          height: 180,
+          width: 303,
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SGContainer(
+                  padding:
+                  EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ...childrenBuilder(ctx),
+                    ],
+                  ),
+                )
+              ]),
+        ),
+      );
+    },
+  );
 }

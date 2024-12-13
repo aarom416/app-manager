@@ -304,7 +304,15 @@ class _MenuCategoryCard extends StatelessWidget {
               ClipRRect(borderRadius: BorderRadius.circular(SGSpacing.p4), child: Image.network(menu.menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18)),
               SizedBox(width: SGSpacing.p4),
               Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                SGTypography.body(menu.menuName, size: FontSize.normal, weight: FontWeight.w700),
+                Container(
+                  width: 161,
+                  child: SGTypography.body(
+                      menu.menuName,
+                      size: FontSize.normal,
+                      weight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis
+                    )
+                ),
                 SizedBox(height: SGSpacing.p2),
                 SGTypography.body("${menu.price.toKoreanCurrency}원", size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray4),
               ]),

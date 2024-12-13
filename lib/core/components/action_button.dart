@@ -24,7 +24,7 @@ class SGActionButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: SGContainer(
-          padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+          height: SGSpacing.p14,
           width: double.infinity,
           color: disabled
               ? SGColors.gray3
@@ -34,7 +34,8 @@ class SGActionButton extends StatelessWidget {
               child: SGTypography.body(label,
                   color: SGActionButtonVariant.primary == variant ? Colors.white : SGColors.warningRed,
                   weight: FontWeight.w700,
-                  size: FontSize.medium))),
+                  size: MediaQuery.of(context).size.width <= 320 ? FontSize.tiny : FontSize.medium
+              ))),
     );
   }
 }
