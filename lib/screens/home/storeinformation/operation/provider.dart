@@ -5,6 +5,7 @@ import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
 import 'package:singleeat/screens/home/storeinformation/operation/service.dart';
 
+import '../../../../core/components/snackbar.dart';
 import 'model.dart';
 
 part 'provider.freezed.dart';

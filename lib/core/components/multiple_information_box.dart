@@ -22,8 +22,23 @@ class DataTableRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SGTypography.body(left, color: SGColors.gray4, weight: FontWeight.w500, size: FontSize.small),
-        SGTypography.body(right, color: SGColors.gray5, weight: FontWeight.w500, size: FontSize.small),
+        SGTypography.body(
+            left,
+            color: SGColors.gray4,
+            weight: FontWeight.w500,
+            size: FontSize.small,
+        ),
+        Container(
+          alignment: Alignment.centerRight,
+          width: 191,
+          child: SGTypography.body(
+            right,
+            color: SGColors.gray5,
+            weight: FontWeight.w500,
+            size: FontSize.small,
+            align: TextAlign.end,
+          ),
+        ),
       ],
     );
   }

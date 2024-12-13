@@ -4,6 +4,7 @@ import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -109,7 +110,7 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
                     배달팁 변경 페이지에 존재하는 배달팁에 대한 정보를 전송해야 합니다. (기존에 설정되어 있는 배달팁 포함)
                  */
                 widget.onSaveFunction(baseDeliveryTip, minimumOrderPrice, storeDeliveryTipDTOList);
-                Navigator.of(context).pop();
+                showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
               }
             },
             label: "변경하기",
@@ -196,10 +197,7 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
             ),
 
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [SGTypography.body("*", color: SGColors.gray3, lineHeight: 1.25), SizedBox(width: SGSpacing.p1), SGTypography.body(widget.deliveryTipInfo, color: SGColors.gray3, lineHeight: 1.25)]),
+            SGTypography.body("* ${widget.deliveryTipInfo}", color: SGColors.gray3, lineHeight: 1.25),
             SizedBox(height: SGSpacing.p20),
           ])),
     );

@@ -28,14 +28,13 @@ abstract class MyInfoOrderHistoryModel with _$MyInfoOrderHistoryModel {
     @Default('') String payMethodDetail,
     @Default('') String address,
     @Default('') String phone,
-    @Default('') String createdDate,
-    @Default('') String receivedDate,
+    @Default('') String orderTime,
+    @Default('') String orderDate,
+    @Default('') String orderDateTime,
+    @Default('') String receiveDate,
     @Default('') String completedDate,
     @Default('') String storeName,
     @Default('') String orderNumber,
-    @Default('') String orderDate,
-    @Default('') String orderTime,
-    @Default('') String orderDateTime,
   }) = _MyInfoOrderHistoryModel;
 
   factory MyInfoOrderHistoryModel.fromJson(Map<String, dynamic> json) =>

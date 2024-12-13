@@ -40,6 +40,23 @@ class _HolidayScreenState extends State<HolidayScreen> {
     temporaryHolidays = widget.temporaryHolidays;
   }
 
+  bool areListsEqual(List<dynamic> list1, List<dynamic> list2) {
+    if (list1.length != list2.length) {
+      return false;
+    }
+    for (int i = 0; i < list1.length; i++) {
+      if (list1[i] != list2[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool _isStateChanged() {
+    return holidayStatus != widget.holidayStatus ||
+        !areListsEqual(widget.regularHolidays, regularHolidays) ||
+        !areListsEqual(widget.temporaryHolidays, temporaryHolidays);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,69 +71,71 @@ class _HolidayScreenState extends State<HolidayScreen> {
                   showDefaultSnackBar(context, '중복된 임시휴무일이 있습니다.');
                 } else if (hasOverlappingDateRanges(temporaryHolidays)) {
                   showDefaultSnackBar(context, '날짜가 겹치는 임시휴무일이 있습니다.');
-                } else {
+                } else if (_isStateChanged()){
                   widget.onSaveFunction(holidayStatus, regularHolidays, temporaryHolidays);
-                  Navigator.of(context).pop();
+                  showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                 }
               },
               label: "변경하기",
-              disabled: holidayStatus == widget.holidayStatus && const DeepCollectionEquality().equals(widget.regularHolidays, regularHolidays) && const DeepCollectionEquality().equals(widget.regularHolidays, regularHolidays))),
-      body: SGContainer(
-          color: const Color(0xFFFAFAFA),
-          padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-          child: ListView(children: [
-            SGTypography.body("휴무일", color: SGColors.black, weight: FontWeight.w700, size: FontSize.normal),
-
-            SizedBox(height: SGSpacing.p3),
-
-            // --------------------------- 휴무일 ---------------------------
-            SGTextFieldWrapper(
-                child: SGContainer(
-                    borderRadius: BorderRadius.circular(SGSpacing.p4),
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
-                    color: SGColors.white,
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      SGTypography.body("공휴일", size: FontSize.small, weight: FontWeight.w600),
-                      const Spacer(),
-                      SGSwitch(
-                          value: holidayStatus == 1,
-                          onChanged: (value) => {
-                                setState(() {
-                                  holidayStatus = value ? 1 : 0;
-                                })
-                              })
-                    ]))),
-            SizedBox(height: SGSpacing.p3),
-            SGTypography.body("* 일요일을 제외한 공휴일을 설정해요!", color: SGColors.gray3, weight: FontWeight.w700, size: FontSize.small),
-
-            SizedBox(height: SGSpacing.p3),
-
-            // --------------------------- 정기휴무 ---------------------------
-            RegularHolidayCard(
-              regularHolidays: regularHolidays,
-              onEditFunction: (regularHolidays) {
-                // print("onEditFunction regularHolidays $regularHolidays");
-                setState(() {
-                  this.regularHolidays = regularHolidays;
-                });
-              },
+              disabled: !_isStateChanged(),
             ),
+         ),
+          body: SGContainer(
+              color: const Color(0xFFFAFAFA),
+              padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+              child: ListView(children: [
+                SGTypography.body("휴무일", color: SGColors.black, weight: FontWeight.w700, size: FontSize.normal),
 
-            SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+                SizedBox(height: SGSpacing.p3),
 
-            // --------------------------- 임시휴무 ---------------------------
-            TemporaryHolidayCard(
-              temporaryHolidays: temporaryHolidays,
-              onEditFunction: (temporaryHolidays) {
-                // print("onEditFunction temporaryHolidays $temporaryHolidays");
-                setState(() {
-                  this.temporaryHolidays = temporaryHolidays;
-                });
-              },
-            ),
+                // --------------------------- 휴무일 ---------------------------
+                SGTextFieldWrapper(
+                    child: SGContainer(
+                        borderRadius: BorderRadius.circular(SGSpacing.p4),
+                        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
+                        color: SGColors.white,
+                        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                          SGTypography.body("공휴일", size: FontSize.small, weight: FontWeight.w600),
+                          const Spacer(),
+                          SGSwitch(
+                              value: holidayStatus == 1,
+                              onChanged: (value) => {
+                                    setState(() {
+                                      holidayStatus = value ? 1 : 0;
+                                    })
+                                  })
+                        ]))),
+                SizedBox(height: SGSpacing.p3),
+                SGTypography.body("* 일요일을 제외한 공휴일을 설정해요!", color: SGColors.gray3, weight: FontWeight.w700, size: FontSize.small),
 
-            SizedBox(height: SGSpacing.p10),
-          ])),
-    );
+                SizedBox(height: SGSpacing.p3),
+
+                // --------------------------- 정기휴무 ---------------------------
+                RegularHolidayCard(
+                  regularHolidays: regularHolidays,
+                  onEditFunction: (regularHolidays) {
+                    // print("onEditFunction regularHolidays $regularHolidays");
+                    setState(() {
+                      this.regularHolidays = regularHolidays;
+                    });
+                  },
+                ),
+
+                SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+
+                // --------------------------- 임시휴무 ---------------------------
+                TemporaryHolidayCard(
+                  temporaryHolidays: temporaryHolidays,
+                  onEditFunction: (temporaryHolidays) {
+                    // print("onEditFunction temporaryHolidays $temporaryHolidays");
+                    setState(() {
+                      this.temporaryHolidays = temporaryHolidays;
+                    });
+                  },
+                ),
+
+                SizedBox(height: SGSpacing.p20),
+              ])),
+        );
   }
 }

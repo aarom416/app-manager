@@ -9,6 +9,8 @@ import 'package:singleeat/office/models/result_response_list_model.dart';
 import 'package:singleeat/screens/home/couponinformation/operation/model.dart';
 import 'package:singleeat/screens/home/couponinformation/operation/service.dart';
 
+import '../../../../core/components/snackbar.dart';
+
 part 'provider.freezed.dart';
 part 'provider.g.dart';
 
@@ -103,6 +105,7 @@ class CouponInformationNotifier extends _$CouponInformationNotifier {
       if (successCallback != null) {
         successCallback();
       }
+
     } else {
       state = state.copyWith(
         status: CouponInformationStatus.error,

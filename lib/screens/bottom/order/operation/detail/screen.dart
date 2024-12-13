@@ -49,14 +49,22 @@ class _DataTableRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SGTypography.body(left,
-            color: SGColors.gray4,
-            weight: FontWeight.w500,
-            size: FontSize.small),
-        SGTypography.body(right,
+        SGTypography.body(
+          left,
+          color: SGColors.gray4,
+          weight: FontWeight.w500,
+          size: FontSize.small,
+        ),
+        Container(
+          width: 186,
+          alignment: Alignment.centerRight,
+          child: SGTypography.body(
+            right,
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w500,
-            size: FontSize.small),
+            size: FontSize.small,
+          ),
+        ),
       ],
     );
   }
@@ -221,7 +229,6 @@ class NewOrderDetailScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              SizedBox(height: SGSpacing.p20),
             ])));
   }
 }
@@ -258,7 +265,7 @@ class CompletedOrderDetailScreen extends ConsumerWidget {
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
                   Spacer(),
-                  SGTypography.body(order.createdDate,
+                  SGTypography.body("${order.orderTime}",
                       size: FontSize.normal,
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
@@ -285,7 +292,7 @@ class CompletedOrderDetailScreen extends ConsumerWidget {
                             : SGColors.warningRed,
                       )),
                   Spacer(),
-                  SGTypography.body(order.createdDate,
+                  SGTypography.body("${order.orderDate}",
                       size: FontSize.normal,
                       color: SGColors.whiteForDarkMode,
                       weight: FontWeight.w600),
@@ -447,13 +454,6 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                     color: SGColors.whiteForDarkMode,
                     size: FontSize.xlarge,
                     weight: FontWeight.w700),
-              if (order.receiveFoodType == "DELIVERY") ...[
-                SizedBox(height: SGSpacing.p2),
-                SGTypography.body("배달 대행사 : 바로고",
-                    size: FontSize.normal,
-                    weight: FontWeight.w400,
-                    color: SGColors.gray4),
-              ],
               SizedBox(height: SGSpacing.p6),
               SizedBox(height: SGSpacing.p2),
               if (order.receiveFoodType == "DELIVERY")
@@ -577,7 +577,7 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                                     size: FontSize.small,
                                     weight: FontWeight.w700,
                                     color: SGColors.gray4),
-                                SizedBox(height: SGSpacing.p5),
+                                SizedBox(height: SGSpacing.p2),
                                 Row(
                                   children: [
                                     SGFlexible(
@@ -635,6 +635,7 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                                     ),
                                   ],
                                 ),
+                                SizedBox(height: SGSpacing.p2),
                               ]);
                     },
                     label: "배달 완료 처리하기"),
@@ -655,7 +656,6 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                             weight: FontWeight.w700,
                             size: FontSize.medium))),
               ),
-              SizedBox(height: SGSpacing.p32),
             ])));
   }
 }
@@ -780,7 +780,8 @@ class _OrderInformation extends StatelessWidget {
           SGTypography.body("배달 정보",
               size: FontSize.normal,
               color: SGColors.whiteForDarkMode,
-              weight: FontWeight.w600),
+              weight: FontWeight.w600,
+        ),
           SizedBox(height: SGSpacing.p4),
           _DataTableRow(left: "배달 주소", right: order.address.substring(0, 20)),
           if (order.receiveFoodType == "DELIVERY" &&
@@ -913,7 +914,7 @@ class _CancelDialogBodyState extends ConsumerState<_CancelDialogBody> {
             borderRadius: BorderRadius.circular(SGSpacing.p3),
             color: cancelReason.isEmpty ? SGColors.gray3 : SGColors.primary,
             child: Center(
-              child: SGTypography.body("거절",
+              child: SGTypography.body("취소",
                   size: FontSize.normal,
                   weight: FontWeight.w700,
                   color: SGColors.white),
@@ -935,7 +936,7 @@ class _CancelDialogBodyState extends ConsumerState<_CancelDialogBody> {
       },
       child: SGContainer(
         padding: EdgeInsets.symmetric(
-            horizontal: SGSpacing.p5, vertical: SGSpacing.p3 + SGSpacing.p05),
+            horizontal: SGSpacing.p3, vertical: SGSpacing.p3 + SGSpacing.p05),
         borderRadius: BorderRadius.circular(SGSpacing.p3),
         borderColor: cancelReason == reason ? SGColors.primary : SGColors.line3,
         color: SGColors.white,
@@ -992,7 +993,7 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
               size: FontSize.small,
               weight: FontWeight.w700,
               color: SGColors.gray4)),
-      SizedBox(height: SGSpacing.p4),
+      SizedBox(height: SGSpacing.p3),
       GestureDetector(
         onTap: () {
           if (rejectReason.isEmpty) return;
@@ -1026,7 +1027,7 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
       },
       child: SGContainer(
         padding: EdgeInsets.symmetric(
-            horizontal: SGSpacing.p5, vertical: SGSpacing.p3 + SGSpacing.p05),
+            horizontal: SGSpacing.p3, vertical: SGSpacing.p3 + SGSpacing.p05),
         borderRadius: BorderRadius.circular(SGSpacing.p3),
         borderColor: rejectReason == reason ? SGColors.primary : SGColors.line3,
         color: SGColors.white,

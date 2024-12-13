@@ -5,6 +5,7 @@ import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/selection_bottom_sheet.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
@@ -80,7 +81,7 @@ class _OperationTimeScreenState extends State<OperationTimeScreen> {
               SGActionButton(
                   onPressed: () {
                     widget.onSaveFunction(operationTimeDetailDTOList);
-                    Navigator.of(context).pop();
+                    showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                   },
                   label: "변경하기",
                   disabled: const DeepCollectionEquality().equals(widget.operationTimeDetailDTOList, operationTimeDetailDTOList))

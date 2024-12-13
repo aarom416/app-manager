@@ -232,7 +232,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
                 onPressed: () {
                   widget.onConfirm(nutrition, context);
                 },
-                label: "설정하기",
+                label: "수정하기",
               ),
             ],
           ),

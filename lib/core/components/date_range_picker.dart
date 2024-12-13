@@ -98,8 +98,8 @@ class _DateRangePickerState extends State<DateRangePicker> {
           color: Colors.white,
           child: Center(
             child: SGTypography.body(formatDate(datetime),
-                size: widget.variant == DateRangePickerVariant.normal ? FontSize.normal : FontSize.small,
-                color: SGColors.gray4,
+                size: FontSize.small,
+                color: SGColors.black,
                 weight: FontWeight.w400,
                 letterSpacing: -0.5),
           ),
@@ -199,7 +199,7 @@ class _MonthlyRangePickerState extends State<MonthlyRangePicker> {
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p4),
           color: Colors.white,
           child: SGTypography.body(formatDate(datetime),
-              size: FontSize.normal, color: Colors.black, weight: FontWeight.w400, letterSpacing: -0.5),
+              size: FontSize.small, color: Colors.black, weight: FontWeight.w400, letterSpacing: -0.5),
         ),
       ),
     );
@@ -262,7 +262,7 @@ class _DatePickerModalBottomSheetState extends State<DatePickerModalBottomSheet>
 
   @override
   Widget build(BuildContext context) {
-    return ListView(shrinkWrap: true, physics: NeverScrollableScrollPhysics(), children: [
+    return ListView(shrinkWrap: true, physics: BouncingScrollPhysics(), children: [
       SGContainer(
         color: Colors.transparent,
         padding: EdgeInsets.all(SGSpacing.p2),

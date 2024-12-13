@@ -35,7 +35,15 @@ class MenuModelCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SGTypography.body(menuModel.menuName, color: SGColors.black, size: FontSize.normal, weight: FontWeight.w700),
+                  Container(
+                    width: 191,
+                    child: SGTypography.body(
+                      menuModel.menuName,
+                      color: SGColors.black,
+                      size: FontSize.normal,
+                      weight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis
+                    )),
                   SizedBox(height: SGSpacing.p2),
                   SGTypography.body("${menuModel.price.toKoreanCurrency}원", color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w400),
                 ],

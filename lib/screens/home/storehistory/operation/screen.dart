@@ -262,13 +262,21 @@ class _EventCardState extends State<_EventCard> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SGTypography.body(widget.event.createdDate,
+                          SGTypography.body(
+                              widget.event.createdDate,
                               color: SGColors.gray4,
                               size: FontSize.small,
                               weight: FontWeight.w500),
                           SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                          SGTypography.body(widget.event.content,
-                              weight: FontWeight.w700, size: FontSize.normal),
+                          Container(
+                            width: 220,
+                            child: SGTypography.body(
+                              widget.event.content,
+                              weight: FontWeight.w700,
+                              size: FontSize.normal,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                         ]),
                     Icon(collapsed
                         ? Icons.keyboard_arrow_down
@@ -282,7 +290,7 @@ class _EventCardState extends State<_EventCard> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     ...[
-                      ["작업자", "None"],
+                      ["작업자", "사장님"],
                       ["변경 시간", widget.event.createdDate],
                     ].map((List<String> pair) {
                       return [
@@ -295,5 +303,37 @@ class _EventCardState extends State<_EventCard> {
             ],
           ],
         )));
+  }
+}
+
+class SearchButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String label;
+  final bool disabled;
+  final SGActionButtonVariant variant;
+
+  SearchButton(
+      {required this.onPressed,
+        required this.label,
+        this.variant = SGActionButtonVariant.primary,
+        this.disabled = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: SGContainer(
+          padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+          width: double.infinity,
+          color: disabled
+              ? SGColors.gray3
+              : (variant == SGActionButtonVariant.danger ? SGColors.warningRed.withOpacity(0.08) : SGColors.primary),
+          borderRadius: BorderRadius.circular(SGSpacing.p3),
+          child: Center(
+              child: SGTypography.body(label,
+                  color: SGActionButtonVariant.primary == variant ? Colors.white : SGColors.warningRed,
+                  weight: FontWeight.w700,
+                  size: FontSize.medium))),
+    );
   }
 }

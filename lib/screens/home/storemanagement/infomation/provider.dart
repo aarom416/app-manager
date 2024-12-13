@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/extensions/dynamic.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';

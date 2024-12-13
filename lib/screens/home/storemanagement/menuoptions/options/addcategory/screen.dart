@@ -5,6 +5,7 @@ import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_step_indicator.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
@@ -118,7 +119,7 @@ class _AddOptionCategoryScreenState extends ConsumerState<AddOptionCategoryScree
                 logger.d("updateMenuOptionCategoryUseMenu success $success");
                 if (success) {
                   if (mounted) {
-                    Navigator.of(context).pop();
+                    showGlobalSnackBar(context, "성공적으로 등록되었습니다.");
                   }
                 }
               },
@@ -748,7 +749,12 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                       SGTypography.body(menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray5),
                     ])),
                 SizedBox(height: SGSpacing.p15 / 2),
-                SGTypography.body("옵션명", size: FontSize.normal, weight: FontWeight.w700),
+                SGTypography.body(
+                    "옵션명",
+                    size: FontSize.normal,
+                    weight: FontWeight.w700,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 SizedBox(height: SGSpacing.p5 / 2),
                 SGContainer(
                   color: Colors.white,

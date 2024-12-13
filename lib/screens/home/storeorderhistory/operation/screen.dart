@@ -242,44 +242,48 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                           ),
                         ),
                         SizedBox(height: SGSpacing.p6),
-                        Row(children: [
-                          ...["처리 중", "배달/픽업 완료", "주문 취소"]
-                              .map((e) => [
-                                    GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            filterValue = e;
-                                            provider.onChangeFilter(
-                                                filter: filterValue == '처리 중'
-                                                    ? '0'
-                                                    : filterValue == '배달/픽업 완료'
-                                                        ? '1'
-                                                        : '2');
-                                          });
-                                        },
-                                        child: SGContainer(
-                                            borderRadius: BorderRadius.circular(
-                                                SGSpacing.p24),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: SGSpacing.p4,
-                                                vertical: SGSpacing.p3),
-                                            borderColor: e == filterValue
-                                                ? Color(0xFF79DF70)
-                                                    .withOpacity(0.2)
-                                                : SGColors.line2,
-                                            color: e == filterValue
-                                                ? Color(0xFF79DF70)
-                                                    .withOpacity(0.12)
-                                                : SGColors.white,
-                                            child: SGTypography.body(e,
-                                                size: FontSize.small,
-                                                color: e == filterValue
-                                                    ? SGColors.primary
-                                                    : SGColors.gray5))),
-                                    SizedBox(width: SGSpacing.p2)
-                                  ])
-                              .flattened
-                        ]),
+                        SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          child: Row(children: [
+                            ...["처리 중", "배달/픽업 완료", "주문 취소"]
+                                .map((e) => [
+                                      GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              filterValue = e;
+                                              provider.onChangeFilter(
+                                                  filter: filterValue == '처리 중'
+                                                      ? '0'
+                                                      : filterValue == '배달/픽업 완료'
+                                                          ? '1'
+                                                          : '2');
+                                            });
+                                          },
+                                          child: SGContainer(
+                                              borderRadius: BorderRadius.circular(
+                                                  SGSpacing.p24),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: SGSpacing.p4,
+                                                  vertical: SGSpacing.p3),
+                                              borderColor: e == filterValue
+                                                  ? Color(0xFF79DF70)
+                                                      .withOpacity(0.2)
+                                                  : SGColors.line2,
+                                              color: e == filterValue
+                                                  ? Color(0xFF79DF70)
+                                                      .withOpacity(0.12)
+                                                  : SGColors.white,
+                                              child: SGTypography.body(e,
+                                                  size: FontSize.small,
+                                                  color: e == filterValue
+                                                      ? SGColors.primary
+                                                      : SGColors.gray5))),
+                                      SizedBox(width: SGSpacing.p2)
+                                    ])
+                                .flattened
+                          ]),
+                        ),
                       ])),
               SGContainer(
                 padding: EdgeInsets.symmetric(
@@ -337,10 +341,13 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                       SizedBox(height: SGSpacing.p8),
                       SGTypography.body("누적 주문 내역",
                           size: FontSize.medium, weight: FontWeight.w700),
-                      SizedBox(height: SGSpacing.p2),
+                      SizedBox(height: SGSpacing.p1),
                       ...state.storeOrderHistory.orderHistoryDTOList.map((e) =>
-                          _CollasipleOrderCard(
-                              storeOrderHistory: e as OrderHistoryDTO)),
+                          Padding(
+                          padding: EdgeInsets.symmetric(vertical: SGSpacing.p1),
+                            child: _CollasipleOrderCard(
+                                storeOrderHistory: e as OrderHistoryDTO),
+                          )),
                       /*_CollasipleOrderCard(
                           storeOrderHistory: state.storeOrderHistory.),*/
                       SizedBox(height: SGSpacing.p2),
@@ -349,6 +356,54 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
             ])));
   }
 }
+
+class DataTableRow extends StatelessWidget {
+  const DataTableRow({Key? key, required this.left, required this.right, required this.overflow, required this.width}) : super(key: key);
+
+  final String left;
+  final String right;
+  final bool overflow;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SGTypography.body(
+          left,
+          color: SGColors.gray4,
+          weight: FontWeight.w500,
+          size: FontSize.small,
+        ),
+        overflow ? Container(
+          alignment: Alignment.centerRight,
+          width: width,
+          child: SGTypography.body(
+              right,
+              color: SGColors.gray5,
+              weight: FontWeight.w500,
+              size: FontSize.small,
+              align: TextAlign.end,
+              overflow: TextOverflow.ellipsis
+          ),
+        )
+        : Container(
+          alignment: Alignment.centerRight,
+          width: width,
+          child: SGTypography.body(
+              right,
+              color: SGColors.gray5,
+              weight: FontWeight.w500,
+              size: FontSize.small,
+              align: TextAlign.end,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 
 class _CollasipleOrderCard extends StatefulWidget {
   final OrderHistoryDTO storeOrderHistory;
@@ -372,28 +427,31 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
         boxShadow: SGBoxShadow.large,
         child: Column(children: [
           DataTableRow(
-              left: "주문 상태", right: widget.storeOrderHistory.orderStatus),
+              left: "주문 상태", right: widget.storeOrderHistory.orderStatus, overflow: true, width: 160),
           SizedBox(height: SGSpacing.p4),
           DataTableRow(
-              left: "주문 번호", right: widget.storeOrderHistory.orderNumber),
+              left: "주문 번호", right: widget.storeOrderHistory.orderNumber, overflow: true, width: 160),
           SizedBox(height: SGSpacing.p4),
           DataTableRow(
               left: "주문 내역",
-              right: widget.storeOrderHistory.orderMenuDTOList[0].menuName),
+              right: widget.storeOrderHistory.orderMenuDTOList[0].menuName, overflow: true, width: 160),
           SizedBox(height: SGSpacing.p4),
           DataTableRow(
-              left: "결제 유형", right: widget.storeOrderHistory.payMethodDetail),
+              left: "결제 유형", right: widget.storeOrderHistory.payMethodDetail, overflow: true, width: 160),
           SizedBox(height: SGSpacing.p4),
           DataTableRow(
               left: "수령 방법",
               right: widget.storeOrderHistory.receiveFoodType == 'DELIVERY'
                   ? '배달'
-                  : '포장'),
+                  : '포장',
+              overflow: true, width: 160
+          ),
           SizedBox(height: SGSpacing.p4),
           DataTableRow(
               left: "결제 금액",
-              right:
-                  widget.storeOrderHistory.totalOrderAmount.toKoreanCurrency),
+              right: widget.storeOrderHistory.totalOrderAmount.toKoreanCurrency,
+              overflow: true, width: 160,
+          ),
           SizedBox(height: SGSpacing.p4),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -407,11 +465,32 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                 child: SGContainer(
                     borderColor: SGColors.primary,
                     borderRadius: BorderRadius.circular(SGSpacing.p2),
-                    width: SGSpacing.p17,
+                    width: isExpanded ? SGSpacing.p17 : SGSpacing.p20 + SGSpacing.p2,
                     padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
                     child: Center(
-                        child: SGTypography.body(isExpanded ? "접기" : "자세히",
-                            size: FontSize.small, color: SGColors.primary))),
+                        child: isExpanded ? SGTypography.body(
+                             "접기",
+                            size: FontSize.small, color: SGColors.primary)
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SGTypography.body(
+                                "자세히",
+                                size: FontSize.small,
+                                weight: FontWeight.w600,
+                                color: SGColors.primary
+                            ),
+                            SizedBox(
+                              width: SGSpacing.p1,
+                            ),
+                            Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              size: FontSize.normal,
+                              color: SGColors.primary,
+                            ),
+                          ],
+                        )
+                    )),
               ),
             ],
           ),
@@ -463,7 +542,6 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                       SizedBox(height: SGSpacing.p4),
                       Divider(height: 1, thickness: 1, color: SGColors.line1),
                       SizedBox(height: SGSpacing.p3),
-
                       Row(children: [
                         SGFlexible(
                             flex: 2,
@@ -478,21 +556,55 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                                 size: FontSize.small,
                                 color: SGColors.gray4)),
                       ]),
-                      SizedBox(height: SGSpacing.p3),
-                      Row(children: [
-                        SGFlexible(
-                            flex: 2,
-                            child: SGTypography.body("배달팁",
-                                size: FontSize.small, color: SGColors.gray4)),
-                        SGFlexible(
-                            flex: 1,
-                            child: SGTypography.body(
-                                widget.storeOrderHistory.deliveryTip
-                                    .toKoreanCurrency,
-                                align: TextAlign.right,
-                                size: FontSize.small,
-                                color: SGColors.gray4)),
-                      ]),
+
+                      if (widget.storeOrderHistory.couponDiscount != 0) ... [
+                        SizedBox(height: SGSpacing.p3),
+                        Row(children: [
+                          SGFlexible(
+                              flex: 2,
+                              child: SGTypography.body("할인 쿠폰",
+                                  size: FontSize.small, color: SGColors.gray4)),
+                          SGFlexible(
+                              flex: 1,
+                              child: SGTypography.body(
+                                  widget.storeOrderHistory.couponDiscount.toKoreanCurrency,
+                                  align: TextAlign.right,
+                                  size: FontSize.small,
+                                  color: SGColors.gray4)),
+                        ]),
+                      ],
+                      if (widget.storeOrderHistory.pointAmount != 0) ... [
+                        SizedBox(height: SGSpacing.p3),
+                        Row(children: [
+                          SGFlexible(
+                              flex: 2,
+                              child: SGTypography.body("포인트",
+                                  size: FontSize.small, color: SGColors.gray4)),
+                          SGFlexible(
+                              flex: 1,
+                              child: SGTypography.body(
+                                  widget.storeOrderHistory.pointAmount.toKoreanCurrency,
+                                  align: TextAlign.right,
+                                  size: FontSize.small,
+                                  color: SGColors.gray4)),
+                        ]),
+                      ],
+                      if (widget.storeOrderHistory.receiveFoodType != "DELIVERY") ... [
+                        SizedBox(height: SGSpacing.p3),
+                        Row(children: [
+                          SGFlexible(
+                              flex: 2,
+                              child: SGTypography.body("배달팁",
+                                  size: FontSize.small, color: SGColors.gray4)),
+                          SGFlexible(
+                              flex: 1,
+                              child: SGTypography.body(
+                                  widget.storeOrderHistory.deliveryTip.toKoreanCurrency,
+                                  align: TextAlign.right,
+                                  size: FontSize.small,
+                                  color: SGColors.gray4)),
+                        ]),
+                      ],
                       SizedBox(height: SGSpacing.p3),
                       Divider(height: 1, thickness: 1, color: SGColors.line1),
                       SizedBox(height: SGSpacing.p5),
@@ -555,31 +667,32 @@ class _OrderHistoryDetailScreen extends StatelessWidget {
             MultipleInformationBox(
               children: [
                 DataTableRow(
-                    left: "주 결제 방법", right: storeOrderHistory.payMethodDetail),
+                    left: "주 결제 방법", right: storeOrderHistory.payMethodDetail, overflow: true, width: 168),
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "보조 결제 방법", right: storeOrderHistory.secondPayMethod),
+                    left: "보조 결제 방법", right: storeOrderHistory.secondPayMethod, overflow: true, width: 168),
+                if (storeOrderHistory.receiveFoodType == "DELIVERY") ... [
+                  SizedBox(height: SGSpacing.p4),
+                  DataTableRow(
+                      left: "픽업 주소", right: storeOrderHistory.address, overflow: false, width: 168),
+                ],
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "픽업 주소",
-                    right: storeOrderHistory.address.length > 25
-                        ? storeOrderHistory.address.substring(0, 25)
-                        : storeOrderHistory.address),
+                    left: "가게 요청 사항", right: storeOrderHistory.toOwner, overflow: false, width: 168),
+                if (storeOrderHistory.receiveFoodType == "DELIVERY") ... [
+                  SizedBox(height: SGSpacing.p4),
+                  DataTableRow(
+                      left: "배달 요청 사항", right: storeOrderHistory.toRider, overflow: false, width: 168),
+                ],
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "가게 요청 사항", right: storeOrderHistory.toOwner),
+                    left: "주문 시각", right: storeOrderHistory.createdDate, overflow: false, width: 201),
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "배달 요청 사항", right: storeOrderHistory.toRider),
+                    left: "접수 시각", right: storeOrderHistory.receivedDate, overflow: false, width: 201),
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "주문 시각", right: storeOrderHistory.createdDate),
-                SizedBox(height: SGSpacing.p4),
-                DataTableRow(
-                    left: "접수 시각", right: storeOrderHistory.receivedDate),
-                SizedBox(height: SGSpacing.p4),
-                DataTableRow(
-                    left: "완료 시각", right: storeOrderHistory.completedDate),
+                    left: "완료 시각", right: storeOrderHistory.completedDate, overflow: false, width: 201),
               ],
             )
           ])),

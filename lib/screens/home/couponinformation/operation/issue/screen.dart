@@ -577,7 +577,7 @@ class _CouponIssueScreenState extends ConsumerState<CouponIssueScreen> {
                 SGActionButton(
                     onPressed: () {
                       provider.issueCoupon(
-                        successCallback: () => showSGDialog(
+                        successCallback: () => showCouponIssueSGDialog(
                           context: context,
                           childrenBuilder: (ctx) => [
                             Row(

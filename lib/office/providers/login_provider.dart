@@ -93,7 +93,7 @@ class LoginNotifier extends _$LoginNotifier {
         break;
 
       case 400:
-        // 서버 message를 화면에서 처리
+        // 서버 message를 화면에서 처리며
         final error = ResultFailResponseModel.fromJson(response.data);
         state = state.copyWith(
             error: error.copyWith(
@@ -201,12 +201,21 @@ class LoginNotifier extends _$LoginNotifier {
     switch (response.statusCode) {
       case 200:
         verifyPhoneBySuccess(response: response, status: UserStatus.success);
+        // Future.delayed(const Duration(seconds: 2), () {
+        //   ref.read(goRouterProvider).go(AppRoutes.home);
+        // });
         break;
       case 202:
         verifyPhoneBySuccess(response: response, status: UserStatus.wait);
+        // Future.delayed(const Duration(seconds: 2), () {
+        //   ref.read(goRouterProvider).go(AppRoutes.home);
+        // });
         break;
       case 206:
         verifyPhoneBySuccess(response: response, status: UserStatus.notEntry);
+        // Future.delayed(const Duration(seconds: 2), () {
+        //   ref.read(goRouterProvider).go(AppRoutes.home);
+        // });
         break;
       default:
         // 종료

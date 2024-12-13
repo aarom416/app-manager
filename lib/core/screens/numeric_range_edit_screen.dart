@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import '../components/action_button.dart';
 import '../components/container.dart';
 import '../components/numeric_textfield.dart';
@@ -95,7 +96,7 @@ class NumericRangeEditScreen extends StatelessWidget {
               final minValue = int.tryParse(minValueController.text) ?? 0;
               final maxValue = int.tryParse(maxValueController.text) ?? 0;
               onConfirm(minValue, maxValue);
-              Navigator.of(context).pop();
+              showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

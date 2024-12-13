@@ -36,6 +36,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       appBar: AppBar(
         shadowColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: SGContainer(
             padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),

@@ -6,6 +6,7 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -60,7 +61,7 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
         color: const Color(0xFFFAFAFA),
         padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
         child: ListView(children: [
-          SGTypography.body("곡물 베이스 선택", weight: FontWeight.w700, size: FontSize.normal),
+          SGTypography.body(optionCategoryModel.menuOptionCategoryName, weight: FontWeight.w700, size: FontSize.normal),
           SizedBox(height: SGSpacing.p3),
           MultipleInformationBox(children: [
             // --------------------------- 옵션 필수 여부 ---------------------------
@@ -115,11 +116,11 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                 borderRadius: BorderRadius.circular(SGSpacing.p2),
                 padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
                 child: Row(children: [
-                  SGTypography.body("옵션 선택 개수 설정", size: FontSize.small),
+                  SGTypography.body("옵션 선택 개수 설정", size: MediaQuery.of(context).size.width <= 340 ? FontSize.tiny : FontSize.small),
                   SizedBox(width: SGSpacing.p1),
-                  Icon(Icons.edit, size: FontSize.small),
+                  Icon(Icons.edit, size: MediaQuery.of(context).size.width <= 340 ? FontSize.tiny : FontSize.small),
                   Spacer(),
-                  SGTypography.body("최소${optionCategoryModel.minChoice}개, 최대 ${optionCategoryModel.maxChoice}개", size: FontSize.small)
+                  SGTypography.body("최소${optionCategoryModel.minChoice}개, 최대 ${optionCategoryModel.maxChoice}개", size: MediaQuery.of(context).size.width <= 340 ? FontSize.tiny : FontSize.small)
                 ]),
               ),
             ),
@@ -173,18 +174,40 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                     });
                   }
                 },
-                child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                  SGTypography.body(optionCategoryModel.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
-                  SizedBox(width: SGSpacing.p1),
-                  SGTypography.body(selectionType, size: FontSize.small, color: SGColors.primary, weight: FontWeight.w600),
-                  SizedBox(width: SGSpacing.p1),
-                  const Icon(Icons.edit, size: FontSize.small),
-                ]),
-              ),
+                child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 223,
+                            child: SGTypography.body(
+                                optionCategoryModel.menuOptionCategoryName,
+                                size: FontSize.normal,
+                                weight: FontWeight.w600
+                            ),
+                          ),
+                          const Icon(Icons.edit, size: FontSize.normal),
+                        ],
+                      ),
+                      SizedBox(
+                        height: SGSpacing.p2,
+                      ),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        child: SGTypography.body(
+                            selectionType,
+                            size: FontSize.small,
+                            color: SGColors.primary,
+                            weight: FontWeight.w600
+                        ),
+                      ),
+                    ]),
+                  ),
               ...optionCategoryModel.menuOptions
                   .mapIndexed((index, option) => [
                         if (index == 0) SizedBox(height: SGSpacing.p5) else SizedBox(height: SGSpacing.p4),
-                        DataTableRow(left: option.optionContent ?? "", right: "${option.price.toKoreanCurrency}원"),
+                        OptionDataTableRow(left: option.optionContent ?? "", right: "${option.price.toKoreanCurrency}원"),
                       ])
                   .flattened
             ],
@@ -243,7 +266,15 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                         ),
                         SizedBox(width: SGSpacing.p4),
                         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          SGTypography.body(cuisine.menuName, size: FontSize.normal, weight: FontWeight.w700),
+                          Container(
+                            width: 163,
+                            child: SGTypography.body(
+                              cuisine.menuName,
+                              size: FontSize.normal,
+                              weight: FontWeight.w700,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                           SizedBox(height: SGSpacing.p2),
                           SGTypography.body("${cuisine.price.toKoreanCurrency}원", size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray4),
                         ])
@@ -272,7 +303,7 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                                     logger.d("deleteMenuOptionCategory success $success");
                                     if (mounted) {
                                       Navigator.of(ctx).pop();
-                                      Navigator.of(context).pop();
+                                      showGlobalSnackBar(context, "성공적으로 삭제되었습니다.");
                                     }
                                   },
                                 );
@@ -315,9 +346,41 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                   child: SGTypography.body("옵션 카테고리 삭제", color: SGColors.warningRed, weight: FontWeight.w600, size: FontSize.small),
                 )),
           ),
-          SizedBox(height: SGSpacing.p32),
         ]),
       ),
+    );
+  }
+}
+
+class OptionDataTableRow extends StatelessWidget {
+  const OptionDataTableRow({Key? key, required this.left, required this.right}) : super(key: key);
+
+  final String left;
+  final String right;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width <= 320 ? 165 : 223,
+          child: SGTypography.body(
+            left,
+            color: SGColors.gray4,
+            weight: FontWeight.w500,
+            size: FontSize.small,
+            overflow: TextOverflow.ellipsis
+          ),
+        ),
+        SGTypography.body(
+          right,
+          color: SGColors.gray5,
+          weight: FontWeight.w500,
+          size: FontSize.small,
+          align: TextAlign.end,
+        ),
+      ],
     );
   }
 }

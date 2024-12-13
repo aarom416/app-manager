@@ -411,13 +411,13 @@ class SaleHistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultipleInformationBox(
       children: [
-        DataTableRow(left: "구분", right: saleHistory.sellType),
+        VatDataTableRow(left: "구분", right: saleHistory.sellType),
         SizedBox(height: SGSpacing.p4),
-        DataTableRow(left: "공급가액", right: saleHistory.price),
+        VatDataTableRow(left: "공급가액", right: saleHistory.price),
         SizedBox(height: SGSpacing.p4),
-        DataTableRow(left: "부가세", right: saleHistory.tax),
+        VatDataTableRow(left: "부가세", right: saleHistory.tax),
         SizedBox(height: SGSpacing.p4),
-        DataTableRow(
+        VatDataTableRow(
             left: "합계",
             right: (saleHistory.price.toIntFromCurrency +
                     saleHistory.tax.toIntFromCurrency)
@@ -436,17 +436,50 @@ class PurchaseHistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultipleInformationBox(
       children: [
-        DataTableRow(left: "서비스", right: "싱그릿"),
+        VatDataTableRow(left: "서비스", right: "싱그릿"),
         SizedBox(height: SGSpacing.p4),
-        DataTableRow(left: "발급구분코드", right: purchaseHistory.serviceType),
+        VatDataTableRow(left: "발급구분코드", right: purchaseHistory.serviceType),
         SizedBox(height: SGSpacing.p4),
-        DataTableRow(
+        VatDataTableRow(
             left: "수수료(공급가액)", right: purchaseHistory.price.toKoreanCurrency),
         SizedBox(height: SGSpacing.p4),
-        DataTableRow(
+        VatDataTableRow(
             left: "수수료(부가세)", right: purchaseHistory.tax.toKoreanCurrency),
         SizedBox(height: SGSpacing.p4),
-        DataTableRow(left: "합계", right: purchaseHistory.total.toKoreanCurrency),
+        VatDataTableRow(left: "합계", right: purchaseHistory.total.toKoreanCurrency),
+      ],
+    );
+  }
+}
+
+class VatDataTableRow extends StatelessWidget {
+  const VatDataTableRow({Key? key, required this.left, required this.right}) : super(key: key);
+
+  final String left;
+  final String right;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SGTypography.body(
+          left,
+          color: SGColors.gray4,
+          weight: FontWeight.w500,
+          size: FontSize.small,
+        ),
+        Container(
+          alignment: Alignment.centerRight,
+          width: 156,
+          child: SGTypography.body(
+            right,
+            color: SGColors.gray5,
+            weight: FontWeight.w500,
+            size: FontSize.small,
+            align: TextAlign.end,
+          ),
+        ),
       ],
     );
   }

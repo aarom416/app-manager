@@ -145,6 +145,9 @@ class _SetAppliedMenusScreenState extends State<SetAppliedMenusScreen> {
                         SizedBox(width: SGSpacing.p2),
                         SGTypography.body("메뉴 추가하기", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)
                       ])))),
+              SizedBox(
+                height: SGSpacing.p20,
+              ),
             ])));
   }
 }

@@ -12,6 +12,8 @@ import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../service_agreement_screen.dart';
+
 class ProfileDeleteSessionScreen extends ConsumerStatefulWidget {
   const ProfileDeleteSessionScreen({super.key});
 
@@ -31,16 +33,26 @@ class _ProfileDeleteSessionScreenState
           padding: EdgeInsets.symmetric(
               horizontal: SGSpacing.p4, vertical: SGSpacing.p3 + SGSpacing.p05),
           child: Column(children: [
+            SGContainer(
+              width: double.infinity,
+              child: SGTypography.body("계정 설정",
+                  size: FontSize.normal,
+                  weight: FontWeight.w700,
+                  lineHeight: 1.25,
+                  align: TextAlign.start,
+              ),
+            ),
+            SizedBox(height: SGSpacing.p3),
             GestureDetector(
               onTap: () {
-                showSGDialog(
+                showLogOutSGDialog(
                     context: context,
                     childrenBuilder: (ctx) => [
                           Center(
                               child: SGTypography.body("로그아웃 하시겠습니까?",
                                   size: FontSize.large,
                                   weight: FontWeight.w700)),
-                          SizedBox(height: SGSpacing.p5),
+                          SizedBox(height: SGSpacing.p4),
                           Row(children: [
                             Expanded(
                               child: GestureDetector(
@@ -118,7 +130,7 @@ class _ProfileDeleteSessionScreenState
             SizedBox(height: SGSpacing.p3),
             GestureDetector(
               onTap: () {
-                showSGDialog(
+                showAccountDeleteSGDialog(
                     context: context,
                     childrenBuilder: (ctx) => [
                           // 로그아웃 하시겠습니까.
@@ -134,7 +146,7 @@ class _ProfileDeleteSessionScreenState
                               size: FontSize.small,
                             ),
                           ),
-                          SizedBox(height: SGSpacing.p5),
+                          SizedBox(height: SGSpacing.p8),
                           Row(children: [
                             Expanded(
                               child: GestureDetector(
@@ -194,6 +206,45 @@ class _ProfileDeleteSessionScreenState
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SGTypography.body("비밀번호 변경",
+                            size: FontSize.normal, weight: FontWeight.w500),
+                        Spacer(),
+                        Icon(Icons.arrow_forward_ios, size: FontSize.small),
+                      ])),
+            ),
+            SizedBox(height: SGSpacing.p3),
+            SGContainer(
+              width: double.infinity,
+              child: SGTypography.body("서비스 약관",
+                size: FontSize.normal,
+                weight: FontWeight.w700,
+                lineHeight: 1.25,
+                align: TextAlign.start,
+              ),
+            ),
+            SizedBox(height: SGSpacing.p3),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) => ServiceAgreementScreen(title: "이용약관"),
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      return child;
+                    },
+                  ),
+                );
+              },
+              child: SGContainer(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                  borderColor: SGColors.line3,
+                  boxShadow: SGBoxShadow.large,
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SGTypography.body("이용약관",
                             size: FontSize.normal, weight: FontWeight.w500),
                         Spacer(),
                         Icon(Icons.arrow_forward_ios, size: FontSize.small),

@@ -200,7 +200,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
 
       SizedBox(height: SGSpacing.p3),
 
-      // --------------------------- 영업시간 card ---------------------------
+      // --------------------------- 간 card ---------------------------
       MultipleInformationBox(children: [
         Row(children: [
           SGTypography.body("영업시간", size: FontSize.normal, weight: FontWeight.w700),
@@ -232,7 +232,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
               : "${convert24HourTimeToAmPmWithHourMinute(operationTimeDetailDTOList.first.startTime)}~${convert24HourTimeToAmPmWithHourMinute(operationTimeDetailDTOList.first.endTime)}";
           return Column(
             children: [
-              DataTableRow(left: day, right: time),
+              OperationDataTableRow(left: day, right: time),
               SizedBox(height: isLastIndex ? 0 : SGSpacing.p4),
             ],
           );
@@ -273,7 +273,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
               : "${convert24HourTimeToAmPmWithHourMinute(breakTimeDetailDTOList.first.startTime)}~${convert24HourTimeToAmPmWithHourMinute(breakTimeDetailDTOList.first.endTime)}";
           return Column(
             children: [
-              DataTableRow(left: day, right: time),
+              OperationDataTableRow(left: day, right: time),
               SizedBox(height: isLastIndex ? 0 : SGSpacing.p4),
             ],
           );
@@ -302,9 +302,9 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
               }),
         ]),
         SizedBox(height: SGSpacing.p5),
-        DataTableRow(left: "공휴일", right: (state.holidayStatus == 1) ? "설날, 설날 다음날" : "-"),
+        OperationDataTableRow(left: "공휴일", right: (state.holidayStatus == 1) ? "설날, 설날 다음날" : "-"),
         SizedBox(height: SGSpacing.p4),
-        if (regularHolidayLabels.isEmpty) const DataTableRow(left: "정기 휴무", right: "-"),
+        if (regularHolidayLabels.isEmpty) const OperationDataTableRow(left: "정기 휴무", right: "-"),
         if (regularHolidayLabels.isNotEmpty)
           ...regularHolidayLabels.asMap().entries.map((entry) {
             int index = entry.key;
@@ -313,13 +313,13 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
             String regularHolidayLabel = entry.value;
             return Column(
               children: [
-                DataTableRow(left: isFirstIndex ? "정기 휴무" : "", right: regularHolidayLabel),
+                OperationDataTableRow(left: isFirstIndex ? "정기 휴무" : "", right: regularHolidayLabel),
                 SizedBox(height: isLastIndex ? 0 : SGSpacing.p2),
               ],
             );
           }),
         SizedBox(height: SGSpacing.p4),
-        if (temporaryHolidays.isEmpty) const DataTableRow(left: "임시 휴무", right: "-"),
+        if (temporaryHolidays.isEmpty) const OperationDataTableRow(left: "임시 휴무", right: "-"),
         if (temporaryHolidays.isNotEmpty)
           ...temporaryHolidays.asMap().entries.map((entry) {
             int index = entry.key;
@@ -328,7 +328,7 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
             OperationTimeDetailModel temporaryHoliday = entry.value;
             return Column(
               children: [
-                DataTableRow(
+                OperationDataTableRow(
                     left: isFirstIndex ? "임시 휴무" : "",
                     right: (temporaryHoliday.startDate == temporaryHoliday.endDate) ? temporaryHoliday.startDate : "${temporaryHoliday.startDate}~${temporaryHoliday.endDate}"),
                 SizedBox(height: isLastIndex ? 0 : SGSpacing.p2),
@@ -339,6 +339,41 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
 
       SizedBox(height: SGSpacing.p3),
     ]);
+  }
+}
+
+class OperationDataTableRow extends StatelessWidget {
+  const OperationDataTableRow({Key? key, required this.left, required this.right}) : super(key: key);
+
+  final String left;
+  final String right;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          child: SGTypography.body(
+            left,
+            color: SGColors.black,
+            weight: FontWeight.w500,
+            size: FontSize.small,
+          ),
+        ),
+        Container(
+          alignment: Alignment.centerRight,
+          width: 150,
+          child: SGTypography.body(
+            right,
+            color: SGColors.gray5,
+            weight: FontWeight.w500,
+            size: FontSize.small,
+            align: TextAlign.end,
+          ),
+        ),
+      ],
+    );
   }
 }
 

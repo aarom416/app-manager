@@ -273,11 +273,11 @@ class _ReceiptListScreenState extends ConsumerState<ReceiptListScreen>
     return ListView(controller: dataScrollController, children: [
       SGContainer(
           child: Column(children: [
-        ...orders
-            .map((order) =>
-                [_ReceiptCard(order: order), SizedBox(height: SGSpacing.p3)])
-            .flattened,
-        SizedBox(height: SGSpacing.p32),
+            ...orders
+                .map((order) =>
+                    [_ReceiptCard(order: order), SizedBox(height: SGSpacing.p3)])
+                .flattened,
+            SizedBox(height: SGSpacing.p32),
       ]))
     ]);
   }
@@ -332,13 +332,46 @@ class _ReceiptCard extends StatelessWidget {
                   SizedBox(width: SGSpacing.p2),
                   if (order.receiveFoodType == "TAKEOUT")
                     SGContainer(
-                        color: SGColors.primary.withOpacity(0.1),
+                        color: order.orderStatus == "주문 취소"
+                            ? SGColors.warningRed.withOpacity(0.1)
+                            : SGColors.gray1,
                         padding: EdgeInsets.all(SGSpacing.p1),
                         borderRadius:
-                            BorderRadius.circular(SGSpacing.p2 + SGSpacing.p05),
-                        child: SGTypography.body("포장 ${order.pickUpNumber}",
-                            weight: FontWeight.w500, color: SGColors.primary)),
-                ],
+                        BorderRadius.circular(6),
+                        child: order.orderStatus == "주문 취소"
+                            ? SGTypography.body(
+                          "주문 취소",
+                          weight: FontWeight.w500,
+                          color: SGColors.warningRed,
+                        )
+                            : SGTypography.body(
+                          "결제 완료",
+                          weight: FontWeight.w500,
+                          color: SGColors.gray4,
+                        )
+                    ),
+                    const SizedBox(width: 8),
+                    if (order.receiveFoodType == "TAKEOUT")
+                      SGContainer(
+                          color: SGColors.primary.withOpacity(0.1),
+                          padding: EdgeInsets.all(SGSpacing.p1),
+                          borderRadius:
+                          BorderRadius.circular(6),
+                          child: SGTypography.body("포장 ${order.pickUpNumber}",
+                              weight: FontWeight.w500, color: SGColors.primary)),
+
+                  ],
+                ),
+              SizedBox(height: SGSpacing.p3 + SGSpacing.p05),
+              Container(
+                height: 15,
+                width: 215,
+                child: SGTypography.body(
+                    order.orderMenuDTOList[0].menuName,
+                    size: FontSize.small,
+                    weight: FontWeight.w700,
+                    overflow: TextOverflow.ellipsis
+                ),
               ),
               // 제목
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
@@ -355,9 +388,8 @@ class _ReceiptCard extends StatelessWidget {
                       color: SGColors.gray5),
                 ],
               ),
-            ],
-          )),
-    );
+      ],
+    )));
   }
 }
 
@@ -395,7 +427,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SGContainer(
-                              color: order.orderStatus == OrderStatus.cancelled
+                              color: order.orderStatus == "주문 취소"
                                   ? SGColors.warningRed.withOpacity(0.1)
                                   : SGColors.primary.withOpacity(0.1),
                               padding: EdgeInsets.all(SGSpacing.p1),
@@ -404,14 +436,15 @@ class _ReceiptDetailScreen extends StatelessWidget {
                               child: SGTypography.body(order.orderStatus,
                                   weight: FontWeight.w500,
                                   color: order.orderStatus ==
-                                          OrderStatus.cancelled.orderStatusName
+                                          "주문 취소"
                                       ? SGColors.warningRed
                                       : SGColors.primary)),
-                          SGTypography.body(order.orderStatus,
-                              size: FontSize.small,
-                              weight: FontWeight.w500,
-                              color: SGColors.gray4),
-                        ])
+                          SGTypography.body(
+                              order.orderDateTime,
+                            size: FontSize.small,
+                            weight: FontWeight.w500,
+                            color: SGColors.gray4),
+                        ]),
                   ]),
                   SizedBox(height: SGSpacing.p4),
                   MultipleInformationBox(children: [
@@ -476,8 +509,40 @@ class _ReceiptDetailScreen extends StatelessWidget {
                               size: FontSize.small,
                               color: SGColors.gray4)),
                     ]),
+                    if (order.couponDiscount != 0) ... [
+                      SizedBox(height: SGSpacing.p3),
+                      Row(children: [
+                        SGFlexible(
+                            flex: 2,
+                            child: SGTypography.body("할인 쿠폰",
+                                size: FontSize.small, color: SGColors.gray4)),
+                        SGFlexible(
+                            flex: 1,
+                            child: SGTypography.body(
+                                order.couponDiscount.toKoreanCurrency,
+                                align: TextAlign.right,
+                                size: FontSize.small,
+                                color: SGColors.gray4)),
+                      ]),
+                    ],
+                    if (order.pointAmount != 0) ... [
+                      SizedBox(height: SGSpacing.p3),
+                      Row(children: [
+                        SGFlexible(
+                            flex: 2,
+                            child: SGTypography.body("포인트",
+                                size: FontSize.small, color: SGColors.gray4)),
+                        SGFlexible(
+                            flex: 1,
+                            child: SGTypography.body(
+                                order.pointAmount.toKoreanCurrency,
+                                align: TextAlign.right,
+                                size: FontSize.small,
+                                color: SGColors.gray4)),
+                      ]),
+                    ],
                     if (order.receiveFoodType == 'DELIVERY') ...[
-                      SizedBox(height: SGSpacing.p4),
+                      SizedBox(height: SGSpacing.p3),
                       Row(children: [
                         SGFlexible(
                             flex: 2,
@@ -535,12 +600,12 @@ class _ReceiptDetailScreen extends StatelessWidget {
                     SGTypography.body("주문 이력",
                         size: FontSize.normal, weight: FontWeight.w600),
                     SizedBox(height: SGSpacing.p4),
-                    DataTableRow(left: "주문일시", right: order.createdDate),
+                    DataTableRow(left: "주문일시", right: order.orderDateTime),
                     SizedBox(height: SGSpacing.p4),
-                    DataTableRow(left: "접수일시", right: order.receivedDate),
-                    if (order.orderStatus != OrderStatus.cancelled) ...[
+                    DataTableRow(left: "접수일시", right: order.receiveDate),
+                    if (order.orderStatus != "주문 취소") ...[
                       SizedBox(height: SGSpacing.p4),
-                      DataTableRow(left: "전달 완료", right: order.completedDate),
+                      DataTableRow(left: "전달완료", right: order.completedDate),
                     ],
                   ]),
                   SizedBox(height: SGSpacing.p4),

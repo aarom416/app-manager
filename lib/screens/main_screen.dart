@@ -54,7 +54,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   void showOperationStopDialog(
       {required BuildContext context, required MainNotifier provider}) {
-    showSGDialog(
+    showOperationSGDialog(
         context: context,
         childrenBuilder: (ctx) => [
               SGTypography.body("영업 임시 중지 시",
@@ -127,6 +127,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       appBar: AppBar(
         shadowColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: SGContainer(
             padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
@@ -154,6 +155,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         ],
       ),
       body: SGContainer(
+        height: double.infinity,
         color: const Color(0xFFFAFAFA),
         child: ListView(
           shrinkWrap: true,
@@ -299,28 +301,29 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          SGContainer(
-                                              child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    SGTypography.body(
-                                                        state
-                                                            .result
-                                                            .newsDTOList[i]
-                                                            .title,
-                                                        size: FontSize.small,
-                                                        weight: FontWeight.w500,
-                                                        overflow: TextOverflow
-                                                            .ellipsis),
-                                                  ],
+                                          Container(
+                                            width : 280,
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      SGTypography.body(
+                                                          state
+                                                              .result
+                                                              .newsDTOList[i]
+                                                              .title,
+                                                          size: FontSize.small,
+                                                          weight: FontWeight.w500,
+                                                          overflow: TextOverflow
+                                                              .ellipsis),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          )),
+                                              ],
+                                            )),
                                           SizedBox(
                                               height:
                                                   SGSpacing.p1 + SGSpacing.p05),

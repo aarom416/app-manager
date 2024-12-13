@@ -6,6 +6,7 @@ import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -22,53 +23,6 @@ class CouponDetailScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<CouponDetailScreen> createState() => _CouponDetailScreenState();
-}
-
-void showSnackBar(BuildContext context, String text) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      margin: EdgeInsets.only(
-          left: SGSpacing.p20, right: SGSpacing.p20, bottom: SGSpacing.p12),
-      behavior: SnackBarBehavior.floating,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      duration: const Duration(milliseconds: 3000),
-      content: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(99),
-          color: SGColors.secondary.withOpacity(0.12),
-        ),
-        child: ShaderMask(
-          shaderCallback: (Rect bounds) {
-            return LinearGradient(
-              colors: [SGColors.primary, SGColors.secondary],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ).createShader(bounds);
-          },
-          blendMode: BlendMode.srcATop,
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(99),
-              border: Border.all(color: Colors.white, width: 2),
-            ),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Text(
-                  text,
-                  style: TextStyle(
-                      color: SGColors.primary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
 }
 
 class _CouponDetailScreenState extends ConsumerState<CouponDetailScreen> {
@@ -259,15 +213,16 @@ class _CouponDetailScreenState extends ConsumerState<CouponDetailScreen> {
               SGActionButton(
                   variant: SGActionButtonVariant.danger,
                   onPressed: () {
-                    showSGDialog(
+                    showCouponIssueSGDialog(
                         context: context,
                         childrenBuilder: (ctx) => [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SGTypography.body("쿠폰을 정말 삭제하시겠습니까?",
-                                      size: FontSize.medium,
-                                      weight: FontWeight.w700),
+                                      size: MediaQuery.of(context).size.width <= 320 ? FontSize.tiny : FontSize.small,
+                                      weight: FontWeight.w700
+                                  ),
                                 ],
                               ),
                               SizedBox(height: SGSpacing.p5),
@@ -331,7 +286,7 @@ class _CouponDetailScreenState extends ConsumerState<CouponDetailScreen> {
     await provider.deleteIssuedCoupon(
       successCallback: () {
         if (!context.mounted) return;
-        showSnackBar(context, "쿠폰이 삭제되었습니다.");
+        showGlobalSnackBar(context, "쿠폰이 삭제되었습니다.");
         popUntil(context: context, path: AppRoutes.couponInformation);
       },
       failCallback: () =>

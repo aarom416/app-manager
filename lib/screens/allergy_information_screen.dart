@@ -12,6 +12,8 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/screens/home/storemanagement/infomation/provider.dart';
 
+import '../core/components/snackbar.dart';
+
 class AllergyInformationScreen extends ConsumerStatefulWidget {
   const AllergyInformationScreen({super.key});
 
@@ -49,7 +51,7 @@ class _AllergyInformationScreenState
                     .storeOriginInformation(controller.text)
                     .then((value) {
                   if (value) {
-                    context.pop();
+                    showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                   } else {
                     showFailDialogWithImage(
                         mainTitle: '원산지 및 알러지 변경 오류',

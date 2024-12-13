@@ -64,9 +64,9 @@ class _FcmTestState extends State<FcmTest> {
           notification.body,
           NotificationDetails(
             android: AndroidNotificationDetails(
-              channel.id,
-              channel.name,
-              channelDescription: channel.description,
+              deliveryChannel.id,
+              deliveryChannel.name,
+              channelDescription: deliveryChannel.description,
               icon: 'launch_background',
             ),
           ),

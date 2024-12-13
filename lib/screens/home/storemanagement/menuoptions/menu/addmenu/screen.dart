@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/app_bar_with_step_indicator.dart';
@@ -10,6 +11,7 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -29,7 +31,7 @@ import '../addmenucategory/screen.dart';
 import 'menu_option_category_selection_bottom_sheet.dart';
 
 List<String> userMenuCategories = [
-  "샐러드",
+  "ㅌ",
   "포케",
   "샌드위치",
   "카페",
@@ -53,8 +55,8 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
   int price = 0;
   NutritionModel nutrition = const NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, natrium: 120, saturatedFat: 8);
   String imagePath = "";
-  String menuBriefDescription = "연어 500g + 곡물밥 300g";
-  String menuDescription = "연어와 곡물 베이스 조화의 오븐에 바싹 구운 연어를 올린 단백질 듬뿍 샐러드";
+  String menuBriefDescription = "";
+  String menuDescription = "";
   List<MenuOptionCategoryModel> selectedMenuOptionCategories = [];
 
   void animateToPage(int index) => pageController.animateToPage(
@@ -135,7 +137,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
               menuDescription,
               selectedMenuOptionCategories,
             ),
-            Navigator.of(context).pop()
+            showGlobalSnackBar(context, "성공적으로 등록되었습니다."),
           },
           onEditFunction: (imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories) {
             logger.d("_Page_4_MenuRegistration onEditFunction selectedMenuOptionCategories ${selectedMenuOptionCategories.toFormattedJson()} ");
@@ -343,12 +345,14 @@ class _Page_1_MenuCategoryState extends State<_Page_1_MenuCategory> {
                           child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [SGTypography.body("추가하실 카테고리를 선택해주세요.", size: FontSize.normal, color: SGColors.gray3), Image.asset("assets/images/dropdown-arrow.png", width: SGSpacing.p5, height: SGSpacing.p5)]))),
+                              children: [
+                                SGTypography.body("추가하실 카테고리를 선택해주세요.", size: FontSize.normal, color: SGColors.gray3), Image.asset("assets/images/dropdown-arrow.png", width: SGSpacing.p5, height: SGSpacing.p5)]))),
                 ),
               ],
             )));
   }
 }
+
 
 class __SelectMenuCategoryDialog extends ConsumerStatefulWidget {
   final BuildContext context;
@@ -374,70 +378,119 @@ class __SelectMenuCategoryDialogState extends ConsumerState<__SelectMenuCategory
   Widget build(BuildContext context) {
     final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
 
-    return Column(children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SGTypography.body("추가하실 카테고리를 선택해 주세요.", size: FontSize.medium, weight: FontWeight.w700),
-        ],
-      ),
-      SizedBox(height: SGSpacing.p4),
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 2 / 5),
-              child: ListView(shrinkWrap: true, children: [
-                ...state.storeMenuCategoryDTOList.map((menuCategory) => GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedMenuCategory = menuCategory;
-                      });
-                    },
-                    child: __CategoryOptionRadioButton(category: menuCategory.menuCategoryName, isSelected: selectedMenuCategory.storeMenuCategoryId == menuCategory.storeMenuCategoryId))),
-              ])),
-          SizedBox(height: SGSpacing.p4),
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddMenuCategoryScreen()));
-            },
-            child: SGContainer(
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: SGTypography.body(
+                "추가하실 카테고리를 선택해 주세요.",
+                size: FontSize.medium * (screenWidth / 375),
+                weight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: SGSpacing.p4 * (screenHeight / 812)),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              constraints: BoxConstraints(
+                maxHeight: screenHeight * 0.4,
+              ),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  ...state.storeMenuCategoryDTOList.map(
+                        (menuCategory) => GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedMenuCategory = menuCategory;
+                        });
+                      },
+                      child: __CategoryOptionRadioButton(
+                        category: menuCategory.menuCategoryName,
+                        isSelected: selectedMenuCategory.storeMenuCategoryId == menuCategory.storeMenuCategoryId,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: SGSpacing.p4 * (screenHeight / 812)),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AddMenuCategoryScreen(),
+                  ),
+                );
+              },
+              child: SGContainer(
                 color: SGColors.white,
-                padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
-                borderRadius: BorderRadius.circular(SGSpacing.p2),
+                padding: EdgeInsets.symmetric(
+                  vertical: SGSpacing.p3 * (screenHeight / 812),
+                ),
+                borderRadius: BorderRadius.circular(SGSpacing.p2 * (screenWidth / 375)),
                 borderColor: SGColors.primary,
                 child: Center(
-                    child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3),
-                  SizedBox(width: SGSpacing.p2),
-                  SGTypography.body("메뉴 카테고리 추가", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)
-                ]))),
-          ),
-          SizedBox(height: SGSpacing.p4),
-          GestureDetector(
-            onTap: () {
-              if (selectedMenuCategory.storeMenuCategoryId != -1) {
-                Navigator.of(context).pop();
-                widget.onConfirm(selectedMenuCategory);
-              }
-            },
-            child: SGContainer(
-              color: selectedMenuCategory.storeMenuCategoryId == -1 ? SGColors.gray2 : SGColors.primary, // 비활성화 시 색상 변경
-              padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-              borderRadius: BorderRadius.circular(SGSpacing.p3),
-              child: Center(
-                child: SGTypography.body(
-                  "확인",
-                  size: FontSize.normal,
-                  color: selectedMenuCategory.storeMenuCategoryId == -1 ? SGColors.gray5 : SGColors.white, // 비활성화 시 텍스트 색상 변경
-                  weight: FontWeight.w700,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/plus.png",
+                        width: SGSpacing.p3 * (screenWidth / 375),
+                        height: SGSpacing.p3 * (screenWidth / 375),
+                      ),
+                      SizedBox(width: SGSpacing.p2 * (screenWidth / 375)),
+                      SGTypography.body(
+                        "메뉴 카테고리 추가",
+                        size: FontSize.small * (screenWidth / 375),
+                        weight: FontWeight.w500,
+                        color: SGColors.primary,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    ]);
+            SizedBox(height: SGSpacing.p4 * (screenHeight / 812)),
+            GestureDetector(
+              onTap: () {
+                if (selectedMenuCategory.storeMenuCategoryId != -1) {
+                  Navigator.of(context).pop();
+                  widget.onConfirm(selectedMenuCategory);
+                }
+              },
+              child: SGContainer(
+                color: selectedMenuCategory.storeMenuCategoryId == -1
+                    ? SGColors.gray2
+                    : SGColors.primary,
+                padding: EdgeInsets.symmetric(
+                  vertical: SGSpacing.p4 * (screenHeight / 812),
+                ),
+                borderRadius: BorderRadius.circular(SGSpacing.p3 * (screenWidth / 375)),
+                child: Center(
+                  child: SGTypography.body(
+                    "확인",
+                    size: FontSize.normal * (screenWidth / 375),
+                    color: selectedMenuCategory.storeMenuCategoryId == -1
+                        ? SGColors.gray5
+                        : SGColors.white,
+                    weight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
 
@@ -467,7 +520,7 @@ class __SelectUserMenuCategoryDialogState extends State<__SelectUserMenuCategory
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SGTypography.body("메뉴의 카테고리를 선택해 주세요.", size: FontSize.medium, weight: FontWeight.w700),
+          Expanded(child: SGTypography.body("메뉴의 카테고리를 선택해 주세요.", size: FontSize.medium, weight: FontWeight.w700)),
         ],
       ),
       SizedBox(height: SGSpacing.p4),
@@ -491,7 +544,7 @@ class __SelectUserMenuCategoryDialogState extends State<__SelectUserMenuCategory
                     },
                     child: __CategoryOptionRadioButton(category: userMenuCategory, isSelected: selectedUserMenuCategories.contains(userMenuCategory)))),
               ])),
-          SizedBox(height: SGSpacing.p4),
+          SizedBox(height: SGSpacing.p2),
           GestureDetector(
             onTap: () {
               if (selectedUserMenuCategories.isNotEmpty) {
@@ -536,7 +589,14 @@ class __CategoryOptionRadioButton extends StatelessWidget {
                   children: [
                     Image.asset("assets/images/radio-${isSelected ? "on" : "off"}.png", width: SGSpacing.p5, height: SGSpacing.p5),
                     SizedBox(width: SGSpacing.p1 + SGSpacing.p05),
-                    SGTypography.body(category, size: FontSize.normal, color: isSelected ? SGColors.primary : SGColors.gray5, weight: FontWeight.w500),
+                    Container(
+                      width: 175,
+                      child: SGTypography.body(
+                          category,
+                        size: FontSize.normal,
+                        color: isSelected ? SGColors.primary : SGColors.gray5, weight: FontWeight.w500,
+                        overflow: TextOverflow.ellipsis,
+                      )),
                   ],
                 )),
           ],
@@ -755,6 +815,7 @@ class _Page_4_MenuRegistration extends StatefulWidget {
 }
 
 class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
+
   late String imagePath;
   late String menuBriefDescription;
   late String menuDescription;
@@ -795,25 +856,17 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                  if (imagePath.isNotEmpty && menuBriefDescription.isNotEmpty && menuDescription.isNotEmpty && selectedMenuOptionCategories.isNotEmpty) {
-                    // todo 중복메뉴 확인
-                    // showFailDialogWithImage(
-                    //   context: context,
-                    //   mainTitle: "메뉴 추가 실패",
-                    //   subTitle: "이미 동일한 메뉴가 등록되어있습니다.\n다시 한번 확인해주세요.",
-                    // );
-                    widget.onNext();
-                  }
+                  widget.onNext();
                 },
                 child: SGContainer(
-                    color: imagePath.isEmpty || menuBriefDescription.isEmpty || menuDescription.isEmpty || selectedMenuOptionCategories.isEmpty ? SGColors.gray2 : SGColors.primary,
+                    color: SGColors.primary,
                     padding: EdgeInsets.all(SGSpacing.p4),
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Center(
                         child: SGTypography.body(
                       "등록",
                       size: FontSize.large,
-                      color: imagePath.isEmpty || menuBriefDescription.isEmpty || menuDescription.isEmpty || selectedMenuOptionCategories.isEmpty ? SGColors.gray5 : SGColors.white,
+                      color: SGColors.white,
                       weight: FontWeight.w700,
                     ))),
               )),
@@ -890,43 +943,28 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                                   ),
                                 ),
                               ),
-                              Positioned(
-                                top: 4,
-                                right: 4,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      imagePath = "";
-                                    });
-                                  },
-                                  child: const Icon(
-                                    Icons.close,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            SizedBox(height: SGSpacing.p2),
+                            SGTypography.body("이미지 등록", weight: FontWeight.w600, color: SGColors.gray5),
+                          ],
                         ),
-                ),
-              ),
-            ),
-            SizedBox(height: SGSpacing.p3),
-            SGTypography.body("10MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.", color: SGColors.gray4, weight: FontWeight.w500),
-            SizedBox(height: SGSpacing.p8),
+                      ),
+                    ))),
+                    SizedBox(height: SGSpacing.p3),
+                    SGTypography.body("10MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.", color: SGColors.gray4, weight: FontWeight.w500),
+                    SizedBox(height: SGSpacing.p8),
 
-            // --------------------------- 메뉴 구성 ---------------------------
-            SGTypography.body("메뉴 구성 및 설명을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
-            SizedBox(height: SGSpacing.p3),
-            MultipleInformationBox(children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => TextAreaScreen(
-                            value: menuBriefDescription,
-                            title: "메뉴 구성",
-                            fieldLabel: "메뉴 구성을 입력해주세요.",
-                            buttonText: "변경하기",
+                    // --------------------------- 메뉴 구성 ---------------------------
+                    SGTypography.body("메뉴 구성 및 설명을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+                    SizedBox(height: SGSpacing.p3),
+                    MultipleInformationBox(children: [
+                      GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => TextAreaScreen(
+                                  value: menuBriefDescription,
+                                  title: "메뉴 구성",
+                                  fieldLabel: "메뉴 구성을 입력해주세요.",
+                                  buttonText: "변경하기",
                             hintText: "메뉴 구성을 입력해주세요.",
                             onSubmit: (value) {
                               setState(() {
@@ -1154,9 +1192,9 @@ class _MenuOptionCategorySelectionScreenState extends ConsumerState<_MenuOptionC
                     padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
                     child: Center(
                         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Image.asset("assets/images/plus.png", width: 12, height: 12),
-                      SizedBox(width: SGSpacing.p2),
-                      SGTypography.body("옵션 카테고리 추가", size: FontSize.small, color: SGColors.primary),
+                            Image.asset("assets/images/plus.png", width: 12, height: 12),
+                            SizedBox(width: SGSpacing.p2),
+                            SGTypography.body("옵션 카테고리 추가", size: FontSize.small, color: SGColors.primary),
                     ]))),
               ),
             ])));

@@ -228,58 +228,38 @@ class _MenuTabState extends ConsumerState<MenuTab> {
       Row(children: [
         Expanded(
             child: GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const AddMenuCategoryScreen()));
-          },
-          child: SGContainer(
-              color: SGColors.primary,
-              padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
-              borderRadius: BorderRadius.circular(SGSpacing.p2),
-              child: Center(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                    ColorFiltered(
-                        colorFilter:
-                            ColorFilter.mode(SGColors.white, BlendMode.srcIn),
-                        child: Image.asset("assets/images/plus.png",
-                            width: SGSpacing.p3, height: SGSpacing.p3)),
-                    SizedBox(width: SGSpacing.p2),
-                    SGTypography.body("메뉴 카테고리 추가",
-                        size: FontSize.small,
-                        weight: FontWeight.w500,
-                        color: SGColors.white)
-                  ]))),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddMenuCategoryScreen()));
+              },
+                child: SGContainer(
+                    color: SGColors.primary,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
+                    borderRadius: BorderRadius.circular(SGSpacing.p2),
+                    child: Center(
+                        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                          ColorFiltered(colorFilter: ColorFilter.mode(SGColors.white, BlendMode.srcIn), child: Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3)),
+                          SizedBox(width: SGSpacing.p2),
+                          SGTypography.body("메뉴 카테고리 추가", size: FontSize.small, weight: FontWeight.w500, color: SGColors.white)
+                    ]))),
         )),
         SizedBox(width: SGSpacing.p2),
         Expanded(
             child: GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const AddMenuScreen()));
-          },
-          child: SGContainer(
-              color: SGColors.primary,
-              padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
-              borderRadius: BorderRadius.circular(SGSpacing.p2),
-              child: Center(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                    ColorFiltered(
-                        colorFilter:
-                            ColorFilter.mode(SGColors.white, BlendMode.srcIn),
-                        child: Image.asset("assets/images/plus.png",
-                            width: SGSpacing.p3, height: SGSpacing.p3)),
-                    SizedBox(width: SGSpacing.p2),
-                    SGTypography.body("메뉴 추가",
-                        size: FontSize.small,
-                        weight: FontWeight.w500,
-                        color: SGColors.white)
-                  ]))),
-        )),
-      ]),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddMenuScreen()));
+              },
+                child: SGContainer(
+                    color: SGColors.primary,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
+                    borderRadius: BorderRadius.circular(SGSpacing.p2),
+                    child: Center(
+                        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                          ColorFiltered(colorFilter: ColorFilter.mode(SGColors.white, BlendMode.srcIn), child: Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3)),
+                          SizedBox(width: SGSpacing.p2),
+                          SGTypography.body("메뉴 추가", size: FontSize.small, weight: FontWeight.w500, color: SGColors.white)
+                    ]))),
+              )),
+            ]),
       SizedBox(height: SGSpacing.p5),
 
       // --------------------------- 단품 메뉴 list ---------------------------
@@ -305,66 +285,83 @@ class _MenuCategoryCard extends StatelessWidget {
                 builder: (context) =>
                     UpdateMenuCategoryScreen(menuCategoryModel: menuCategory)));
           },
-          child: Row(mainAxisSize: MainAxisSize.max, children: [
-            SGTypography.body(menuCategory.menuCategoryName,
-                size: FontSize.normal, weight: FontWeight.w600),
-            SizedBox(width: SGSpacing.p1),
-            const Icon(Icons.edit, size: FontSize.small),
-          ]),
-        ),
-        ...menuCategory.menuList.mapIndexed(
-            (idx, menu) => Column(mainAxisSize: MainAxisSize.min, children: [
-                  if (idx != 0) ...[
-                    SizedBox(height: SGSpacing.p4),
-                    Divider(height: 1, color: SGColors.line1, thickness: 1),
-                  ],
-                  SizedBox(height: SGSpacing.p4),
-                  GestureDetector(
-                    onTap: () {
-                      // showFailDialogWithImage(
-                      //   context: context,
-                      //   mainTitle: "해당 메뉴는 삭제된 메뉴입니다.",
-                      //   onTapFunction: () {
-                      //     Navigator.pop(context); // 현재 다이얼로그를 닫음
-                      //     Navigator.of(context).push(
-                      //       MaterialPageRoute(builder: (context) => const UpdateMenuScreen()),
-                      //     );
-                      //   },
-                      //   onNonEmptySubTitleTapFunction: () {
-                      //     Navigator.pop(context); // 현재 다이얼로그를 닫음
-                      //   },
-                      // );
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                UpdateMenuScreen(menuModel: menu)),
-                      );
-                    },
-                    child: Row(children: [
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(SGSpacing.p4),
-                          child: Image.network(menu.menuPictureURL,
-                              width: SGSpacing.p18, height: SGSpacing.p18,
-                              errorBuilder: (context, error, stackTrace) {
-                            return Image.asset('assets/images/default_poke.png',
-                                width: SGSpacing.p18, height: SGSpacing.p18);
-                          })),
-                      SizedBox(width: SGSpacing.p4),
-                      Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SGTypography.body(menu.menuName,
-                                size: FontSize.normal, weight: FontWeight.w700),
-                            SizedBox(height: SGSpacing.p2),
-                            SGTypography.body("${menu.price.toKoreanCurrency}원",
-                                size: FontSize.normal,
-                                weight: FontWeight.w400,
-                                color: SGColors.gray4),
-                          ]),
-                    ]),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 231,
+                    child: SGTypography.body(
+                      menuCategory.menuCategoryName,
+                      size: FontSize.normal,
+                      weight: FontWeight.w600,
+                    ),
                   ),
-                ]))
+                  const Icon(Icons.edit, size: FontSize.small),
+                ],
+              ),
+              SizedBox(
+                height: SGSpacing.p2,
+              ),
+              Container(
+                width: 231,
+                child: SGTypography.body(
+                  menuCategory.menuDescription,
+                  size: FontSize.small,
+                  color: SGColors.gray4,
+                  weight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+        ...menuCategory.menuList.mapIndexed((idx, menu) => Column(mainAxisSize: MainAxisSize.min, children: [
+          if (idx != 0) ...[
+            SizedBox(height: SGSpacing.p4),
+            Divider(height: 1, color: SGColors.line1, thickness: 1),
+          ],
+          SizedBox(height: SGSpacing.p4),
+          GestureDetector(
+            onTap: () {
+              // showFailDialogWithImage(
+              //   context: context,
+              //   mainTitle: "해당 메뉴는 삭제된 메뉴입니다.",
+              //   onTapFunction: () {
+              //     Navigator.pop(context); // 현재 다이얼로그를 닫음
+              //     Navigator.of(context).push(
+              //       MaterialPageRoute(builder: (context) => const UpdateMenuScreen()),
+              //     );
+              //   },
+              //   onNonEmptySubTitleTapFunction: () {
+              //     Navigator.pop(context); // 현재 다이얼로그를 닫음
+              //   },
+              // );
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => UpdateMenuScreen(menuModel: menu)),
+              );
+            },
+            child: Row(children: [
+              ClipRRect(borderRadius: BorderRadius.circular(SGSpacing.p4), child: Image.network(menu.menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18)),
+              SizedBox(width: SGSpacing.p4),
+              Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                  width: 161,
+                  child: SGTypography.body(
+                      menu.menuName,
+                      size: FontSize.normal,
+                      weight: FontWeight.w700,
+                      overflow: TextOverflow.ellipsis
+                    )
+                ),
+                SizedBox(height: SGSpacing.p2),
+                SGTypography.body("${menu.price.toKoreanCurrency}원", size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray4),
+              ]),
+            ]),
+          ),
+        ]))
       ]),
       SizedBox(height: SGSpacing.p3),
     ]);

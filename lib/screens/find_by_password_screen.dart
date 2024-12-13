@@ -241,6 +241,23 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
 
   String? _passwordErrorText;
 
+  bool isPasswordFormatValid(String password) {
+    final regex = RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[-d@$!%*?&])[A-Za-z\d-@$!%*?&]{8,16}$');
+    return regex.hasMatch(password);
+  }
+
+  void validatePassword(String password) {
+    if (!isPasswordFormatValid(password)) {
+      setState(() {
+        _passwordErrorText = "비밀번호는 8~16자의 영문,숫자,특수문자만 사용 가능합니다.";
+      });
+    } else {
+      setState(() {
+        _passwordErrorText = null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(findByPasswordNotifierProvider);
@@ -272,7 +289,8 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
             padding: EdgeInsets.symmetric(
                 horizontal: SGSpacing.p4, vertical: SGSpacing.p8),
             color: SGColors.white,
-            child: ListView(children: [
+            child: ListView(
+              children: [
               Row(
                 children: [
                   SGTypography.body("비밀번호 변경",
@@ -297,6 +315,7 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                       child: TextField(
                           onChanged: (value) {
                             provider.onChangePassword(value);
+                            validatePassword(value);
                           },
                           controller: controller,
                           style: TextStyle(
@@ -316,16 +335,16 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                           )),
                     ),
                     GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            passwordVisible = !passwordVisible;
-                          });
-                        },
-                        child: Icon(
-                            passwordVisible
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: SGColors.gray3)),
+                      onTap: () {
+                        setState(() {
+                          passwordVisible = !passwordVisible;
+                        });
+                      },
+                      child: Icon(
+                          passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: SGColors.gray3)),
                   ],
                 ),
               )),
@@ -396,7 +415,7 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                 SGTypography.body("다시 한 번 확인해주세요.",
                     size: FontSize.small,
                     weight: FontWeight.w400,
-                    color: SGColors.warningRed)
+                    color: SGColors.warningRed),
             ])));
   }
 
@@ -406,7 +425,7 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
         childrenBuilder: (ctx) => [
               Center(
                   child: SGTypography.body(subTitle,
-                      color: SGColors.gray4,
+                      color: SGColors.black,
                       size: FontSize.small,
                       weight: FontWeight.w700,
                       lineHeight: 1.25,
