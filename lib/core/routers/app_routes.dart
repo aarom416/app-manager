@@ -1,8 +1,8 @@
 class AppRoutes {
-  // static const String root = '/';
-  // static const String welcome = '/welcome';
-  static const String home = '/';
+  static const String root = '/';
+  static const String welcome = '/welcome';
   static const String login = '/login';
+  static const String home = '/home';
   static const String loginWebView = '/login/webview';
   static const String signup = '/signup';
   static const String signupWebView = '/signup/webview';

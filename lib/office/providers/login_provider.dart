@@ -175,6 +175,11 @@ class LoginNotifier extends _$LoginNotifier {
     state = state.copyWith(status: LoginStatus.success);
 
     fcmToken();
+
+    Future.delayed(const Duration(seconds: 2), () {
+      ref.read(goRouterProvider).go(AppRoutes.home);
+    });
+
   }
 
   void fcmToken() async {
@@ -194,32 +199,40 @@ class LoginNotifier extends _$LoginNotifier {
   }
 
   Future<void> verifyPhone() async {
-    final response = await ref
-        .read(loginServiceProvider)
-        .verifyPhone(loginId: state.loginId);
+    try {
+      final response = await ref
+          .read(loginServiceProvider)
+          .verifyPhone(loginId: state.loginId);
 
-    switch (response.statusCode) {
-      case 200:
-        verifyPhoneBySuccess(response: response, status: UserStatus.success);
-        // Future.delayed(const Duration(seconds: 2), () {
-        //   ref.read(goRouterProvider).go(AppRoutes.home);
-        // });
-        break;
-      case 202:
-        verifyPhoneBySuccess(response: response, status: UserStatus.wait);
-        // Future.delayed(const Duration(seconds: 2), () {
-        //   ref.read(goRouterProvider).go(AppRoutes.home);
-        // });
-        break;
-      case 206:
-        verifyPhoneBySuccess(response: response, status: UserStatus.notEntry);
-        // Future.delayed(const Duration(seconds: 2), () {
-        //   ref.read(goRouterProvider).go(AppRoutes.home);
-        // });
-        break;
-      default:
-        // 종료
-        break;
+      switch (response.statusCode) {
+        case 200:
+          verifyPhoneBySuccess(response: response, status: UserStatus.success);
+          // Future.delayed(const Duration(seconds: 2), () {
+          //   ref.read(goRouterProvider).go(AppRoutes.home);
+          // });
+          break;
+        case 202:
+          verifyPhoneBySuccess(response: response, status: UserStatus.wait);
+          // Future.delayed(const Duration(seconds: 2), () {
+          //   ref.read(goRouterProvider).go(AppRoutes.home);
+          // });
+          break;
+        case 206:
+          verifyPhoneBySuccess(response: response, status: UserStatus.notEntry);
+          // Future.delayed(const Duration(seconds: 2), () {
+          //   ref.read(goRouterProvider).go(AppRoutes.home);
+          // });
+          break;
+        default:
+          Future.delayed(const Duration(seconds: 2), () {
+            ref.read(goRouterProvider).replace(AppRoutes.welcome);
+          });
+          break;
+      }
+    } catch (e){
+      Future.delayed(const Duration(seconds: 2), () {
+        ref.read(goRouterProvider).replace(AppRoutes.welcome);
+      });
     }
   }
 
@@ -258,11 +271,17 @@ class LoginNotifier extends _$LoginNotifier {
 
   void autoLogin() async {
     // 로그아웃 상태
-    UserModel user = UserHive.get();
-    if (user.accessToken.isEmpty || user.refreshToken.isEmpty) return;
 
     final response = await ref.read(loginServiceProvider).autoLogin();
 
+    // final data = ResultResponseModel.fromJson(response.data);
+    // final user = UserModel.fromJson(data.data);
+    //
+    // UserHive.set(
+    //   user: UserHive.get().copyWith(
+    //
+    //   )
+    // )
     switch (response.statusCode) {
       case 200:
         verifyPhoneBySuccess(response: response, status: UserStatus.success);

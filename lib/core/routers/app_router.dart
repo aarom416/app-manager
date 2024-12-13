@@ -42,20 +42,20 @@ final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: AppRoutes.login,
+    initialLocation: AppRoutes.welcome,
     navigatorKey: rootNavKey,
     debugLogDiagnostics: true,
     routes: <RouteBase>[
-      // GoRoute(
-      //     path: AppRoutes.root,
-      //     pageBuilder: (context, state) {
-      //       return const NoTransitionPage(child: SplashScreen());
-      //     }),
-      // GoRoute(
-      //     path: AppRoutes.welcome,
-      //     pageBuilder: (context, state) {
-      //       return const NoTransitionPage(child: WelcomeScreen());
-      //     }),
+      GoRoute(
+          path: AppRoutes.root,
+          pageBuilder: (context, state) {
+            return const NoTransitionPage(child: SplashScreen());
+          }),
+      GoRoute(
+          path: AppRoutes.welcome,
+          pageBuilder: (context, state) {
+            return const NoTransitionPage(child: WelcomeScreen());
+          }),
       GoRoute(
           path: AppRoutes.home,
           pageBuilder: (context, state) {

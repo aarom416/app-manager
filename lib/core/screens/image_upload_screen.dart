@@ -112,7 +112,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         child: SGActionButton(
           onPressed: () {
             widget.onSubmit(widget.imagePaths);
-            showGlobalSnackBar(context, "성공적-으로 변경되었습니다.");
+            showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
           },
           label: widget.buttonText,
         ),
