@@ -91,7 +91,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(ctx).pop();
-                        provider.onChangeOperationStatus(1);
+                        provider.onChangeOperationStatus(0);
                       },
                       child: SGContainer(
                         width: double.infinity,
@@ -182,10 +182,10 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                               ),
                               SGContainer(
                                   child: SGSwitch(
-                                      value: state.operationStatus == 1,
+                                      value: state.operationStatus == 0,
                                       onChanged: (toggled) {
-                                        if (state.operationStatus == 1) {
-                                          provider.onChangeOperationStatus(0);
+                                        if (state.operationStatus == 0) {
+                                          provider.onChangeOperationStatus(1);
                                         } else {
                                           showOperationStopDialog(
                                               context: context,

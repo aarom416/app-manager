@@ -51,11 +51,11 @@ class _TemporaryClosedScreenState extends ConsumerState<TemporaryClosedScreen> {
                   SGTypography.body("영업 임시중지",
                       size: FontSize.normal, weight: FontWeight.w500),
                   SGSwitch(
-                      value: state.operationStatus == 1,
+                      value: state.operationStatus == 0,
                       onChanged: (value) {
                         setState(() {
-                          if (state.operationStatus == 1) {
-                            provider.onChangeOperationStatus(0);
+                          if (state.operationStatus == 0) {
+                            provider.onChangeOperationStatus(1);
                           } else {
                             showDialog(context: context, provider: provider);
                           }
@@ -153,7 +153,7 @@ class _TemporaryClosedScreenState extends ConsumerState<TemporaryClosedScreen> {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.of(ctx).pop();
-                        provider.onChangeOperationStatus(1);
+                        provider.onChangeOperationStatus(0);
                       },
                       child: SGContainer(
                         width: double.infinity,
