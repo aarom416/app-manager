@@ -64,6 +64,7 @@ class _DataTableRow extends StatelessWidget {
 
 class NewOrderDetailScreen extends ConsumerWidget {
   final MyInfoOrderHistoryModel order;
+
   const NewOrderDetailScreen({super.key, required this.order});
 
   void showRejectDialog(
@@ -227,6 +228,7 @@ class NewOrderDetailScreen extends ConsumerWidget {
 
 class CompletedOrderDetailScreen extends ConsumerWidget {
   final MyInfoOrderHistoryModel order;
+
   const CompletedOrderDetailScreen({super.key, required this.order});
 
   @override
@@ -303,6 +305,7 @@ class CompletedOrderDetailScreen extends ConsumerWidget {
 
 class InProgressOrderDetailScreen extends ConsumerWidget {
   final MyInfoOrderHistoryModel order;
+
   const InProgressOrderDetailScreen({super.key, required this.order});
 
   void showSnackBar(BuildContext context, String text) {
@@ -798,14 +801,14 @@ class _OrderInformation extends StatelessWidget {
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(left: "주문 일시", right: order.orderDate),
+        _DataTableRow(left: "주문 일시", right: order.orderDateTime),
         if (/*order.status != OrderStatus.newOrder*/ true) ...[
           SizedBox(height: SGSpacing.p4),
-          _DataTableRow(left: "접수 일시", right: "00.00(일) 00:00"),
+          _DataTableRow(left: "접수 일시", right: order.receivedDate),
         ],
-        if (/*order.status == OrderStatus.completed*/ true) ...[
+        if (order.orderStatus == '전달 완료') ...[
           SizedBox(height: SGSpacing.p4),
-          _DataTableRow(left: "전달 완료", right: "00.00(일) 00:00"),
+          _DataTableRow(left: "전달 완료", right: order.completedDate),
         ],
       ]),
       SizedBox(height: SGSpacing.p3),

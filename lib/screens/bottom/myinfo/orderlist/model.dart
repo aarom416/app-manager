@@ -29,7 +29,7 @@ abstract class MyInfoOrderHistoryModel with _$MyInfoOrderHistoryModel {
     @Default('') String address,
     @Default('') String phone,
     @Default('') String createdDate,
-    @Default('') String receiveDate,
+    @Default('') String receivedDate,
     @Default('') String completedDate,
     @Default('') String storeName,
     @Default('') String orderNumber,
