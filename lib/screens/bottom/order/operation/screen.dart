@@ -252,6 +252,7 @@ class _NewOrderListView extends ConsumerWidget {
   });
 
   int cookTime = 0;
+
   void showRejectDialog(
       {required BuildContext context, required NewOrderModel order}) {
     showSGDialogWithCloseButton(
@@ -747,10 +748,10 @@ class _CompleteOrderListView extends ConsumerWidget {
                         strokeWidth: 3,
                         strokeColor: strokeColor(orders[index]),
                         color: Colors.transparent,
-                        label:
-                            orders[index].orderStatus != OrderStatus.cancelled
-                                ? "완료"
-                                : "취소")),
+                        label: orders[index].orderStatus !=
+                                OrderStatus.cancelled.orderStatusName
+                            ? "완료"
+                            : "취소")),
                 Positioned(
                     top: SGSpacing.p4,
                     right: SGSpacing.p2,
@@ -771,9 +772,14 @@ class _CompleteOrderListView extends ConsumerWidget {
   }
 
   Color strokeColor(NewOrderModel order) {
-    if (order.orderStatus == OrderStatus.cancelled) return SGColors.warningRed;
-    if (order.receiveFoodType == "DELIVERY") return SGColors.success;
-    if (order.receiveFoodType == "TAKEOUT") return SGColors.warningOrange;
+    if (order.orderStatus == OrderStatus.cancelled.orderStatusName) {
+      return SGColors.warningRed;
+    } else if (order.receiveFoodType == "DELIVERY") {
+      return SGColors.success;
+    } else if (order.receiveFoodType == "TAKEOUT") {
+      return SGColors.warningOrange;
+    }
+
     return SGColors.primary;
   }
 }
@@ -877,6 +883,7 @@ class _OrderCard extends StatelessWidget {
                   weight: FontWeight.w700,
                   color: SGColors.white,
                 ),
+                /*
                 SizedBox(width: SGSpacing.p1),
                 if (order.orderStatus == OrderStatus.newOrder.orderStatusName &&
                     order.receiveFoodType == 'TAKEOUT')
@@ -918,6 +925,7 @@ class _OrderCard extends StatelessWidget {
                           : Container(),
                     ],
                   )
+                 */
               ],
             ),
             SizedBox(height: SGSpacing.p2),
