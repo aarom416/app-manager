@@ -15,23 +15,48 @@ class NotificationNotifier extends _$NotificationNotifier {
     return const NotificationState();
   }
 
+  void clear() {
+    state = build();
+  }
+
   void loadNotification() async {
-    final response =
-        await ref.read(notificationServiceProvider).loadNotification();
+    final response = await ref
+        .read(notificationServiceProvider)
+        .loadNotification(page: state.page.toString());
 
     if (response.statusCode == 200) {
       final result = ResultResponseListModel.fromJson(response.data);
 
+      if (result.data.isEmpty) {
+        onChangeHasMoreData(false);
+        return;
+      }
+
+      final notifications = result.data
+          .map((notification) => NotificationModel.fromJson(notification))
+          .toList();
+
       state = state.copyWith(
-        notification: [
-          ...result.data.map((item) => NotificationModel.fromJson(item))
-        ],
+        notification: state.page == 0
+            ? notifications
+            : [
+                ...state.notification,
+                ...notifications,
+              ],
         error: const ResultFailResponseModel(),
       );
     } else {
       state = state.copyWith(
           error: ResultFailResponseModel.fromJson(response.data));
     }
+  }
+
+  void onChangeHasMoreData(bool hasMoreData) {
+    state = state.copyWith(hasMoreData: hasMoreData);
+  }
+
+  void onChangePage(int page) {
+    state = state.copyWith(page: page);
   }
 }
 
@@ -44,6 +69,8 @@ enum NotificationStatus {
 @freezed
 abstract class NotificationState with _$NotificationState {
   const factory NotificationState({
+    @Default(true) bool hasMoreData,
+    @Default(0) int page,
     @Default(NotificationStatus.init) NotificationStatus status,
     @Default(<NotificationModel>[]) List<NotificationModel> notification,
     @Default(ResultFailResponseModel()) ResultFailResponseModel error,
