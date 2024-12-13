@@ -346,7 +346,7 @@ class _MenuCategoryCard extends StatelessWidget {
                           child: Image.network(menu.menuPictureURL,
                               width: SGSpacing.p18, height: SGSpacing.p18,
                               errorBuilder: (context, error, stackTrace) {
-                            return Image.asset('assets/images/store.png',
+                            return Image.asset('assets/images/default_poke.png',
                                 width: SGSpacing.p18, height: SGSpacing.p18);
                           })),
                       SizedBox(width: SGSpacing.p4),
