@@ -22,10 +22,12 @@ class StoreManagementBasicInfoScreen extends ConsumerStatefulWidget {
   const StoreManagementBasicInfoScreen({super.key});
 
   @override
-  ConsumerState<StoreManagementBasicInfoScreen> createState() => _StoreManagementBasicInfoScreenState();
+  ConsumerState<StoreManagementBasicInfoScreen> createState() =>
+      _StoreManagementBasicInfoScreenState();
 }
 
-class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagementBasicInfoScreen> {
+class _StoreManagementBasicInfoScreenState
+    extends ConsumerState<StoreManagementBasicInfoScreen> {
   @override
   void initState() {
     Future.microtask(() {
@@ -36,18 +38,21 @@ class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagement
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(storeManagementBasicInfoNotifierProvider);
-    final provider = ref.read(storeManagementBasicInfoNotifierProvider.notifier);
+    final provider =
+        ref.read(storeManagementBasicInfoNotifierProvider.notifier);
 
     return ListView(shrinkWrap: true, children: [
       SGContainer(
-        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+        padding: EdgeInsets.symmetric(
+            horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
         color: SGColors.white,
         borderColor: SGColors.line2,
         borderRadius: BorderRadius.circular(SGSpacing.p4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SGTypography.body("로고 (썸네일 이미지)", size: FontSize.normal, weight: FontWeight.w600),
+            SGTypography.body("로고 (썸네일 이미지)",
+                size: FontSize.normal, weight: FontWeight.w600),
             SizedBox(width: SGSpacing.p1),
             GestureDetector(
               onTap: () {
@@ -71,14 +76,16 @@ class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagement
             state.storeInfo.thumbnail.isNotEmpty
                 ? NetworkImageContainer(
                     key: ValueKey(state.storeInfo.thumbnail),
-                    networkImageUrl: "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
+                    networkImageUrl:
+                        "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
                   )
                 : const SizedBox.shrink(),
           ],
         ),
       ),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      SingleInformationBox(label: '가게 이름', value: state.storeInfo.name, editable: false),
+      SingleInformationBox(
+          label: '가게 이름', value: state.storeInfo.name, editable: false),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       SingleInformationBox(label: '가게 번호', value: state.storeInfo.storeNum),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
@@ -87,7 +94,8 @@ class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagement
       SingleInformationBox(label: '가게 위치', value: state.storeInfo.address),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       GestureDetector(
-          child: SingleInformationBox(label: '가게 전화번호', value: state.storeInfo.phone, editable: true),
+          child: SingleInformationBox(
+              label: '가게 전화번호', value: state.storeInfo.phone, editable: true),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => TextFieldEditScreen(
@@ -111,14 +119,16 @@ class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagement
           }),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       SGContainer(
-        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+        padding: EdgeInsets.symmetric(
+            horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
         color: SGColors.white,
         borderColor: SGColors.line2,
         borderRadius: BorderRadius.circular(SGSpacing.p4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SGTypography.body("가게 이미지", size: FontSize.normal, weight: FontWeight.w600),
+            SGTypography.body("가게 이미지",
+                size: FontSize.normal, weight: FontWeight.w600),
             SizedBox(width: SGSpacing.p1),
             GestureDetector(
               onTap: () {
@@ -139,10 +149,11 @@ class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagement
               child: const Icon(Icons.edit, size: FontSize.small),
             ),
             const Spacer(),
-            state.storeInfo.storePictureURL1.isNotEmpty
+            state.storeInfo.thumbnail.isNotEmpty
                 ? NetworkImageContainer(
-                    key: ValueKey(state.storeInfo.storePictureURL1),
-                    networkImageUrl: "${state.storeInfo.storePictureURL1}?${DateTime.now().millisecondsSinceEpoch}",
+                    key: ValueKey(state.storeInfo.thumbnail),
+                    networkImageUrl:
+                        "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
                   )
                 : const SizedBox.shrink(),
           ],
@@ -150,7 +161,10 @@ class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagement
       ),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       GestureDetector(
-          child: SingleInformationBox(label: '가게 소개', value: state.storeInfo.introduction, editable: true),
+          child: SingleInformationBox(
+              label: '가게 소개',
+              value: state.storeInfo.introduction,
+              editable: true),
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => TextAreaScreen(
@@ -175,14 +189,16 @@ class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagement
           }),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       SGContainer(
-        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+        padding: EdgeInsets.symmetric(
+            horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
         color: SGColors.white,
         borderColor: SGColors.line2,
         borderRadius: BorderRadius.circular(SGSpacing.p4),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SGTypography.body("가게 소개 이미지", size: FontSize.normal, weight: FontWeight.w600),
+            SGTypography.body("가게 소개 이미지",
+                size: FontSize.normal, weight: FontWeight.w600),
             SizedBox(width: SGSpacing.p1),
             GestureDetector(
               onTap: () {
@@ -206,7 +222,8 @@ class _StoreManagementBasicInfoScreenState extends ConsumerState<StoreManagement
             state.storeInfo.storeInformationURL.isNotEmpty
                 ? NetworkImageContainer(
                     key: ValueKey(state.storeInfo.storeInformationURL),
-                    networkImageUrl: "${state.storeInfo.storeInformationURL}?${DateTime.now().millisecondsSinceEpoch}",
+                    networkImageUrl:
+                        "${state.storeInfo.storeInformationURL}?${DateTime.now().millisecondsSinceEpoch}",
                   )
                 : const SizedBox.shrink(),
           ],
