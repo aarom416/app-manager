@@ -7,6 +7,7 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/selection_bottom_sheet.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -1294,19 +1295,46 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
               GestureDetector(
                 onTap: () {
                   provider.verifyCode();
-                  showSignUpDialog("asdfasdfasdfasdf");
                 },
-                child: SGContainer(
-                    padding: EdgeInsets.symmetric(
-                        vertical: SGSpacing.p4 + SGSpacing.p05),
-                    width: double.infinity,
-                    borderColor: SGColors.primary,
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(
-                        child: SGTypography.body("이메일 인증 확인",
-                            color: SGColors.primary,
-                            weight: FontWeight.w500,
-                            size: FontSize.small))),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SGContainer(
+                        padding: EdgeInsets.symmetric(
+                            vertical: SGSpacing.p4 + SGSpacing.p05),
+                        width: double.infinity,
+                        borderColor: SGColors.primary,
+                        borderRadius: BorderRadius.circular(SGSpacing.p3),
+                        child: Center(
+                            child: SGTypography.body("이메일 인증 확인",
+                                color: SGColors.primary,
+                                weight: FontWeight.w500,
+                                size: FontSize.small))),
+                    SizedBox(
+                      height: SGSpacing.p4,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        ref.read(signupNotifierProvider.notifier).sendCode();
+                        showGlobalSnackBarWithoutContext("이메일로 인증번호가 전송되었습니다.");
+                      },
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SGTypography.body("인증번호 다시 받기 ",
+                                color: SGColors.primary,
+                                weight: FontWeight.w400,
+                                size: FontSize.tiny,
+                            ),
+                            Image.asset("assets/images/recycle.png", height: 15, width: 15),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ] else
               ...[
@@ -1347,7 +1375,6 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
       context: context,
       childrenBuilder: (ctx) {
         final screenWidth = MediaQuery.of(context).size.width;
-
         return [
           Center(
             child: SGTypography.body(
@@ -1443,9 +1470,8 @@ void showSignUpSGDialog({
     builder: (ctx) {
       return Dialog(
         backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.all(SGSpacing.p5),
         child: SGContainer(
-          height: 180,
-          width: 303,
           color: Colors.white,
           borderRadius: BorderRadius.circular(SGSpacing.p3),
           padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
