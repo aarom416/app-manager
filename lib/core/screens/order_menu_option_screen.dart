@@ -76,21 +76,24 @@ class _OrderMenuOptionListState extends State<_OrderMenuOptionList> {
             child: SGTypography.body(
               "ㄴ ${widget.orderMenuOption.menuOptionName}",
               size: FontSize.small,
-              color: SGColors.gray3,
+              color: SGColors.gray1,
             )),
         SGFlexible(
             flex: 1,
             child: Center(
-                child: SGTypography.body(
+              child: SGTypography.body(
               widget.orderMenuOption.count.toString(),
               size: FontSize.small,
+              color: SGColors.gray1,
             ))),
         SGFlexible(
             flex: 1,
             child: SGTypography.body(
-                widget.orderMenuOption.menuOptionPrice.toKoreanCurrency,
-                align: TextAlign.right,
-                size: FontSize.small)),
+              widget.orderMenuOption.menuOptionPrice.toKoreanCurrency,
+              align: TextAlign.right,
+              size: FontSize.small,
+              color: SGColors.gray1,
+            )),
       ]),
     );
   }

@@ -731,6 +731,36 @@ class _OrderInformation extends StatelessWidget {
                     size: FontSize.small,
                     color: SGColors.gray4)),
           ]),
+          if (order.couponDiscount != 0) ...[
+            SizedBox(height: SGSpacing.p3),
+            Row(children: [
+              SGFlexible(
+                  flex: 2,
+                  child: SGTypography.body("할인 쿠폰",
+                      size: FontSize.small, color: SGColors.gray4)),
+              SGFlexible(
+                  flex: 1,
+                  child: SGTypography.body(order.couponDiscount.toKoreanCurrency,
+                      align: TextAlign.right,
+                      size: FontSize.small,
+                      color: SGColors.gray4)),
+            ])
+          ],
+          if (order.pointAmount != 0) ...[
+            SizedBox(height: SGSpacing.p3),
+            Row(children: [
+              SGFlexible(
+                  flex: 2,
+                  child: SGTypography.body("포인트",
+                      size: FontSize.small, color: SGColors.gray4)),
+              SGFlexible(
+                  flex: 1,
+                  child: SGTypography.body(order.pointAmount.toKoreanCurrency,
+                      align: TextAlign.right,
+                      size: FontSize.small,
+                      color: SGColors.gray4)),
+            ])
+          ],
           if (order.receiveFoodType == 'DELIVERY') ...[
             SizedBox(height: SGSpacing.p3),
             Row(children: [
@@ -772,7 +802,7 @@ class _OrderInformation extends StatelessWidget {
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(left: "카카오페이", right: '${order.totalOrderAmount}원'),
+        _DataTableRow(left: order.payMethodDetail, right: '${order.totalOrderAmount}원'),
       ]),
       if (order.receiveFoodType == 'DELIVERY') ...[
         SizedBox(height: SGSpacing.p3),
@@ -806,14 +836,6 @@ class _OrderInformation extends StatelessWidget {
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
         _DataTableRow(left: "주문 일시", right: order.orderDateTime),
-        if (/*order.status != OrderStatus.newOrder*/ true) ...[
-          SizedBox(height: SGSpacing.p4),
-          _DataTableRow(left: "접수 일시", right: order.receivedDate),
-        ],
-        if (order.orderStatus == '전달 완료') ...[
-          SizedBox(height: SGSpacing.p4),
-          _DataTableRow(left: "전달 완료", right: order.completedDate),
-        ],
       ]),
       SizedBox(height: SGSpacing.p3),
       _DataTable(children: [

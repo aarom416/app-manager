@@ -856,6 +856,7 @@ class _OrderCard extends StatelessWidget {
                   if (OrderStatus.inProgress == OrderStatus.inProgress)
                     Row(
                       children: [
+                        if(tab == "접수")
                         SGContainer(
                           color: SGColors.primary.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(
