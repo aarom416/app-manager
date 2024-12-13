@@ -232,23 +232,26 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen>
                         controller: _tabController,
                         physics: const NeverScrollableScrollPhysics(),
                         children: [
-                          _NewOrderListView(orders: state.newOrderList),
+                          _NewOrderListView(
+                              tab: tab, orders: state.newOrderList),
                           // 접수
                           _InProgressOrderListView(
-                              orders: state.acceptOrderList),
+                              tab: tab, orders: state.acceptOrderList),
                           // 완료
                           _CompleteOrderListView(
-                              orders: state.completeOrderList),
+                              tab: tab, orders: state.completeOrderList),
                         ])))));
   }
 }
 
 class _NewOrderListView extends ConsumerWidget {
   List<NewOrderModel> orders;
+  String tab;
 
   _NewOrderListView({
     super.key,
     required this.orders,
+    required this.tab,
   });
 
   int cookTime = 0;
@@ -519,6 +522,7 @@ class _NewOrderListView extends ConsumerWidget {
                       ]);
             },
             child: _OrderCard(
+                tab: tab,
                 order: orders[index],
                 tailing: CircleAvatar(
                     radius: 25,
@@ -539,10 +543,12 @@ class _NewOrderListView extends ConsumerWidget {
 
 class _InProgressOrderListView extends ConsumerWidget {
   List<NewOrderModel> orders;
+  String tab;
 
   _InProgressOrderListView({
     super.key,
     required this.orders,
+    required this.tab,
   });
 
   @override
@@ -572,6 +578,7 @@ class _InProgressOrderListView extends ConsumerWidget {
               alignment: Alignment.topRight,
               children: [
                 _OrderCard(
+                    tab: tab,
                     order: orders[index],
                     // TODO : 2024.12.10 접수 API 경과 시간 추가 필요 현재 10으로 고정
                     tailing: PercentageIndicator(
@@ -707,10 +714,12 @@ class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
 }
 
 class _CompleteOrderListView extends ConsumerWidget {
+  String tab;
   List<NewOrderModel> orders;
 
   _CompleteOrderListView({
     super.key,
+    required this.tab,
     required this.orders,
   });
 
@@ -740,6 +749,7 @@ class _CompleteOrderListView extends ConsumerWidget {
               alignment: Alignment.topRight,
               children: [
                 _OrderCard(
+                    tab: tab,
                     order: orders[index],
                     tailing: PercentageIndicator(
                         percentage: orders[index].expectedTime /
@@ -863,8 +873,9 @@ class _PercentageIndicatorPainter extends CustomPainter {
 class _OrderCard extends StatelessWidget {
   final NewOrderModel order;
   final Widget? tailing;
+  final String tab;
 
-  _OrderCard({super.key, required this.order, this.tailing});
+  _OrderCard({super.key, required this.order, this.tailing, required this.tab});
 
   @override
   Widget build(BuildContext context) {
@@ -883,49 +894,50 @@ class _OrderCard extends StatelessWidget {
                   weight: FontWeight.w700,
                   color: SGColors.white,
                 ),
-                /*
-                SizedBox(width: SGSpacing.p1),
-                if (order.orderStatus == OrderStatus.newOrder.orderStatusName &&
-                    order.receiveFoodType == 'TAKEOUT')
-                  SGContainer(
-                    color: SGColors.primary.withOpacity(0.1),
-                    borderRadius:
-                        BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
-                    child: SGTypography.body("포장 ${order.orderInformationId}",
-                        weight: FontWeight.w500, color: SGColors.primary),
-                  ),
-                if (OrderStatus.inProgress == OrderStatus.inProgress)
-                  Row(
-                    children: [
-                      SGContainer(
-                        color: SGColors.primary.withOpacity(0.1),
-                        borderRadius:
-                            BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
-                        child: SGTypography.body(order.orderStatus,
-                            weight: FontWeight.w500, color: SGColors.primary),
-                      ),
-                      SizedBox(width: SGSpacing.p2),
-                      order.receiveFoodType == "TAKEOUT"
-                          ? SGContainer(
-                              color: SGColors.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(
-                                  SGSpacing.p05 + SGSpacing.p1),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: SGSpacing.p1,
-                                  vertical: SGSpacing.p1),
-                              child: SGTypography.body(
-                                  "포장 ${order.pickUpNumber}",
-                                  weight: FontWeight.w500,
-                                  color: SGColors.primary),
-                            )
-                          : Container(),
-                    ],
-                  )
-                 */
+                if (tab != '완료') ...[
+                  SizedBox(width: SGSpacing.p1),
+                  if (order.orderStatus ==
+                          OrderStatus.newOrder.orderStatusName &&
+                      order.receiveFoodType == 'TAKEOUT')
+                    SGContainer(
+                      color: SGColors.primary.withOpacity(0.1),
+                      borderRadius:
+                          BorderRadius.circular(SGSpacing.p05 + SGSpacing.p1),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
+                      child: SGTypography.body("포장 ${order.orderInformationId}",
+                          weight: FontWeight.w500, color: SGColors.primary),
+                    ),
+                  if (OrderStatus.inProgress == OrderStatus.inProgress)
+                    Row(
+                      children: [
+                        SGContainer(
+                          color: SGColors.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(
+                              SGSpacing.p05 + SGSpacing.p1),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: SGSpacing.p1, vertical: SGSpacing.p1),
+                          child: SGTypography.body(order.orderStatus,
+                              weight: FontWeight.w500, color: SGColors.primary),
+                        ),
+                        SizedBox(width: SGSpacing.p2),
+                        order.receiveFoodType == "TAKEOUT"
+                            ? SGContainer(
+                                color: SGColors.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(
+                                    SGSpacing.p05 + SGSpacing.p1),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: SGSpacing.p1,
+                                    vertical: SGSpacing.p1),
+                                child: SGTypography.body(
+                                    "포장 ${order.pickUpNumber}",
+                                    weight: FontWeight.w500,
+                                    color: SGColors.primary),
+                              )
+                            : Container(),
+                      ],
+                    )
+                ]
               ],
             ),
             SizedBox(height: SGSpacing.p2),
