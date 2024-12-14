@@ -16,6 +16,9 @@ import 'package:singleeat/screens/bottom/myinfo/orderlist/model.dart';
 import 'package:singleeat/screens/bottom/order/operation/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../../core/components/snackbar.dart';
+import '../model.dart';
+
 class _DataTable extends StatelessWidget {
   const _DataTable({super.key, this.children = const []});
 
@@ -72,8 +75,10 @@ class _DataTableRow extends StatelessWidget {
 
 class NewOrderDetailScreen extends ConsumerWidget {
   final MyInfoOrderHistoryModel order;
+  final int orderInformationId;
+  NewOrderDetailScreen({super.key, required this.order, required this.orderInformationId});
 
-  const NewOrderDetailScreen({super.key, required this.order});
+  int cookTime = 0;
 
   void showRejectDialog(
       {required BuildContext context, required MyInfoOrderHistoryModel order}) {
@@ -82,6 +87,7 @@ class NewOrderDetailScreen extends ConsumerWidget {
         childrenBuilder: (ctx) => [
               _RejectDialogBody(
                   order: order,
+                  orderInformationId: orderInformationId,
                   onReject: () {
                     showSGDialog(
                         context: context,
@@ -123,6 +129,7 @@ class NewOrderDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: SGColors.black,
@@ -175,13 +182,17 @@ class NewOrderDetailScreen extends ConsumerWidget {
                 ]),
               ]),
               SizedBox(height: SGSpacing.p3),
-              _OrderInformation(order: order),
+              _OrderInformation(order: order, tab: "신규",),
               SizedBox(height: SGSpacing.p32),
               StepCounter(
                 defaultValue: order.receiveFoodType == "TAKEOUT" ? 20 : 60,
                 step: 5,
                 maxValue: order.receiveFoodType == "TAKEOUT" ? 60 : 100,
                 minValue: order.receiveFoodType == "TAKEOUT" ? 5 : 20,
+                onChanged: (value) {
+                  print('step counter ${value}');
+                  cookTime = value;
+                },
               ),
               SizedBox(height: SGSpacing.p4),
               Row(
@@ -210,8 +221,18 @@ class NewOrderDetailScreen extends ConsumerWidget {
                   SGFlexible(
                     flex: 2,
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
+                      onTap: () async {
+                        bool check = await ref
+                            .read(orderNotifierProvider.notifier)
+                            .acceptOrder(
+                            orderInformationId,
+                            cookTime
+                        );
+                        if (check) {
+                          ref.read(orderNotifierProvider.notifier).getNewOrderList();
+                          Navigator.pop(context);
+                        }
+
                       },
                       child: SGContainer(
                         width: double.infinity,
@@ -228,6 +249,332 @@ class NewOrderDetailScreen extends ConsumerWidget {
                     ),
                   ),
                 ],
+              ),
+            ])));
+  }
+}
+
+class InProgressOrderDetailScreen extends ConsumerWidget {
+  final MyInfoOrderHistoryModel order;
+
+  const InProgressOrderDetailScreen({super.key, required this.order});
+
+  void showCancelDialog({required BuildContext context}) {
+    showSGDialogWithCloseButton(
+        context: context,
+        childrenBuilder: (ctx) => [
+          _CancelDialogBody(
+              order: order,
+              onCancel: () {
+                showSGDialog(
+                    context: context,
+                    childrenBuilder: (ctx) => [
+                      SGTypography.body("주문 취소",
+                          size: FontSize.medium,
+                          weight: FontWeight.w700),
+                      SizedBox(height: SGSpacing.p4),
+                      SGTypography.body("주문을 정말 취소하시겠습니까?",
+                          size: FontSize.small,
+                          weight: FontWeight.w700,
+                          color: SGColors.gray4),
+                      SizedBox(height: SGSpacing.p5),
+                      Row(
+                        children: [
+                          SGFlexible(
+                            flex: 1,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(ctx).pop();
+                              },
+                              child: SGContainer(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: SGSpacing.p4),
+                                borderRadius:
+                                BorderRadius.circular(SGSpacing.p3),
+                                color: SGColors.gray3,
+                                child: Center(
+                                  child: SGTypography.body("취소",
+                                      size: FontSize.normal,
+                                      weight: FontWeight.w700,
+                                      color: SGColors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: SGSpacing.p2),
+                          SGFlexible(
+                            flex: 2,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(ctx).pop();
+                                showSnackBar(context, "주문이 취소되었습니다.");
+                              },
+                              child: SGContainer(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: SGSpacing.p4),
+                                borderRadius:
+                                BorderRadius.circular(SGSpacing.p3),
+                                color: SGColors.primary,
+                                child: Center(
+                                  child: SGTypography.body("확인",
+                                      size: FontSize.normal,
+                                      weight: FontWeight.w700,
+                                      color: SGColors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ]);
+              })
+        ]);
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: SGColors.black,
+          foregroundColor: SGColors.whiteForDarkMode,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0.0,
+          title: SGTypography.body(
+            order.receiveFoodType == 'DELIVERY'
+                ? '배달 | ${order.orderNumber}'
+                : '포장 | ${order.orderNumber}',
+            size: FontSize.medium,
+            weight: FontWeight.w800,
+            color: SGColors.white,
+          ),
+        ),
+        body: SGContainer(
+            padding: EdgeInsets.symmetric(
+                horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+            color: SGColors.black,
+            child: ListView(children: [
+              if (order.receiveFoodType == "TAKEOUT")
+                SGTypography.body("음식을 준비하고 있어요",
+                    color: SGColors.whiteForDarkMode,
+                    size: FontSize.xlarge,
+                    weight: FontWeight.w700)
+              else
+                SGTypography.body("기사님이 배달중이에요",
+                    color: SGColors.whiteForDarkMode,
+                    size: FontSize.xlarge,
+                    weight: FontWeight.w700),
+              SizedBox(height: SGSpacing.p6),
+              SizedBox(height: SGSpacing.p2),
+              if (order.receiveFoodType == "DELIVERY")
+                Image.asset(
+                    "assets/images/order-progress-indicator-delivery.png",
+                    width: double.infinity)
+              else
+                Image.asset(
+                    "assets/images/order-progress-indicator-takeout.png",
+                    width: double.infinity),
+              SizedBox(height: SGSpacing.p10),
+              _OrderInformation(order: order, tab: "접수",),
+              SizedBox(height: SGSpacing.p20),
+              Center(
+                child: SGTypography.body("고객센터 문의는 1600-7723으로 문의 주세요",
+                    color: SGColors.gray4,
+                    size: FontSize.small,
+                    weight: FontWeight.w700),
+              ),
+              SizedBox(height: SGSpacing.p4),
+              if (order.receiveFoodType == "TAKEOUT") ...[
+                SGActionButton(
+                    onPressed: () {
+                      showSGDialog(
+                          context: context,
+                          childrenBuilder: (ctx) => [
+                            SGTypography.body("식단 준비 완료",
+                                size: FontSize.medium,
+                                weight: FontWeight.w700),
+                            SizedBox(height: SGSpacing.p4),
+                            SGTypography.body("고객님께 준비 완료 알림을 보내시겠습니까?",
+                                size: FontSize.small,
+                                weight: FontWeight.w700,
+                                color: SGColors.gray4,
+                                lineHeight: 1.25),
+                            SGTypography.body(
+                                "'확인' 클릭 시 고객님께 푸시알림이 전송됩니다. ",
+                                size: FontSize.small,
+                                weight: FontWeight.w700,
+                                color: SGColors.gray4),
+                            SizedBox(height: SGSpacing.p5),
+                            Row(
+                              children: [
+                                SGFlexible(
+                                  flex: 1,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(ctx).pop();
+                                    },
+                                    child: SGContainer(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: SGSpacing.p4),
+                                      borderRadius: BorderRadius.circular(
+                                          SGSpacing.p3),
+                                      color: SGColors.gray3,
+                                      child: Center(
+                                        child: SGTypography.body("취소",
+                                            size: FontSize.normal,
+                                            weight: FontWeight.w700,
+                                            color: SGColors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: SGSpacing.p2),
+                                SGFlexible(
+                                  flex: 2,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      bool check = await ref
+                                          .read(orderNotifierProvider
+                                          .notifier)
+                                          .notifyCookingComplete(order
+                                          .orderMenuDTOList[0]
+                                          .orderInformationId);
+                                      if (check) {
+                                        showSnackBar(
+                                            context, "준비 완료 알림 전송 성공!");
+                                        Navigator.of(ctx).pop();
+                                        Navigator.of(context).pop();
+                                        ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+                                      }
+                                    },
+                                    child: SGContainer(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: SGSpacing.p4),
+                                      borderRadius: BorderRadius.circular(
+                                          SGSpacing.p3),
+                                      color: SGColors.primary,
+                                      child: Center(
+                                        child: SGTypography.body("확인",
+                                            size: FontSize.normal,
+                                            weight: FontWeight.w700,
+                                            color: SGColors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ]);
+                    },
+                    label: "준비 완료 알림 보내기"),
+                SizedBox(height: SGSpacing.p5),
+              ],
+              if (order.receiveFoodType == "DELIVERY") ...[
+                SGActionButton(
+                    onPressed: () {
+                      showSGDialog(
+                          context: context,
+                          childrenBuilder: (ctx) => [
+                            SGTypography.body("식단 배달 완료",
+                                size: FontSize.medium,
+                                weight: FontWeight.w700),
+                            SizedBox(height: SGSpacing.p4),
+                            SGTypography.body("고객님께 배달 완료 알림을 보내시겠습니까?",
+                                size: FontSize.small,
+                                weight: FontWeight.w700,
+                                color: SGColors.gray4,
+                                lineHeight: 1.25),
+                            SGTypography.body(
+                                "'확인' 클릭 시 고객님께 푸시알림이 전송됩니다. ",
+                                size: FontSize.small,
+                                weight: FontWeight.w700,
+                                color: SGColors.gray4),
+                            SizedBox(height: SGSpacing.p5),
+                            Row(
+                              children: [
+                                SGFlexible(
+                                  flex: 1,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(ctx).pop();
+                                    },
+                                    child: SGContainer(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: SGSpacing.p4),
+                                      borderRadius: BorderRadius.circular(
+                                          SGSpacing.p3),
+                                      color: SGColors.gray3,
+                                      child: Center(
+                                        child: SGTypography.body("취소",
+                                            size: FontSize.normal,
+                                            weight: FontWeight.w700,
+                                            color: SGColors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: SGSpacing.p2),
+                                SGFlexible(
+                                  flex: 2,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      bool check = await ref
+                                          .read(orderNotifierProvider
+                                          .notifier)
+                                          .notifyDeliveryComplete(order
+                                          .orderMenuDTOList[0]
+                                          .orderInformationId);
+
+                                      if (check) {
+                                        showSnackBar(
+                                            context, "배달 완료 알림 전송 성공!");
+                                        Navigator.of(ctx).pop();
+                                        Navigator.of(context).pop();
+                                        ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+                                      }
+                                    },
+                                    child: SGContainer(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: SGSpacing.p4),
+                                      borderRadius: BorderRadius.circular(
+                                          SGSpacing.p3),
+                                      color: SGColors.primary,
+                                      child: Center(
+                                        child: SGTypography.body("확인",
+                                            size: FontSize.normal,
+                                            weight: FontWeight.w700,
+                                            color: SGColors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: SGSpacing.p2),
+                          ]);
+                    },
+                    label: "배달 완료 처리하기"),
+                SizedBox(height: SGSpacing.p5),
+              ],
+              GestureDetector(
+                onTap: () {
+                  showCancelDialog(context: context);
+                },
+                child: SGContainer(
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+                    width: double.infinity,
+                    color: SGColors.gray4,
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    child: Center(
+                        child: SGTypography.body("주문 취소하기",
+                            color: Colors.white,
+                            weight: FontWeight.w700,
+                            size: FontSize.medium))),
               ),
             ])));
   }
@@ -299,7 +646,7 @@ class CompletedOrderDetailScreen extends ConsumerWidget {
                 ]),
               ]),
               SizedBox(height: SGSpacing.p3),
-              _OrderInformation(order: order),
+              _OrderInformation(order: order, tab: "완료",),
               SizedBox(height: SGSpacing.p20),
               SGActionButton(
                   onPressed: () {
@@ -313,360 +660,15 @@ class CompletedOrderDetailScreen extends ConsumerWidget {
   }
 }
 
-class InProgressOrderDetailScreen extends ConsumerWidget {
-  final MyInfoOrderHistoryModel order;
-
-  const InProgressOrderDetailScreen({super.key, required this.order});
-
-  void showSnackBar(BuildContext context, String text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        margin: EdgeInsets.only(
-            left: SGSpacing.p24, right: SGSpacing.p24, bottom: SGSpacing.p12),
-        behavior: SnackBarBehavior.floating,
-        content: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Text(
-                text,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: SGColors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: SGColors.gray5,
-        duration: const Duration(milliseconds: 3000),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(99),
-        ),
-      ),
-    );
-  }
-
-  void showCancelDialog({required BuildContext context}) {
-    showSGDialogWithCloseButton(
-        context: context,
-        childrenBuilder: (ctx) => [
-              _CancelDialogBody(
-                  order: order,
-                  onCancel: () {
-                    showSGDialog(
-                        context: context,
-                        childrenBuilder: (ctx) => [
-                              SGTypography.body("주문 취소",
-                                  size: FontSize.medium,
-                                  weight: FontWeight.w700),
-                              SizedBox(height: SGSpacing.p4),
-                              SGTypography.body("주문을 정말 취소하시겠습니까?",
-                                  size: FontSize.small,
-                                  weight: FontWeight.w700,
-                                  color: SGColors.gray4),
-                              SizedBox(height: SGSpacing.p5),
-                              Row(
-                                children: [
-                                  SGFlexible(
-                                    flex: 1,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Navigator.of(ctx).pop();
-                                      },
-                                      child: SGContainer(
-                                        width: double.infinity,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: SGSpacing.p4),
-                                        borderRadius:
-                                            BorderRadius.circular(SGSpacing.p3),
-                                        color: SGColors.gray3,
-                                        child: Center(
-                                          child: SGTypography.body("취소",
-                                              size: FontSize.normal,
-                                              weight: FontWeight.w700,
-                                              color: SGColors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: SGSpacing.p2),
-                                  SGFlexible(
-                                    flex: 2,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Navigator.of(ctx).pop();
-                                        showSnackBar(context, "주문이 취소되었습니다.");
-                                      },
-                                      child: SGContainer(
-                                        width: double.infinity,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: SGSpacing.p4),
-                                        borderRadius:
-                                            BorderRadius.circular(SGSpacing.p3),
-                                        color: SGColors.primary,
-                                        child: Center(
-                                          child: SGTypography.body("확인",
-                                              size: FontSize.normal,
-                                              weight: FontWeight.w700,
-                                              color: SGColors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ]);
-                  })
-            ]);
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: SGColors.black,
-          foregroundColor: SGColors.whiteForDarkMode,
-          surfaceTintColor: Colors.transparent,
-          elevation: 0.0,
-          title: SGTypography.body(
-            order.receiveFoodType == 'DELIVERY'
-                ? '배달 | ${order.orderNumber}'
-                : '포장 | ${order.orderNumber}',
-            size: FontSize.medium,
-            weight: FontWeight.w800,
-            color: SGColors.white,
-          ),
-        ),
-        body: SGContainer(
-            padding: EdgeInsets.symmetric(
-                horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-            color: SGColors.black,
-            child: ListView(children: [
-              if (order.receiveFoodType == "TAKEOUT")
-                SGTypography.body("음식을 준비하고 있어요",
-                    color: SGColors.whiteForDarkMode,
-                    size: FontSize.xlarge,
-                    weight: FontWeight.w700)
-              else
-                SGTypography.body("기사님이 배달중이에요",
-                    color: SGColors.whiteForDarkMode,
-                    size: FontSize.xlarge,
-                    weight: FontWeight.w700),
-              SizedBox(height: SGSpacing.p6),
-              SizedBox(height: SGSpacing.p2),
-              if (order.receiveFoodType == "DELIVERY")
-                Image.asset(
-                    "assets/images/order-progress-indicator-delivery.png",
-                    width: double.infinity)
-              else
-                Image.asset(
-                    "assets/images/order-progress-indicator-takeout.png",
-                    width: double.infinity),
-              SizedBox(height: SGSpacing.p10),
-              _OrderInformation(order: order),
-              SizedBox(height: SGSpacing.p20),
-              Center(
-                child: SGTypography.body("고객센터 문의는 1600-7723으로 문의 주세요",
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w700),
-              ),
-              SizedBox(height: SGSpacing.p4),
-              if (order.receiveFoodType == "TAKEOUT") ...[
-                SGActionButton(
-                    onPressed: () {
-                      showSGDialog(
-                          context: context,
-                          childrenBuilder: (ctx) => [
-                                SGTypography.body("식단 준비 완료",
-                                    size: FontSize.medium,
-                                    weight: FontWeight.w700),
-                                SizedBox(height: SGSpacing.p4),
-                                SGTypography.body("고객님께 준비 완료 알림을 보내시겠습니까?",
-                                    size: FontSize.small,
-                                    weight: FontWeight.w700,
-                                    color: SGColors.gray4,
-                                    lineHeight: 1.25),
-                                SGTypography.body(
-                                    "'확인' 클릭 시 고객님께 푸시알림이 전송됩니다. ",
-                                    size: FontSize.small,
-                                    weight: FontWeight.w700,
-                                    color: SGColors.gray4),
-                                SizedBox(height: SGSpacing.p5),
-                                Row(
-                                  children: [
-                                    SGFlexible(
-                                      flex: 1,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(ctx).pop();
-                                        },
-                                        child: SGContainer(
-                                          width: double.infinity,
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: SGSpacing.p4),
-                                          borderRadius: BorderRadius.circular(
-                                              SGSpacing.p3),
-                                          color: SGColors.gray3,
-                                          child: Center(
-                                            child: SGTypography.body("취소",
-                                                size: FontSize.normal,
-                                                weight: FontWeight.w700,
-                                                color: SGColors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: SGSpacing.p2),
-                                    SGFlexible(
-                                      flex: 2,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(ctx).pop();
-                                          ref
-                                              .read(orderNotifierProvider
-                                                  .notifier)
-                                              .notifyCookingComplete(order
-                                                  .orderMenuDTOList[0]
-                                                  .orderInformationId);
-                                          showSnackBar(
-                                              context, "준비 완료 알림 전송 성공!");
-                                        },
-                                        child: SGContainer(
-                                          width: double.infinity,
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: SGSpacing.p4),
-                                          borderRadius: BorderRadius.circular(
-                                              SGSpacing.p3),
-                                          color: SGColors.primary,
-                                          child: Center(
-                                            child: SGTypography.body("확인",
-                                                size: FontSize.normal,
-                                                weight: FontWeight.w700,
-                                                color: SGColors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ]);
-                    },
-                    label: "준비 완료 알림 보내기"),
-                SizedBox(height: SGSpacing.p5),
-              ],
-              if (order.receiveFoodType == "DELIVERY") ...[
-                SGActionButton(
-                    onPressed: () {
-                      showSGDialog(
-                          context: context,
-                          childrenBuilder: (ctx) => [
-                                SGTypography.body("식단 배달 완료",
-                                    size: FontSize.medium,
-                                    weight: FontWeight.w700),
-                                SizedBox(height: SGSpacing.p4),
-                                SGTypography.body("고객님께 배달 완료 알림을 보내시겠습니까?",
-                                    size: FontSize.small,
-                                    weight: FontWeight.w700,
-                                    color: SGColors.gray4,
-                                    lineHeight: 1.25),
-                                SGTypography.body(
-                                    "'확인' 클릭 시 고객님께 푸시알림이 전송됩니다. ",
-                                    size: FontSize.small,
-                                    weight: FontWeight.w700,
-                                    color: SGColors.gray4),
-                                SizedBox(height: SGSpacing.p2),
-                                Row(
-                                  children: [
-                                    SGFlexible(
-                                      flex: 1,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(ctx).pop();
-                                        },
-                                        child: SGContainer(
-                                          width: double.infinity,
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: SGSpacing.p4),
-                                          borderRadius: BorderRadius.circular(
-                                              SGSpacing.p3),
-                                          color: SGColors.gray3,
-                                          child: Center(
-                                            child: SGTypography.body("취소",
-                                                size: FontSize.normal,
-                                                weight: FontWeight.w700,
-                                                color: SGColors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: SGSpacing.p2),
-                                    SGFlexible(
-                                      flex: 2,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          Navigator.of(ctx).pop();
-                                          ref
-                                              .read(orderNotifierProvider
-                                                  .notifier)
-                                              .notifyDeliveryComplete(order
-                                                  .orderMenuDTOList[0]
-                                                  .orderInformationId);
-                                          showSnackBar(
-                                              context, "배달 완료 알림 전송 성공!");
-                                        },
-                                        child: SGContainer(
-                                          width: double.infinity,
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: SGSpacing.p4),
-                                          borderRadius: BorderRadius.circular(
-                                              SGSpacing.p3),
-                                          color: SGColors.primary,
-                                          child: Center(
-                                            child: SGTypography.body("확인",
-                                                size: FontSize.normal,
-                                                weight: FontWeight.w700,
-                                                color: SGColors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: SGSpacing.p2),
-                              ]);
-                    },
-                    label: "배달 완료 처리하기"),
-                SizedBox(height: SGSpacing.p5),
-              ],
-              GestureDetector(
-                onTap: () {
-                  showCancelDialog(context: context);
-                },
-                child: SGContainer(
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                    width: double.infinity,
-                    color: SGColors.gray4,
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(
-                        child: SGTypography.body("주문 취소하기",
-                            color: Colors.white,
-                            weight: FontWeight.w700,
-                            size: FontSize.medium))),
-              ),
-            ])));
-  }
-}
-
 class _OrderInformation extends StatelessWidget {
   const _OrderInformation({
     super.key,
     required this.order,
+    required this.tab
   });
 
   final MyInfoOrderHistoryModel order;
+  final String tab;
 
   @override
   Widget build(BuildContext context) {
@@ -677,7 +679,7 @@ class _OrderInformation extends StatelessWidget {
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(left: "가게", right: order.toOwner),
+        _DataTableRow(left: "가게", right: order.toOwner == 'null' ? '-' : order.toOwner),
         if (order.receiveFoodType == 'DELIVERY') ...[
           SizedBox(height: SGSpacing.p4),
           _DataTableRow(left: "배달", right: order.toRider),
@@ -726,7 +728,7 @@ class _OrderInformation extends StatelessWidget {
                     size: FontSize.small, color: SGColors.gray4)),
             SGFlexible(
                 flex: 1,
-                child: SGTypography.body(order.orderAmount.toString(),
+                child: SGTypography.body(order.orderAmount.toKoreanCurrency.toString(),
                     align: TextAlign.right,
                     size: FontSize.small,
                     color: SGColors.gray4)),
@@ -802,7 +804,7 @@ class _OrderInformation extends StatelessWidget {
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
-        _DataTableRow(left: order.payMethodDetail, right: '${order.totalOrderAmount}원'),
+        _DataTableRow(left: order.payMethodDetail, right: '${order.totalOrderAmount.toKoreanCurrency}원'),
       ]),
       if (order.receiveFoodType == 'DELIVERY') ...[
         SizedBox(height: SGSpacing.p3),
@@ -836,6 +838,14 @@ class _OrderInformation extends StatelessWidget {
             weight: FontWeight.w600),
         SizedBox(height: SGSpacing.p4),
         _DataTableRow(left: "주문 일시", right: order.orderDateTime),
+        if (tab == "접수" || tab == "완료") ...[
+          SizedBox(height: SGSpacing.p4),
+          _DataTableRow(left: "접수 일시", right: order.receivedDate),
+        ],
+        if (tab == "완료") ...[
+          SizedBox(height: SGSpacing.p4),
+          _DataTableRow(left: "전달 완료", right: order.completedDate),
+        ]
       ]),
       SizedBox(height: SGSpacing.p3),
       _DataTable(children: [
@@ -916,20 +926,29 @@ class _CancelDialogBodyState extends ConsumerState<_CancelDialogBody> {
               color: SGColors.gray4)),
       SizedBox(height: SGSpacing.p4),
       GestureDetector(
-        onTap: () {
+        onTap: () async {
           if (cancelReason.isEmpty) {
             return;
           }
-          Navigator.of(context).pop();
+          bool check = false;
           if (widget.order.receiveFoodType == 'DELIVERY') {
-            ref.read(orderNotifierProvider.notifier).deliveryOrderCancel(
-                widget.order.orderMenuDTOList[0].orderInformationId,
-                reasons.indexOf(cancelReason));
+            check = await ref.read(orderNotifierProvider.notifier).deliveryOrderCancel(
+              context,
+              widget.order.orderMenuDTOList[0].orderInformationId,
+              reasons.indexOf(cancelReason));
           } else {
-            ref.read(orderNotifierProvider.notifier).takeoutOrderCancel(
-                widget.order.orderMenuDTOList[0].orderInformationId,
-                reasons.indexOf(cancelReason));
+            check = await ref.read(orderNotifierProvider.notifier).takeoutOrderCancel(
+              context,
+              widget.order.orderMenuDTOList[0].orderInformationId,
+              reasons.indexOf(cancelReason));
           }
+          if (check) {
+            showSnackBar(context, "주문이 취소되었습니다.");
+            Navigator.of(context, rootNavigator: true).pop();
+            Navigator.of(context).pop();
+            ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+          }
+
         },
         child: SGContainer(
             padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
@@ -971,21 +990,23 @@ class _CancelDialogBodyState extends ConsumerState<_CancelDialogBody> {
   }
 }
 
-class _RejectDialogBody extends StatefulWidget {
+class _RejectDialogBody extends ConsumerStatefulWidget {
   _RejectDialogBody({
     super.key,
     required this.order,
+    required this.orderInformationId,
     required this.onReject,
   });
 
   MyInfoOrderHistoryModel order;
+  int orderInformationId;
   VoidCallback onReject;
 
   @override
-  State<_RejectDialogBody> createState() => _RejectDialogBodyState();
+  ConsumerState<_RejectDialogBody> createState() => _RejectDialogBodyState();
 }
 
-class _RejectDialogBodyState extends State<_RejectDialogBody> {
+class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
   String rejectReason = "";
 
   @override
@@ -1017,10 +1038,21 @@ class _RejectDialogBodyState extends State<_RejectDialogBody> {
               color: SGColors.gray4)),
       SizedBox(height: SGSpacing.p3),
       GestureDetector(
-        onTap: () {
+        onTap: () async {
           if (rejectReason.isEmpty) return;
           Navigator.of(context).pop();
-          widget.onReject();
+          bool check;
+          if (widget.order.receiveFoodType == 'DELIVERY') {
+            check = await ref.read(orderNotifierProvider.notifier).deliveryOrderReject(
+                context, widget.orderInformationId, reasons.indexOf(rejectReason));
+          } else {
+            check = await ref.read(orderNotifierProvider.notifier).takeoutOrderReject(
+                context, widget.orderInformationId, reasons.indexOf(rejectReason));
+          }
+          if (check) {
+            widget.onReject();
+            ref.read(orderNotifierProvider.notifier).getNewOrderList();
+          }
         },
         child: SGContainer(
             padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),

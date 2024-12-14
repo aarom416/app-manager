@@ -3,8 +3,8 @@ class AppRoutes {
   static const String welcome = '/welcome';
   static const String login = '/login';
   static const String home = '/home';
-  static const String loginWebView = '/login/webview';
   static const String signup = '/signup';
+  static const String loginWebView = '/login/webview';
   static const String signupWebView = '/signup/webview';
   static const String signupComplete = '/signup/complete';
   static const String authenticateWithPhoneNumber = '/authenticate/phoneNumber';

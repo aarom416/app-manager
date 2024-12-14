@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:singleeat/core/components/loading.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_list_model.dart';
@@ -165,88 +167,118 @@ class OrderNotifier extends _$OrderNotifier {
 
   /// 배달 주문 취소
   Future<bool> deliveryOrderCancel(
+      BuildContext context,
       int orderInformationId, int cancelReason) async {
-    final storeId = UserHive.getBox(key: UserKey.storeId);
-    final response = await ref.read(orderServiceProvider).deliveryOrderCancel(
-          orderInformationId: orderInformationId,
-          cancelReason: cancelReason,
-        );
+    try {
+      Loading.show(context);
+      final response = await ref.read(orderServiceProvider).deliveryOrderCancel(
+        orderInformationId: orderInformationId,
+        cancelReason: cancelReason,
+      );
 
-    if (response.statusCode == 200) {
-      state = state.copyWith(
-        status: OrderServiceStatus.success,
-      );
-      return true;
-    } else {
-      state = state.copyWith(
-        status: OrderServiceStatus.error,
-      );
+      if (response.statusCode == 200) {
+        state = state.copyWith(
+          status: OrderServiceStatus.success,
+        );
+        return true;
+      } else {
+        state = state.copyWith(
+          status: OrderServiceStatus.error,
+        );
+        return false;
+      }
+    } catch (e) {
       return false;
+    } finally {
+      Loading.hide();
     }
   }
 
   /// 포장 주문 취소
   Future<bool> takeoutOrderCancel(
+      BuildContext context,
       int orderInformationId, int cancelReason) async {
-    final storeId = UserHive.getBox(key: UserKey.storeId);
-    final response = await ref.read(orderServiceProvider).takeoutOrderCancel(
-          orderInformationId: orderInformationId,
-          cancelReason: cancelReason,
-        );
 
-    if (response.statusCode == 200) {
-      state = state.copyWith(
-        status: OrderServiceStatus.success,
+    try {
+      Loading.show(context);
+      final response = await ref.read(orderServiceProvider).takeoutOrderCancel(
+        orderInformationId: orderInformationId,
+        cancelReason: cancelReason,
       );
-      return true;
-    } else {
-      state = state.copyWith(
-        status: OrderServiceStatus.error,
-      );
+
+      if (response.statusCode == 200) {
+        state = state.copyWith(
+          status: OrderServiceStatus.success,
+        );
+        return true;
+      } else {
+        state = state.copyWith(
+          status: OrderServiceStatus.error,
+        );
+        return false;
+      }
+    } catch (e) {
       return false;
+    } finally {
+      Loading.hide();
     }
+
   }
 
   /// 포장 주문 거절
   Future<bool> takeoutOrderReject(
-      int orderInformationId, int rejectReason) async {
-    final response = await ref.read(orderServiceProvider).takeoutOrderReject(
-        orderInformationId: orderInformationId, rejectReason: rejectReason);
+      BuildContext context,int orderInformationId, int rejectReason) async {
+    try {
+      Loading.show(context);
+      final response = await ref.read(orderServiceProvider).takeoutOrderReject(
+          orderInformationId: orderInformationId, rejectReason: rejectReason);
 
-    if (response.statusCode == 200) {
-      state = state.copyWith(
-        status: OrderServiceStatus.success,
-      );
-      return true;
-    } else {
-      state = state.copyWith(
-        status: OrderServiceStatus.error,
-      );
+      if (response.statusCode == 200) {
+        state = state.copyWith(
+          status: OrderServiceStatus.success,
+        );
+        return true;
+      } else {
+        state = state.copyWith(
+          status: OrderServiceStatus.error,
+        );
+        return false;
+      }
+    } catch (e) {
       return false;
+    } finally {
+      Loading.hide();
     }
   }
 
   /// 배달 주문 거절
   Future<bool> deliveryOrderReject(
-      int orderInformationId, int rejectReason) async {
-    final response = await ref.read(orderServiceProvider).deliveryOrderReject(
-        orderInformationId: orderInformationId, rejectReason: rejectReason);
+      BuildContext context, int orderInformationId, int rejectReason) async {
+    try {
+      Loading.show(context);
+      final response = await ref.read(orderServiceProvider).deliveryOrderReject(
+          orderInformationId: orderInformationId, rejectReason: rejectReason);
 
-    if (response.statusCode == 200) {
-      state = state.copyWith(
-        status: OrderServiceStatus.success,
-      );
-      return true;
-    } else {
-      state = state.copyWith(
-        status: OrderServiceStatus.error,
-      );
+      if (response.statusCode == 200) {
+        state = state.copyWith(
+          status: OrderServiceStatus.success,
+        );
+        return true;
+      } else {
+        state = state.copyWith(
+          status: OrderServiceStatus.error,
+        );
+        return false;
+      }
+    } catch (e) {
       return false;
+    } finally {
+      Loading.hide();
     }
   }
 
   /// 배달 완료 알림 보내기
-  Future<void> notifyDeliveryComplete(int orderInformationId) async {
+  Future<bool> notifyDeliveryComplete(int orderInformationId) async {
     final response = await ref
         .read(orderServiceProvider)
         .notifyDeliveryComplete(orderInformationId: orderInformationId);
@@ -255,15 +287,17 @@ class OrderNotifier extends _$OrderNotifier {
       state = state.copyWith(
         status: OrderServiceStatus.success,
       );
+      return true;
     } else {
       state = state.copyWith(
         status: OrderServiceStatus.error,
       );
+      return false;
     }
   }
 
-  /// 배달 주문 거절
-  Future<void> notifyCookingComplete(int orderInformationId) async {
+  /// 준비 완료 알림 보내기
+  Future<bool> notifyCookingComplete(int orderInformationId) async {
     final response = await ref
         .read(orderServiceProvider)
         .notifyCookingComplete(orderInformationId: orderInformationId);
@@ -272,10 +306,12 @@ class OrderNotifier extends _$OrderNotifier {
       state = state.copyWith(
         status: OrderServiceStatus.success,
       );
+      return true;
     } else {
       state = state.copyWith(
         status: OrderServiceStatus.error,
       );
+      return false;
     }
   }
 }

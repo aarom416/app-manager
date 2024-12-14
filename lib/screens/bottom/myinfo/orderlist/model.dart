@@ -31,7 +31,7 @@ abstract class MyInfoOrderHistoryModel with _$MyInfoOrderHistoryModel {
     @Default('') String orderTime,
     @Default('') String orderDate,
     @Default('') String orderDateTime,
-    @Default('') String receiveDate,
+    @Default('') String receivedDate,
     @Default('') String completedDate,
     @Default('') String storeName,
     @Default('') String orderNumber,

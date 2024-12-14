@@ -602,7 +602,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                     SizedBox(height: SGSpacing.p4),
                     DataTableRow(left: "주문일시", right: order.orderDateTime),
                     SizedBox(height: SGSpacing.p4),
-                    DataTableRow(left: "접수일시", right: order.receiveDate),
+                    DataTableRow(left: "접수일시", right: order.receivedDate),
                     if (order.orderStatus != "주문 취소") ...[
                       SizedBox(height: SGSpacing.p4),
                       DataTableRow(left: "전달완료", right: order.completedDate),

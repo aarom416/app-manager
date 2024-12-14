@@ -42,7 +42,7 @@ final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: AppRoutes.welcome,
+    initialLocation: AppRoutes.root,
     navigatorKey: rootNavKey,
     debugLogDiagnostics: true,
     routes: <RouteBase>[
@@ -55,20 +55,6 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.welcome,
           pageBuilder: (context, state) {
             return const NoTransitionPage(child: WelcomeScreen());
-          }),
-      GoRoute(
-          path: AppRoutes.home,
-          pageBuilder: (context, state) {
-            UniqueKey? extra = state.extra as UniqueKey?;
-            if (extra == null) {
-              return const NoTransitionPage(child: HomeScreen(title: ''));
-            } else {
-              return NoTransitionPage(
-                  child: HomeScreen(
-                title: '',
-                key: ValueKey(extra),
-              ));
-            }
           }),
       GoRoute(
           path: AppRoutes.login,
@@ -136,6 +122,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.findByAccountWebView,
           pageBuilder: (context, state) =>
               const NoTransitionPage(child: FindAccountWebViewScreen())),
+      GoRoute(
+          path: AppRoutes.home,
+          pageBuilder: (context, state) {
+            UniqueKey? extra = state.extra as UniqueKey?;
+            if (extra == null) {
+              return const NoTransitionPage(child: HomeScreen(title: ''));
+            } else {
+              return NoTransitionPage(
+                  child: HomeScreen(
+                    title: '',
+                    key: ValueKey(extra),
+                  ));
+            }
+          }),
       // GoRoute(
       //     path: AppRoutes.changePhoneWebView,
       //     pageBuilder: (context, state) =>

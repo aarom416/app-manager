@@ -94,6 +94,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   void initState() {
+    super.initState();
     Future.microtask(() {
       ref.read(loginNotifierProvider.notifier).autoLogin();
     });

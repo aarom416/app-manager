@@ -207,21 +207,12 @@ class LoginNotifier extends _$LoginNotifier {
       switch (response.statusCode) {
         case 200:
           verifyPhoneBySuccess(response: response, status: UserStatus.success);
-          // Future.delayed(const Duration(seconds: 2), () {
-          //   ref.read(goRouterProvider).go(AppRoutes.home);
-          // });
           break;
         case 202:
           verifyPhoneBySuccess(response: response, status: UserStatus.wait);
-          // Future.delayed(const Duration(seconds: 2), () {
-          //   ref.read(goRouterProvider).go(AppRoutes.home);
-          // });
           break;
         case 206:
           verifyPhoneBySuccess(response: response, status: UserStatus.notEntry);
-          // Future.delayed(const Duration(seconds: 2), () {
-          //   ref.read(goRouterProvider).go(AppRoutes.home);
-          // });
           break;
         default:
           Future.delayed(const Duration(seconds: 2), () {
@@ -269,32 +260,31 @@ class LoginNotifier extends _$LoginNotifier {
     ref.read(goRouterProvider).go(AppRoutes.login, extra: UniqueKey());
   }
 
-  void autoLogin() async {
-    // 로그아웃 상태
+  Future<void> autoLogin() async {
+    try {
+      final response = await ref.read(loginServiceProvider).autoLogin();
 
-    final response = await ref.read(loginServiceProvider).autoLogin();
+      switch (response.statusCode) {
+        case 200:
+          verifyPhoneBySuccess(response: response, status: UserStatus.success);
+          break;
+        case 202:
+          verifyPhoneBySuccess(response: response, status: UserStatus.wait);
+          break;
+        case 206:
+          verifyPhoneBySuccess(response: response, status: UserStatus.notEntry);
+          break;
+        default:
+          Future.delayed(const Duration(seconds: 2), () {
+            ref.read(goRouterProvider).replace(AppRoutes.welcome);
+          });
+          break;
 
-    // final data = ResultResponseModel.fromJson(response.data);
-    // final user = UserModel.fromJson(data.data);
-    //
-    // UserHive.set(
-    //   user: UserHive.get().copyWith(
-    //
-    //   )
-    // )
-    switch (response.statusCode) {
-      case 200:
-        verifyPhoneBySuccess(response: response, status: UserStatus.success);
-        break;
-      case 202:
-        verifyPhoneBySuccess(response: response, status: UserStatus.wait);
-        break;
-      case 206:
-        verifyPhoneBySuccess(response: response, status: UserStatus.notEntry);
-        break;
-      default:
-        // 종료
-        break;
+      }
+    } catch (e) {
+      Future.delayed(const Duration(seconds: 2), () {
+        ref.read(goRouterProvider).replace(AppRoutes.welcome);
+      });
     }
   }
 }

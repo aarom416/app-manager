@@ -21,8 +21,9 @@ abstract class NewOrderModel with _$NewOrderModel {
   factory NewOrderModel.fromJson(Map<String, dynamic> json) =>
       _$NewOrderModelFromJson(json);
 }
-/*
 
+
+/*
 @freezed
 abstract class AcceptOrderModel with _$AcceptOrderModel {
   const factory AcceptOrderModel({

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:singleeat/core/components/spacing.dart';
 
 import '../../main.dart';
+import '../constants/colors.dart';
 
 /// 기본 스낵바
 void showDefaultSnackBar(BuildContext context, String message, {int seconds = 2}) {
@@ -93,4 +95,34 @@ void showGlobalSnackBarWithoutContext(String message,
   );
 
   scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
+}
+
+void showSnackBar(BuildContext context, String text) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      margin: EdgeInsets.only(
+          left: SGSpacing.p24, right: SGSpacing.p24, bottom: SGSpacing.p12),
+      behavior: SnackBarBehavior.floating,
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(
+              text,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: SGColors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: SGColors.gray5,
+      duration: const Duration(milliseconds: 3000),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(99),
+      ),
+    ),
+  );
 }

@@ -197,10 +197,9 @@ void showAccountDeleteSGDialog({
     context: context,
     builder: (ctx) {
       return Dialog(
+        insetPadding: EdgeInsets.all(SGSpacing.p10),
         backgroundColor: Colors.transparent,
         child: SGContainer(
-          height: 193,
-          width: 303,
           color: Colors.white,
           borderRadius: BorderRadius.circular(SGSpacing.p3),
           padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
@@ -234,9 +233,8 @@ void showLogOutSGDialog({
     builder: (ctx) {
       return Dialog(
         backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.all(SGSpacing.p10),
         child: SGContainer(
-          height: 153,
-          width: 303,
           color: Colors.white,
           borderRadius: BorderRadius.circular(SGSpacing.p3),
           padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
@@ -269,10 +267,9 @@ void showSGDialog({
     context: context,
     builder: (ctx) {
       return Dialog(
+        insetPadding: EdgeInsets.all(SGSpacing.p10),
         backgroundColor: Colors.transparent,
         child: SGContainer(
-          height: 410,
-          width: 303,
           color: Colors.white,
           borderRadius: BorderRadius.circular(SGSpacing.p3),
           padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
@@ -305,10 +302,9 @@ void showCouponIssueSGDialog({
     context: context,
     builder: (ctx) {
       return Dialog(
+        insetPadding: EdgeInsets.all(SGSpacing.p10),
         backgroundColor: Colors.transparent,
         child: SGContainer(
-          height: 155,
-          width: 303,
           color: Colors.white,
           borderRadius: BorderRadius.circular(SGSpacing.p3),
           padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
@@ -343,9 +339,8 @@ void showOperationSGDialog({
     builder: (ctx) {
       return Dialog(
         backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.all(SGSpacing.p10),
         child: SGContainer(
-          height: 178,
-          width: 303,
           color: Colors.white,
           borderRadius: BorderRadius.circular(SGSpacing.p3),
           padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
@@ -378,10 +373,9 @@ void showNewOrderSGDialog({
     context: context,
     builder: (ctx) {
       return Dialog(
+        insetPadding: EdgeInsets.all(SGSpacing.p10),
         backgroundColor: Colors.transparent,
         child: SGContainer(
-          height: 420,
-          width: 303,
           color: Colors.white,
           borderRadius: BorderRadius.circular(SGSpacing.p3),
           padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
