@@ -68,7 +68,7 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen>
     super.initState();
 
     Future.microtask(() {
-      ref.read(orderNotifierProvider.notifier).getNewOrderList();
+      ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
     });
 
     _tabController = TabController(length: 3, vsync: this);
@@ -80,15 +80,15 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen>
         switch (_tabController.index) {
           case 0:
             tab = "신규";
-            ref.read(orderNotifierProvider.notifier).getNewOrderList();
+            ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
             break;
           case 1:
             tab = "접수";
-            ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+            ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
             break;
           case 2:
             tab = "완료";
-            ref.read(orderNotifierProvider.notifier).getCompletedOrderList();
+            ref.read(orderNotifierProvider.notifier).getCompletedOrderList(context); // context 전달
             break;
         }
       });
@@ -145,15 +145,15 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen>
                   switch (index) {
                     case 0:
                       tab = "신규";
-                      ref.read(orderNotifierProvider.notifier).getNewOrderList();
+                      ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
                       break;
                     case 1:
                       tab = "접수";
-                      ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+                      ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
                       break;
                     case 2:
                       tab = "완료";
-                      ref.read(orderNotifierProvider.notifier).getCompletedOrderList();
+                      ref.read(orderNotifierProvider.notifier).getCompletedOrderList(context);
                       break;
                   }
                 });
@@ -238,7 +238,7 @@ class _NewOrderListView extends ConsumerWidget {
                               GestureDetector(
                                 onTap: () {
                                   Navigator.of(ctx).pop();
-                                  ref.read(orderNotifierProvider.notifier).getNewOrderList();
+                                  ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
                                 },
                                 child: SGContainer(
                                   width: double.infinity,
@@ -266,7 +266,7 @@ class _NewOrderListView extends ConsumerWidget {
       return RefreshIndicator(
         backgroundColor: Colors.transparent,
         onRefresh: () async {
-          ref.read(orderNotifierProvider.notifier).getNewOrderList();
+          ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
         },
         color: SGColors.primary,
         child: _NoOrderScreen()
@@ -275,7 +275,7 @@ class _NewOrderListView extends ConsumerWidget {
     return RefreshIndicator(
       backgroundColor: Colors.transparent,
       onRefresh: () async {
-        ref.read(orderNotifierProvider.notifier).getNewOrderList();
+        ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
       },
       color: SGColors.primary,
       child: Container(
@@ -486,7 +486,7 @@ class _NewOrderListView extends ConsumerWidget {
                                     );
                                     if (check) {
                                       showSnackBar(context, "주문이 접수되었습니다.");
-                                      ref.read(orderNotifierProvider.notifier).getNewOrderList();
+                                      ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
                                     }
                                   },
                                   child: SGContainer(

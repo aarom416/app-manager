@@ -31,7 +31,7 @@ import '../addmenucategory/screen.dart';
 import 'menu_option_category_selection_bottom_sheet.dart';
 
 List<String> userMenuCategories = [
-  "ㅌ",
+  "샐러드",
   "포케",
   "샌드위치",
   "카페",

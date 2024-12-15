@@ -108,7 +108,7 @@ class NewOrderDetailScreen extends ConsumerWidget {
                                 onTap: () {
                                   Navigator.of(ctx).pop();
                                   Navigator.pop(context);
-                                  ref.read(orderNotifierProvider.notifier).getNewOrderList();
+                                  ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
                                 },
                                 child: SGContainer(
                                   width: double.infinity,
@@ -232,7 +232,7 @@ class NewOrderDetailScreen extends ConsumerWidget {
                             order.receiveFoodType == "TAKEOUT" ? takeOutExpectedTime : deliveryExpectedTime
                         );
                         if (check) {
-                          ref.read(orderNotifierProvider.notifier).getNewOrderList();
+                          ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
                           showSnackBar(context, "주문이 접수되었습니다.");
                           Navigator.pop(context);
                         } else {
@@ -341,7 +341,7 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                                 if (check) {
                                   showSnackBar(context, "주문이 취소되었습니다.");
                                   Navigator.of(context).pop();
-                                  ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+                                  ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
                                 } else {
                                   if (state.error.errorCode == 400) {
                                     showFailDialogWithImage(
@@ -490,7 +490,7 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                                             context, "준비 완료 알림 전송 성공!");
                                         Navigator.of(ctx).pop();
                                         Navigator.of(context).pop();
-                                        ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+                                        ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
                                       }
                                     },
                                     child: SGContainer(
@@ -577,7 +577,7 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                                             context, "배달 완료 알림 전송 성공!");
                                         Navigator.of(ctx).pop();
                                         Navigator.of(context).pop();
-                                        ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+                                        ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
                                       }
                                     },
                                     child: SGContainer(
@@ -1078,7 +1078,7 @@ class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
           }
           if (check) {
             widget.onReject();
-            ref.read(orderNotifierProvider.notifier).getNewOrderList();
+            ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
           } else {
             if (state.error.errorCode == 400) {
               showFailDialogWithImage(
