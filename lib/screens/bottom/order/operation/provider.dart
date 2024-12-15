@@ -159,8 +159,7 @@ class OrderNotifier extends _$OrderNotifier {
       return true;
     } else {
       state = state.copyWith(
-        status: OrderServiceStatus.error,
-      );
+          error: ResultFailResponseModel.fromJson(response.data));
       return false;
     }
   }
@@ -183,8 +182,7 @@ class OrderNotifier extends _$OrderNotifier {
         return true;
       } else {
         state = state.copyWith(
-          status: OrderServiceStatus.error,
-        );
+            error: ResultFailResponseModel.fromJson(response.data));
         return false;
       }
     } catch (e) {
@@ -213,8 +211,7 @@ class OrderNotifier extends _$OrderNotifier {
         return true;
       } else {
         state = state.copyWith(
-          status: OrderServiceStatus.error,
-        );
+            error: ResultFailResponseModel.fromJson(response.data));
         return false;
       }
     } catch (e) {
@@ -240,8 +237,7 @@ class OrderNotifier extends _$OrderNotifier {
         return true;
       } else {
         state = state.copyWith(
-          status: OrderServiceStatus.error,
-        );
+            error: ResultFailResponseModel.fromJson(response.data));
         return false;
       }
     } catch (e) {
@@ -266,8 +262,7 @@ class OrderNotifier extends _$OrderNotifier {
         return true;
       } else {
         state = state.copyWith(
-          status: OrderServiceStatus.error,
-        );
+            error: ResultFailResponseModel.fromJson(response.data));
         return false;
       }
     } catch (e) {

@@ -14,6 +14,8 @@ import 'package:singleeat/screens/bottom/order/operation/detail/screen.dart';
 import 'package:singleeat/screens/bottom/order/operation/model.dart';
 import 'package:singleeat/screens/bottom/order/operation/provider.dart';
 
+import '../../../../core/components/snackbar.dart';
+
 class OrderManagementScreen extends ConsumerStatefulWidget {
   const OrderManagementScreen({super.key});
 
@@ -208,7 +210,8 @@ class _NewOrderListView extends ConsumerWidget {
     required this.tab,
   });
 
-  int cookTime = 0;
+  int expectedDeliveryTime = 60;
+  int expectedTakeOutTime = 20;
 
   void showRejectDialog(
       {required BuildContext context, required WidgetRef ref,required NewOrderModel order}) {
@@ -434,8 +437,8 @@ class _NewOrderListView extends ConsumerWidget {
                                 ? 5
                                 : 20,
                             onChanged: (value) {
-                              print('step counter ${value}');
-                              cookTime = value;
+                              orders[index].receiveFoodType == "TAKEOUT" ?
+                                  expectedTakeOutTime = value : expectedDeliveryTime = value;
                             },
                           ),
                           SizedBox(height: SGSpacing.p4),
@@ -478,9 +481,11 @@ class _NewOrderListView extends ConsumerWidget {
                                         .read(orderNotifierProvider.notifier)
                                         .acceptOrder(
                                             orders[index].orderInformationId,
-                                            cookTime
+                                        orders[index].receiveFoodType == "TAKEOUT" ?
+                                        expectedTakeOutTime  : expectedDeliveryTime
                                     );
                                     if (check) {
+                                      showSnackBar(context, "주문이 접수되었습니다.");
                                       ref.read(orderNotifierProvider.notifier).getNewOrderList();
                                     }
                                   },
@@ -700,6 +705,8 @@ class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
 
   @override
   Widget build(BuildContext context) {
+    final OrderState state = ref.watch(orderNotifierProvider);
+
     List<String> reasons = [
       if (widget.order.receiveFoodType == 'DELIVERY') "배달 지역 초과",
       "재료 소진",
@@ -741,6 +748,14 @@ class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
           }
           if (check) {
             widget.onReject();
+          } else {
+            if (state.error.errorCode == 400) {
+              showFailDialogWithImage(
+                  context: context,
+                  mainTitle: "시스템 오류",
+                  subTitle: "해당 주문은 현재 거절할 수 없습니다.\n잠시 후 다시 시도해주세요."
+              );
+            }
           }
         },
         child: SGContainer(
