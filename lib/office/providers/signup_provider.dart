@@ -137,7 +137,9 @@ class SignupNotifier extends _$SignupNotifier {
       state = state.copyWith(emailStatus: SignupEmailStatus.success);
     } else {
       state = state.copyWith(
-          error: ResultFailResponseModel.fromJson(response.data));
+        error: ResultFailResponseModel.fromJson(response.data),
+        emailStatus: SignupEmailStatus.error,
+      );
     }
   }
 

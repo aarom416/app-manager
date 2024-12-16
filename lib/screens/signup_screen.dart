@@ -860,7 +860,8 @@ class _SignupFormScreenState extends ConsumerState<SignupFormScreen> {
   String? _passwordErrorText;
 
   void passwordValidation(String value) {
-    final passwordRegex = RegExp(r'^[a-zA-Z0-9!@#$%^&*()_+]{8,16}$');
+    final passwordRegex = RegExp(
+        r'^(?=.*[0-9])(?=.*[!@#$%^&*()_+])[a-zA-Z0-9!@#$%^&*()_+]{8,16}$');
     setState(() {
       if (passwordRegex.hasMatch(value)) {
         _passwordErrorText = null; // Valid password
