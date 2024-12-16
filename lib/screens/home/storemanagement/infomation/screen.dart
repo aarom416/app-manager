@@ -75,7 +75,6 @@ class _StoreManagementBasicInfoScreenState
             ),
             const Spacer(),
             NetworkImageContainer(
-              key: ValueKey(state.storeInfo.thumbnail),
               networkImageUrl:
                   "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
             ),
@@ -182,7 +181,6 @@ class _StoreManagementBasicInfoScreenState
             ),
             const Spacer(),
             NetworkImageContainer(
-              key: ValueKey(state.storeInfo.storePictureURL1),
               networkImageUrl:
                   "${state.storeInfo.storePictureURL1}?${DateTime.now().millisecondsSinceEpoch}",
             ),
@@ -250,7 +248,6 @@ class _StoreManagementBasicInfoScreenState
             ),
             const Spacer(),
             NetworkImageContainer(
-              key: ValueKey(state.storeInfo.storeInformationURL),
               networkImageUrl:
                   "${state.storeInfo.storeInformationURL}?${DateTime.now().millisecondsSinceEpoch}",
             ),
