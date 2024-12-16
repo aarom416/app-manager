@@ -10,7 +10,6 @@ import 'package:singleeat/office/services/store_management_basic_info_service.da
 import '../../../../main.dart';
 
 part 'provider.freezed.dart';
-
 part 'provider.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -74,7 +73,7 @@ class StoreManagementBasicInfoNotifier
     if (response.statusCode == 200) {
       state = state.copyWith(error: const ResultFailResponseModel());
 
-      await successCallback;
+      successCallback();
     } else {
       state = state.copyWith(
           error: ResultFailResponseModel.fromJson(response.data));
