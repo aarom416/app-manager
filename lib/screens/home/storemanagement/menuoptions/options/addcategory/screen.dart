@@ -527,7 +527,7 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
                   }
                 },
                 child: SGContainer(
-                    color: SGColors.gray3,
+                    color: maxChoice > 0 ? SGColors.primary : SGColors.gray3,
                     padding: EdgeInsets.all(SGSpacing.p4),
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Center(

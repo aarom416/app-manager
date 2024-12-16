@@ -323,8 +323,8 @@ class _UpdateOptionCategoryScreenState extends ConsumerState<UpdateOptionCategor
                                   (success) {
                                     logger.d("deleteMenuOptionCategory success $success");
                                     if (mounted) {
-                                      Navigator.of(ctx).pop();
                                       showGlobalSnackBar(context, "성공적으로 삭제되었습니다.");
+                                      Navigator.of(ctx).pop();
                                     }
                                   },
                                 );
