@@ -9,6 +9,7 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -155,9 +156,10 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                         setState(() {
                                           menuModel = menuModel.copyWith(menuName: value);
                                         });
+                                        showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                                       }
                                     });
-                                    Navigator.of(context).pop();
+
                                   },
                                 )));
                       },
@@ -189,9 +191,9 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                           setState(() {
                                             menuModel = menuModel.copyWith(price: price);
                                           });
+                                          showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                                         }
                                       });
-                                      Navigator.of(context).pop();
                                     }
                                   },
                                 )));
@@ -298,6 +300,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                         setState(() {
                                           menuModel = menuModel.copyWith(menuParts: value);
                                         });
+                                        showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
                                       }
                                     });
                                   },
@@ -334,6 +337,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                         setState(() {
                                           menuModel = menuModel.copyWith(menuDescription: value);
                                         });
+                                        showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
                                       }
                                     });
                                   },
@@ -449,6 +453,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                           logger.d("updateMenuIntroduction success $success");
                                           if (success) {
                                             Navigator.of(context).pop();
+                                            showGlobalSnackBar(context, "성공적으로 삭제되었습니다.");
                                           } else {
                                             if (state.error.errorCode == 409) {
                                               showFailDialogWithImage(
