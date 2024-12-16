@@ -220,9 +220,10 @@ class _CouponDetailScreenState extends ConsumerState<CouponDetailScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SGTypography.body("쿠폰을 정말 삭제하시겠습니까?",
-                                      size: MediaQuery.of(context).size.width <= 320 ? FontSize.tiny : FontSize.small,
-                                      weight: FontWeight.w700
-                                  ),
+                                      size: MediaQuery.of(ctx).size.width <= 320
+                                          ? FontSize.tiny
+                                          : FontSize.small,
+                                      weight: FontWeight.w700),
                                 ],
                               ),
                               SizedBox(height: SGSpacing.p5),
