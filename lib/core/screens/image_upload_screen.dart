@@ -121,6 +121,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
             widget.onSubmit(widget.imagePaths);
             showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
           },
+          disabled: widget.imagePaths.isEmpty,
           label: widget.buttonText,
         ),
       ),
