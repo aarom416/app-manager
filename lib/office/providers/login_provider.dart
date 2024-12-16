@@ -179,7 +179,6 @@ class LoginNotifier extends _$LoginNotifier {
     Future.delayed(const Duration(seconds: 2), () {
       ref.read(goRouterProvider).go(AppRoutes.home);
     });
-
   }
 
   void fcmToken() async {
@@ -220,7 +219,7 @@ class LoginNotifier extends _$LoginNotifier {
           });
           break;
       }
-    } catch (e){
+    } catch (e) {
       Future.delayed(const Duration(seconds: 2), () {
         ref.read(goRouterProvider).replace(AppRoutes.welcome);
       });
@@ -243,6 +242,7 @@ class LoginNotifier extends _$LoginNotifier {
           break;
       }
     } catch (e) {
+      ref.read(goRouterProvider).go(AppRoutes.login, extra: UniqueKey());
       return;
     }
 
@@ -279,7 +279,6 @@ class LoginNotifier extends _$LoginNotifier {
             ref.read(goRouterProvider).replace(AppRoutes.welcome);
           });
           break;
-
       }
     } catch (e) {
       Future.delayed(const Duration(seconds: 2), () {
