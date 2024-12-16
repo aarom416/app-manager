@@ -156,47 +156,54 @@ class _Page_0_OptionCategoryNameState extends State<_Page_0_OptionCategoryName> 
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarWithStepIndicator(title: "옵션 카테고리 추가", currentStep: 1, totalStep: 5, onTap: widget.onPrev),
-        floatingActionButton: Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
-            child: SGActionButton(
-                disabled: menuOptionCategoryName.isEmpty,
-                onPressed: () {
-                  widget.onEditFunction(menuOptionCategoryName);
-                  FocusScope.of(context).unfocus();
-                  widget.onNext();
-                },
-                label: "다음")),
-        body: SGContainer(
-            color: const Color(0xFFFAFAFA),
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-            child: ListView(
-              children: [
-                SGTypography.body("옵션 카테고리명 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
-                SizedBox(height: SGSpacing.p3),
-                SGTextFieldWrapper(
-                    child: SGContainer(
-                  padding: EdgeInsets.all(SGSpacing.p4),
-                  width: double.infinity,
-                  child: TextField(
-                      controller: menuOptionCategoryNameController,
-                      onChanged: (value) {
-                        setState(() {
-                          menuOptionCategoryName = value;
-                        });
-                      },
-                      style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                      decoration: InputDecoration(
-                        isDense: true,
-                        isCollapsed: true,
-                        hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                        hintText: "Ex) 2인 샐러드 포케 세트",
-                        border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                      )),
-                )),
-              ],
-            )));
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+          appBar: AppBarWithStepIndicator(title: "옵션 카테고리 추가", currentStep: 1, totalStep: 5, onTap: widget.onPrev),
+          floatingActionButton: Container(
+              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+              child: SGActionButton(
+                  disabled: menuOptionCategoryName.isEmpty,
+                  onPressed: () {
+                    if (menuOptionCategoryName.isNotEmpty) {
+                      widget.onEditFunction(menuOptionCategoryName);
+                      FocusScope.of(context).unfocus();
+                      widget.onNext();
+                    }
+                  },
+                  label: "다음")),
+          body: SGContainer(
+              color: const Color(0xFFFAFAFA),
+              padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+              child: ListView(
+                children: [
+                  SGTypography.body("옵션 카테고리명 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+                  SizedBox(height: SGSpacing.p3),
+                  SGTextFieldWrapper(
+                      child: SGContainer(
+                    padding: EdgeInsets.all(SGSpacing.p4),
+                    width: double.infinity,
+                    child: TextField(
+                        controller: menuOptionCategoryNameController,
+                        onChanged: (value) {
+                          setState(() {
+                            menuOptionCategoryName = value;
+                          });
+                        },
+                        style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          isCollapsed: true,
+                          hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                          hintText: "Ex) 2인 샐러드 포케 세트",
+                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                        )),
+                  )),
+                ],
+              ))),
+    );
   }
 }
 
@@ -224,92 +231,175 @@ class _Page_1_MenuOptionsState extends State<_Page_1_MenuOptions> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWithStepIndicator(title: "옵션 카테고리 추가", currentStep: 2, totalStep: 5, onTap: widget.onPrev),
-        floatingActionButton: Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
-            child: Row(
-              children: [
-                Expanded(
-                    child: GestureDetector(
-                  onTap: () {
-                    widget.onPrev();
-                  },
+      appBar: AppBarWithStepIndicator(
+        title: "옵션 카테고리 추가",
+        currentStep: 2,
+        totalStep: 5,
+        onTap: widget.onPrev,
+      ),
+      floatingActionButton: Container(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
+          maxHeight: 58,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: widget.onPrev,
+                child: SGContainer(
+                  color: SGColors.gray3,
+                  padding: EdgeInsets.all(SGSpacing.p4),
+                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                  child: Center(
+                    child: SGTypography.body(
+                      "이전",
+                      size: FontSize.large,
+                      color: SGColors.white,
+                      weight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: SGSpacing.p3),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  if (selectedMenuOptions.isNotEmpty) widget.onNext();
+                },
+                child: SGContainer(
+                  color: selectedMenuOptions.isEmpty
+                      ? SGColors.gray3
+                      : SGColors.primary,
+                  padding: EdgeInsets.all(SGSpacing.p4),
+                  borderRadius: BorderRadius.circular(SGSpacing.p3),
+                  child: Center(
+                    child: SGTypography.body(
+                      "다음",
+                      size: FontSize.large,
+                      color: Colors.white,
+                      weight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: SGContainer(
+        color: const Color(0xFFFAFAFA),
+        padding: EdgeInsets.symmetric(
+          horizontal: SGSpacing.p4,
+          vertical: SGSpacing.p6,
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.centerLeft,
+              child: SGTypography.body(
+                "옵션을 설정해주세요.",
+                size: FontSize.normal,
+                weight: FontWeight.w700,
+              ),
+            ),
+            SizedBox(height: SGSpacing.p3),
+            Expanded(
+              child: ReorderableListView.builder(
+                proxyDecorator: (child, index, animation) {
+                  return Material(
+                    color: Colors.transparent,
+                    child: Transform.scale(
+                      scale: 1.1,
+                      child: child,
+                    ),
+                  );
+                },
+                physics: const BouncingScrollPhysics(),
+                itemCount: selectedMenuOptions.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    key: ValueKey(selectedMenuOptions[index].optionContent),
+                    padding: EdgeInsets.only(bottom: SGSpacing.p2),
+                    child: Row(
+                      children: [
+                        ReorderableDragStartListener(
+                          index: index,
+                          child: Container(
+                            color: Colors.transparent,
+                            child: Image.asset(
+                              "assets/images/accordion.png",
+                              width: SGSpacing.p4,
+                              height: SGSpacing.p4,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: SGSpacing.p2),
+                        Expanded(
+                          child: __MenuOptionCard(
+                            menuOption: selectedMenuOptions[index],
+                            onRemove: (_) {
+                              setState(() {
+                                selectedMenuOptions.removeAt(index);
+                              });
+                              widget.onEditFunction(selectedMenuOptions);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                footer: Padding(
+                  padding: EdgeInsets.only(top: SGSpacing.p4, bottom: SGSpacing.p4),
                   child: SGContainer(
-                      color: SGColors.gray3,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
-                )),
-                SizedBox(width: SGSpacing.p3),
-                Expanded(
-                    child: GestureDetector(
-                  onTap: () {
-                    if (selectedMenuOptions.isEmpty) return;
-                    widget.onNext();
-                  },
-                  child: SGContainer(
-                      color: selectedMenuOptions.isEmpty ? SGColors.gray3 : SGColors.primary,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body(
-                        "다음",
-                        size: FontSize.large,
-                        color: selectedMenuOptions.isEmpty ? SGColors.gray5 : SGColors.white,
-                        weight: FontWeight.w700,
-                      ))),
-                )),
-              ],
-            )),
-        body: SGContainer(
-            color: const Color(0xFFFAFAFA),
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-            child: ListView(
-              children: [
-                SGTypography.body("옵션을 설정해주세요.", size: FontSize.normal, weight: FontWeight.w700),
-                SizedBox(height: SGSpacing.p3),
-                ...selectedMenuOptions
-                    .mapIndexed((index, option) => [
-                          __MenuOptionCard(
-                              menuOption: option,
-                              onRemove: (_) {
-                                final updatedSelectedMenuOptions = List<MenuOptionModel>.from(selectedMenuOptions);
-                                updatedSelectedMenuOptions.removeAt(index);
-                                setState(() {
-                                  selectedMenuOptions = updatedSelectedMenuOptions;
-                                });
-                                widget.onEditFunction(updatedSelectedMenuOptions);
-                              }),
-                          SizedBox(height: SGSpacing.p3)
-                        ])
-                    .flattened,
-                GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => AddOptionScreen(
-                                onSubmit: (menuOptionModel) {
-                                  setState(() {
-                                    selectedMenuOptions.add(menuOptionModel);
-                                  });
-                                  widget.onEditFunction(selectedMenuOptions);
-                                },
-                              )));
-                    },
-                    child: SGContainer(
-                        color: SGColors.white,
-                        padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
-                        borderRadius: BorderRadius.circular(SGSpacing.p2),
-                        borderColor: SGColors.primary,
-                        child: Center(
-                            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3),
+                    color: SGColors.white,
+                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
+                    borderRadius: BorderRadius.circular(SGSpacing.p2),
+                    borderColor: SGColors.primary,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/images/plus.png",
+                            width: SGSpacing.p3,
+                            height: SGSpacing.p3,
+                          ),
                           SizedBox(width: SGSpacing.p2),
-                          SGTypography.body("새 옵션 설정", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)
-                        ])))),
-              ],
-            )));
+                          SGTypography.body(
+                            "새 옵션 설정",
+                            size: FontSize.small,
+                            weight: FontWeight.w500,
+                            color: SGColors.primary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                onReorder: (oldIndex, newIndex) {
+                  setState(() {
+                    if (newIndex > oldIndex) newIndex--;
+                    if (oldIndex < selectedMenuOptions.length) {
+                      final item = selectedMenuOptions.removeAt(oldIndex);
+                      selectedMenuOptions.insert(newIndex, item);
+                    }
+                  });
+                  widget.onEditFunction(selectedMenuOptions);
+                },
+              ),
+            ),
+            SizedBox(height: SGSpacing.p24),
+          ],
+        ),
+      ),
+    );
   }
 }
+
 
 class __MenuOptionCard extends StatelessWidget {
   final MenuOptionModel menuOption;
@@ -324,7 +414,6 @@ class __MenuOptionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      Image.asset("assets/images/accordion.png", width: SGSpacing.p4, height: SGSpacing.p4),
       SizedBox(width: SGSpacing.p2),
       Expanded(
         child: SGContainer(
