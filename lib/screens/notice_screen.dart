@@ -9,6 +9,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/office/models/home_model.dart';
 import 'package:singleeat/office/providers/main_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NoticeModel {
   final String title;
@@ -134,34 +135,40 @@ class _NoticeScreenState extends ConsumerState<NoticeScreen>
                   final noticesList = getFilteredNotices(e);
                   return ListView.separated(
                       itemBuilder: (ctx, index) {
-                        return SGContainer(
-                            color: SGColors.white,
-                            borderColor: SGColors.gray2,
-                            borderRadius: BorderRadius.circular(6),
-                            padding: EdgeInsets.all(SGSpacing.p3)
-                                .copyWith(bottom: SGSpacing.p4),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      NoticeCategoryChip(
-                                          text: noticeCategories[
-                                              noticesList[index].type + 1]),
-                                      SGTypography.body(
-                                          noticesList[index].createdDate,
-                                          color: SGColors.gray3),
-                                    ]),
-                                SizedBox(height: SGSpacing.p3),
-                                SGTypography.body(noticesList[index].title,
-                                    size: FontSize.small,
-                                    color: SGColors.black,
-                                    weight: FontWeight.w500),
-                              ],
-                            ));
+                        return InkWell(
+                          onTap: () async {
+                            var url = Uri.parse(noticesList[index].newsURL);
+                            await launchUrl(url, mode: LaunchMode.externalApplication);
+                          },
+                          child: SGContainer(
+                              color: SGColors.white,
+                              borderColor: SGColors.gray2,
+                              borderRadius: BorderRadius.circular(6),
+                              padding: EdgeInsets.all(SGSpacing.p3)
+                                  .copyWith(bottom: SGSpacing.p4),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        NoticeCategoryChip(
+                                            text: noticeCategories[
+                                                noticesList[index].type + 1]),
+                                        SGTypography.body(
+                                            noticesList[index].createdDate,
+                                            color: SGColors.gray3),
+                                      ]),
+                                  SizedBox(height: SGSpacing.p3),
+                                  SGTypography.body(noticesList[index].title,
+                                      size: FontSize.small,
+                                      color: SGColors.black,
+                                      weight: FontWeight.w500),
+                                ],
+                              )),
+                        );
                       },
                       separatorBuilder: (_, __) =>
                           SizedBox(height: SGSpacing.p3),

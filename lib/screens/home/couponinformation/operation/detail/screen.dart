@@ -253,7 +253,9 @@ class _CouponDetailScreenState extends ConsumerState<CouponDetailScreen> {
                                 SizedBox(width: SGSpacing.p2),
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: () => deleteCoupon(provider),
+                                    onTap: () {
+                                      deleteCoupon(provider);
+                                    },
                                     child: SGContainer(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: SGSpacing.p4,
@@ -287,11 +289,12 @@ class _CouponDetailScreenState extends ConsumerState<CouponDetailScreen> {
     await provider.deleteIssuedCoupon(
       successCallback: () {
         if (!context.mounted) return;
-        showGlobalSnackBar(context, "쿠폰이 삭제되었습니다.");
         popUntil(context: context, path: AppRoutes.couponInformation);
       },
-      failCallback: () =>
-          showFailDialogWithImage("해당 쿠폰은 삭제할 수 없습니다.\n고객센터로 문의해주세요", ""),
+      failCallback: () => {
+        Navigator.pop(context),
+        showFailDialogWithImage("해당 쿠폰은 삭제할 수 없습니다.\n고객센터로 문의해주세요", ""),
+      }
     );
   }
 

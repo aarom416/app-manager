@@ -317,7 +317,7 @@ class _CouponIssueScreenState extends ConsumerState<CouponIssueScreen> {
               if (state.discountType != DiscountType.init) ...[
                 SizedBox(height: SGSpacing.p8),
                 SGTypography.label(state.discountType == DiscountType.percent
-                    ? "발행하실 쿠폰의 실할인율을 설정해주세요."
+                    ? "발행하실 쿠폰의 할인율을 설정해주세요."
                     : "발행하실 쿠폰의 금액을 설정해주세요."),
                 SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
                 GestureDetector(

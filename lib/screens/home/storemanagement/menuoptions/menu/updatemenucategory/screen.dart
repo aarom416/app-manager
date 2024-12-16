@@ -156,7 +156,7 @@ class _UpdateMenuCategoryScreenState extends ConsumerState<UpdateMenuCategoryScr
                                     storeMenuCategoryId: widget.menuCategoryModel.storeMenuCategoryId,
                                     menuCategoryName: menuCategoryName,
                                   ));
-
+                                  showGlobalSnackBar(ctx, "성공적으로 삭제되었습니다.");
                                   Navigator.of(ctx).pop();
                                   Navigator.of(context).pop();
                                 },
@@ -174,7 +174,7 @@ class _UpdateMenuCategoryScreenState extends ConsumerState<UpdateMenuCategoryScr
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  showGlobalSnackBar(ctx, "성공적으로 삭제되었습니다.");
+                                  Navigator.of(ctx).pop();
                                 },
                                 child: SGContainer(
                                   color: SGColors.primary,

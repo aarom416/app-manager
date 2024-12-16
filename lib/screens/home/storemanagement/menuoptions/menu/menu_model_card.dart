@@ -27,9 +27,35 @@ class MenuModelCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(SGSpacing.p4),
-                child: Image.network(menuModel.menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18),
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(SGSpacing.p4),
+                    child: Image.network(
+                      menuModel.menuPictureURL,
+                      width: SGSpacing.p18,
+                      height: SGSpacing.p18,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  if (menuModel.soldOutStatus == 1)
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF808080).withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(SGSpacing.p4),
+                        ),
+                        child: Center(
+                          child: SGTypography.body(
+                            "품절",
+                            size: FontSize.small,
+                            color: SGColors.white,
+                            weight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
               SizedBox(width: SGSpacing.p3),
               Column(

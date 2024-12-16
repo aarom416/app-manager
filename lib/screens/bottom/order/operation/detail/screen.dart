@@ -78,10 +78,11 @@ class NewOrderDetailScreen extends ConsumerWidget {
   final int orderInformationId;
   NewOrderDetailScreen({super.key, required this.order, required this.orderInformationId});
 
-  int cookTime = 0;
+  int deliveryExpectedTime = 60;
+  int takeOutExpectedTime = 20;
 
   void showRejectDialog(
-      {required BuildContext context, required MyInfoOrderHistoryModel order}) {
+      {required BuildContext context, required ref, required MyInfoOrderHistoryModel order}) {
     showSGDialogWithCloseButton(
         context: context,
         childrenBuilder: (ctx) => [
@@ -106,6 +107,8 @@ class NewOrderDetailScreen extends ConsumerWidget {
                               GestureDetector(
                                 onTap: () {
                                   Navigator.of(ctx).pop();
+                                  Navigator.pop(context);
+                                  ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
                                 },
                                 child: SGContainer(
                                   width: double.infinity,
@@ -129,6 +132,7 @@ class NewOrderDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final OrderState state = ref.watch(orderNotifierProvider);
 
     return Scaffold(
         appBar: AppBar(
@@ -190,8 +194,7 @@ class NewOrderDetailScreen extends ConsumerWidget {
                 maxValue: order.receiveFoodType == "TAKEOUT" ? 60 : 100,
                 minValue: order.receiveFoodType == "TAKEOUT" ? 5 : 20,
                 onChanged: (value) {
-                  print('step counter ${value}');
-                  cookTime = value;
+                  order.receiveFoodType == "TAKEOUT" ? takeOutExpectedTime = value : deliveryExpectedTime = value;
                 },
               ),
               SizedBox(height: SGSpacing.p4),
@@ -201,7 +204,7 @@ class NewOrderDetailScreen extends ConsumerWidget {
                     flex: 1,
                     child: GestureDetector(
                       onTap: () {
-                        showRejectDialog(order: order, context: context);
+                        showRejectDialog(order: order, ref: ref, context: context);
                       },
                       child: SGContainer(
                         width: double.infinity,
@@ -226,13 +229,27 @@ class NewOrderDetailScreen extends ConsumerWidget {
                             .read(orderNotifierProvider.notifier)
                             .acceptOrder(
                             orderInformationId,
-                            cookTime
+                            order.receiveFoodType == "TAKEOUT" ? takeOutExpectedTime : deliveryExpectedTime
                         );
                         if (check) {
-                          ref.read(orderNotifierProvider.notifier).getNewOrderList();
-                          Navigator.pop(context);
+                          ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
+                          showSnackBar(context, "주문이 접수되었습니다.");
+                        } else {
+                          if (state.error.errorCode == 409) {
+                            showFailDialogWithImage(
+                              context: context,
+                              mainTitle: "해당 주문은 이미 접수된 주문입니다.",
+                              subTitle: "새로고침을 통해 다시 한번 확인해주세요."
+                            );
+                          } else if (state.error.errorCode == 400) {
+                            showFailDialogWithImage(
+                                context: context,
+                                mainTitle: "시스템 오류",
+                                subTitle: "해당 주문은 접수할 수 없습니다.\n고객센터로 문의해주세요 (1600-7723)"
+                            );
+                          }
                         }
-
+                        Navigator.pop(context);
                       },
                       child: SGContainer(
                         width: double.infinity,
@@ -259,13 +276,14 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
 
   const InProgressOrderDetailScreen({super.key, required this.order});
 
-  void showCancelDialog({required BuildContext context}) {
+  void showCancelDialog({required BuildContext context, required MyInfoOrderHistoryModel order, required WidgetRef ref}) {
+    final OrderState state = ref.watch(orderNotifierProvider);
     showSGDialogWithCloseButton(
         context: context,
         childrenBuilder: (ctx) => [
           _CancelDialogBody(
               order: order,
-              onCancel: () {
+              onCancel: (cancelReason) {
                 showSGDialog(
                     context: context,
                     childrenBuilder: (ctx) => [
@@ -306,9 +324,33 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                           SGFlexible(
                             flex: 2,
                             child: GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 Navigator.of(ctx).pop();
-                                showSnackBar(context, "주문이 취소되었습니다.");
+                                bool check = false;
+                                if (order.receiveFoodType == 'DELIVERY') {
+                                  check = await ref.read(orderNotifierProvider.notifier).deliveryOrderCancel(
+                                      context,
+                                      order.orderMenuDTOList[0].orderInformationId,
+                                      cancelReason);
+                                } else {
+                                  check = await ref.read(orderNotifierProvider.notifier).takeoutOrderCancel(
+                                      context,
+                                      order.orderMenuDTOList[0].orderInformationId,
+                                      cancelReason);
+                                }
+                                if (check) {
+                                  showSnackBar(context, "주문이 취소되었습니다.");
+                                  Navigator.of(context).pop();
+                                  ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
+                                } else {
+                                  if (state.error.errorCode == 400) {
+                                    showFailDialogWithImage(
+                                      context: context,
+                                      mainTitle: "시스템 오류",
+                                      subTitle: "해당 주문은 현재 취소할 수 없습니다.\n잠시 후 다시 시도해주세요."
+                                    );
+                                  }
+                                }
                               },
                               child: SGContainer(
                                 width: double.infinity,
@@ -335,6 +377,8 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final OrderState state = ref.watch(orderNotifierProvider);
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: SGColors.black,
@@ -446,7 +490,7 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                                             context, "준비 완료 알림 전송 성공!");
                                         Navigator.of(ctx).pop();
                                         Navigator.of(context).pop();
-                                        ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+                                        ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
                                       }
                                     },
                                     child: SGContainer(
@@ -528,13 +572,12 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                                           .notifyDeliveryComplete(order
                                           .orderMenuDTOList[0]
                                           .orderInformationId);
-
                                       if (check) {
                                         showSnackBar(
                                             context, "배달 완료 알림 전송 성공!");
                                         Navigator.of(ctx).pop();
                                         Navigator.of(context).pop();
-                                        ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+                                        ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
                                       }
                                     },
                                     child: SGContainer(
@@ -563,7 +606,7 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
               ],
               GestureDetector(
                 onTap: () {
-                  showCancelDialog(context: context);
+                  showCancelDialog(context: context, order : order, ref: ref) ;
                 },
                 child: SGContainer(
                     padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
@@ -888,7 +931,7 @@ class _CancelDialogBody extends ConsumerStatefulWidget {
     required this.order,
   });
 
-  VoidCallback onCancel;
+  final Function(int) onCancel;
   MyInfoOrderHistoryModel order;
 
   @override
@@ -926,29 +969,12 @@ class _CancelDialogBodyState extends ConsumerState<_CancelDialogBody> {
               color: SGColors.gray4)),
       SizedBox(height: SGSpacing.p4),
       GestureDetector(
-        onTap: () async {
+        onTap: () {
           if (cancelReason.isEmpty) {
             return;
           }
-          bool check = false;
-          if (widget.order.receiveFoodType == 'DELIVERY') {
-            check = await ref.read(orderNotifierProvider.notifier).deliveryOrderCancel(
-              context,
-              widget.order.orderMenuDTOList[0].orderInformationId,
-              reasons.indexOf(cancelReason));
-          } else {
-            check = await ref.read(orderNotifierProvider.notifier).takeoutOrderCancel(
-              context,
-              widget.order.orderMenuDTOList[0].orderInformationId,
-              reasons.indexOf(cancelReason));
-          }
-          if (check) {
-            showSnackBar(context, "주문이 취소되었습니다.");
-            Navigator.of(context, rootNavigator: true).pop();
-            Navigator.of(context).pop();
-            ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
-          }
-
+          Navigator.of(context, rootNavigator: true).pop();
+          widget.onCancel(reasons.indexOf(cancelReason));
         },
         child: SGContainer(
             padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
@@ -1008,9 +1034,10 @@ class _RejectDialogBody extends ConsumerStatefulWidget {
 
 class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
   String rejectReason = "";
-
   @override
   Widget build(BuildContext context) {
+    final OrderState state = ref.watch(orderNotifierProvider);
+
     List<String> reasons = [
       if (widget.order.receiveFoodType == 'DELIVERY') "배달 지역 초과",
       "재료 소진",
@@ -1051,7 +1078,15 @@ class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
           }
           if (check) {
             widget.onReject();
-            ref.read(orderNotifierProvider.notifier).getNewOrderList();
+            ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
+          } else {
+            if (state.error.errorCode == 400) {
+              showFailDialogWithImage(
+                context: context,
+                mainTitle: "시스템 오류",
+                subTitle: "해당 주문은 현재 거절할 수 없습니다.\n잠시 후 다시 시도해주세요."
+              );
+            }
           }
         },
         child: SGContainer(

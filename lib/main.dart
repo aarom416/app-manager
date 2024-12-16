@@ -10,16 +10,20 @@ import 'package:intl/date_symbol_data_file.dart';
 import 'package:logger/logger.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/utils/fcm.dart';
+import 'package:singleeat/screens/bottom/order/operation/screen.dart';
 
+import 'core/routers/app_routes.dart';
 import 'firebase_options.dart';
 
 final logger = Logger(
   printer: PrettyPrinter(),
 );
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  _showNotification(message);
+  _showBackgroundNotification(message);
 }
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -27,36 +31,43 @@ FlutterLocalNotificationsPlugin();
 
 const AndroidNotificationChannel deliveryChannel = AndroidNotificationChannel(
   'delivery_channel',
-  'Delivery Notifications',
+  '싱그릿 배달 주문 알림음',
   importance: Importance.high,
+  playSound: true,
   sound: RawResourceAndroidNotificationSound('delivery_alarm'),
 );
 
 const AndroidNotificationChannel takeoutChannel = AndroidNotificationChannel(
   'takeout_channel',
-  'Takeout Notifications',
+  '싱그릿 포장 주문 알림음',
   importance: Importance.high,
+    playSound: true,
   sound: RawResourceAndroidNotificationSound('takeout_alarm'),
 );
 
-Future<void> _showNotification(RemoteMessage message) async {
+Future<void> _showForegroundNotification(RemoteMessage message) async {
   String notificationType = message.data['type'] ?? 'DELIVERY';
-
   AndroidNotificationDetails androidPlatformChannelSpecifics;
   if (notificationType == 'DELIVERY') {
     androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       'delivery_channel',
-      'Delivery Notifications',
+      '싱그릿 배달 주문 알림음',
       importance: Importance.high,
       priority: Priority.high,
+      playSound: true,
+      icon: "push_icon",
+      color: Color(0xFF2CB682),
       sound: RawResourceAndroidNotificationSound('delivery_alarm'),
     );
   } else {
     androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       'takeout_channel',
-      'Takeout Notifications',
+      '싱그릿 포장 주문 알림음',
       importance: Importance.high,
       priority: Priority.high,
+      playSound: true,
+      icon: "push_icon",
+      color: Color(0xFF2CB682),
       sound: RawResourceAndroidNotificationSound('takeout_alarm'),
     );
   }
@@ -74,11 +85,62 @@ Future<void> _showNotification(RemoteMessage message) async {
 
   await flutterLocalNotificationsPlugin.show(
     0,
-    message.notification?.title ?? '알림',
-    message.notification?.body ?? '내용 없음',
+    message.data['title'],
+    message.data['body'],
     platformChannelSpecifics,
   );
 }
+
+Future<void> _showBackgroundNotification(RemoteMessage message) async {
+  String notificationType = message.data['type'] ?? 'DELIVERY';
+
+  AndroidNotificationDetails androidPlatformChannelSpecifics;
+  if (notificationType == 'DELIVERY') {
+    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'delivery_channel',
+      '싱그릿 배달 주문 알림음',
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('delivery_alarm'),
+      icon: "push_icon",
+      color: Color(0xFF2CB682),
+    );
+  } else {
+    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'takeout_channel',
+      '싱그릿 포장 주문 알림음',
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('takeout_alarm'),
+      icon: "push_icon",
+      color: Color(0xFF2CB682),
+    );
+  }
+
+  final DarwinNotificationDetails iOSPlatformChannelSpecifics = DarwinNotificationDetails(
+    sound: notificationType == 'DELIVERY'
+        ? 'delivery_alarm.wav'
+        : 'takeout_alarm.wav',
+    presentSound: true,
+    presentAlert: true,
+
+  );
+
+  final NotificationDetails platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
+
+  await flutterLocalNotificationsPlugin.show(
+    0,
+    message.data['title'],
+    message.data['body'],
+    platformChannelSpecifics,
+  );
+}
+
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
@@ -92,15 +154,23 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+  if (Platform.isAndroid) {
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  } else if (Platform.isIOS) {
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: false,
+      badge: true,
+      sound: true,
+    );
+  }
 
   await flutterLocalNotificationsPlugin.initialize(
     const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/launcher_icon'),
+      android: AndroidInitializationSettings('@drawable/push_icon'),
       iOS: DarwinInitializationSettings(),
     ),
   );
@@ -116,7 +186,7 @@ void main() async {
   }
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    _showNotification(message);
+    _showForegroundNotification(message);
   });
 
   initializeFCM();
@@ -129,11 +199,12 @@ class RunApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final goRouter = ref.watch(goRouterProvider);
     return MaterialApp.router(
       scaffoldMessengerKey: scaffoldMessengerKey,
       debugShowCheckedModeBanner: false,
       title: 'singleat',
-      routerConfig: ref.watch(goRouterProvider),
+      routerConfig: goRouter,
       theme: ThemeData(fontFamily: 'PRETENDARD'),
     );
   }

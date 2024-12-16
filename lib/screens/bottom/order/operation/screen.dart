@@ -14,6 +14,8 @@ import 'package:singleeat/screens/bottom/order/operation/detail/screen.dart';
 import 'package:singleeat/screens/bottom/order/operation/model.dart';
 import 'package:singleeat/screens/bottom/order/operation/provider.dart';
 
+import '../../../../core/components/snackbar.dart';
+
 class OrderManagementScreen extends ConsumerStatefulWidget {
   const OrderManagementScreen({super.key});
 
@@ -66,7 +68,7 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen>
     super.initState();
 
     Future.microtask(() {
-      ref.read(orderNotifierProvider.notifier).getNewOrderList();
+      ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
     });
 
     _tabController = TabController(length: 3, vsync: this);
@@ -78,15 +80,15 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen>
         switch (_tabController.index) {
           case 0:
             tab = "신규";
-            ref.read(orderNotifierProvider.notifier).getNewOrderList();
+            ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
             break;
           case 1:
             tab = "접수";
-            ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+            ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
             break;
           case 2:
             tab = "완료";
-            ref.read(orderNotifierProvider.notifier).getCompletedOrderList();
+            ref.read(orderNotifierProvider.notifier).getCompletedOrderList(context); // context 전달
             break;
         }
       });
@@ -143,15 +145,15 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen>
                   switch (index) {
                     case 0:
                       tab = "신규";
-                      ref.read(orderNotifierProvider.notifier).getNewOrderList();
+                      ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
                       break;
                     case 1:
                       tab = "접수";
-                      ref.read(orderNotifierProvider.notifier).getAcceptOrderList();
+                      ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
                       break;
                     case 2:
                       tab = "완료";
-                      ref.read(orderNotifierProvider.notifier).getCompletedOrderList();
+                      ref.read(orderNotifierProvider.notifier).getCompletedOrderList(context);
                       break;
                   }
                 });
@@ -208,7 +210,8 @@ class _NewOrderListView extends ConsumerWidget {
     required this.tab,
   });
 
-  int cookTime = 0;
+  int expectedDeliveryTime = 60;
+  int expectedTakeOutTime = 20;
 
   void showRejectDialog(
       {required BuildContext context, required WidgetRef ref,required NewOrderModel order}) {
@@ -235,7 +238,7 @@ class _NewOrderListView extends ConsumerWidget {
                               GestureDetector(
                                 onTap: () {
                                   Navigator.of(ctx).pop();
-                                  ref.read(orderNotifierProvider.notifier).getNewOrderList();
+                                  ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
                                 },
                                 child: SGContainer(
                                   width: double.infinity,
@@ -259,11 +262,13 @@ class _NewOrderListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final OrderState state = ref.watch(orderNotifierProvider);
+
     if (orders.isEmpty) {
       return RefreshIndicator(
         backgroundColor: Colors.transparent,
         onRefresh: () async {
-          ref.read(orderNotifierProvider.notifier).getNewOrderList();
+          ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
         },
         color: SGColors.primary,
         child: _NoOrderScreen()
@@ -272,7 +277,7 @@ class _NewOrderListView extends ConsumerWidget {
     return RefreshIndicator(
       backgroundColor: Colors.transparent,
       onRefresh: () async {
-        ref.read(orderNotifierProvider.notifier).getNewOrderList();
+        ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
       },
       color: SGColors.primary,
       child: Container(
@@ -434,8 +439,8 @@ class _NewOrderListView extends ConsumerWidget {
                                 ? 5
                                 : 20,
                             onChanged: (value) {
-                              print('step counter ${value}');
-                              cookTime = value;
+                              orders[index].receiveFoodType == "TAKEOUT" ?
+                                  expectedTakeOutTime = value : expectedDeliveryTime = value;
                             },
                           ),
                           SizedBox(height: SGSpacing.p4),
@@ -478,10 +483,26 @@ class _NewOrderListView extends ConsumerWidget {
                                         .read(orderNotifierProvider.notifier)
                                         .acceptOrder(
                                             orders[index].orderInformationId,
-                                            cookTime
+                                        orders[index].receiveFoodType == "TAKEOUT" ?
+                                        expectedTakeOutTime  : expectedDeliveryTime
                                     );
                                     if (check) {
-                                      ref.read(orderNotifierProvider.notifier).getNewOrderList();
+                                      showSnackBar(context, "주문이 접수되었습니다.");
+                                      ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
+                                    } else {
+                                      if (state.error.errorCode == 409) {
+                                        showFailDialogWithImage(
+                                            context: context,
+                                            mainTitle: "해당 주문은 이미 접수된 주문입니다.",
+                                            subTitle: "새로고침을 통해 다시 한번 확인해주세요."
+                                        );
+                                      } else if (state.error.errorCode == 400) {
+                                        showFailDialogWithImage(
+                                            context: context,
+                                            mainTitle: "시스템 오류",
+                                            subTitle: "해당 주문은 접수할 수 없습니다.\n고객센터로 문의해주세요 (1600-7723)"
+                                        );
+                                      }
                                     }
                                   },
                                   child: SGContainer(
@@ -540,58 +561,116 @@ class _InProgressOrderListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (orders.isEmpty) return _NoOrderScreen();
-    return ListView.separated(
-        shrinkWrap: true,
-        itemCount: orders.length,
-        separatorBuilder: (ctx, index) => Divider(
-              thickness: 0.5,
-              color: SGColors.lineDark,
-            ),
-        itemBuilder: (ctx, index) {
-          return GestureDetector(
-            onTap: () async {
-              bool result = await ref
-                  .read(orderNotifierProvider.notifier)
-                  .getAcceptedOrderDetail(orders[index].orderInformationId);
-              if (result) {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctx) => InProgressOrderDetailScreen(
-                        order: ref.watch(orderNotifierProvider).orderDetail)));
-              }
-            },
-            child: Stack(
-              alignment: Alignment.topRight,
-              children: [
-                _OrderCard(
+    if (orders.isEmpty) {
+      return RefreshIndicator(
+          backgroundColor: Colors.transparent,
+          onRefresh: () async {
+            ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
+          },
+          color: SGColors.primary,
+          child: _NoOrderScreen()
+      );
+    }
+    return RefreshIndicator(
+      backgroundColor: Colors.transparent,
+      onRefresh: () async {
+        ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
+      },
+      color: SGColors.primary,
+      child: ListView.separated(
+          shrinkWrap: true,
+          itemCount: orders.length,
+          separatorBuilder: (ctx, index) => Divider(
+                thickness: 0.5,
+                color: SGColors.lineDark,
+              ),
+          itemBuilder: (ctx, index) {
+            return GestureDetector(
+              onTap: () async {
+                bool result = await ref
+                    .read(orderNotifierProvider.notifier)
+                    .getAcceptedOrderDetail(orders[index].orderInformationId);
+                if (result) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => InProgressOrderDetailScreen(
+                          order: ref.watch(orderNotifierProvider).orderDetail)));
+                }
+              },
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  _OrderCard(
                     tab: tab,
                     order: orders[index],
-                    // TODO : 2024.12.10 접수 API 경과 시간 추가 필요 현재 10으로 고정
                     tailing: PercentageIndicator(
-                        percentage: 10 / orders[index].expectedTime,
-                        radius: 25,
-                        strokeWidth: 3,
-                        strokeColor: strokeColor(orders[index]),
-                        color: Colors.transparent,
-                        label: "${orders[index].expectedTime}분")),
-                Positioned(
-                    top: SGSpacing.p4,
-                    right: SGSpacing.p2,
-                    child: CircleAvatar(
-                        radius: SGSpacing.p3 + SGSpacing.p05,
-                        backgroundColor: strokeColor(orders[index]),
-                        child: Center(
-                            child: SGTypography.body(
-                                orders[index].receiveFoodType == 'DELIVERY'
-                                    ? '배달'
-                                    : '포장',
-                                color: SGColors.white,
-                                weight: FontWeight.w700))))
-              ],
-            ),
-          );
-        });
+                      percentage: calculatePercentage(orders[index]),
+                      radius: 25,
+                      strokeWidth: 3,
+                      strokeColor: strokeColor(orders[index]),
+                      color: Colors.transparent,
+                      label: calculateLabel(orders[index]),
+                    ),
+                  ),
+                  Positioned(
+                      top: SGSpacing.p4,
+                      right: SGSpacing.p2,
+                      child: CircleAvatar(
+                          radius: SGSpacing.p3 + SGSpacing.p05,
+                          backgroundColor: strokeColor(orders[index]),
+                          child: Center(
+                              child: SGTypography.body(
+                                  orders[index].receiveFoodType == 'DELIVERY'
+                                      ? '배달'
+                                      : '포장',
+                                  color: SGColors.white,
+                                  weight: FontWeight.w700))))
+                ],
+              ),
+            );
+          }),
+    );
   }
+  double calculatePercentage(NewOrderModel order) {
+    final currentTime = DateTime.now();
+
+    final createdDateParts = order.createdDate.split(":");
+    final createdDate = DateTime(
+      currentTime.year,
+      currentTime.month,
+      currentTime.day,
+      int.parse(createdDateParts[0]),
+      int.parse(createdDateParts[1]),
+    );
+
+    final elapsedTime = currentTime.difference(createdDate).inMinutes;
+    final percentage = elapsedTime / order.expectedTime;
+
+    return percentage > 1 ? 1.0 : percentage;
+  }
+
+  String calculateLabel(NewOrderModel order) {
+    final currentTime = DateTime.now();
+
+    final createdDateParts = order.createdDate.split(":");
+    final createdDate = DateTime(
+      currentTime.year,
+      currentTime.month,
+      currentTime.day,
+      int.parse(createdDateParts[0]),
+      int.parse(createdDateParts[1]),
+    );
+
+    final elapsedTime = currentTime.difference(createdDate).inMinutes;
+    final remainingTime = order.expectedTime - elapsedTime;
+
+    if (remainingTime <= 0) {
+      return "완료";
+    } else {
+      return "$remainingTime분";
+    }
+  }
+
+
 
   Color strokeColor(NewOrderModel order) {
     if (order.receiveFoodType == "TAKEOUT") return SGColors.success;
@@ -639,8 +718,7 @@ class _CompleteOrderListView extends ConsumerWidget {
                     tab: tab,
                     order: orders[index],
                     tailing: PercentageIndicator(
-                        percentage: orders[index].expectedTime /
-                            orders[index].expectedTime,
+                        percentage: 100,
                         radius: 25,
                         strokeWidth: 3,
                         strokeColor: strokeColor(orders[index]),
@@ -700,6 +778,8 @@ class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
 
   @override
   Widget build(BuildContext context) {
+    final OrderState state = ref.watch(orderNotifierProvider);
+
     List<String> reasons = [
       if (widget.order.receiveFoodType == 'DELIVERY') "배달 지역 초과",
       "재료 소진",
@@ -741,6 +821,14 @@ class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
           }
           if (check) {
             widget.onReject();
+          } else {
+            if (state.error.errorCode == 400) {
+              showFailDialogWithImage(
+                  context: context,
+                  mainTitle: "시스템 오류",
+                  subTitle: "해당 주문은 현재 거절할 수 없습니다.\n잠시 후 다시 시도해주세요."
+              );
+            }
           }
         },
         child: SGContainer(

@@ -164,6 +164,7 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   NutritionCard(
                     nutrition: nutrition,
+                    type: 1,
                     onTap: () {
                       final screenContext = context;
                       Navigator.of(screenContext).push(MaterialPageRoute(

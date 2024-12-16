@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../core/components/app_bar_with_left_arrow.dart';
-import '../core/components/container.dart';
-import '../core/components/sizing.dart';
-import '../core/components/spacing.dart';
-import '../core/components/typography.dart';
-import '../core/constants/colors.dart';
+import '../../../../../core/components/app_bar_with_left_arrow.dart';
+import '../../../../../core/components/container.dart';
+import '../../../../../core/components/sizing.dart';
+import '../../../../../core/components/spacing.dart';
+import '../../../../../core/components/typography.dart';
+import '../../../../../core/constants/colors.dart';
 
 class ServiceAgreementScreen extends ConsumerStatefulWidget {
   final String title;

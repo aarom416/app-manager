@@ -41,230 +41,240 @@ class _StoreManagementBasicInfoScreenState
     final provider =
         ref.read(storeManagementBasicInfoNotifierProvider.notifier);
 
-    return ListView(shrinkWrap: true, children: [
-      SGContainer(
-        padding: EdgeInsets.symmetric(
-            horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-        color: SGColors.white,
-        borderColor: SGColors.line2,
-        borderRadius: BorderRadius.circular(SGSpacing.p4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SGTypography.body("로고 (썸네일 이미지)",
-                size: FontSize.normal, weight: FontWeight.w600),
-            SizedBox(width: SGSpacing.p1),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ImageUploadScreen(
-                    title: "가게 로고 변경",
-                    imagePaths: [],
-                    maximumImages: 1,
-                    fieldLabel: "로고 이미지",
-                    buttonText: "변경하기",
-                    onSubmit: (List<String> imagePaths) {
-                      logger.i("imagePaths $imagePaths");
-                      provider.updateStoreThumbnail(imagePaths[0]);
-                    },
-                  ),
-                ));
-              },
-              child: const Icon(Icons.edit, size: FontSize.small),
-            ),
-            const Spacer(),
-            NetworkImageContainer(
-              networkImageUrl:
-                  "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
-            ),
-          ],
+    return RefreshIndicator(
+      backgroundColor: Colors.white,
+      color: SGColors.primary,
+      onRefresh: () async {
+        provider.storeInfo();
+      },
+      child: ListView(shrinkWrap: true, children: [
+        SGContainer(
+          padding: EdgeInsets.symmetric(
+              horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+          color: SGColors.white,
+          borderColor: SGColors.line2,
+          borderRadius: BorderRadius.circular(SGSpacing.p4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SGTypography.body("로고 (썸네일 이미지)",
+                  size: FontSize.normal, weight: FontWeight.w600),
+              SizedBox(width: SGSpacing.p1),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ImageUploadScreen(
+                      title: "가게 로고 변경",
+                      imagePaths: [],
+                      maximumImages: 1,
+                      fieldLabel: "로고 이미지",
+                      buttonText: "변경하기",
+                      onSubmit: (List<String> imagePaths) {
+                        logger.i("imagePaths $imagePaths");
+                        provider.updateStoreThumbnail(imagePaths[0]);
+                      },
+                    ),
+                  ));
+                },
+                child: const Icon(Icons.edit, size: FontSize.small),
+              ),
+              const Spacer(),
+              state.storeInfo.thumbnail.isNotEmpty
+                  ? NetworkImageContainer(
+                      key: ValueKey(state.storeInfo.thumbnail),
+                      networkImageUrl:
+                          "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          ),
         ),
-      ),
-      SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      SingleInformationBox(
-          label: '가게 이름', value: state.storeInfo.name, editable: false),
-      SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      SingleInformationBox(label: '가게 번호', value: state.storeInfo.storeNum),
-      SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      SingleInformationBox(label: '가게 카테고리', value: '카테고리'),
-      SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      SingleInformationBox(label: '가게 위치', value: state.storeInfo.address),
-      SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      GestureDetector(
-          child: SingleInformationBox(
-              label: '가게 전화번호', value: state.storeInfo.phone, editable: true),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => TextFieldEditScreen(
-                    value: state.storeInfo.phone,
-                    title: "가게 전화번호 변경",
-                    hintText: "가게 전화번호를 입력해주세요",
-                    buttonText: "변경하기",
-                    onSubmit: (value) {
-                      showUpdatePhoneSGDialog(
-                          context: context,
-                          childrenBuilder: (ctx) => [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SGTypography.body("가게 전화번호 변경 희망 시",
-                                        size: FontSize.large,
-                                        weight: FontWeight.w500),
-                                    SizedBox(height: SGSpacing.p1),
-                                    SGTypography.body("고객센터로 연락주세요.",
-                                        size: FontSize.large,
-                                        weight: FontWeight.w500),
-                                    SizedBox(height: SGSpacing.p3),
-                                    SGTypography.body(
-                                        "싱그릿 식단 연구소 고객센터(1600-7723)",
-                                        color: SGColors.gray4,
-                                        size: FontSize.normal,
-                                        weight: FontWeight.w500),
-                                    SizedBox(height: SGSpacing.p5),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        Navigator.pop(ctx);
-                                      },
-                                      child: SGContainer(
-                                        width: double.infinity,
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: SGSpacing.p4),
-                                        borderRadius:
-                                            BorderRadius.circular(SGSpacing.p3),
-                                        color: SGColors.primary,
-                                        child: Center(
-                                          child: SGTypography.body("확인",
-                                              size: FontSize.normal,
-                                              weight: FontWeight.w700,
-                                              color: SGColors.white),
-                                        ),
+        SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+        SingleInformationBox(
+            label: '가게 이름', value: state.storeInfo.name, editable: false),
+        SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+        SingleInformationBox(label: '가게 번호', value: state.storeInfo.storeNum),
+        SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+        SingleInformationBox(label: '가게 카테고리', value: '카테고리'),
+        SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+        SingleInformationBox(label: '가게 위치', value: state.storeInfo.address),
+        SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+        GestureDetector(
+            child: SingleInformationBox(
+                label: '가게 전화번호', value: state.storeInfo.phone, editable: true),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => TextFieldEditScreen(
+                      value: state.storeInfo.phone,
+                      title: "가게 전화번호 변경",
+                      hintText: "가게 전화번호를 입력해주세요",
+                      buttonText: "변경하기",
+                      onSubmit: (value) {
+                        showUpdatePhoneSGDialog(
+                            context: context,
+                            childrenBuilder: (ctx) => [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SGTypography.body("가게 전화번호 변경 희망 시", size: FontSize.large, weight: FontWeight.w600),
+                                  SizedBox(height: SGSpacing.p1),
+                                  SGTypography.body("고객센터로 연락주세요.", size: FontSize.large, weight: FontWeight.w600),
+                                  SizedBox(height: SGSpacing.p3),
+                                  SGTypography.body("싱그릿 식단 연구소 고객센터(1600-7723)", color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w500),
+                                  SizedBox(height: SGSpacing.p5),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                      Navigator.pop(ctx);
+                                    },
+                                    child: SGContainer(
+                                      width: double.infinity,
+                                      padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
+                                      borderRadius: BorderRadius.circular(SGSpacing.p3),
+                                      color: SGColors.primary,
+                                      child: Center(
+                                        child: SGTypography.body("확인",
+                                            size: FontSize.normal,
+                                            weight: FontWeight.w700,
+                                            color: SGColors.white),
                                       ),
                                     ),
-                                  ],
-                                )
-                              ]);
-                    })));
-          }),
-      SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      SGContainer(
-        padding: EdgeInsets.symmetric(
-            horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-        color: SGColors.white,
-        borderColor: SGColors.line2,
-        borderRadius: BorderRadius.circular(SGSpacing.p4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SGTypography.body("가게 이미지",
-                size: FontSize.normal, weight: FontWeight.w600),
-            SizedBox(width: SGSpacing.p1),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ImageUploadScreen(
-                    title: "가게 이미지 변경",
-                    imagePaths: [],
-                    maximumImages: 3,
-                    fieldLabel: "가게 이미지",
-                    buttonText: "변경하기",
-                    onSubmit: (List<String> imagePaths) {
-                      logger.i("imagePaths $imagePaths");
-                      provider.updateStorePicture(imagePaths);
-                    },
-                  ),
-                ));
-              },
-              child: const Icon(Icons.edit, size: FontSize.small),
-            ),
-            const Spacer(),
-            NetworkImageContainer(
-              networkImageUrl:
-                  "${state.storeInfo.storePictureURL1}?${DateTime.now().millisecondsSinceEpoch}",
-            ),
-          ],
-        ),
-      ),
-      SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      GestureDetector(
-          child: SingleInformationBox(
-              label: '가게 소개',
-              value: state.storeInfo.introduction,
-              editable: true),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => TextAreaScreen(
-                    value: state.storeInfo.introduction,
-                    title: "가게 소개 변경",
-                    fieldLabel: "가게 소개",
-                    hintText: "가게 소개를 입력해주세요",
-                    buttonText: "변경하기",
-                    onSubmit: (value) {
-                      provider.onChangeStoreIntroduction(value);
-
-                      provider.storeIntroduction(successCallback: () {
-                        context.pop();
-                      }, errorCallback: (errorMessage) {
-                        showFailDialogWithImage(
-                          context: context,
-                          mainTitle: errorMessage,
+                                  ),
+                                ],
+                              )
+                            ]
                         );
-                      });
-                    })));
-          }),
-      SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      SGContainer(
-        padding: EdgeInsets.symmetric(
-            horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-        color: SGColors.white,
-        borderColor: SGColors.line2,
-        borderRadius: BorderRadius.circular(SGSpacing.p4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SGTypography.body("가게 소개 이미지",
-                size: FontSize.normal, weight: FontWeight.w600),
-            SizedBox(width: SGSpacing.p1),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ImageUploadScreen(
-                    title: "가게 소개 이미지 변경",
-                    imagePaths: [],
-                    maximumImages: 1,
-                    fieldLabel: "가게 소개 이미지",
-                    buttonText: "변경하기",
-                    onSubmit: (List<String> imagePaths) {
-                      logger.i("imagePaths $imagePaths");
-                      provider.updateIntroductionPicture(imagePaths[0]);
-                    },
-                  ),
-                ));
-              },
-              child: const Icon(Icons.edit, size: FontSize.small),
-            ),
-            const Spacer(),
-            NetworkImageContainer(
-              networkImageUrl:
-                  "${state.storeInfo.storeInformationURL}?${DateTime.now().millisecondsSinceEpoch}",
-            ),
-          ],
+                      }))
+              );
+            }),
+        SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+        SGContainer(
+          padding: EdgeInsets.symmetric(
+              horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+          color: SGColors.white,
+          borderColor: SGColors.line2,
+          borderRadius: BorderRadius.circular(SGSpacing.p4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SGTypography.body("가게 이미지",
+                  size: FontSize.normal, weight: FontWeight.w600),
+              SizedBox(width: SGSpacing.p1),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ImageUploadScreen(
+                      title: "가게 이미지 변경",
+                      imagePaths: [],
+                      maximumImages: 3,
+                      fieldLabel: "가게 이미지",
+                      buttonText: "변경하기",
+                      onSubmit: (List<String> imagePaths) {
+                        logger.i("imagePaths $imagePaths");
+                        provider.updateStorePicture(imagePaths);
+                      },
+                    ),
+                  ));
+                },
+                child: const Icon(Icons.edit, size: FontSize.small),
+              ),
+              const Spacer(),
+              state.storeInfo.thumbnail.isNotEmpty
+                  ? NetworkImageContainer(
+                      key: ValueKey(state.storeInfo.thumbnail),
+                      networkImageUrl:
+                          "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          ),
         ),
-      ),
-      SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-      GestureDetector(
-        onTap: () {
-          ref.read(goRouterProvider).push(AppRoutes.allergyInformation);
-        },
-        child: SingleInformationBox(
-          label: '원산지 및 알러지 정보',
-          value: state.storeInfo.originInformation,
-          editable: true,
+        SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+        GestureDetector(
+            child: SingleInformationBox(
+                label: '가게 소개',
+                value: state.storeInfo.introduction,
+                editable: true),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => TextAreaScreen(
+                      value: state.storeInfo.introduction,
+                      title: "가게 소개 변경",
+                      fieldLabel: "가게 소개",
+                      hintText: "가게 소개를 입력해주세요",
+                      buttonText: "변경하기",
+                      onSubmit: (value) {
+                        provider.storeIntroduction(value).then((value) {
+                          if (value) {
+                            showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
+                            context.pop();
+                          } else {
+                            showFailDialogWithImage(
+                              context: context,
+                              mainTitle: "가게 소개 변경 오류",
+                              subTitle: "가게 소개 변경 오류",
+                            );
+                          }
+                        });
+                      })));
+            }),
+        SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+        SGContainer(
+          padding: EdgeInsets.symmetric(
+              horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+          color: SGColors.white,
+          borderColor: SGColors.line2,
+          borderRadius: BorderRadius.circular(SGSpacing.p4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SGTypography.body("가게 소개 이미지",
+                  size: FontSize.normal, weight: FontWeight.w600),
+              SizedBox(width: SGSpacing.p1),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ImageUploadScreen(
+                      title: "가게 소개 이미지 변경",
+                      imagePaths: [],
+                      maximumImages: 1,
+                      fieldLabel: "가게 소개 이미지",
+                      buttonText: "변경하기",
+                      onSubmit: (List<String> imagePaths) {
+                        logger.i("imagePaths $imagePaths");
+                        provider.updateIntroductionPicture(imagePaths[0]);
+                      },
+                    ),
+                  ));
+                },
+                child: const Icon(Icons.edit, size: FontSize.small),
+              ),
+              const Spacer(),
+              state.storeInfo.storeInformationURL.isNotEmpty
+                  ? NetworkImageContainer(
+                      key: ValueKey(state.storeInfo.storeInformationURL),
+                      networkImageUrl:
+                          "${state.storeInfo.storeInformationURL}?${DateTime.now().millisecondsSinceEpoch}",
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          ),
         ),
-      ),
-      SizedBox(height: SGSpacing.p32),
-    ]);
+        SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+        GestureDetector(
+          onTap: () {
+            ref.read(goRouterProvider).push(AppRoutes.allergyInformation);
+          },
+          child: SingleInformationBox(
+            label: '원산지 및 알러지 정보',
+            value: state.storeInfo.originInformation,
+            editable: true,
+          ),
+        ),
+        SizedBox(height: SGSpacing.p32),
+      ]),
+    );
   }
 }
 

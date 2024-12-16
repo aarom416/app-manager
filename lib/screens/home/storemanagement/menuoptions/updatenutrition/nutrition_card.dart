@@ -11,10 +11,12 @@ import '../model.dart';
 class NutritionCard extends StatelessWidget {
   final NutritionModel nutrition;
   final VoidCallback? onTap;
+  final int type; // 0 : 메뉴 , 1 : 옵션
 
   const NutritionCard({
     super.key,
     required this.nutrition,
+    required this.type,
     this.onTap,
   });
 
@@ -32,7 +34,7 @@ class NutritionCard extends StatelessWidget {
               this.onTap?.call();
             },
             child: Row(children: [
-              SGTypography.body("메뉴 영양성분", size: FontSize.normal, color: SGColors.black, weight: FontWeight.w600),
+              SGTypography.body(type == 0 ? "메뉴 영양성분" : "옵션 영양성분", size: FontSize.normal, color: SGColors.black, weight: FontWeight.w600),
               SizedBox(width: SGSpacing.p2),
               const Icon(Icons.edit, size: FontSize.small),
             ]),

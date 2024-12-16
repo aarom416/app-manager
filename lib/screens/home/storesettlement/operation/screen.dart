@@ -26,16 +26,23 @@ class _SettlementScreenState extends ConsumerState<SettlementScreen> {
   String currentDateRangeType = "월별";
   List<String> dateRangeType = ["월별", "기간 선택"];
 
-  DateRange dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
+  DateRange dateRange = DateRange(
+    start: DateTime(DateTime.now().year, DateTime.now().month, 1),
+    end: DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
+  );
 
   @override
   void initState() {
-    dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
+    dateRange = DateRange(
+      start: DateTime(DateTime.now().year, DateTime.now().month, 1),
+      end: DateTime(DateTime.now().year, DateTime.now().month + 1, 0),
+    );
     Future.microtask(() {
       ref.read(storeSettlementNotifierProvider.notifier).onChangeMonth(
-          startDate: dateRange.start.toShortDateStringWithZeroPadding,
-          endDate: dateRange.end.toShortDateStringWithZeroPadding);
-      ref.read(storeSettlementNotifierProvider.notifier).getSettlementInfo();
+        context: context,
+        startDate: dateRange.start.toShortDateStringWithZeroPadding,
+        endDate: dateRange.end.toShortDateStringWithZeroPadding);
+      ref.read(storeSettlementNotifierProvider.notifier).getSettlementInfo(context);
     });
   }
 
@@ -141,6 +148,7 @@ class _SettlementScreenState extends ConsumerState<SettlementScreen> {
                           setState(() {
                             dateRange = dateRange.copyWith(end: date);
                             provider.onChangeEndDate(
+                              context: context,
                                 endDate: dateRange
                                     .end.toShortDateStringWithZeroPadding);
                           });
@@ -158,10 +166,11 @@ class _SettlementScreenState extends ConsumerState<SettlementScreen> {
                               dateRange = dateRange.copyWith(
                                   start: startDate, end: endDate);
                               provider.onChangeMonth(
-                                  startDate: dateRange
-                                      .start.toShortDateStringWithZeroPadding,
-                                  endDate: dateRange
-                                      .end.toShortDateStringWithZeroPadding);
+                                context: context,
+                                startDate: dateRange
+                                    .start.toShortDateStringWithZeroPadding,
+                                endDate: dateRange
+                                    .end.toShortDateStringWithZeroPadding);
                             });
                           }),
                     ...state.storeSettlement.responseSettlementDTOList
@@ -201,7 +210,7 @@ class SettlementCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SGTypography.body(settlement.settlementDate,
+              SGTypography.body("싱그릿 식단 연구소",
                   color: SGColors.gray4,
                   weight: FontWeight.w500,
                   size: FontSize.small),

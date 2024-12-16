@@ -10,6 +10,7 @@ import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/screens/bottom/myinfo/orderlist/screen.dart';
 import 'package:singleeat/screens/bottom/myinfo/profile_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -183,8 +184,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   SGTypography.body("고객센터",
                       size: FontSize.normal, weight: FontWeight.w700),
                   SizedBox(height: SGSpacing.p4),
-                  _NavigationLinkItem(title: "자주 묻는 질문"),
-                  _NavigationLinkItem(title: "1:1 문의"),
+                  const _NavigationLinkItem(title: "자주 묻는 질문"),
+                  const _NavigationLinkItem(title: "1:1 문의"),
                 ],
               ),
             ),
@@ -225,7 +226,14 @@ class _NavigationLinkItem extends StatelessWidget {
                   SGTypography.body(title,
                       size: (FontSize.small + FontSize.normal) / 2),
                   Spacer(),
-                  Icon(Icons.arrow_forward_ios, size: FontSize.small),
+                  InkWell(
+                    onTap: () async {
+                      late Uri url;
+                      title == "자주 묻는 질문" ?
+                      url = Uri.parse("https://www.singleat.co.kr/18/#s20241121ce84041cfa431") :  url = Uri.parse("http://pf.kakao.com/_THWMn/chat");
+                      await launchUrl(url, mode: LaunchMode.externalApplication);
+                    },
+                    child: Icon(Icons.arrow_forward_ios, size: FontSize.small)),
                 ],
               ),
             ),

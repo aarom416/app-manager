@@ -183,224 +183,205 @@ class _OperationScreenState extends ConsumerState<OperationScreen> {
         groupByStartAndEndTime(
             fillMissingDays(state.breakTimeDetailDTOList), regularHolidays);
 
-    return ListView(children: [
-      // --------------------------- 배달 주문 가능 card ---------------------------
-      SGContainer(
-          padding: EdgeInsets.all(SGSpacing.p4),
-          borderRadius: BorderRadius.circular(SGSpacing.p3),
-          color: SGColors.white,
-          borderColor: SGColors.line3,
-          boxShadow: SGBoxShadow.large,
-          width: double.infinity,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SGTypography.body("배달 주문 가능",
-                  size: FontSize.normal, weight: FontWeight.w500),
-              SGSwitch(
-                  value: state.deliveryStatus == 1,
-                  onChanged: (value) {
-                    if (state.deliveryStatus == 1) {
-                      showFailDialogWithImageBoth(provider, 0,
-                          "배달 주문을 비활성화하시겠습니까?", "비활성화시 신규 배달 주문을 받을 수 없습니다.");
-                    } else {
-                      provider.updateDeliveryStatus(1);
-                    }
-                  })
-            ],
-          )),
+    return RefreshIndicator(
+      backgroundColor: Colors.white,
+      color: SGColors.primary,
+      onRefresh: () async {
+        provider.getOperationInfo();
+      },
+      child: ListView(children: [
+        // --------------------------- 배달 주문 가능 card ---------------------------
+        SGContainer(
+            padding: EdgeInsets.all(SGSpacing.p4),
+            borderRadius: BorderRadius.circular(SGSpacing.p3),
+            color: SGColors.white,
+            borderColor: SGColors.line3,
+            boxShadow: SGBoxShadow.large,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SGTypography.body("배달 주문 가능", size: FontSize.normal, weight: FontWeight.w500),
+                SGSwitch(
+                    value: state.deliveryStatus == 1,
+                    onChanged: (value) {
+                      if (state.deliveryStatus == 1) {
+                        showFailDialogWithImageBoth(provider, 0, "배달 주문을 비활성화하시겠습니까?", "비활성화시 신규 배달 주문을 받을 수 없습니다.");
+                      } else {
+                        provider.updateDeliveryStatus(1);
+                      }
+                    })
+              ],
+            )),
 
-      SizedBox(height: SGSpacing.p3),
+        SizedBox(height: SGSpacing.p3),
 
-      // --------------------------- 포장 주문 가능 card ---------------------------
-      SGContainer(
-          padding: EdgeInsets.all(SGSpacing.p4),
-          borderRadius: BorderRadius.circular(SGSpacing.p3),
-          color: SGColors.white,
-          borderColor: SGColors.line3,
-          boxShadow: SGBoxShadow.large,
-          width: double.infinity,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SGTypography.body("포장 주문 가능",
-                  size: FontSize.normal, weight: FontWeight.w500),
-              SGSwitch(
-                  value: state.takeOutStatus == 1,
-                  onChanged: (value) {
-                    if (state.takeOutStatus == 1) {
-                      showFailDialogWithImageBoth(provider, 1,
-                          "포장 주문을 비활성화하시겠습니까?", "비활성화시 신규 포장 주문을 받을 수 없습니다.");
-                    } else {
-                      provider.updatePickupStatus(1);
-                    }
-                  })
-            ],
-          )),
+        // --------------------------- 포장 주문 가능 card ---------------------------
+        SGContainer(
+            padding: EdgeInsets.all(SGSpacing.p4),
+            borderRadius: BorderRadius.circular(SGSpacing.p3),
+            color: SGColors.white,
+            borderColor: SGColors.line3,
+            boxShadow: SGBoxShadow.large,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SGTypography.body("포장 주문 가능", size: FontSize.normal, weight: FontWeight.w500),
+                SGSwitch(
+                    value: state.takeOutStatus == 1,
+                    onChanged: (value) {
+                      if (state.takeOutStatus == 1) {
+                        showFailDialogWithImageBoth(provider, 1, "포장 주문을 비활성화하시겠습니까?", "비활성화시 신규 포장 주문을 받을 수 없습니다.");
+                      } else {
+                        provider.updatePickupStatus(1);
+                      }
+                    })
+              ],
+            )),
 
-      SizedBox(height: SGSpacing.p3),
+        SizedBox(height: SGSpacing.p3),
 
-      // --------------------------- 간 card ---------------------------
-      MultipleInformationBox(children: [
-        Row(children: [
-          SGTypography.body("영업시간",
-              size: FontSize.normal, weight: FontWeight.w700),
-          SizedBox(width: SGSpacing.p1),
-          GestureDetector(
-            child: const Icon(Icons.edit, size: FontSize.small),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => OperationTimeScreen(
-                    operationTimeDetailDTOList:
-                        state.operationTimeDetailDTOList,
-                    regularHolidays: regularHolidays,
-                    onSaveFunction: (operationTimeDetails) {
-                      // print("onSaveFunction $operationTimeDetails");
-                      provider.updateOperationTime(operationTimeDetails);
-                    }),
-              ));
-            },
-          ),
-        ]),
-        SizedBox(height: SGSpacing.p5),
-        ...groupedOperationTimeDetailDTOList.asMap().entries.map((entry) {
-          int index = entry.key;
-          bool isLastIndex =
-              index == groupedOperationTimeDetailDTOList.length - 1;
-          List<OperationTimeDetailModel> operationTimeDetailDTOList =
-              entry.value;
-          // print("operationTimeDetailDTO $operationTimeDetailDTOList");
-          var day = operationTimeDetailDTOList.length == 1
-              ? "${operationTimeDetailDTOList.first.day}요일"
-              : "${operationTimeDetailDTOList.first.day}요일~${operationTimeDetailDTOList.last.day}요일";
-          var time = operationTimeDetailDTOList.first.is24OperationHour()
-              ? "24시간"
-              : "${convert24HourTimeToAmPmWithHourMinute(operationTimeDetailDTOList.first.startTime)}~${convert24HourTimeToAmPmWithHourMinute(operationTimeDetailDTOList.first.endTime)}";
-          return Column(
-            children: [
-              OperationDataTableRow(left: day, right: time),
-              SizedBox(height: isLastIndex ? 0 : SGSpacing.p4),
-            ],
-          );
-        }),
-      ]),
-
-      SizedBox(height: SGSpacing.p3),
-
-      // --------------------------- 휴게시간 card ---------------------------
-      MultipleInformationBox(children: [
-        Row(children: [
-          SGTypography.body("휴게시간",
-              size: FontSize.normal, weight: FontWeight.w700),
-          SizedBox(width: SGSpacing.p1),
-          GestureDetector(
-            child: const Icon(Icons.edit, size: FontSize.small),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => BreakTimeScreen(
-                    breakTimeDetailDTOList:
-                        fillMissingDays(state.breakTimeDetailDTOList),
-                    regularHolidays: regularHolidays,
-                    onSaveFunction: (breakTimeDetails) {
-                      // print("onSaveFunction $breakTimeDetails");
-                      provider.updateBreakTime(breakTimeDetails);
-                    }),
-              ));
-            },
-          ),
-        ]),
-        SizedBox(height: SGSpacing.p5),
-        ...groupedBreakTimeDetailDTOList.asMap().entries.map((entry) {
-          int index = entry.key;
-          bool isLastIndex = index == groupedBreakTimeDetailDTOList.length - 1;
-          List<OperationTimeDetailModel> breakTimeDetailDTOList = entry.value;
-          // print("operationTimeDetailDTO breakTimeDetailDTOList");
-          var day = breakTimeDetailDTOList.length == 1
-              ? "${breakTimeDetailDTOList.first.day}요일"
-              : "${breakTimeDetailDTOList.first.day}요일~${breakTimeDetailDTOList.last.day}요일";
-          var time = breakTimeDetailDTOList.first.isNoBreak()
-              ? "-"
-              : "${convert24HourTimeToAmPmWithHourMinute(breakTimeDetailDTOList.first.startTime)}~${convert24HourTimeToAmPmWithHourMinute(breakTimeDetailDTOList.first.endTime)}";
-          return Column(
-            children: [
-              OperationDataTableRow(left: day, right: time),
-              SizedBox(height: isLastIndex ? 0 : SGSpacing.p4),
-            ],
-          );
-        }),
-      ]),
-
-      SizedBox(height: SGSpacing.p3),
-
-      // --------------------------- 휴무일 card ---------------------------
-      MultipleInformationBox(children: [
-        Row(children: [
-          SGTypography.body("휴무일",
-              size: FontSize.normal, weight: FontWeight.w700),
-          SizedBox(width: SGSpacing.p1),
-          GestureDetector(
+        // --------------------------- 간 card ---------------------------
+        MultipleInformationBox(children: [
+          Row(children: [
+            SGTypography.body("영업시간", size: FontSize.normal, weight: FontWeight.w700),
+            SizedBox(width: SGSpacing.p1),
+            GestureDetector(
               child: const Icon(Icons.edit, size: FontSize.small),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => HolidayScreen(
-                      holidayStatus: state.holidayStatus,
+                  builder: (context) => OperationTimeScreen(
+                      operationTimeDetailDTOList: state.operationTimeDetailDTOList,
                       regularHolidays: regularHolidays,
-                      temporaryHolidays: temporaryHolidays,
-                      onSaveFunction:
-                          (holidayStatus, regularHolidays, temporaryHolidays) {
-                        provider.updateHolidayDetail(
-                            holidayStatus, regularHolidays, temporaryHolidays);
+                      onSaveFunction: (operationTimeDetails) {
+                        // print("onSaveFunction $operationTimeDetails");
+                        provider.updateOperationTime(operationTimeDetails);
                       }),
                 ));
-              }),
+              },
+            ),
+          ]),
+          SizedBox(height: SGSpacing.p5),
+          ...groupedOperationTimeDetailDTOList.asMap().entries.map((entry) {
+            int index = entry.key;
+            bool isLastIndex = index == groupedOperationTimeDetailDTOList.length - 1;
+            List<OperationTimeDetailModel> operationTimeDetailDTOList = entry.value;
+            // print("operationTimeDetailDTO $operationTimeDetailDTOList");
+            var day = operationTimeDetailDTOList.length == 1 ? "${operationTimeDetailDTOList.first.day}요일" : "${operationTimeDetailDTOList.first.day}요일~${operationTimeDetailDTOList.last.day}요일";
+            var time = operationTimeDetailDTOList.first.is24OperationHour()
+                ? "24시간"
+                : "${convert24HourTimeToAmPmWithHourMinute(operationTimeDetailDTOList.first.startTime)}~${convert24HourTimeToAmPmWithHourMinute(operationTimeDetailDTOList.first.endTime)}";
+            return Column(
+              children: [
+                OperationDataTableRow(left: day, right: time),
+                SizedBox(height: isLastIndex ? 0 : SGSpacing.p4),
+              ],
+            );
+          }),
         ]),
-        SizedBox(height: SGSpacing.p5),
-        OperationDataTableRow(
-            left: "공휴일",
-            right: (state.holidayStatus == 1) ? "설날, 설날 다음날" : "-"),
-        SizedBox(height: SGSpacing.p4),
-        if (regularHolidayLabels.isEmpty)
-          const OperationDataTableRow(left: "정기 휴무", right: "-"),
-        if (regularHolidayLabels.isNotEmpty)
-          ...regularHolidayLabels.asMap().entries.map((entry) {
-            int index = entry.key;
-            bool isFirstIndex = index == 0;
-            bool isLastIndex = index == regularHolidayLabels.length - 1;
-            String regularHolidayLabel = entry.value;
-            return Column(
-              children: [
-                OperationDataTableRow(
-                    left: isFirstIndex ? "정기 휴무" : "",
-                    right: regularHolidayLabel),
-                SizedBox(height: isLastIndex ? 0 : SGSpacing.p2),
-              ],
-            );
-          }),
-        SizedBox(height: SGSpacing.p4),
-        if (temporaryHolidays.isEmpty)
-          const OperationDataTableRow(left: "임시 휴무", right: "-"),
-        if (temporaryHolidays.isNotEmpty)
-          ...temporaryHolidays.asMap().entries.map((entry) {
-            int index = entry.key;
-            bool isFirstIndex = index == 0;
-            bool isLastIndex = index == temporaryHolidays.length - 1;
-            OperationTimeDetailModel temporaryHoliday = entry.value;
-            return Column(
-              children: [
-                OperationDataTableRow(
-                    left: isFirstIndex ? "임시 휴무" : "",
-                    right: (temporaryHoliday.startDate ==
-                            temporaryHoliday.endDate)
-                        ? temporaryHoliday.startDate
-                        : "${temporaryHoliday.startDate}~${temporaryHoliday.endDate}"),
-                SizedBox(height: isLastIndex ? 0 : SGSpacing.p2),
-              ],
-            );
-          }),
-      ]),
 
-      SizedBox(height: SGSpacing.p3),
-    ]);
+        SizedBox(height: SGSpacing.p3),
+
+        // --------------------------- 휴게시간 card ---------------------------
+        MultipleInformationBox(children: [
+          Row(children: [
+            SGTypography.body("휴게시간", size: FontSize.normal, weight: FontWeight.w700),
+            SizedBox(width: SGSpacing.p1),
+            GestureDetector(
+              child: const Icon(Icons.edit, size: FontSize.small),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => BreakTimeScreen(
+                      breakTimeDetailDTOList: fillMissingDays(state.breakTimeDetailDTOList),
+                      regularHolidays: regularHolidays,
+                      onSaveFunction: (breakTimeDetails) {
+                        // print("onSaveFunction $breakTimeDetails");
+                        provider.updateBreakTime(breakTimeDetails);
+                      }),
+                ));
+              },
+            ),
+          ]),
+          SizedBox(height: SGSpacing.p5),
+          ...groupedBreakTimeDetailDTOList.asMap().entries.map((entry) {
+            int index = entry.key;
+            bool isLastIndex = index == groupedBreakTimeDetailDTOList.length - 1;
+            List<OperationTimeDetailModel> breakTimeDetailDTOList = entry.value;
+            // print("operationTimeDetailDTO breakTimeDetailDTOList");
+            var day = breakTimeDetailDTOList.length == 1 ? "${breakTimeDetailDTOList.first.day}요일" : "${breakTimeDetailDTOList.first.day}요일~${breakTimeDetailDTOList.last.day}요일";
+            var time = breakTimeDetailDTOList.first.isNoBreak()
+                ? "-"
+                : "${convert24HourTimeToAmPmWithHourMinute(breakTimeDetailDTOList.first.startTime)}~${convert24HourTimeToAmPmWithHourMinute(breakTimeDetailDTOList.first.endTime)}";
+            return Column(
+              children: [
+                OperationDataTableRow(left: day, right: time),
+                SizedBox(height: isLastIndex ? 0 : SGSpacing.p4),
+              ],
+            );
+          }),
+        ]),
+
+        SizedBox(height: SGSpacing.p3),
+
+        // --------------------------- 휴무일 card ---------------------------
+        MultipleInformationBox(children: [
+          Row(children: [
+            SGTypography.body("휴무일", size: FontSize.normal, weight: FontWeight.w700),
+            SizedBox(width: SGSpacing.p1),
+            GestureDetector(
+                child: const Icon(Icons.edit, size: FontSize.small),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => HolidayScreen(
+                        holidayStatus: state.holidayStatus,
+                        regularHolidays: regularHolidays,
+                        temporaryHolidays: temporaryHolidays,
+                        onSaveFunction: (holidayStatus, regularHolidays, temporaryHolidays) {
+                          provider.updateHolidayDetail(holidayStatus, regularHolidays, temporaryHolidays);
+                        }),
+                  ));
+                }),
+          ]),
+          SizedBox(height: SGSpacing.p5),
+          OperationDataTableRow(left: "공휴일", right: (state.holidayStatus == 1) ? "설날, 설날 다음날" : "-"),
+          SizedBox(height: SGSpacing.p4),
+          if (regularHolidayLabels.isEmpty) const OperationDataTableRow(left: "정기 휴무", right: "-"),
+          if (regularHolidayLabels.isNotEmpty)
+            ...regularHolidayLabels.asMap().entries.map((entry) {
+              int index = entry.key;
+              bool isFirstIndex = index == 0;
+              bool isLastIndex = index == regularHolidayLabels.length - 1;
+              String regularHolidayLabel = entry.value;
+              return Column(
+                children: [
+                  OperationDataTableRow(left: isFirstIndex ? "정기 휴무" : "", right: regularHolidayLabel),
+                  SizedBox(height: isLastIndex ? 0 : SGSpacing.p2),
+                ],
+              );
+            }),
+          SizedBox(height: SGSpacing.p4),
+          if (temporaryHolidays.isEmpty) const OperationDataTableRow(left: "임시 휴무", right: "-"),
+          if (temporaryHolidays.isNotEmpty)
+            ...temporaryHolidays.asMap().entries.map((entry) {
+              int index = entry.key;
+              bool isFirstIndex = index == 0;
+              bool isLastIndex = index == temporaryHolidays.length - 1;
+              OperationTimeDetailModel temporaryHoliday = entry.value;
+              return Column(
+                children: [
+                  OperationDataTableRow(
+                      left: isFirstIndex ? "임시 휴무" : "",
+                      right: (temporaryHoliday.startDate == temporaryHoliday.endDate) ? temporaryHoliday.startDate : "${temporaryHoliday.startDate}~${temporaryHoliday.endDate}"),
+                  SizedBox(height: isLastIndex ? 0 : SGSpacing.p2),
+                ],
+              );
+            }),
+        ]),
+
+        SizedBox(height: SGSpacing.p3),
+      ]),
+    );
   }
 }
 

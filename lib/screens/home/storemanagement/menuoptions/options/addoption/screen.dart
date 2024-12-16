@@ -106,101 +106,107 @@ class _Page_0_OptionNameState extends State<_Page_0_OptionName> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarWithStepIndicator(title: "옵션 추가", currentStep: 1, totalStep: 2, onTap: widget.onPrev),
-        floatingActionButton: Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery
-                .of(context)
-                .size
-                .width - SGSpacing.p8, maxHeight: 58),
-            child: Row(
-              children: [
-                Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        widget.onPrev();
-                      },
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+          appBar: AppBarWithStepIndicator(title: "옵션 추가", currentStep: 1, totalStep: 2, onTap: widget.onPrev),
+          floatingActionButton: Container(
+              constraints: BoxConstraints(maxWidth: MediaQuery
+                  .of(context)
+                  .size
+                  .width - SGSpacing.p8, maxHeight: 58),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          widget.onPrev();
+                        },
+                        child: SGContainer(
+                            color: SGColors.gray3,
+                            padding: EdgeInsets.all(SGSpacing.p4),
+                            borderRadius: BorderRadius.circular(SGSpacing.p3),
+                            child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      )),
+                  SizedBox(width: SGSpacing.p3),
+                  Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          if (!isFormValid) return;
+                          widget.onSubmit(menuOptionModel);
+                          widget.onNext();
+                          FocusScope.of(context).unfocus();
+                        },
+                        child: SGContainer(
+                            color: isFormValid ? SGColors.primary : SGColors.gray3,
+                            padding: EdgeInsets.all(SGSpacing.p4),
+                            borderRadius: BorderRadius.circular(SGSpacing.p3),
+                            child: Center(child: SGTypography.body("다음", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      )),
+                ],
+              )),
+          body: SGContainer(
+              color: const Color(0xFFFAFAFA),
+              padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+              child: ListView(
+                children: [
+                  SGTypography.body("옵션명 설정해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+                  SizedBox(height: SGSpacing.p3),
+                  SGTextFieldWrapper(
                       child: SGContainer(
-                          color: SGColors.gray3,
-                          padding: EdgeInsets.all(SGSpacing.p4),
-                          borderRadius: BorderRadius.circular(SGSpacing.p3),
-                          child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
-                    )),
-                SizedBox(width: SGSpacing.p3),
-                Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (!isFormValid) return;
-                        widget.onSubmit(menuOptionModel);
-                        widget.onNext();
-                      },
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        width: double.infinity,
+                        child: TextField(
+                            controller: optionContentController,
+                            onChanged: (value) {
+                              setState(() {
+                                menuOptionModel = menuOptionModel.copyWith(optionContent: value);
+                              });
+                            },
+                            style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              isCollapsed: true,
+                              hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                              hintText: "Ex) 2인 샐러드 포케 세트",
+                              border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                            )),
+                      )),
+                  SizedBox(height: SGSpacing.p6),
+                  SGTypography.body("가격을 설정해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+                  SizedBox(height: SGSpacing.p3),
+                  SGTextFieldWrapper(
                       child: SGContainer(
-                          color: isFormValid ? SGColors.primary : SGColors.gray3,
-                          padding: EdgeInsets.all(SGSpacing.p4),
-                          borderRadius: BorderRadius.circular(SGSpacing.p3),
-                          child: Center(child: SGTypography.body("다음", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
-                    )),
-              ],
-            )),
-        body: SGContainer(
-            color: const Color(0xFFFAFAFA),
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-            child: ListView(
-              children: [
-                SGTypography.body("옵션명 설정해주세요.", size: FontSize.normal, weight: FontWeight.w700),
-                SizedBox(height: SGSpacing.p3),
-                SGTextFieldWrapper(
-                    child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: TextField(
-                          controller: optionContentController,
-                          onChanged: (value) {
-                            setState(() {
-                              menuOptionModel = menuOptionModel.copyWith(optionContent: value);
-                            });
-                          },
-                          style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                          decoration: InputDecoration(
-                            isDense: true,
-                            isCollapsed: true,
-                            hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                            hintText: "Ex) 2인 샐러드 포케 세트",
-                            border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                          )),
-                    )),
-                SizedBox(height: SGSpacing.p6),
-                SGTypography.body("가격을 설정해주세요.", size: FontSize.normal, weight: FontWeight.w700),
-                SizedBox(height: SGSpacing.p3),
-                SGTextFieldWrapper(
-                    child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: NumericTextField(
-                              initialValue: menuOptionModel.price,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                isCollapsed: true,
-                                hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                                hintText: menuOptionModel.price.toKoreanCurrency,
-                                border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        width: double.infinity,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: NumericTextField(
+                                initialValue: menuOptionModel.price,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  isCollapsed: true,
+                                  hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                                  hintText: menuOptionModel.price.toKoreanCurrency,
+                                  border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                                ),
+                                onValueChanged: (price) {
+                                  setState(() {
+                                    menuOptionModel = menuOptionModel.copyWith(price: price);
+                                  });
+                                },
                               ),
-                              onValueChanged: (price) {
-                                setState(() {
-                                  menuOptionModel = menuOptionModel.copyWith(price: price);
-                                });
-                              },
                             ),
-                          ),
-                          SGTypography.body("원", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
-                        ],
-                      ),
-                    )),
-              ],
-            )));
+                            SGTypography.body("원", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w500),
+                          ],
+                        ),
+                      )),
+                ],
+              ))),
+    );
   }
 }
 
@@ -271,6 +277,7 @@ class _Page_1_NutritionState extends State<_Page_1_Nutrition> {
                 NutritionCard(
                   // key: ValueKey(menuOptionModel.toFormattedJson()),
                   nutrition: menuOptionModel.nutrition,
+                  type: 1,
                   onTap: () {
                     final nutritionScreenContext = context;
                     Navigator.of(nutritionScreenContext).push(MaterialPageRoute(

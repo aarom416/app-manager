@@ -29,7 +29,7 @@ import '../addmenucategory/screen.dart';
 import 'menu_option_category_selection_bottom_sheet.dart';
 
 List<String> userMenuCategories = [
-  "ㅌ",
+  "샐러드",
   "포케",
   "샌드위치",
   "카페",
@@ -201,47 +201,54 @@ class _Page_0_MenuNameState extends State<_Page_0_MenuName> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarWithStepIndicator(title: "새 메뉴 추가", currentStep: 1, totalStep: 5, onTap: widget.onPrev),
-        floatingActionButton: Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
-            child: SGActionButton(
-                disabled: menuName.isEmpty,
-                onPressed: () {
-                  widget.onEditFunction(menuName);
-                  FocusScope.of(context).unfocus();
-                  widget.onNext();
-                },
-                label: "추가하기")),
-        body: SGContainer(
-            color: const Color(0xFFFAFAFA),
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-            child: ListView(
-              children: [
-                SGTypography.body("등록할 새 메뉴명을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
-                SizedBox(height: SGSpacing.p3),
-                SGTextFieldWrapper(
-                    child: SGContainer(
-                  padding: EdgeInsets.all(SGSpacing.p4),
-                  width: double.infinity,
-                  child: TextField(
-                      controller: menuNameController,
-                      onChanged: (value) {
-                        setState(() {
-                          menuName = value;
-                        });
-                      },
-                      style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
-                      decoration: InputDecoration(
-                        isDense: true,
-                        isCollapsed: true,
-                        hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
-                        hintText: "Ex) 바베큐 샐러드",
-                        border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
-                      )),
-                )),
-              ],
-            )));
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+          appBar: AppBarWithStepIndicator(title: "새 메뉴 추가", currentStep: 1, totalStep: 5, onTap: widget.onPrev),
+          floatingActionButton: Container(
+              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+              child: SGActionButton(
+                  disabled: menuName.isEmpty,
+                  onPressed: () {
+                    if (menuName.isNotEmpty) {
+                      widget.onEditFunction(menuName);
+                      FocusScope.of(context).unfocus();
+                      widget.onNext();
+                    }
+                  },
+                  label: "다음")),
+          body: SGContainer(
+              color: const Color(0xFFFAFAFA),
+              padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+              child: ListView(
+                children: [
+                  SGTypography.body("등록할 새 메뉴명을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+                  SizedBox(height: SGSpacing.p3),
+                  SGTextFieldWrapper(
+                      child: SGContainer(
+                    padding: EdgeInsets.all(SGSpacing.p4),
+                    width: double.infinity,
+                    child: TextField(
+                        controller: menuNameController,
+                        onChanged: (value) {
+                          setState(() {
+                            menuName = value;
+                          });
+                        },
+                        style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
+                        decoration: InputDecoration(
+                          isDense: true,
+                          isCollapsed: true,
+                          hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                          hintText: "Ex) 바베큐 샐러드",
+                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                        )),
+                  )),
+                ],
+              ))),
+    );
   }
 }
 
@@ -792,6 +799,7 @@ class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
                 SizedBox(height: SGSpacing.p3),
                 NutritionCard(
                     nutrition: nutrition,
+                    type: 0,
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => UpdateNutritionScreen(
@@ -1067,7 +1075,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                           const Icon(Icons.edit, size: FontSize.small),
                         ],
                       ),
-                      SizedBox(height: SGSpacing.p2),
+                      SizedBox(height: SGSpacing.p4),
                       if (selectedMenuOptionCategories.isEmpty)
                         SGTypography.body(
                           "등록된 내용이 없어요.",
@@ -1109,7 +1117,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                     ],
                   ),
                 ),
-                SizedBox(height: SGSpacing.p5),
+                SizedBox(height: SGSpacing.p3),
               ],
             ),
             SizedBox(height: SGSpacing.p32),

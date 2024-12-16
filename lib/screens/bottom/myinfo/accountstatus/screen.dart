@@ -12,7 +12,7 @@ import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../service_agreement_screen.dart';
+import 'serviceagreement/service_agreement_screen.dart';
 
 class ProfileDeleteSessionScreen extends ConsumerStatefulWidget {
   const ProfileDeleteSessionScreen({super.key});

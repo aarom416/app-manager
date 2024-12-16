@@ -21,67 +21,86 @@ class OrderNotifier extends _$OrderNotifier {
   }
 
   /// 신규 주문 목록 조회
-  void getNewOrderList() async {
-    final storeId = UserHive.getBox(key: UserKey.storeId);
+  void getNewOrderList(BuildContext context) async {
+    try {
+      Loading.show(context);
+      final storeId = UserHive.getBox(key: UserKey.storeId);
 
-    final response =
-        await ref.read(orderServiceProvider).getNewOrderList(storeId: storeId);
+      final response =
+      await ref.read(orderServiceProvider).getNewOrderList(storeId: storeId);
 
-    if (response.statusCode == 200) {
-      final result = ResultResponseListModel.fromJson(response.data);
+      if (response.statusCode == 200) {
+        final result = ResultResponseListModel.fromJson(response.data);
 
-      List<NewOrderModel> list = [];
+        List<NewOrderModel> list = [];
 
-      for (var item in result.data) {
-        final newOrderModel = NewOrderModel.fromJson(item);
-        list.add(newOrderModel);
-      }
-      state = state.copyWith(
-          newOrderList: list, acceptOrderList: [], completeOrderList: []);
-    } else {}
+        for (var item in result.data) {
+          final newOrderModel = NewOrderModel.fromJson(item);
+          list.add(newOrderModel);
+        }
+        state = state.copyWith(
+            newOrderList: list, acceptOrderList: [], completeOrderList: []);
+      } else {}
+    } catch (e) {
+    } finally {
+      Loading.hide();
+    }
   }
 
   /// 접수 주문 목록 조회
-  void getAcceptOrderList() async {
-    final storeId = UserHive.getBox(key: UserKey.storeId);
+  void getAcceptOrderList(BuildContext context) async {
+    try {
+      Loading.show(context);
+      final storeId = UserHive.getBox(key: UserKey.storeId);
 
-    final response = await ref
-        .read(orderServiceProvider)
-        .getAcceptedOrderList(storeId: storeId);
+      final response = await ref
+          .read(orderServiceProvider)
+          .getAcceptedOrderList(storeId: storeId);
 
-    if (response.statusCode == 200) {
-      final result = ResultResponseListModel.fromJson(response.data);
+      if (response.statusCode == 200) {
+        final result = ResultResponseListModel.fromJson(response.data);
 
-      List<NewOrderModel> list = [];
+        List<NewOrderModel> list = [];
 
-      for (var item in result.data) {
-        final acceptOrderModel = NewOrderModel.fromJson(item);
-        list.add(acceptOrderModel);
-      }
-      state = state.copyWith(
-          acceptOrderList: list, newOrderList: [], completeOrderList: []);
-    } else {}
+        for (var item in result.data) {
+          final acceptOrderModel = NewOrderModel.fromJson(item);
+          list.add(acceptOrderModel);
+        }
+        state = state.copyWith(
+            acceptOrderList: list, newOrderList: [], completeOrderList: []);
+      } else {}
+    } catch (e) {
+    } finally {
+      Loading.hide();
+    }
   }
 
   /// 완료 주문 목록 조회
-  void getCompletedOrderList() async {
-    final storeId = UserHive.getBox(key: UserKey.storeId);
+  void getCompletedOrderList(BuildContext context) async {
+    try {
+      Loading.show(context);
+      final storeId = UserHive.getBox(key: UserKey.storeId);
 
-    final response = await ref
-        .read(orderServiceProvider)
-        .getCompletedOrderList(storeId: storeId);
+      final response = await ref
+          .read(orderServiceProvider)
+          .getCompletedOrderList(storeId: storeId);
 
-    if (response.statusCode == 200) {
-      final result = ResultResponseListModel.fromJson(response.data);
-      List<NewOrderModel> list = [];
+      if (response.statusCode == 200) {
+        final result = ResultResponseListModel.fromJson(response.data);
+        List<NewOrderModel> list = [];
 
-      for (var item in result.data) {
-        final completeOrderModel = NewOrderModel.fromJson(item);
-        list.add(completeOrderModel);
-      }
-      state = state.copyWith(
-          completeOrderList: list, newOrderList: [], acceptOrderList: []);
-    } else {}
+        for (var item in result.data) {
+          final completeOrderModel = NewOrderModel.fromJson(item);
+          list.add(completeOrderModel);
+        }
+        state = state.copyWith(
+            completeOrderList: list, newOrderList: [], acceptOrderList: []);
+      } else {}
+    } catch (e) {
+    } finally {
+      Loading.hide();
+    }
+
   }
 
   /// 신규 주문 상세
@@ -159,8 +178,7 @@ class OrderNotifier extends _$OrderNotifier {
       return true;
     } else {
       state = state.copyWith(
-        status: OrderServiceStatus.error,
-      );
+          error: ResultFailResponseModel.fromJson(response.data));
       return false;
     }
   }
@@ -183,8 +201,7 @@ class OrderNotifier extends _$OrderNotifier {
         return true;
       } else {
         state = state.copyWith(
-          status: OrderServiceStatus.error,
-        );
+            error: ResultFailResponseModel.fromJson(response.data));
         return false;
       }
     } catch (e) {
@@ -213,8 +230,7 @@ class OrderNotifier extends _$OrderNotifier {
         return true;
       } else {
         state = state.copyWith(
-          status: OrderServiceStatus.error,
-        );
+            error: ResultFailResponseModel.fromJson(response.data));
         return false;
       }
     } catch (e) {
@@ -240,8 +256,7 @@ class OrderNotifier extends _$OrderNotifier {
         return true;
       } else {
         state = state.copyWith(
-          status: OrderServiceStatus.error,
-        );
+            error: ResultFailResponseModel.fromJson(response.data));
         return false;
       }
     } catch (e) {
@@ -266,8 +281,7 @@ class OrderNotifier extends _$OrderNotifier {
         return true;
       } else {
         state = state.copyWith(
-          status: OrderServiceStatus.error,
-        );
+            error: ResultFailResponseModel.fromJson(response.data));
         return false;
       }
     } catch (e) {

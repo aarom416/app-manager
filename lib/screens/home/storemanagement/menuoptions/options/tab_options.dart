@@ -304,7 +304,9 @@ class _OptionCategoryCardState extends State<_OptionCategoryCard> {
                 .flattened,
           ] else if (appliedMenus.isNotEmpty) ...[
             SizedBox(height: SGSpacing.p2),
-            SGTypography.body(appliedMenus.map((menu) => menu.menuName).join(", "), size: FontSize.small, color: SGColors.gray4),
+            Container(
+              child: SGTypography.body(
+                  appliedMenus.map((menu) => menu.menuName).join(", "), size: FontSize.small, color: SGColors.gray4, overflow: TextOverflow.ellipsis)),
           ]
         ]),
       )

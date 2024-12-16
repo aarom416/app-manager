@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +9,7 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/switch.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -63,15 +66,35 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(SGSpacing.p4),
-                          child: Image.network(
-                            key: ValueKey(menuModel.menuPictureURL),
-                            // "${menuModel.menuPictureURL}?${DateTime.now().millisecondsSinceEpoch}",
-                            menuModel.menuPictureURL,
-                            width: SGSpacing.p20,
-                            height: SGSpacing.p20,
-                            fit: BoxFit.cover,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Image.network(
+                                menuModel.menuPictureURL,
+                                width: SGSpacing.p20,
+                                height: SGSpacing.p20,
+                                fit: BoxFit.cover,
+                              ),
+                              if (menuModel.soldOutStatus == 1)
+                                Container(
+                                  width: SGSpacing.p20,
+                                  height: SGSpacing.p20,
+                                  color: const Color(0xFF808080).withOpacity(0.7),
+                                  child: const Center(
+                                    child: Text(
+                                      "품절",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: FontSize.small,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
+
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).push(
@@ -133,9 +156,10 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                         setState(() {
                                           menuModel = menuModel.copyWith(menuName: value);
                                         });
+                                        showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                                       }
                                     });
-                                    Navigator.of(context).pop();
+
                                   },
                                 )));
                       },
@@ -167,9 +191,9 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                           setState(() {
                                             menuModel = menuModel.copyWith(price: price);
                                           });
+                                          showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                                         }
                                       });
-                                      Navigator.of(context).pop();
                                     }
                                   },
                                 )));
@@ -276,6 +300,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                         setState(() {
                                           menuModel = menuModel.copyWith(menuParts: value);
                                         });
+                                        showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
                                       }
                                     });
                                   },
@@ -312,6 +337,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                         setState(() {
                                           menuModel = menuModel.copyWith(menuDescription: value);
                                         });
+                                        showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
                                       }
                                     });
                                   },
@@ -349,6 +375,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                   SizedBox(height: SGSpacing.p4),
                   NutritionCard(
                     nutrition: menuModel.nutrition,
+                    type: 0,
                     onTap: () {
                       final screenContext = context;
                       Navigator.of(screenContext).push(MaterialPageRoute(
@@ -426,6 +453,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                           logger.d("updateMenuIntroduction success $success");
                                           if (success) {
                                             Navigator.of(context).pop();
+                                            showGlobalSnackBar(context, "성공적으로 삭제되었습니다.");
                                           } else {
                                             if (state.error.errorCode == 409) {
                                               showFailDialogWithImage(
