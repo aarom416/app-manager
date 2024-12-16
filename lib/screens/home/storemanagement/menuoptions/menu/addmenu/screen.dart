@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/app_bar_with_step_indicator.dart';
@@ -24,9 +23,9 @@ import 'package:singleeat/core/screens/textarea_screen.dart';
 import '../../../../../../core/components/numeric_textfield.dart';
 import '../../../../../../main.dart';
 import '../../model.dart';
+import '../../provider.dart';
 import '../../updatenutrition/nutrition_card.dart';
 import '../../updatenutrition/screen.dart';
-import '../../provider.dart';
 import '../addmenucategory/screen.dart';
 import 'menu_option_category_selection_bottom_sheet.dart';
 
@@ -53,7 +52,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
   MenuCategoryModel selectedMenuCategory = const MenuCategoryModel(storeMenuCategoryId: -1);
   List<String> selectedUserMenuCategories = [];
   int price = 0;
-  NutritionModel nutrition = const NutritionModel(calories: 432, protein: 10, fat: 3, carbohydrate: 12, sugar: 12, natrium: 120, saturatedFat: 8);
+  NutritionModel nutrition = const NutritionModel();
   String imagePath = "";
   String menuBriefDescription = "";
   String menuDescription = "";
@@ -353,7 +352,6 @@ class _Page_1_MenuCategoryState extends State<_Page_1_MenuCategory> {
   }
 }
 
-
 class __SelectMenuCategoryDialog extends ConsumerStatefulWidget {
   final BuildContext context;
   final MenuCategoryModel selectedMenuCategory;
@@ -589,7 +587,7 @@ class __CategoryOptionRadioButton extends StatelessWidget {
                   children: [
                     Image.asset("assets/images/radio-${isSelected ? "on" : "off"}.png", width: SGSpacing.p5, height: SGSpacing.p5),
                     SizedBox(width: SGSpacing.p1 + SGSpacing.p05),
-                    Container(
+                    SizedBox(
                       width: 175,
                       child: SGTypography.body(
                           category,
@@ -979,7 +977,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                   children: [
                     SGTypography.body("메뉴 구성", size: FontSize.normal, weight: FontWeight.w600),
                     SizedBox(width: SGSpacing.p1),
-                    Icon(Icons.edit, size: FontSize.small),
+                    const Icon(Icons.edit, size: FontSize.small),
                   ],
                 ),
               ),
@@ -1012,7 +1010,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                   children: [
                     SGTypography.body("메뉴 설명", size: FontSize.normal, weight: FontWeight.w600),
                     SizedBox(width: SGSpacing.p1),
-                    Icon(Icons.edit, size: FontSize.small),
+                    const Icon(Icons.edit, size: FontSize.small),
                   ],
                 ),
               ),
@@ -1238,7 +1236,7 @@ class __MenuOptionCataegoryCard extends StatelessWidget {
                         .flattened
                   ],
                 ),
-                Spacer(),
+                const Spacer(),
                 GestureDetector(
                     onTap: () {
                       onRemove(category);

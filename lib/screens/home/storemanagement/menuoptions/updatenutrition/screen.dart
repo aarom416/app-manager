@@ -50,28 +50,28 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
       isNoneMap[field] = newValue;
       switch (field) {
         case 'calories':
-          nutrition = nutrition.copyWith(calories: newValue ? 0 : widget.nutrition.calories);
+          nutrition = nutrition.copyWith(calories: newValue ? 0 : nutrition.calories);
           break;
         case 'servingAmount':
-          nutrition = nutrition.copyWith(servingAmount: newValue ? 0 : widget.nutrition.servingAmount);
+          nutrition = nutrition.copyWith(servingAmount: newValue ? 0 : nutrition.servingAmount);
           break;
         case 'carbohydrate':
-          nutrition = nutrition.copyWith(carbohydrate: newValue ? 0 : widget.nutrition.carbohydrate);
+          nutrition = nutrition.copyWith(carbohydrate: newValue ? 0 : nutrition.carbohydrate);
           break;
         case 'protein':
-          nutrition = nutrition.copyWith(protein: newValue ? 0 : widget.nutrition.protein);
+          nutrition = nutrition.copyWith(protein: newValue ? 0 : nutrition.protein);
           break;
         case 'fat':
-          nutrition = nutrition.copyWith(fat: newValue ? 0 : widget.nutrition.fat);
+          nutrition = nutrition.copyWith(fat: newValue ? 0 : nutrition.fat);
           break;
         case 'sugar':
-          nutrition = nutrition.copyWith(sugar: newValue ? 0 : widget.nutrition.sugar);
+          nutrition = nutrition.copyWith(sugar: newValue ? 0 : nutrition.sugar);
           break;
         case 'saturatedFat':
-          nutrition = nutrition.copyWith(saturatedFat: newValue ? 0 : widget.nutrition.saturatedFat);
+          nutrition = nutrition.copyWith(saturatedFat: newValue ? 0 : nutrition.saturatedFat);
           break;
         case 'natrium':
-          nutrition = nutrition.copyWith(natrium: newValue ? 0 : widget.nutrition.natrium);
+          nutrition = nutrition.copyWith(natrium: newValue ? 0 : nutrition.natrium);
           break;
       }
     });
@@ -90,7 +90,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
               NutritionFormField(
                 label: "칼로리",
                 unit: "kcal",
-                originValue: widget.nutrition.calories,
+                originValue: nutrition.calories,
                 value: nutrition.calories,
                 isNone: isNoneMap['calories']!,
                 onToggleNone: (newValue) => _handleToggleNone('calories', newValue),
@@ -104,7 +104,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
               NutritionFormField(
                 label: "제공량",
                 unit: nutrition.servingAmountType,
-                originValue: widget.nutrition.servingAmount,
+                originValue: nutrition.servingAmount,
                 value: nutrition.servingAmount,
                 isNone: isNoneMap['servingAmount']!,
                 onToggleNone: (newValue) => _handleToggleNone('servingAmount', newValue),
@@ -148,7 +148,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
               NutritionFormField(
                   label: "탄수화물",
                   unit: "g",
-                  originValue: widget.nutrition.carbohydrate,
+                  originValue: nutrition.carbohydrate,
                   value: nutrition.carbohydrate,
                   isNone: isNoneMap['carbohydrate']!,
                   onToggleNone: (newValue) => _handleToggleNone('carbohydrate', newValue),
@@ -162,7 +162,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
                   key: const ValueKey('protein'),
                   label: "단백질",
                   unit: "g",
-                  originValue: widget.nutrition.protein,
+                  originValue: nutrition.protein,
                   value: nutrition.protein,
                   isNone: isNoneMap['protein']!,
                   onToggleNone: (newValue) => _handleToggleNone('protein', newValue),
@@ -176,7 +176,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
                   key: const ValueKey('fat'),
                   label: "지방",
                   unit: "g",
-                  originValue: widget.nutrition.fat,
+                  originValue: nutrition.fat,
                   value: nutrition.fat,
                   isNone: isNoneMap['fat']!,
                   onToggleNone: (newValue) => _handleToggleNone('fat', newValue),
@@ -190,7 +190,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
                   key: const ValueKey('sugar'),
                   label: "당",
                   unit: "g",
-                  originValue: widget.nutrition.sugar,
+                  originValue: nutrition.sugar,
                   value: nutrition.sugar,
                   isNone: isNoneMap['sugar']!,
                   onToggleNone: (newValue) => _handleToggleNone('sugar', newValue),
@@ -204,7 +204,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
                   key: const ValueKey('saturatedFat'),
                   label: "포화지방",
                   unit: "g",
-                  originValue: widget.nutrition.saturatedFat,
+                  originValue: nutrition.saturatedFat,
                   value: nutrition.saturatedFat,
                   isNone: isNoneMap['saturatedFat']!,
                   onToggleNone: (newValue) => _handleToggleNone('saturatedFat', newValue),
@@ -218,7 +218,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
                   key: const ValueKey('natrium'),
                   label: "나트륨",
                   unit: "mg",
-                  originValue: widget.nutrition.natrium,
+                  originValue: nutrition.natrium,
                   value: nutrition.natrium,
                   isNone: isNoneMap['natrium']!,
                   onToggleNone: (newValue) => _handleToggleNone('natrium', newValue),

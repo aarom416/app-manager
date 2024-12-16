@@ -44,17 +44,7 @@ abstract class MenuModel with _$MenuModel {
     @Default('') String menuDescription, // 메뉴 설명. 필요해 보이나, api 규격에 존재하지 않음.
     @Default(0) int price,
     @Default('https://via.placeholder.com/150') String menuPictureURL,
-    @Default(NutritionModel(
-      servingAmount: 500,
-      servingAmountType: 'ml',
-      calories: 2400,
-      protein: 100,
-      fat: 120,
-      carbohydrate: 130,
-      sugar: 50,
-      natrium: 30,
-      saturatedFat: 120,
-    ))
+    @Default(NutritionModel())
     NutritionModel nutrition, //Nutrition. 필요해 보이나, api 규격에 존재하지 않음.
     @Default(<MenuOptionCategoryModel>[]) List<MenuOptionCategoryModel> menuCategoryOptions,
   }) = _MenuModel;
@@ -101,17 +91,7 @@ abstract class MenuOptionModel with _$MenuOptionModel {
     @Default('') String optionContent,
     @Default(0) int price,
     @Default(0) int soldOutStatus,
-    @Default(NutritionModel(
-      servingAmount: 500,
-      servingAmountType: 'ml',
-      calories: 2400,
-      protein: 100,
-      fat: 120,
-      carbohydrate: 130,
-      sugar: 50,
-      natrium: 30,
-      saturatedFat: 120,
-    ))
+    @Default(NutritionModel())
     NutritionModel nutrition, //Nutrition. 필요해 보이나, api 규격에 존재하지 않음.
   }) = _MenuOptionModel;
 
