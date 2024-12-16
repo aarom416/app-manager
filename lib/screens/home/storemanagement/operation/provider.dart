@@ -28,6 +28,13 @@ class OperationNotifier extends _$OperationNotifier {
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);
       final operationDataModel = OperationDataModel.fromJson(result.data);
+      var operationTimeDetailDTOList =
+          operationDataModel.operationTimeDetailDTOList.toList();
+      operationTimeDetailDTOList =
+          operationTimeDetailDTOList.map((operationTime) {
+        return operationTime.copyWith(toggle: true);
+      }).toList();
+
       var breakTimeDetailDTOList =
           operationDataModel.breakTimeDetailDTOList.toList();
       breakTimeDetailDTOList = breakTimeDetailDTOList.map((breakTime) {
@@ -39,8 +46,7 @@ class OperationNotifier extends _$OperationNotifier {
           operationDataModel: operationDataModel,
           deliveryStatus: operationDataModel.deliveryStatus,
           takeOutStatus: operationDataModel.takeOutStatus,
-          operationTimeDetailDTOList:
-              operationDataModel.operationTimeDetailDTOList,
+          operationTimeDetailDTOList: operationTimeDetailDTOList,
           breakTimeDetailDTOList: breakTimeDetailDTOList,
           holidayDetailDTOList: operationDataModel.holidayDetailDTOList,
           holidayStatus: operationDataModel.holidayStatus,

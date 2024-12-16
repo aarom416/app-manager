@@ -76,7 +76,11 @@ class OperationService {
         data: {
           'storeId': UserHive.getBox(key: UserKey.storeId),
           'dayList': operationTimeDetails.asMap().entries.map((entry) {
-            return entry.key;
+            if (entry.value.day == '일') {
+              return 0;
+            } else {
+              return entry.key + 1;
+            }
           }).toList(),
           'startTimeList': operationTimeDetails.map((operationTimeDetail) {
             return operationTimeDetail.startTime;

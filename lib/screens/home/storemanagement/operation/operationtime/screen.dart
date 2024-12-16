@@ -20,7 +20,11 @@ class OperationTimeScreen extends StatefulWidget {
   final List<OperationTimeDetailModel> regularHolidays;
   final Function(List<OperationTimeDetailModel>) onSaveFunction;
 
-  const OperationTimeScreen({super.key, required this.operationTimeDetailDTOList, required this.regularHolidays, required this.onSaveFunction});
+  const OperationTimeScreen(
+      {super.key,
+      required this.operationTimeDetailDTOList,
+      required this.regularHolidays,
+      required this.onSaveFunction});
 
   @override
   State<OperationTimeScreen> createState() => _OperationTimeScreenState();
@@ -43,7 +47,8 @@ class _OperationTimeScreenState extends State<OperationTimeScreen> {
         appBar: AppBarWithLeftArrow(title: "영업시간 변경"),
         body: SGContainer(
           color: const Color(0xFFFAFAFA),
-          padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+          padding: EdgeInsets.symmetric(
+              horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
           child: ListView(
             children: [
               ...operationTimeDetailDTOList
@@ -51,8 +56,11 @@ class _OperationTimeScreenState extends State<OperationTimeScreen> {
                   .entries
                   .map((entry) {
                     int index = entry.key;
-                    OperationTimeDetailModel operationTimeDetailDTO = entry.value;
-                    var isHoliday = regularHolidays.any((regularHoliday) => (regularHoliday.day == operationTimeDetailDTO.day) && regularHoliday.isWeekCycleHoliday());
+                    OperationTimeDetailModel operationTimeDetailDTO =
+                        entry.value;
+                    var isHoliday = regularHolidays.any((regularHoliday) =>
+                        (regularHoliday.day == operationTimeDetailDTO.day) &&
+                        regularHoliday.isWeekCycleHoliday());
                     return isHoliday
                         ? [
                             __OperationRegularHolidayCard(
@@ -68,7 +76,8 @@ class _OperationTimeScreenState extends State<OperationTimeScreen> {
                               onEditFunction: (operationTimeDetailDTO) {
                                 // print("onEditFunction index [$index] operationTimeDetailDTO");
                                 setState(() {
-                                  operationTimeDetailDTOList[index] = operationTimeDetailDTO;
+                                  operationTimeDetailDTOList[index] =
+                                      operationTimeDetailDTO;
                                 });
                               },
                             ),
@@ -84,7 +93,9 @@ class _OperationTimeScreenState extends State<OperationTimeScreen> {
                     showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                   },
                   label: "변경하기",
-                  disabled: const DeepCollectionEquality().equals(widget.operationTimeDetailDTOList, operationTimeDetailDTOList))
+                  disabled: const DeepCollectionEquality().equals(
+                      widget.operationTimeDetailDTOList,
+                      operationTimeDetailDTOList))
             ],
           ),
         ));
@@ -104,7 +115,8 @@ class __OperationRegularHolidayCard extends StatelessWidget {
     return SGContainer(
       color: SGColors.white,
       borderColor: SGColors.line2,
-      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+      padding: EdgeInsets.symmetric(
+          horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
       borderRadius: BorderRadius.circular(SGSpacing.p4),
       boxShadow: SGBoxShadow.large,
       child: Column(
@@ -113,9 +125,13 @@ class __OperationRegularHolidayCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SGTypography.body("${operationTimeDetailDTO.day}요일", size: FontSize.normal, weight: FontWeight.w500),
+              SGTypography.body("${operationTimeDetailDTO.day}요일",
+                  size: FontSize.normal, weight: FontWeight.w500),
               const Spacer(),
-              SGTypography.body("정기휴무일", size: FontSize.normal, weight: FontWeight.w600, color: SGColors.gray4),
+              SGTypography.body("정기휴무일",
+                  size: FontSize.normal,
+                  weight: FontWeight.w600,
+                  color: SGColors.gray4),
             ],
           )
         ],
@@ -148,7 +164,11 @@ class __OperationTimeCard extends StatelessWidget {
         ),
         minuteOptions = [
           SelectionOption(label: "00분", value: "00"),
+          SelectionOption(label: "10분", value: "10"),
+          SelectionOption(label: "20분", value: "20"),
           SelectionOption(label: "30분", value: "30"),
+          SelectionOption(label: "40분", value: "40"),
+          SelectionOption(label: "50분", value: "50"),
         ];
 
   final List<SelectionOption<String>> hourOptions;
@@ -167,7 +187,8 @@ class __OperationTimeCard extends StatelessWidget {
     return SGContainer(
       color: SGColors.white,
       borderColor: SGColors.line2,
-      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+      padding: EdgeInsets.symmetric(
+          horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
       borderRadius: BorderRadius.circular(SGSpacing.p4),
       boxShadow: SGBoxShadow.large,
       child: Column(
@@ -176,9 +197,15 @@ class __OperationTimeCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SGTypography.body("${operationTimeDetailDTO.day}요일", size: FontSize.normal, weight: FontWeight.w500),
+              SGTypography.body("${operationTimeDetailDTO.day}요일",
+                  size: FontSize.normal, weight: FontWeight.w500),
               const Spacer(),
-              SGTypography.body("24시", size: FontSize.normal, weight: FontWeight.w600, color: operationTimeDetailDTO.is24OperationHour() ? SGColors.primary : SGColors.gray4),
+              SGTypography.body("24시",
+                  size: FontSize.normal,
+                  weight: FontWeight.w600,
+                  color: operationTimeDetailDTO.is24OperationHour()
+                      ? SGColors.primary
+                      : SGColors.gray4),
               SizedBox(width: SGSpacing.p1),
               SGSwitch(
                 value: operationTimeDetailDTO.is24OperationHour(),
@@ -186,7 +213,8 @@ class __OperationTimeCard extends StatelessWidget {
                   if (value) {
                     onEditFunction(operationTimeDetailDTO.to24OperationHour);
                   } else {
-                    onEditFunction(operationTimeDetailDTO.toDefaultOperationHour);
+                    onEditFunction(
+                        operationTimeDetailDTO.toDefaultOperationHour);
                   }
                 },
               ),
@@ -194,7 +222,8 @@ class __OperationTimeCard extends StatelessWidget {
           ),
           if (!operationTimeDetailDTO.is24OperationHour()) ...[
             SizedBox(height: SGSpacing.p4),
-            SGTypography.body("시작 시간", weight: FontWeight.w600, color: SGColors.gray4),
+            SGTypography.body("시작 시간",
+                weight: FontWeight.w600, color: SGColors.gray4),
             SizedBox(height: SGSpacing.p2),
             Row(children: [
               Expanded(
@@ -206,21 +235,33 @@ class __OperationTimeCard extends StatelessWidget {
                         options: hourOptions,
                         onSelect: (value) {
                           // 시작시 0시, 종료시 0시 설정하지 못하도록 한다.
-                          if (value == "0" && operationTimeDetailDTO.endTime == "00:00") {
-                            onEditFunction(operationTimeDetailDTO.copyWith(startTime: "$value:$startMinute", endTime: "01:00"));
+                          if (value == "0" &&
+                              operationTimeDetailDTO.endTime == "00:00") {
+                            onEditFunction(operationTimeDetailDTO.copyWith(
+                                startTime: "$value:$startMinute",
+                                endTime: "01:00"));
                           } else {
-                            onEditFunction(operationTimeDetailDTO.copyWith(startTime: "$value:$startMinute"));
+                            onEditFunction(operationTimeDetailDTO.copyWith(
+                                startTime: "$value:$startMinute"));
                           }
                         },
                         selected: startHour);
                   },
                   child: SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      SGTypography.body(formatHourToAmPmWithKoreanSuffix(startHour), color: SGColors.black, size: FontSize.normal, weight: FontWeight.w500),
-                      Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
-                    ]),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SGTypography.body(
+                              formatHourToAmPmWithKoreanSuffix(startHour),
+                              color: SGColors.black,
+                              size: FontSize.normal,
+                              weight: FontWeight.w500),
+                          Image.asset('assets/images/dropdown-arrow.png',
+                              width: 16, height: 16),
+                        ]),
                   )),
                 ),
               ),
@@ -233,23 +274,32 @@ class __OperationTimeCard extends StatelessWidget {
                         title: "시작 시간(분)을 설정해 주세요.",
                         options: minuteOptions,
                         onSelect: (minute) {
-                          onEditFunction(operationTimeDetailDTO.copyWith(startTime: "$startHour:$minute"));
+                          onEditFunction(operationTimeDetailDTO.copyWith(
+                              startTime: "$startHour:$minute"));
                         },
                         selected: startMinute);
                   },
                   child: SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      SGTypography.body("$startMinute분", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w500),
-                      Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
-                    ]),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SGTypography.body("$startMinute분",
+                              color: SGColors.black,
+                              size: FontSize.normal,
+                              weight: FontWeight.w500),
+                          Image.asset('assets/images/dropdown-arrow.png',
+                              width: 16, height: 16),
+                        ]),
                   )),
                 ),
               ),
             ]),
             SizedBox(height: SGSpacing.p4 + SGSpacing.p05),
-            SGTypography.body("종료 시간", weight: FontWeight.w600, color: SGColors.gray4),
+            SGTypography.body("종료 시간",
+                weight: FontWeight.w600, color: SGColors.gray4),
             SizedBox(height: SGSpacing.p2),
             Row(children: [
               Expanded(
@@ -258,19 +308,30 @@ class __OperationTimeCard extends StatelessWidget {
                     showSelectionBottomSheet<String>(
                         context: context,
                         title: "종료 시간을 설정해 주세요.",
-                        options: operationTimeDetailDTO.startTime == "00:00" ? hourWithout0Options : hourOptions,
+                        options: operationTimeDetailDTO.startTime == "00:00"
+                            ? hourWithout0Options
+                            : hourOptions,
                         onSelect: (value) {
-                          onEditFunction(operationTimeDetailDTO.copyWith(endTime: "$value:$endMinute"));
+                          onEditFunction(operationTimeDetailDTO.copyWith(
+                              endTime: "$value:$endMinute"));
                         },
                         selected: endHour);
                   },
                   child: SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      SGTypography.body(formatHourToAmPmWithKoreanSuffix(endHour), color: SGColors.black, size: FontSize.normal, weight: FontWeight.w500),
-                      Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
-                    ]),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SGTypography.body(
+                              formatHourToAmPmWithKoreanSuffix(endHour),
+                              color: SGColors.black,
+                              size: FontSize.normal,
+                              weight: FontWeight.w500),
+                          Image.asset('assets/images/dropdown-arrow.png',
+                              width: 16, height: 16),
+                        ]),
                   )),
                 ),
               ),
@@ -283,17 +344,25 @@ class __OperationTimeCard extends StatelessWidget {
                         title: "종료 시간(분)을 설정해 주세요.",
                         options: minuteOptions,
                         onSelect: (minute) {
-                          onEditFunction(operationTimeDetailDTO.copyWith(endTime: "$endHour:$minute"));
+                          onEditFunction(operationTimeDetailDTO.copyWith(
+                              endTime: "$endHour:$minute"));
                         },
                         selected: endMinute);
                   },
                   child: SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      SGTypography.body("$endMinute분", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w500),
-                      Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
-                    ]),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SGTypography.body("$endMinute분",
+                              color: SGColors.black,
+                              size: FontSize.normal,
+                              weight: FontWeight.w500),
+                          Image.asset('assets/images/dropdown-arrow.png',
+                              width: 16, height: 16),
+                        ]),
                   )),
                 ),
               ),
