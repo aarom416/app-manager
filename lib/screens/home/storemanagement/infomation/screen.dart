@@ -182,9 +182,9 @@ class _StoreManagementBasicInfoScreenState
             ),
             const Spacer(),
             NetworkImageContainer(
-              key: ValueKey(state.storeInfo.thumbnail),
+              key: ValueKey(state.storeInfo.storePictureURL1),
               networkImageUrl:
-                  "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
+                  "${state.storeInfo.storePictureURL1}?${DateTime.now().millisecondsSinceEpoch}",
             ),
           ],
         ),
