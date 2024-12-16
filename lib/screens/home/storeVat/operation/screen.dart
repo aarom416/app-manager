@@ -274,29 +274,6 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                                   SGTypography.body("매출",
                                       weight: FontWeight.w700,
                                       size: FontSize.normal),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SendEmailScreen(
-                                                    callScreen: 2,
-                                                  )));
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                            "assets/images/download.png",
-                                            width: 15,
-                                            height: 15),
-                                        SizedBox(width: SGSpacing.p1),
-                                        SGTypography.body("상세 내역 받기",
-                                            weight: FontWeight.w400,
-                                            color: SGColors.gray4,
-                                            size: FontSize.small),
-                                      ],
-                                    ),
-                                  ),
                                 ]),
                             SizedBox(height: SGSpacing.p3),
                             ...[
@@ -335,29 +312,6 @@ class _TaxesScreenState extends ConsumerState<TaxesScreen> {
                                   SGTypography.body("매입",
                                       weight: FontWeight.w700,
                                       size: FontSize.normal),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SendEmailScreen(
-                                                    callScreen: 2,
-                                                  )));
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                            "assets/images/download.png",
-                                            width: 15,
-                                            height: 15),
-                                        SizedBox(width: SGSpacing.p1),
-                                        SGTypography.body("상세 내역 받기",
-                                            weight: FontWeight.w400,
-                                            color: SGColors.gray4,
-                                            size: FontSize.small),
-                                      ],
-                                    ),
-                                  ),
                                 ]),
                             SizedBox(height: SGSpacing.p3),
                             ...[
