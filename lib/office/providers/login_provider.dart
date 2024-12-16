@@ -74,6 +74,13 @@ class LoginNotifier extends _$LoginNotifier {
         // 로그인 성공
         final data = ResultResponseModel.fromJson(response.data);
         if (data.success) {
+          ref.read(goRouterProvider).push(
+            AppRoutes.authenticateWithPhoneNumber,
+            extra: {
+              'title': '로그인',
+            },
+          );
+
           state = state.copyWith(
             status: LoginStatus.direct,
             error: const ResultFailResponseModel(),
@@ -85,6 +92,11 @@ class LoginNotifier extends _$LoginNotifier {
         // 로그인 횟수 제한 후 직접 로그인 성공
         final data = ResultResponseModel.fromJson(response.data);
         if (data.success) {
+          ref.read(goRouterProvider).push(AppRoutes.findByPassword);
+          ref
+              .read(loginNotifierProvider.notifier)
+              .onChangeStatus(LoginStatus.init);
+
           state = state.copyWith(
             status: LoginStatus.password,
             error: const ResultFailResponseModel(),
@@ -176,9 +188,13 @@ class LoginNotifier extends _$LoginNotifier {
 
     fcmToken();
 
-    Future.delayed(const Duration(seconds: 2), () {
-      ref.read(goRouterProvider).go(AppRoutes.home);
-    });
+    if (status == UserStatus.success) {
+      ref.read(goRouterProvider).go(AppRoutes.home, extra: UniqueKey());
+    } else {
+      ref
+          .read(goRouterProvider)
+          .go(AppRoutes.signupComplete, extra: UniqueKey());
+    }
   }
 
   void fcmToken() async {
@@ -235,10 +251,8 @@ class LoginNotifier extends _$LoginNotifier {
 
       switch (response.statusCode) {
         case 200:
-          verifyPhoneBySuccess(response: response, status: UserStatus.success);
           break;
         default:
-          // 종료
           break;
       }
     } catch (e) {
@@ -257,7 +271,7 @@ class LoginNotifier extends _$LoginNotifier {
     ref.invalidate(signupNotifierProvider);
     ref.invalidate(findByPasswordNotifierProvider);
 
-    ref.read(goRouterProvider).go(AppRoutes.login, extra: UniqueKey());
+    ref.read(goRouterProvider).go(AppRoutes.welcome, extra: UniqueKey());
   }
 
   Future<void> autoLogin() async {

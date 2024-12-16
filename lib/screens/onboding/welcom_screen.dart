@@ -1,7 +1,10 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
+import 'package:singleeat/core/routers/app_router.dart';
+import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/screens/login_screen.dart';
 import 'package:singleeat/screens/onboding/views/onboding_first_view.dart';
 import 'package:singleeat/screens/onboding/views/onboding_second_view.dart';
@@ -10,14 +13,14 @@ import 'package:singleeat/screens/onboding/views/onboding_third_view.dart';
 import '../../core/components/sizing.dart';
 import '../../core/constants/colors.dart';
 
-class WelcomeScreen extends StatefulWidget {
+class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
 
   @override
-  State<WelcomeScreen> createState() => _WelcomeScreenState();
+  ConsumerState<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   final PageController _controller = PageController();
   double _currentPage = 0.0;
 
@@ -77,8 +80,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
             child: ElevatedButton(
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const LoginScreen()));
+                ref.read(goRouterProvider).go(AppRoutes.login);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: SGColors.primary,

@@ -29,9 +29,9 @@ class LoginWebViewNotifier extends _$LoginWebViewNotifier {
     state = state.copyWith(status: status);
   }
 
-  bool onClick() {
+  Future<bool> onClick() async {
     if (state.status == LoginWebViewStatus.success) {
-      ref.read(loginNotifierProvider.notifier).verifyPhone();
+      await ref.read(loginNotifierProvider.notifier).verifyPhone();
       return true;
     } else {
       return false;

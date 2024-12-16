@@ -97,49 +97,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      ref.read(loginNotifierProvider.notifier).autoLogin();
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     ref.listen(loginNotifierProvider, (previous, next) {
-      switch (next.status) {
-        case LoginStatus.direct:
-          ref.read(goRouterProvider).push(
-            AppRoutes.authenticateWithPhoneNumber,
-            extra: {
-              'title': '로그인',
-            },
-          );
-
-          ref
-              .read(loginNotifierProvider.notifier)
-              .onChangeStatus(LoginStatus.init);
-          break;
-
-        case LoginStatus.password:
-          ref.read(goRouterProvider).push(AppRoutes.findByPassword);
-          ref
-              .read(loginNotifierProvider.notifier)
-              .onChangeStatus(LoginStatus.init);
-
-        case LoginStatus.success:
-          UserModel user = UserHive.get();
-
-          if (user.status == UserStatus.success) {
-            ref.read(goRouterProvider).go(AppRoutes.home, extra: UniqueKey());
-          } else {
-            ref
-                .read(goRouterProvider)
-                .go(AppRoutes.signupComplete, extra: UniqueKey());
-          }
-
-        default:
-          break;
-      }
-
       // show models
       if (next.showTitleMessage.isNotEmpty) {
         showFailDialogWithImage(
