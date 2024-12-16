@@ -101,12 +101,10 @@ class _LoginWebViewScreenState extends ConsumerState<LoginWebViewScreen> {
                   maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
                   maxHeight: 58),
               child: SGActionButton(
-                onPressed: () {
+                onPressed: () async {
                   bool isStatus =
-                      ref.read(loginWebViewNotifierProvider.notifier).onClick();
-                  if (isStatus) {
-                    context.pop(context);
-                  } else {
+                      await ref.read(loginWebViewNotifierProvider.notifier).onClick();
+                  if (!isStatus) {
                     ref.read(goRouterProvider).go(AppRoutes.login);
                   }
                 },

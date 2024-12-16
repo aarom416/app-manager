@@ -15,7 +15,8 @@ class OperationService {
   /// GET - 영업 정보 조회
   Future<Response<dynamic>> getOperationInfo({required String storeId}) async {
     try {
-      return ref.read(requestApiProvider).get(path: RestApiUri.getOperationInfo.replaceAll('{storeId}', storeId));
+      return ref.read(requestApiProvider).get(
+          path: RestApiUri.getOperationInfo.replaceAll('{storeId}', storeId));
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);
@@ -26,7 +27,8 @@ class OperationService {
   }
 
   /// POST - 배달 상태 수정
-  Future<Response<dynamic>> updateDeliveryStatus({required String storeId, required int deliveryStatus}) async {
+  Future<Response<dynamic>> updateDeliveryStatus(
+      {required String storeId, required int deliveryStatus}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateDeliveryStatus,
@@ -45,7 +47,8 @@ class OperationService {
   }
 
   /// POST - 포장 상태 수정
-  Future<Response<dynamic>> updatePickupStatus({required String storeId, required int pickUpStatus}) async {
+  Future<Response<dynamic>> updatePickupStatus(
+      {required String storeId, required int pickUpStatus}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updatePickupStatus,
@@ -64,14 +67,20 @@ class OperationService {
   }
 
   /// POST - 가게 영업 시간 변경
-  Future<Response<dynamic>> updateOperationTime({required String storeId, required List<OperationTimeDetailModel> operationTimeDetails}) async {
+  Future<Response<dynamic>> updateOperationTime(
+      {required String storeId,
+      required List<OperationTimeDetailModel> operationTimeDetails}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateOperationTime,
         data: {
           'storeId': UserHive.getBox(key: UserKey.storeId),
           'dayList': operationTimeDetails.asMap().entries.map((entry) {
-            return entry.key;
+            if (entry.value.day == '일') {
+              return 0;
+            } else {
+              return entry.key + 1;
+            }
           }).toList(),
           'startTimeList': operationTimeDetails.map((operationTimeDetail) {
             return operationTimeDetail.startTime;
@@ -91,14 +100,20 @@ class OperationService {
   }
 
   /// POST - 가게 휴게 시간 변경
-  Future<Response<dynamic>> updateBreakTime({required String storeId, required List<OperationTimeDetailModel> breakTimeDetails}) async {
+  Future<Response<dynamic>> updateBreakTime(
+      {required String storeId,
+      required List<OperationTimeDetailModel> breakTimeDetails}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateBreakTime,
         data: {
           'storeId': UserHive.getBox(key: UserKey.storeId),
           'dayList': breakTimeDetails.asMap().entries.map((entry) {
-            return entry.key;
+            if (entry.value.day == '일') {
+              return 0;
+            } else {
+              return entry.key + 1;
+            }
           }).toList(),
           'startTimeList': breakTimeDetails.map((operationTimeDetail) {
             return operationTimeDetail.startTime;
@@ -153,7 +168,8 @@ class OperationService {
             return operationTimeDetail.cycle;
           }).toList(),
           'dayList': regularHolidays.map((operationTimeDetail) {
-            return ['월', '화', '수', '목', '금', '토', '일'].indexOf(operationTimeDetail.day);
+            return ['일', '월', '화', '수', '목', '금', '토']
+                .indexOf(operationTimeDetail.day);
           }).toList(),
           'startDateList': temporaryHolidays.map((operationTimeDetail) {
             return operationTimeDetail.startDate;
@@ -176,4 +192,5 @@ class OperationService {
   }
 }
 
-final operationServiceProvider = Provider<OperationService>((ref) => OperationService(ref));
+final operationServiceProvider =
+    Provider<OperationService>((ref) => OperationService(ref));

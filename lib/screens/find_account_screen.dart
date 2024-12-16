@@ -215,6 +215,7 @@ class _LookUpUsernameScreen extends StatefulWidget {
 class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
   String username = "";
   String errorMessage = "";
+  bool isValid = false;
   late TextEditingController controller = TextEditingController();
 
   @override
@@ -232,7 +233,7 @@ class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
                   widget.onNext!();
                 }
               },
-              disabled: username.isEmpty,
+              disabled: (username.isEmpty || !isValid),
               label: "다음")),
       body: SGContainer(
         height: double.infinity,
@@ -266,15 +267,17 @@ class _LookUpUsernameScreenState extends State<_LookUpUsernameScreen> {
                     children: [
                       TextField(
                         onChanged: (value) {
-                          final validCharacters =
-                              RegExp(r'^[a-zA-Z0-9ㄱ-ㅎ가-힣\s]*$');
+                          final validCharacters = //RegExp(
+                              RegExp(r'^[a-zA-Z가-힣]*$');
                           if (validCharacters.hasMatch(value)) {
                             setState(() {
                               username = value;
                               errorMessage = "";
+                              isValid = true;
                             });
                           } else {
                             setState(() {
+                              isValid = false;
                               errorMessage =
                                   "특수문자는 입력하실 수 없습니다.\n한글, 영문, 숫자, 띄어쓰기만 입력해주세요";
                             });
