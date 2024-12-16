@@ -5,7 +5,6 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/single_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
-import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
@@ -202,16 +201,15 @@ class _StoreManagementBasicInfoScreenState
                     hintText: "가게 소개를 입력해주세요",
                     buttonText: "변경하기",
                     onSubmit: (value) {
-                      provider.storeIntroduction(value).then((value) {
-                        if (value) {
-                          context.pop();
-                        } else {
-                          showFailDialogWithImage(
-                            context: context,
-                            mainTitle: "가게 소개 변경 오류",
-                            subTitle: "가게 소개 변경 오류",
-                          );
-                        }
+                      provider.onChangeStoreIntroduction(value);
+
+                      provider.storeIntroduction(successCallback: () {
+                        context.pop();
+                      }, errorCallback: (errorMessage) {
+                        showFailDialogWithImage(
+                          context: context,
+                          mainTitle: errorMessage,
+                        );
                       });
                     })));
           }),

@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/extensions/dynamic.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
@@ -58,23 +57,29 @@ class StoreManagementBasicInfoNotifier
     }
   }
 
-  Future<bool> storeIntroduction(String introduction) async {
+  void onChangeStoreIntroduction(String introduction) async {
     StoreInfoModel storeInfo = state.storeInfo;
     storeInfo = storeInfo.copyWith(introduction: introduction);
 
     state = state.copyWith(storeInfo: storeInfo);
+  }
 
+  Future<void> storeIntroduction(
+      {required Function successCallback,
+      required Function errorCallback}) async {
     final response = await ref
         .read(storeManagementBasicInfoServiceProvider)
         .storeIntroduction(introduction: state.storeInfo.introduction);
 
     if (response.statusCode == 200) {
       state = state.copyWith(error: const ResultFailResponseModel());
-      return true;
+
+      await successCallback;
     } else {
       state = state.copyWith(
           error: ResultFailResponseModel.fromJson(response.data));
-      return false;
+
+      await errorCallback(state.error.errorMessage);
     }
   }
 
