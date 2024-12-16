@@ -33,9 +33,10 @@ class _SettlementScreenState extends ConsumerState<SettlementScreen> {
     dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
     Future.microtask(() {
       ref.read(storeSettlementNotifierProvider.notifier).onChangeMonth(
-          startDate: dateRange.start.toShortDateStringWithZeroPadding,
-          endDate: dateRange.end.toShortDateStringWithZeroPadding);
-      ref.read(storeSettlementNotifierProvider.notifier).getSettlementInfo();
+        context: context,
+        startDate: dateRange.start.toShortDateStringWithZeroPadding,
+        endDate: dateRange.end.toShortDateStringWithZeroPadding);
+      ref.read(storeSettlementNotifierProvider.notifier).getSettlementInfo(context);
     });
   }
 
@@ -141,6 +142,7 @@ class _SettlementScreenState extends ConsumerState<SettlementScreen> {
                           setState(() {
                             dateRange = dateRange.copyWith(end: date);
                             provider.onChangeEndDate(
+                              context: context,
                                 endDate: dateRange
                                     .end.toShortDateStringWithZeroPadding);
                           });
@@ -158,10 +160,11 @@ class _SettlementScreenState extends ConsumerState<SettlementScreen> {
                               dateRange = dateRange.copyWith(
                                   start: startDate, end: endDate);
                               provider.onChangeMonth(
-                                  startDate: dateRange
-                                      .start.toShortDateStringWithZeroPadding,
-                                  endDate: dateRange
-                                      .end.toShortDateStringWithZeroPadding);
+                                context: context,
+                                startDate: dateRange
+                                    .start.toShortDateStringWithZeroPadding,
+                                endDate: dateRange
+                                    .end.toShortDateStringWithZeroPadding);
                             });
                           }),
                     ...state.storeSettlement.responseSettlementDTOList
