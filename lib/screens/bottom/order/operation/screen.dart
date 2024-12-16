@@ -585,16 +585,17 @@ class _InProgressOrderListView extends ConsumerWidget {
               alignment: Alignment.topRight,
               children: [
                 _OrderCard(
-                    tab: tab,
-                    order: orders[index],
-                    // TODO : 2024.12.10 접수 API 경과 시간 추가 필요 현재 10으로 고정
-                    tailing: PercentageIndicator(
-                        percentage: 10 / orders[index].expectedTime,
-                        radius: 25,
-                        strokeWidth: 3,
-                        strokeColor: strokeColor(orders[index]),
-                        color: Colors.transparent,
-                        label: "${orders[index].expectedTime}분")),
+                  tab: tab,
+                  order: orders[index],
+                  tailing: PercentageIndicator(
+                    percentage: calculatePercentage(orders[index]),
+                    radius: 25,
+                    strokeWidth: 3,
+                    strokeColor: strokeColor(orders[index]),
+                    color: Colors.transparent,
+                    label: calculateLabel(orders[index]),
+                  ),
+                ),
                 Positioned(
                     top: SGSpacing.p4,
                     right: SGSpacing.p2,
@@ -613,6 +614,47 @@ class _InProgressOrderListView extends ConsumerWidget {
           );
         });
   }
+  double calculatePercentage(NewOrderModel order) {
+    final currentTime = DateTime.now();
+
+    final createdDateParts = order.createdDate.split(":");
+    final createdDate = DateTime(
+      currentTime.year,
+      currentTime.month,
+      currentTime.day,
+      int.parse(createdDateParts[0]),
+      int.parse(createdDateParts[1]),
+    );
+
+    final elapsedTime = currentTime.difference(createdDate).inMinutes;
+    final percentage = elapsedTime / order.expectedTime;
+
+    return percentage > 1 ? 1.0 : percentage;
+  }
+
+  String calculateLabel(NewOrderModel order) {
+    final currentTime = DateTime.now();
+
+    final createdDateParts = order.createdDate.split(":");
+    final createdDate = DateTime(
+      currentTime.year,
+      currentTime.month,
+      currentTime.day,
+      int.parse(createdDateParts[0]),
+      int.parse(createdDateParts[1]),
+    );
+
+    final elapsedTime = currentTime.difference(createdDate).inMinutes;
+    final remainingTime = order.expectedTime - elapsedTime;
+
+    if (remainingTime <= 0) {
+      return "완료";
+    } else {
+      return "$remainingTime분";
+    }
+  }
+
+
 
   Color strokeColor(NewOrderModel order) {
     if (order.receiveFoodType == "TAKEOUT") return SGColors.success;
@@ -660,8 +702,7 @@ class _CompleteOrderListView extends ConsumerWidget {
                     tab: tab,
                     order: orders[index],
                     tailing: PercentageIndicator(
-                        percentage: orders[index].expectedTime /
-                            orders[index].expectedTime,
+                        percentage: 100,
                         radius: 25,
                         strokeWidth: 3,
                         strokeColor: strokeColor(orders[index]),
