@@ -152,7 +152,36 @@ class _SelectableMenuModelsBottomSheetState extends State<_SelectableMenuModelsB
                           children: [
                             Row(
                               children: [
-                                ClipRRect(borderRadius: BorderRadius.circular(SGSpacing.p4), child: Image.network(selectableMenus[idx].menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18)),
+                                Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(SGSpacing.p4),
+                                      child: Image.network(
+                                        selectableMenus[idx].menuPictureURL,
+                                        width: SGSpacing.p18,
+                                        height: SGSpacing.p18,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    if (selectableMenus[idx].soldOutStatus == 1)
+                                      Positioned.fill(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF808080).withOpacity(0.7),
+                                            borderRadius: BorderRadius.circular(SGSpacing.p4),
+                                          ),
+                                          child: Center(
+                                            child: SGTypography.body(
+                                              "품절",
+                                              size: FontSize.normal,
+                                              color: SGColors.white,
+                                              weight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
                                 SizedBox(width: SGSpacing.p3),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
