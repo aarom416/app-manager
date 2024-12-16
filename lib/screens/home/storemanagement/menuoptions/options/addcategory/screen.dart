@@ -589,19 +589,19 @@ class _Page_3_AppliedMenusState extends State<_Page_3_AppliedMenus> {
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
-                    if (appliedMenus.isEmpty) return;
+
                     widget.onEditFunction(appliedMenus);
                     widget.onNext();
                   },
                   child: SGContainer(
-                      color: appliedMenus.isEmpty ? SGColors.gray3 : SGColors.primary,
+                      color: SGColors.primary,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
                       child: Center(
                           child: SGTypography.body(
                         "다음",
                         size: FontSize.large,
-                        color: appliedMenus.isEmpty ? SGColors.gray5 : SGColors.white,
+                        color: SGColors.white,
                         weight: FontWeight.w700,
                       ))),
                 )),

@@ -112,9 +112,9 @@ class _StoreManagementBasicInfoScreenState
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                SGTypography.body("가게 전화번호 변경 희망 시", size: FontSize.large, weight: FontWeight.w500),
+                                SGTypography.body("가게 전화번호 변경 희망 시", size: FontSize.large, weight: FontWeight.w600),
                                 SizedBox(height: SGSpacing.p1),
-                                SGTypography.body("고객센터로 연락주세요.", size: FontSize.large, weight: FontWeight.w500),
+                                SGTypography.body("고객센터로 연락주세요.", size: FontSize.large, weight: FontWeight.w600),
                                 SizedBox(height: SGSpacing.p3),
                                 SGTypography.body("싱그릿 식단 연구소 고객센터(1600-7723)", color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w500),
                                 SizedBox(height: SGSpacing.p5),
@@ -202,6 +202,7 @@ class _StoreManagementBasicInfoScreenState
                     onSubmit: (value) {
                       provider.storeIntroduction(value).then((value) {
                         if (value) {
+                          showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
                           context.pop();
                         } else {
                           showFailDialogWithImage(
