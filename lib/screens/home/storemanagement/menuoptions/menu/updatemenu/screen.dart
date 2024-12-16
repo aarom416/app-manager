@@ -371,6 +371,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                   SizedBox(height: SGSpacing.p4),
                   NutritionCard(
                     nutrition: menuModel.nutrition,
+                    type: 0,
                     onTap: () {
                       final screenContext = context;
                       Navigator.of(screenContext).push(MaterialPageRoute(

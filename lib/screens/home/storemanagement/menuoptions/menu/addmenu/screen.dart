@@ -788,6 +788,7 @@ class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
                 SizedBox(height: SGSpacing.p3),
                 NutritionCard(
                     nutrition: nutrition,
+                    type: 0,
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => UpdateNutritionScreen(
