@@ -10,7 +10,6 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
-import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -139,15 +138,20 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
             )
                 .then((resultFailResponseModel) {
               if (resultFailResponseModel.errorCode.isEmpty) {
-                showFailDialogWithImage(context: context, mainTitle: "성공적으로 등록되었습니다.",
-                  onTapFunction: () {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  });
+                showFailDialogWithImage(
+                    context: context,
+                    mainTitle: "성공적으로 등록되었습니다.",
+                    onTapFunction: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    });
               } else {
-                showFailDialogWithImage(context: context, mainTitle: resultFailResponseModel.errorMessage, onTapFunction: () {
-                  Navigator.pop(context);
-                });
+                showFailDialogWithImage(
+                    context: context,
+                    mainTitle: resultFailResponseModel.errorMessage,
+                    onTapFunction: () {
+                      Navigator.pop(context);
+                    });
               }
             }),
           },
@@ -862,19 +866,19 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                  if (menuBriefDescription.isNotEmpty && menuDescription.isNotEmpty && imagePath.isNotEmpty) {
+                  if (menuBriefDescription.isNotEmpty && menuDescription.isNotEmpty && imagePath.isNotEmpty && selectedMenuOptionCategories.isNotEmpty) {
                     widget.onNext();
                   }
                 },
                 child: SGContainer(
-                    color: menuBriefDescription.isEmpty || menuDescription.isEmpty || imagePath.isEmpty ? SGColors.gray2 : SGColors.primary,
+                    color: menuBriefDescription.isEmpty || menuDescription.isEmpty || imagePath.isEmpty || selectedMenuOptionCategories.isNotEmpty ? SGColors.gray2 : SGColors.primary,
                     padding: EdgeInsets.all(SGSpacing.p4),
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Center(
                         child: SGTypography.body(
                       "등록",
                       size: FontSize.large,
-                      color: menuBriefDescription.isEmpty || menuDescription.isEmpty || imagePath.isEmpty ? SGColors.gray5 : SGColors.white,
+                      color: menuBriefDescription.isEmpty || menuDescription.isEmpty || imagePath.isEmpty || selectedMenuOptionCategories.isNotEmpty ? SGColors.gray5 : SGColors.white,
                       weight: FontWeight.w700,
                     ))),
               )),
