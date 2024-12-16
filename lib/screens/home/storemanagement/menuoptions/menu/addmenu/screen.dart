@@ -1063,7 +1063,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                           Icon(Icons.edit, size: FontSize.small),
                         ],
                       ),
-                      SizedBox(height: SGSpacing.p2),
+                      SizedBox(height: SGSpacing.p4),
                       if (selectedMenuOptionCategories.isEmpty)
                         SGTypography.body(
                           "등록된 내용이 없어요.",
@@ -1105,7 +1105,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                     ],
                   ),
                 ),
-                SizedBox(height: SGSpacing.p5),
+                SizedBox(height: SGSpacing.p3),
               ],
             ),
             SizedBox(height: SGSpacing.p32),
