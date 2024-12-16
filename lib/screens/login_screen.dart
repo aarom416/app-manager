@@ -14,6 +14,8 @@ import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/user_model.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
 
+import '../office/providers/authenticate_with_phone_number_provider.dart';
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -104,7 +106,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     ref.listen(loginNotifierProvider, (previous, next) {
       switch (next.status) {
-
         case LoginStatus.direct:
           ref.read(goRouterProvider).push(
             AppRoutes.authenticateWithPhoneNumber,
@@ -158,8 +159,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         color: SGColors.white,
         padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
         child: SingleChildScrollView(
-          child: Column(
-              children: [
+          child: Column(children: [
             SizedBox(height: SGSpacing.p20),
             Image.asset("assets/images/app-logo.png",
                 height: SGSpacing.p4 * 10, width: SGSpacing.p4 * 10),
@@ -175,8 +175,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         .read(loginNotifierProvider.notifier)
                         .onChangeLoginId(value);
                   },
-                  style:
-                      TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
+                  style: TextStyle(
+                      fontSize: FontSize.small, color: SGColors.gray5),
                   decoration: InputDecoration(
                     isDense: true,
                     isCollapsed: true,
@@ -288,18 +288,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: SGTypography.body("회원가입",
                           color: SGColors.gray4, size: FontSize.normal))),
               SGContainer(
-                  height: SGSpacing.p3, color: SGColors.line3, borderWidth: 0.5),
+                  height: SGSpacing.p3,
+                  color: SGColors.line3,
+                  borderWidth: 0.5),
               GestureDetector(
                   onTap: () {
                     FocusScope.of(context).unfocus();
-          
-                    ref.read(goRouterProvider).push(AppRoutes.findByAccount);
+                    ref
+                        .read(authenticateWithPhoneNumberNotifierProvider
+                            .notifier)
+                        .onChangeMethod(
+                            AuthenticateWithPhoneNumberMethod.ACCOUNT);
+                    ref
+                        .read(goRouterProvider)
+                        .push(AppRoutes.authenticateWithPhoneNumber);
                   },
                   child: Center(
                       child: SGTypography.body("아이디 찾기",
                           color: SGColors.gray4, size: FontSize.normal))),
               SGContainer(
-                  height: SGSpacing.p3, color: SGColors.line3, borderWidth: 0.5),
+                  height: SGSpacing.p3,
+                  color: SGColors.line3,
+                  borderWidth: 0.5),
               GestureDetector(
                   onTap: () {
                     ref.read(goRouterProvider).push(AppRoutes.findByPassword);
@@ -308,7 +318,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: SGTypography.body("비밀번호 찾기",
                           color: SGColors.gray4, size: FontSize.normal))),
             ]),
-                Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
+            Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom))
           ]),
         ),
       ),

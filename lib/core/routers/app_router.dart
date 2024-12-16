@@ -9,13 +9,13 @@ import 'package:singleeat/screens/bottom/myinfo/accountstatus/screen.dart';
 import 'package:singleeat/screens/bottom/myinfo/alarmstatus/business_notification_configuration_screen.dart';
 import 'package:singleeat/screens/bottom/myinfo/alarmstatus/notification_configuration_screen.dart';
 import 'package:singleeat/screens/bottom/myinfo/operationstatus/screen.dart';
-import 'package:singleeat/screens/home/couponinformation/operation/issue/screen.dart';
 import 'package:singleeat/screens/delivery_agency_screen.dart';
 import 'package:singleeat/screens/find_account_screen.dart';
 import 'package:singleeat/screens/find_account_webview_screen.dart';
 import 'package:singleeat/screens/find_by_password_screen.dart';
 import 'package:singleeat/screens/find_by_password_webview_screen.dart';
 import 'package:singleeat/screens/home/couponinformation/operation/detail/screen.dart';
+import 'package:singleeat/screens/home/couponinformation/operation/issue/screen.dart';
 import 'package:singleeat/screens/home/couponinformation/operation/screen.dart';
 import 'package:singleeat/screens/home/storeVat/operation/screen.dart';
 import 'package:singleeat/screens/home/storeinformation/operation/screen.dart';
@@ -28,7 +28,6 @@ import 'package:singleeat/screens/login_screen.dart';
 import 'package:singleeat/screens/login_webview_screen.dart';
 import 'package:singleeat/screens/notification_screen.dart';
 import 'package:singleeat/screens/register_delivery_agency_screen.dart';
-import 'package:singleeat/screens/service_agreement_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/signup_screen.dart';
 import 'package:singleeat/screens/signup_webview_screen.dart';
@@ -102,7 +101,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               );
             } else {
               return NoTransitionPage(
-                child: AuthenticateWithPhoneNumberScreen(title: '로그인'),
+                child: AuthenticateWithPhoneNumberScreen(title: '아이디 찾기'),
               );
             }
           }),
@@ -131,9 +130,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             } else {
               return NoTransitionPage(
                   child: HomeScreen(
-                    title: '',
-                    key: ValueKey(extra),
-                  ));
+                title: '',
+                key: ValueKey(extra),
+              ));
             }
           }),
       // GoRoute(
