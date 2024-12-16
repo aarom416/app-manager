@@ -51,7 +51,8 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
     }
 
     final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile == null) {
       return; // 유저가 이미지를 선택하지 않음
@@ -98,17 +99,23 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
 
   /// 이미지 슬롯 생성
   List<(int, String?)> get imageSlots => [
-    ...widget.imagePaths,
-    ...List.generate(widget.maximumImages - widget.imagePaths.length, (_) => null),
-    ...List.generate((widget.maximumImages + columns - 1) ~/ columns * columns - widget.maximumImages, (_) => null),
-  ].mapIndexed((index, value) => (index, value)).toList();
+        ...widget.imagePaths,
+        ...List.generate(
+            widget.maximumImages - widget.imagePaths.length, (_) => null),
+        ...List.generate(
+            (widget.maximumImages + columns - 1) ~/ columns * columns -
+                widget.maximumImages,
+            (_) => null),
+      ].mapIndexed((index, value) => (index, value)).toList();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: widget.title),
       floatingActionButton: Container(
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+        constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
+            maxHeight: 58),
         child: SGActionButton(
           onPressed: () {
             widget.onSubmit(widget.imagePaths);
@@ -119,15 +126,22 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       ),
       body: SGContainer(
         color: const Color(0xFFFAFAFA),
-        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+        padding: EdgeInsets.symmetric(
+            horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SGTypography.body(widget.fieldLabel, color: SGColors.black, weight: FontWeight.w700, size: FontSize.normal),
-                SGTypography.body("${widget.imagePaths.length}/${widget.maximumImages}", color: SGColors.gray5, weight: FontWeight.w500),
+                SGTypography.body(widget.fieldLabel,
+                    color: SGColors.black,
+                    weight: FontWeight.w700,
+                    size: FontSize.normal),
+                SGTypography.body(
+                    "${widget.imagePaths.length}/${widget.maximumImages}",
+                    color: SGColors.gray5,
+                    weight: FontWeight.w500),
               ],
             ),
             SizedBox(height: SGSpacing.p3),
@@ -136,11 +150,15 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: List.generate(widget.maximumImages, (index) {
-                  final imagePath = index < widget.imagePaths.length ? widget.imagePaths[index] : null;
+                  final imagePath = index < widget.imagePaths.length
+                      ? widget.imagePaths[index]
+                      : null;
                   return Padding(
                     padding: EdgeInsets.only(right: SGSpacing.p3),
                     child: GestureDetector(
-                      onTap: imagePath == null ? addImage : () => removeImage(index),
+                      onTap: imagePath == null
+                          ? addImage
+                          : () => removeImage(index),
                       child: SGContainer(
                         width: 110,
                         height: 110,
@@ -149,41 +167,44 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
                         borderRadius: BorderRadius.circular(SGSpacing.p2),
                         child: imagePath == null
                             ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ColorFiltered(
-                              colorFilter: const ColorFilter.mode(Colors.black, BlendMode.modulate),
-                              child: Image.asset(
-                                "assets/images/plus.png",
-                                width: SGSpacing.p6,
-                                height: SGSpacing.p6,
-                              ),
-                            ),
-                            SizedBox(height: SGSpacing.p2),
-                            SGTypography.body("이미지 등록", weight: FontWeight.w600, color: SGColors.gray5),
-                          ],
-                        )
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ColorFiltered(
+                                    colorFilter: const ColorFilter.mode(
+                                        Colors.black, BlendMode.modulate),
+                                    child: Image.asset(
+                                      "assets/images/plus.png",
+                                      width: SGSpacing.p6,
+                                      height: SGSpacing.p6,
+                                    ),
+                                  ),
+                                  SizedBox(height: SGSpacing.p2),
+                                  SGTypography.body("이미지 등록",
+                                      weight: FontWeight.w600,
+                                      color: SGColors.gray5),
+                                ],
+                              )
                             : Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Image.file(
-                                File(imagePath),
-                                fit: BoxFit.cover,
+                                children: [
+                                  Positioned.fill(
+                                    child: Image.file(
+                                      File(imagePath),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 4,
+                                    right: 4,
+                                    child: GestureDetector(
+                                      onTap: () => removeImage(index),
+                                      child: const Icon(
+                                        Icons.close,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            Positioned(
-                              top: 4,
-                              right: 4,
-                              child: GestureDetector(
-                                onTap: () => removeImage(index),
-                                child: const Icon(
-                                  Icons.close,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                   );
@@ -191,11 +212,11 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               ),
             ),
             SizedBox(height: SGSpacing.p3),
-            SGTypography.body("10MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.", color: SGColors.gray4, weight: FontWeight.w500),
+            SGTypography.body("10MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.",
+                color: SGColors.gray4, weight: FontWeight.w500),
           ],
         ),
       ),
     );
   }
-
 }

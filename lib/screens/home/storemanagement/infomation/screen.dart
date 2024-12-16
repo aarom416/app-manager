@@ -74,13 +74,11 @@ class _StoreManagementBasicInfoScreenState
               child: const Icon(Icons.edit, size: FontSize.small),
             ),
             const Spacer(),
-            state.storeInfo.thumbnail.isNotEmpty
-                ? NetworkImageContainer(
-                    key: ValueKey(state.storeInfo.thumbnail),
-                    networkImageUrl:
-                        "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
-                  )
-                : const SizedBox.shrink(),
+            NetworkImageContainer(
+              key: ValueKey(state.storeInfo.thumbnail),
+              networkImageUrl:
+                  "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
+            ),
           ],
         ),
       ),
@@ -108,40 +106,48 @@ class _StoreManagementBasicInfoScreenState
                       showUpdatePhoneSGDialog(
                           context: context,
                           childrenBuilder: (ctx) => [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SGTypography.body("가게 전화번호 변경 희망 시", size: FontSize.large, weight: FontWeight.w500),
-                                SizedBox(height: SGSpacing.p1),
-                                SGTypography.body("고객센터로 연락주세요.", size: FontSize.large, weight: FontWeight.w500),
-                                SizedBox(height: SGSpacing.p3),
-                                SGTypography.body("싱그릿 식단 연구소 고객센터(1600-7723)", color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w500),
-                                SizedBox(height: SGSpacing.p5),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    Navigator.pop(ctx);
-                                  },
-                                  child: SGContainer(
-                                    width: double.infinity,
-                                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                                    color: SGColors.primary,
-                                    child: Center(
-                                      child: SGTypography.body("확인",
-                                          size: FontSize.normal,
-                                          weight: FontWeight.w700,
-                                          color: SGColors.white),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SGTypography.body("가게 전화번호 변경 희망 시",
+                                        size: FontSize.large,
+                                        weight: FontWeight.w500),
+                                    SizedBox(height: SGSpacing.p1),
+                                    SGTypography.body("고객센터로 연락주세요.",
+                                        size: FontSize.large,
+                                        weight: FontWeight.w500),
+                                    SizedBox(height: SGSpacing.p3),
+                                    SGTypography.body(
+                                        "싱그릿 식단 연구소 고객센터(1600-7723)",
+                                        color: SGColors.gray4,
+                                        size: FontSize.normal,
+                                        weight: FontWeight.w500),
+                                    SizedBox(height: SGSpacing.p5),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        Navigator.pop(ctx);
+                                      },
+                                      child: SGContainer(
+                                        width: double.infinity,
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: SGSpacing.p4),
+                                        borderRadius:
+                                            BorderRadius.circular(SGSpacing.p3),
+                                        color: SGColors.primary,
+                                        child: Center(
+                                          child: SGTypography.body("확인",
+                                              size: FontSize.normal,
+                                              weight: FontWeight.w700,
+                                              color: SGColors.white),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          ]
-                      );
-                    }))
-            );
+                                  ],
+                                )
+                              ]);
+                    })));
           }),
       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
       SGContainer(
@@ -175,13 +181,11 @@ class _StoreManagementBasicInfoScreenState
               child: const Icon(Icons.edit, size: FontSize.small),
             ),
             const Spacer(),
-            state.storeInfo.thumbnail.isNotEmpty
-                ? NetworkImageContainer(
-                    key: ValueKey(state.storeInfo.thumbnail),
-                    networkImageUrl:
-                        "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
-                  )
-                : const SizedBox.shrink(),
+            NetworkImageContainer(
+              key: ValueKey(state.storeInfo.thumbnail),
+              networkImageUrl:
+                  "${state.storeInfo.thumbnail}?${DateTime.now().millisecondsSinceEpoch}",
+            ),
           ],
         ),
       ),
@@ -245,13 +249,11 @@ class _StoreManagementBasicInfoScreenState
               child: const Icon(Icons.edit, size: FontSize.small),
             ),
             const Spacer(),
-            state.storeInfo.storeInformationURL.isNotEmpty
-                ? NetworkImageContainer(
-                    key: ValueKey(state.storeInfo.storeInformationURL),
-                    networkImageUrl:
-                        "${state.storeInfo.storeInformationURL}?${DateTime.now().millisecondsSinceEpoch}",
-                  )
-                : const SizedBox.shrink(),
+            NetworkImageContainer(
+              key: ValueKey(state.storeInfo.storeInformationURL),
+              networkImageUrl:
+                  "${state.storeInfo.storeInformationURL}?${DateTime.now().millisecondsSinceEpoch}",
+            ),
           ],
         ),
       ),
@@ -291,7 +293,7 @@ void showUpdatePhoneSGDialog({
               children: [
                 SGContainer(
                   padding:
-                  EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                      EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
