@@ -252,7 +252,10 @@ class _CouponDetailScreenState extends ConsumerState<CouponDetailScreen> {
                                 SizedBox(width: SGSpacing.p2),
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: () => deleteCoupon(provider),
+                                    onTap: () {
+                                      deleteCoupon(provider);
+                                      showGlobalSnackBar(context, "쿠폰이 삭제되었습니다.");
+                                    },
                                     child: SGContainer(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: SGSpacing.p4,
@@ -286,7 +289,6 @@ class _CouponDetailScreenState extends ConsumerState<CouponDetailScreen> {
     await provider.deleteIssuedCoupon(
       successCallback: () {
         if (!context.mounted) return;
-        showGlobalSnackBar(context, "쿠폰이 삭제되었습니다.");
         popUntil(context: context, path: AppRoutes.couponInformation);
       },
       failCallback: () =>
