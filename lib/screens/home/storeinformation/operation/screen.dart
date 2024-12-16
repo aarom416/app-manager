@@ -23,12 +23,11 @@ class StoreInformationScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<StoreInformationScreen> createState() =>
       _StoreInformationScreenState();
-
-
 }
 
 class BusinessInformationDataTableRow extends StatelessWidget {
-  const BusinessInformationDataTableRow({super.key, required this.left, required this.right});
+  const BusinessInformationDataTableRow(
+      {super.key, required this.left, required this.right});
 
   final String left;
   final String right;
@@ -258,6 +257,7 @@ class _EditBusinessProfileScreenState
     extends ConsumerState<_EditBusinessProfileScreen> {
   String businessType = "0";
   var selectionOption;
+  bool typeChange = true;
   @override
   void initState() {
     Future.microtask(() {
@@ -293,7 +293,8 @@ class _EditBusinessProfileScreenState
                 padding: EdgeInsets.symmetric(
                     horizontal: SGSpacing.p4,
                     vertical: SGSpacing.p4 + SGSpacing.p05),
-                child: SGTypography.body(state.storeInformation.businessNumber,
+                child: SGTypography.body(
+                    state.storeInformation.businessNumber.toBizNumberFormat,
                     size: FontSize.normal,
                     weight: FontWeight.w400,
                     color: SGColors.gray3),
@@ -309,6 +310,9 @@ class _EditBusinessProfileScreenState
                       title: "사업자 구분을 선택해주세요.",
                       options: businessTypeOptions,
                       onSelect: (value) {
+                        if (value != businessType) {
+                          typeChange = !typeChange;
+                        }
                         setState(() {
                           businessType = value;
                         });
@@ -383,11 +387,12 @@ class _EditBusinessProfileScreenState
               ]),
               SizedBox(height: SGSpacing.p15),
               SGActionButton(
-                  onPressed: () {
-                    provider.updateBusinessInformation(int.parse(businessType));
-                    showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
-                  },
-                  label: "변경하기",
+                onPressed: () {
+                  provider.updateBusinessInformation(int.parse(businessType));
+                  showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
+                },
+                disabled: typeChange,
+                label: "변경하기",
               )
             ])));
   }
