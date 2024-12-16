@@ -152,34 +152,29 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
                           ],
                         ),
                       ),
+                    if (widget.fieldLabel != "가게 소개")
+                      Positioned(
+                        bottom: SGSpacing.p3,
+                        right: SGSpacing.p3,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SGTypography.body(
+                              "${value.length}",
+                            ),
+                            SGTypography.body(
+                              "/$maxLength",
+                              color: SGColors.gray3,
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               ),
             ),
-            if (widget.fieldLabel != "가게 소개") _buildCharacterCounter(),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildCharacterCounter() {
-    final maxLimit = widget.fieldLabel == "가게 소개"
-        ? maxStoreIntroductionLength
-        : maxLength;
-    return SGContainer(
-      padding: EdgeInsets.all(SGSpacing.p4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          SGTypography.body(
-            "${value.length}",
-          ),
-          SGTypography.body(
-            "/$maxLimit",
-            color: SGColors.gray3,
-          ),
-        ],
       ),
     );
   }

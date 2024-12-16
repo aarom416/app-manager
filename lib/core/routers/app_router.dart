@@ -28,7 +28,7 @@ import 'package:singleeat/screens/login_screen.dart';
 import 'package:singleeat/screens/login_webview_screen.dart';
 import 'package:singleeat/screens/notification_screen.dart';
 import 'package:singleeat/screens/register_delivery_agency_screen.dart';
-import 'package:singleeat/screens/service_agreement_screen.dart';
+import 'package:singleeat/screens/bottom/myinfo/accountstatus/serviceagreement/service_agreement_screen.dart';
 import 'package:singleeat/screens/signup_complete_screen.dart';
 import 'package:singleeat/screens/signup_screen.dart';
 import 'package:singleeat/screens/signup_webview_screen.dart';
@@ -36,6 +36,7 @@ import 'package:singleeat/screens/splash_screen.dart';
 import 'package:singleeat/screens/store_registration_form_screen.dart';
 import 'package:singleeat/screens/success_change_password_screen.dart';
 
+import '../../screens/bottom/order/operation/screen.dart';
 import '../../screens/onboding/welcom_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavKey = GlobalKey<NavigatorState>();
@@ -136,6 +137,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ));
             }
           }),
+      GoRoute(
+        path: AppRoutes.orderManagement,
+        pageBuilder: (context, state) =>
+        const NoTransitionPage(child: OrderManagementScreen()),
+      ),
       // GoRoute(
       //     path: AppRoutes.changePhoneWebView,
       //     pageBuilder: (context, state) =>

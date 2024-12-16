@@ -12,6 +12,7 @@ class AppRoutes {
   static const String findByPasswordWebView = '/find/password/webview';
   static const String findByAccount = '/find/account';
   static const String findByAccountWebView = '/find/account/webview';
+  static const String orderManagement = '/order-management';
   static const String profileEdit = '/profile/edit';
   static const String storeRegistrationForm = '/store/registration/form';
   static const String notification = '/notification';

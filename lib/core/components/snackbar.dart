@@ -101,7 +101,7 @@ void showSnackBar(BuildContext context, String text) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       margin: EdgeInsets.only(
-          left: SGSpacing.p24, right: SGSpacing.p24, bottom: SGSpacing.p12),
+          left: SGSpacing.p20, right: SGSpacing.p20, bottom: SGSpacing.p12),
       behavior: SnackBarBehavior.floating,
       content: Row(
         mainAxisAlignment: MainAxisAlignment.center,
