@@ -73,6 +73,7 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
         floatingActionButton: Container(
             constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
             child: SGActionButton(
+                disabled: controller.text.isEmpty || hasBadWord,
                 onPressed: () {
                   widget.onSubmit(controller.text);
                 },
