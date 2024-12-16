@@ -561,58 +561,74 @@ class _InProgressOrderListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (orders.isEmpty) return _NoOrderScreen();
-    return ListView.separated(
-        shrinkWrap: true,
-        itemCount: orders.length,
-        separatorBuilder: (ctx, index) => Divider(
-              thickness: 0.5,
-              color: SGColors.lineDark,
-            ),
-        itemBuilder: (ctx, index) {
-          return GestureDetector(
-            onTap: () async {
-              bool result = await ref
-                  .read(orderNotifierProvider.notifier)
-                  .getAcceptedOrderDetail(orders[index].orderInformationId);
-              if (result) {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (ctx) => InProgressOrderDetailScreen(
-                        order: ref.watch(orderNotifierProvider).orderDetail)));
-              }
-            },
-            child: Stack(
-              alignment: Alignment.topRight,
-              children: [
-                _OrderCard(
-                  tab: tab,
-                  order: orders[index],
-                  tailing: PercentageIndicator(
-                    percentage: calculatePercentage(orders[index]),
-                    radius: 25,
-                    strokeWidth: 3,
-                    strokeColor: strokeColor(orders[index]),
-                    color: Colors.transparent,
-                    label: calculateLabel(orders[index]),
+    if (orders.isEmpty) {
+      return RefreshIndicator(
+          backgroundColor: Colors.transparent,
+          onRefresh: () async {
+            ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
+          },
+          color: SGColors.primary,
+          child: _NoOrderScreen()
+      );
+    }
+    return RefreshIndicator(
+      backgroundColor: Colors.transparent,
+      onRefresh: () async {
+        ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
+      },
+      color: SGColors.primary,
+      child: ListView.separated(
+          shrinkWrap: true,
+          itemCount: orders.length,
+          separatorBuilder: (ctx, index) => Divider(
+                thickness: 0.5,
+                color: SGColors.lineDark,
+              ),
+          itemBuilder: (ctx, index) {
+            return GestureDetector(
+              onTap: () async {
+                bool result = await ref
+                    .read(orderNotifierProvider.notifier)
+                    .getAcceptedOrderDetail(orders[index].orderInformationId);
+                if (result) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => InProgressOrderDetailScreen(
+                          order: ref.watch(orderNotifierProvider).orderDetail)));
+                }
+              },
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  _OrderCard(
+                    tab: tab,
+                    order: orders[index],
+                    tailing: PercentageIndicator(
+                      percentage: calculatePercentage(orders[index]),
+                      radius: 25,
+                      strokeWidth: 3,
+                      strokeColor: strokeColor(orders[index]),
+                      color: Colors.transparent,
+                      label: calculateLabel(orders[index]),
+                    ),
                   ),
-                ),
-                Positioned(
-                    top: SGSpacing.p4,
-                    right: SGSpacing.p2,
-                    child: CircleAvatar(
-                        radius: SGSpacing.p3 + SGSpacing.p05,
-                        backgroundColor: strokeColor(orders[index]),
-                        child: Center(
-                            child: SGTypography.body(
-                                orders[index].receiveFoodType == 'DELIVERY'
-                                    ? '배달'
-                                    : '포장',
-                                color: SGColors.white,
-                                weight: FontWeight.w700))))
-              ],
-            ),
-          );
-        });
+                  Positioned(
+                      top: SGSpacing.p4,
+                      right: SGSpacing.p2,
+                      child: CircleAvatar(
+                          radius: SGSpacing.p3 + SGSpacing.p05,
+                          backgroundColor: strokeColor(orders[index]),
+                          child: Center(
+                              child: SGTypography.body(
+                                  orders[index].receiveFoodType == 'DELIVERY'
+                                      ? '배달'
+                                      : '포장',
+                                  color: SGColors.white,
+                                  weight: FontWeight.w700))))
+                ],
+              ),
+            );
+          }),
+    );
   }
   double calculatePercentage(NewOrderModel order) {
     final currentTime = DateTime.now();
