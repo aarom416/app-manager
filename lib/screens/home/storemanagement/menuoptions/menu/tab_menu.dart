@@ -344,7 +344,36 @@ class _MenuCategoryCard extends StatelessWidget {
               );
             },
             child: Row(children: [
-              ClipRRect(borderRadius: BorderRadius.circular(SGSpacing.p4), child: Image.network(menu.menuPictureURL, width: SGSpacing.p18, height: SGSpacing.p18)),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(SGSpacing.p4),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.network(
+                      menu.menuPictureURL,
+                      width: SGSpacing.p18,
+                      height: SGSpacing.p18,
+                      fit: BoxFit.cover,
+                    ),
+                    if (menu.soldOutStatus == 1)
+                      Container(
+                        width: SGSpacing.p18,
+                        height: SGSpacing.p18,
+                        color: const Color(0xFF808080).withOpacity(0.7),
+                        child: const Center(
+                          child: Text(
+                            "품절",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: FontSize.small,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
               SizedBox(width: SGSpacing.p4),
               Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Container(

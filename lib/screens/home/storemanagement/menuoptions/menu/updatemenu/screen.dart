@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -63,15 +65,35 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(SGSpacing.p4),
-                          child: Image.network(
-                            key: ValueKey(menuModel.menuPictureURL),
-                            // "${menuModel.menuPictureURL}?${DateTime.now().millisecondsSinceEpoch}",
-                            menuModel.menuPictureURL,
-                            width: SGSpacing.p20,
-                            height: SGSpacing.p20,
-                            fit: BoxFit.cover,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Image.network(
+                                menuModel.menuPictureURL,
+                                width: SGSpacing.p20,
+                                height: SGSpacing.p20,
+                                fit: BoxFit.cover,
+                              ),
+                              if (menuModel.soldOutStatus == 1)
+                                Container(
+                                  width: SGSpacing.p20,
+                                  height: SGSpacing.p20,
+                                  color: const Color(0xFF808080).withOpacity(0.7),
+                                  child: const Center(
+                                    child: Text(
+                                      "품절",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: FontSize.small,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
+
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).push(
