@@ -1,5 +1,5 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
@@ -9,11 +9,11 @@ import 'package:singleeat/core/extensions/integer.dart';
 
 import '../../model.dart';
 import '../../options/addcategory/screen.dart';
+import '../../provider.dart';
 
 void showMenuOptionCategorySelectionBottomSheet({
   required BuildContext context,
   required String title,
-  required List<MenuOptionCategoryModel> menuOptionCategories,
   required void Function(List<MenuOptionCategoryModel>) onSelect,
   required List<MenuOptionCategoryModel> selectedMenuOptionCategories,
 }) {
@@ -24,7 +24,6 @@ void showMenuOptionCategorySelectionBottomSheet({
     builder: (ctx) {
       return _MenuOptionCategorySelectionBottomSheet(
         title: title,
-        menuOptionCategories: menuOptionCategories,
         onSelect: onSelect,
         selectedMenuOptionCategories: selectedMenuOptionCategories,
       );
@@ -32,24 +31,22 @@ void showMenuOptionCategorySelectionBottomSheet({
   );
 }
 
-class _MenuOptionCategorySelectionBottomSheet extends StatefulWidget {
+class _MenuOptionCategorySelectionBottomSheet extends ConsumerStatefulWidget {
   final String title;
-  final List<MenuOptionCategoryModel> menuOptionCategories;
   final void Function(List<MenuOptionCategoryModel>) onSelect;
   final List<MenuOptionCategoryModel> selectedMenuOptionCategories;
 
   const _MenuOptionCategorySelectionBottomSheet({
     required this.title,
-    required this.menuOptionCategories,
     required this.onSelect,
     required this.selectedMenuOptionCategories,
   });
 
   @override
-  State<_MenuOptionCategorySelectionBottomSheet> createState() => _MenuOptionCategorySelectionBottomSheetState();
+  ConsumerState<_MenuOptionCategorySelectionBottomSheet> createState() => _MenuOptionCategorySelectionBottomSheetState();
 }
 
-class _MenuOptionCategorySelectionBottomSheetState extends State<_MenuOptionCategorySelectionBottomSheet> {
+class _MenuOptionCategorySelectionBottomSheetState extends ConsumerState<_MenuOptionCategorySelectionBottomSheet> {
   late List<MenuOptionCategoryModel> selectedMenuOptionCategories;
   late String categoryNameQuery;
 
@@ -64,7 +61,10 @@ class _MenuOptionCategorySelectionBottomSheetState extends State<_MenuOptionCate
 
   @override
   Widget build(BuildContext context) {
-    List<MenuOptionCategoryModel> selectableMenuOptionCategories = widget.menuOptionCategories.where((menuOptionCategory) {
+    final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
+    final MenuOptionsNotifier provider = ref.read(menuOptionsNotifierProvider.notifier);
+
+    List<MenuOptionCategoryModel> selectableMenuOptionCategories = state.menuOptionCategoryDTOList.where((menuOptionCategory) {
       return categoryNameQuery == "" || menuOptionCategory.menuOptionCategoryName.contains(categoryNameQuery);
     }).toList();
 

@@ -871,14 +871,14 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                   }
                 },
                 child: SGContainer(
-                    color: menuBriefDescription.isEmpty || menuDescription.isEmpty || imagePath.isEmpty || selectedMenuOptionCategories.isNotEmpty ? SGColors.gray2 : SGColors.primary,
+                    color: menuBriefDescription.isEmpty || menuDescription.isEmpty || imagePath.isEmpty || selectedMenuOptionCategories.isEmpty ? SGColors.gray2 : SGColors.primary,
                     padding: EdgeInsets.all(SGSpacing.p4),
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Center(
                         child: SGTypography.body(
                       "등록",
                       size: FontSize.large,
-                      color: menuBriefDescription.isEmpty || menuDescription.isEmpty || imagePath.isEmpty || selectedMenuOptionCategories.isNotEmpty ? SGColors.gray5 : SGColors.white,
+                      color: menuBriefDescription.isEmpty || menuDescription.isEmpty || imagePath.isEmpty || selectedMenuOptionCategories.isEmpty ? SGColors.gray5 : SGColors.white,
                       weight: FontWeight.w700,
                     ))),
               )),
@@ -1143,75 +1143,88 @@ class _MenuOptionCategorySelectionScreenState extends ConsumerState<_MenuOptionC
   Widget build(BuildContext context) {
     final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
 
-    logger.d("state.menuOptionCategoryDTOList ${state.menuOptionCategoryDTOList.toFormattedJson()}");
     return Scaffold(
-        appBar: AppBarWithLeftArrow(title: "옵션 카테고리 선택"),
-        floatingActionButton: Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
-            child: SGActionButton(
-                onPressed: () {
-                  logger.d("onPressed 변경하기 ${selectedMenuOptionCategories.toFormattedJson()} ");
-                  widget.onConfirm(selectedMenuOptionCategories);
-                  Navigator.of(context).pop();
-                },
-                disabled: selectedMenuOptionCategories.isEmpty,
-                label: "변경하기")),
-        body: SGContainer(
-            color: const Color(0xFFFFFFFF),
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-            child: ListView(children: [
-              Row(
-                children: [
-                  SGTypography.body("옵션", size: FontSize.normal, weight: FontWeight.w700),
-                  SizedBox(width: SGSpacing.p1),
-                  SGTypography.body("${selectedMenuOptionCategories.length}", size: FontSize.small, color: SGColors.gray3),
-                ],
-              ),
-              ...selectedMenuOptionCategories
-                  .mapIndexed((index, category) => [
-                        SizedBox(height: SGSpacing.p3),
-                        __MenuOptionCataegoryCard(
-                          category: category,
-                          onRemove: (target) {
-                            final result = [...selectedMenuOptionCategories.sublist(0, index), ...selectedMenuOptionCategories.sublist(index + 1)];
-                            setState(() {
-                              selectedMenuOptionCategories = result;
-                            });
-                          },
-                        )
-                      ])
-                  .flattened,
+      appBar: AppBarWithLeftArrow(title: "옵션 카테고리 선택"),
+      floatingActionButton: Container(
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+        child: SGActionButton(
+          onPressed: () {
+            logger.d("onPressed 변경하기 ${selectedMenuOptionCategories.toFormattedJson()} ");
+            widget.onConfirm(selectedMenuOptionCategories);
+            Navigator.of(context).pop();
+          },
+          disabled: selectedMenuOptionCategories.isEmpty,
+          label: "변경하기",
+        ),
+      ),
+      body: SGContainer(
+        color: const Color(0xFFFFFFFF),
+        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+        child: ListView(
+          children: [
+            Row(
+              children: [
+                SGTypography.body("옵션", size: FontSize.normal, weight: FontWeight.w700),
+                SizedBox(width: SGSpacing.p1),
+                SGTypography.body("${selectedMenuOptionCategories.length}", size: FontSize.small, color: SGColors.gray3),
+              ],
+            ),
+            ...selectedMenuOptionCategories
+                .mapIndexed((index, category) => [
               SizedBox(height: SGSpacing.p3),
-              GestureDetector(
-                onTap: () {
-                  showMenuOptionCategorySelectionBottomSheet(
-                      context: context,
-                      title: "옵션 카테고리 추가",
-                      menuOptionCategories: state.menuOptionCategoryDTOList,
-                      onSelect: (selectedMenuOptionCategories) {
-                        logger.d("onSelect selectedMenuOptionCategories ${selectedMenuOptionCategories.toFormattedJson()} ");
-                        setState(() {
-                          this.selectedMenuOptionCategories = selectedMenuOptionCategories..sort((a, b) => a.menuOptionCategoryName.compareTo(b.menuOptionCategoryName));
-                        });
-                        widget.onConfirm(selectedMenuOptionCategories);
-                      },
-                      selectedMenuOptionCategories: selectedMenuOptionCategories);
+              __MenuOptionCataegoryCard(
+                category: category,
+                onRemove: (target) {
+                  final result = [...selectedMenuOptionCategories.sublist(0, index), ...selectedMenuOptionCategories.sublist(index + 1)];
+                  setState(() {
+                    selectedMenuOptionCategories = result;
+                  });
                 },
-                child: SGContainer(
-                    color: SGColors.white,
-                    borderColor: SGColors.primary,
-                    borderRadius: BorderRadius.circular(SGSpacing.p2),
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                    child: Center(
-                        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              )
+            ])
+                .flattened,
+            SizedBox(height: SGSpacing.p3),
+            GestureDetector(
+              onTap: () {
+                // BottomSheet 열기
+                showMenuOptionCategorySelectionBottomSheet(
+                  context: context,
+                  title: "옵션 카테고리 추가",
+                  onSelect: (selectedMenuOptionCategories) {
+                    logger.d("onSelect selectedMenuOptionCategories ${selectedMenuOptionCategories.toFormattedJson()}");
+                    setState(() {
+                      this.selectedMenuOptionCategories = selectedMenuOptionCategories
+                        ..sort((a, b) => a.menuOptionCategoryName.compareTo(b.menuOptionCategoryName));
+                    });
+                    widget.onConfirm(selectedMenuOptionCategories);
+                  },
+                  selectedMenuOptionCategories: selectedMenuOptionCategories,
+                );
+              },
+              child: SGContainer(
+                color: SGColors.white,
+                borderColor: SGColors.primary,
+                borderRadius: BorderRadius.circular(SGSpacing.p2),
+                padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
                       Image.asset("assets/images/plus.png", width: 12, height: 12),
                       SizedBox(width: SGSpacing.p2),
                       SGTypography.body("옵션 카테고리 추가", size: FontSize.small, color: SGColors.primary),
-                    ]))),
+                    ],
+                  ),
+                ),
               ),
-            ])));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
+
 
 class __MenuOptionCataegoryCard extends StatelessWidget {
   final MenuOptionCategoryModel category;
