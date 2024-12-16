@@ -262,6 +262,8 @@ class _NewOrderListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final OrderState state = ref.watch(orderNotifierProvider);
+
     if (orders.isEmpty) {
       return RefreshIndicator(
         backgroundColor: Colors.transparent,
@@ -487,6 +489,20 @@ class _NewOrderListView extends ConsumerWidget {
                                     if (check) {
                                       showSnackBar(context, "주문이 접수되었습니다.");
                                       ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
+                                    } else {
+                                      if (state.error.errorCode == 409) {
+                                        showFailDialogWithImage(
+                                            context: context,
+                                            mainTitle: "해당 주문은 이미 접수된 주문입니다.",
+                                            subTitle: "새로고침을 통해 다시 한번 확인해주세요."
+                                        );
+                                      } else if (state.error.errorCode == 400) {
+                                        showFailDialogWithImage(
+                                            context: context,
+                                            mainTitle: "시스템 오류",
+                                            subTitle: "해당 주문은 접수할 수 없습니다.\n고객센터로 문의해주세요 (1600-7723)"
+                                        );
+                                      }
                                     }
                                   },
                                   child: SGContainer(

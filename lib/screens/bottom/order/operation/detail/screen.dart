@@ -234,7 +234,6 @@ class NewOrderDetailScreen extends ConsumerWidget {
                         if (check) {
                           ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
                           showSnackBar(context, "주문이 접수되었습니다.");
-                          Navigator.pop(context);
                         } else {
                           if (state.error.errorCode == 409) {
                             showFailDialogWithImage(
@@ -250,6 +249,7 @@ class NewOrderDetailScreen extends ConsumerWidget {
                             );
                           }
                         }
+                        Navigator.pop(context);
                       },
                       child: SGContainer(
                         width: double.infinity,
