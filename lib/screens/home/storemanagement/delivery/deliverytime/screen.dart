@@ -17,7 +17,11 @@ class DeliveryTimeScreen extends StatefulWidget {
   final int maxDeliveryTime;
   final Function(int, int) onSaveFunction;
 
-  const DeliveryTimeScreen({super.key, required this.minDeliveryTime, required this.maxDeliveryTime, required this.onSaveFunction});
+  const DeliveryTimeScreen(
+      {super.key,
+      required this.minDeliveryTime,
+      required this.maxDeliveryTime,
+      required this.onSaveFunction});
 
   @override
   State<DeliveryTimeScreen> createState() => _DeliveryTimeScreenState();
@@ -28,6 +32,7 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
   late int maxDeliveryTime;
 
   List<SelectionOption<int>> minuteOptions = [
+    SelectionOption(label: "30분", value: 30),
     SelectionOption(label: "40분", value: 40),
     SelectionOption(label: "50분", value: 50),
     SelectionOption(label: "60분", value: 60),
@@ -36,8 +41,11 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
   ];
 
   List<SelectionOption<int>> getAvailableMaxOptions(int minDeliveryTime) {
-    int minIndex = minuteOptions.indexWhere((option) => option.value == minDeliveryTime);
-    return (minIndex != -1 && minIndex + 1 < minuteOptions.length) ? minuteOptions.sublist(minIndex + 1) : [];
+    int minIndex =
+        minuteOptions.indexWhere((option) => option.value == minDeliveryTime);
+    return (minIndex != -1 && minIndex + 1 < minuteOptions.length)
+        ? minuteOptions.sublist(minIndex + 1)
+        : [];
   }
 
   @override
@@ -52,9 +60,12 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: "배달 예상 시간 수정"),
       floatingActionButton: Container(
-          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+          constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
+              maxHeight: 58),
           child: SGActionButton(
-              disabled: minDeliveryTime == widget.minDeliveryTime && maxDeliveryTime == widget.maxDeliveryTime,
+              disabled: minDeliveryTime == widget.minDeliveryTime &&
+                  maxDeliveryTime == widget.maxDeliveryTime,
               onPressed: () {
                 FocusScope.of(context).unfocus();
                 widget.onSaveFunction(minDeliveryTime, maxDeliveryTime);
@@ -63,87 +74,94 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
               label: "변경하기")),
       body: SGContainer(
           color: const Color(0xFFFAFAFA),
-          padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+          padding: EdgeInsets.symmetric(
+              horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
           child: ListView(children: [
-            SGTypography.body("변경 전", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w600),
+            SGTypography.body("변경 전",
+                color: SGColors.black,
+                size: FontSize.normal,
+                weight: FontWeight.w600),
             SizedBox(height: SGSpacing.p3),
             MultipleInformationBox(
               children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SGTypography.body(
-                          "최소",
-                          color: SGColors.gray4,
-                          size: FontSize.small,
-                          weight: FontWeight.w600,
-                        ),
-                        SizedBox(height: SGSpacing.p3),
-                        Container(
-                          height: SGSpacing.p10,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: SGColors.line3),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SGTypography.body(
+                            "최소",
+                            color: SGColors.gray4,
+                            size: FontSize.small,
+                            weight: FontWeight.w600,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(width: SGSpacing.p2),
-                              SGTypography.body(
-                                "${widget.minDeliveryTime}분",
-                                color: SGColors.gray4,
-                                size: FontSize.small,
-                                weight: FontWeight.w600,
-                              ),
-                            ],
+                          SizedBox(height: SGSpacing.p3),
+                          Container(
+                            height: SGSpacing.p10,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: SGColors.line3),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(width: SGSpacing.p2),
+                                SGTypography.body(
+                                  "${widget.minDeliveryTime}분",
+                                  color: SGColors.gray4,
+                                  size: FontSize.small,
+                                  weight: FontWeight.w600,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(width: SGSpacing.p2),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SGTypography.body(
-                          "최대",
-                          color: SGColors.gray4,
-                          size: FontSize.small,
-                          weight: FontWeight.w600,
-                        ),
-                        SizedBox(height: SGSpacing.p3),
-                        Container(
-                          height: SGSpacing.p10,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: SGColors.line3),
+                    SizedBox(width: SGSpacing.p2),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SGTypography.body(
+                            "최대",
+                            color: SGColors.gray4,
+                            size: FontSize.small,
+                            weight: FontWeight.w600,
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(width: SGSpacing.p2),
-                              SGTypography.body(
-                                "${widget.maxDeliveryTime}분",
-                                color: SGColors.gray4,
-                                size: FontSize.small,
-                                weight: FontWeight.w600,
-                              ),
-                            ],
+                          SizedBox(height: SGSpacing.p3),
+                          Container(
+                            height: SGSpacing.p10,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: SGColors.line3),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(width: SGSpacing.p2),
+                                SGTypography.body(
+                                  "${widget.maxDeliveryTime}분",
+                                  color: SGColors.gray4,
+                                  size: FontSize.small,
+                                  weight: FontWeight.w600,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                  ],
+                ),
+              ],
+            ),
             SizedBox(height: SGSpacing.p5),
-            SGTypography.body("변경 후", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w600),
+            SGTypography.body("변경 후",
+                color: SGColors.black,
+                size: FontSize.normal,
+                weight: FontWeight.w600),
             SizedBox(height: SGSpacing.p3),
             MultipleInformationBox(children: [
               Row(children: [
@@ -151,7 +169,10 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SGTypography.body("최소", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w600),
+                      SGTypography.body("최소",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w600),
                       SizedBox(height: SGSpacing.p3),
                       GestureDetector(
                         onTap: () {
@@ -162,20 +183,28 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
                               onSelect: (minDeliveryTime) {
                                 setState(() {
                                   this.minDeliveryTime = minDeliveryTime;
-                                  maxDeliveryTime = getAvailableMaxOptions(minDeliveryTime).first.value;
+                                  maxDeliveryTime =
+                                      getAvailableMaxOptions(minDeliveryTime)
+                                          .first
+                                          .value;
                                 });
                               },
                               selected: minDeliveryTime);
                         },
                         child: SGTextFieldWrapper(
                             child: SGContainer(
-                              padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p3),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                    SGTypography.body(minDeliveryTime.toString(), color: SGColors.black, size: FontSize.small, weight: FontWeight.w500),
-                                    Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
-                          ]),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: SGSpacing.p3, vertical: SGSpacing.p3),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SGTypography.body(minDeliveryTime.toString(),
+                                    color: SGColors.black,
+                                    size: FontSize.small,
+                                    weight: FontWeight.w500),
+                                Image.asset('assets/images/dropdown-arrow.png',
+                                    width: 16, height: 16),
+                              ]),
                         )),
                       ),
                     ],
@@ -186,16 +215,23 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SGTypography.body("최대", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w600),
+                      SGTypography.body("최대",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w600),
                       SizedBox(height: SGSpacing.p3),
                       GestureDetector(
                         onTap: () {
                           minDeliveryTime == 80 && maxDeliveryTime == 80
-                              ? SGTypography.body("$maxDeliveryTime분", color: SGColors.gray4, size: FontSize.small, weight: FontWeight.w600)
+                              ? SGTypography.body("$maxDeliveryTime분",
+                                  color: SGColors.gray4,
+                                  size: FontSize.small,
+                                  weight: FontWeight.w600)
                               : showSelectionBottomSheet<int>(
                                   context: context,
                                   title: "최대 배달 예상 시간",
-                                  options: getAvailableMaxOptions(minDeliveryTime),
+                                  options:
+                                      getAvailableMaxOptions(minDeliveryTime),
                                   onSelect: (maxDeliveryTime) {
                                     setState(() {
                                       this.maxDeliveryTime = maxDeliveryTime;
@@ -205,11 +241,18 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
                         },
                         child: SGTextFieldWrapper(
                             child: SGContainer(
-                          padding: EdgeInsets.symmetric(horizontal: SGSpacing.p3, vertical: SGSpacing.p3),
-                          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            SGTypography.body(maxDeliveryTime.toString(), color: SGColors.black, size: FontSize.small, weight: FontWeight.w500),
-                            Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
-                          ]),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: SGSpacing.p3, vertical: SGSpacing.p3),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SGTypography.body(maxDeliveryTime.toString(),
+                                    color: SGColors.black,
+                                    size: FontSize.small,
+                                    weight: FontWeight.w500),
+                                Image.asset('assets/images/dropdown-arrow.png',
+                                    width: 16, height: 16),
+                              ]),
                         )),
                       ),
                     ],
