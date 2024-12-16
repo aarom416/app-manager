@@ -36,7 +36,11 @@ class NetworkImageContainer extends StatelessWidget {
               width: width,
               height: height,
               fit: BoxFit.cover,
-              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+              loadingBuilder: (
+                BuildContext context,
+                Widget child,
+                ImageChunkEvent? loadingProgress,
+              ) {
                 if (loadingProgress == null) {
                   return child;
                 } else {
@@ -49,7 +53,8 @@ class NetworkImageContainer extends StatelessWidget {
                         height: height / 4,
                         child: CircularProgressIndicator(
                           value: loadingProgress.expectedTotalBytes != null
-                              ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  (loadingProgress.expectedTotalBytes ?? 1)
                               : null,
                           strokeWidth: 2.0,
                         ),
@@ -58,7 +63,11 @@ class NetworkImageContainer extends StatelessWidget {
                   );
                 }
               },
-              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+              errorBuilder: (
+                BuildContext context,
+                Object error,
+                StackTrace? stackTrace,
+              ) {
                 return Container(
                   width: width,
                   height: height,
@@ -79,7 +88,17 @@ class NetworkImageContainer extends StatelessWidget {
                 );
               },
             ),
-          ),
+          )
+        else
+          ClipRRect(
+            borderRadius: BorderRadius.circular(borderRadius),
+            child: Image.asset(
+              'assets/images/home-store.png',
+              width: width,
+              height: height,
+              fit: BoxFit.cover,
+            ),
+          )
       ],
     );
   }
