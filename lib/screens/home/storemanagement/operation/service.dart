@@ -168,7 +168,7 @@ class OperationService {
             return operationTimeDetail.cycle;
           }).toList(),
           'dayList': regularHolidays.map((operationTimeDetail) {
-            return ['월', '화', '수', '목', '금', '토', '일']
+            return ['일', '월', '화', '수', '목', '금', '토']
                 .indexOf(operationTimeDetail.day);
           }).toList(),
           'startDateList': temporaryHolidays.map((operationTimeDetail) {
