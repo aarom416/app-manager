@@ -829,7 +829,7 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                       color: SGColors.primary,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(child: SGTypography.body("카테고리 추가하기", size: FontSize.medium, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(child: SGTypography.body("카테고리 추가", size: FontSize.medium, color: SGColors.white, weight: FontWeight.w700))),
                 )),
               ],
             )),
