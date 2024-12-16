@@ -20,7 +20,11 @@ class BreakTimeScreen extends StatefulWidget {
   final List<OperationTimeDetailModel> regularHolidays;
   final Function(List<OperationTimeDetailModel>) onSaveFunction;
 
-  const BreakTimeScreen({super.key, required this.breakTimeDetailDTOList, required this.regularHolidays, required this.onSaveFunction});
+  const BreakTimeScreen(
+      {super.key,
+      required this.breakTimeDetailDTOList,
+      required this.regularHolidays,
+      required this.onSaveFunction});
 
   @override
   State<BreakTimeScreen> createState() => _BreakTimeScreenState();
@@ -43,7 +47,8 @@ class _BreakTimeScreenState extends State<BreakTimeScreen> {
         appBar: AppBarWithLeftArrow(title: "휴게시간 변경"),
         body: SGContainer(
           color: const Color(0xFFFAFAFA),
-          padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+          padding: EdgeInsets.symmetric(
+              horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
           child: ListView(
             children: [
               ...breakTimeDetailDTOList
@@ -52,7 +57,9 @@ class _BreakTimeScreenState extends State<BreakTimeScreen> {
                   .map((entry) {
                     int index = entry.key;
                     OperationTimeDetailModel breakTimeDetailDTO = entry.value;
-                    var isHoliday = regularHolidays.any((regularHoliday) => (regularHoliday.day == breakTimeDetailDTO.day) && regularHoliday.isWeekCycleHoliday());
+                    var isHoliday = regularHolidays.any((regularHoliday) =>
+                        (regularHoliday.day == breakTimeDetailDTO.day) &&
+                        regularHoliday.isWeekCycleHoliday());
                     return isHoliday
                         ? [
                             __BreakTimeRegularHolidayCard(
@@ -68,7 +75,8 @@ class _BreakTimeScreenState extends State<BreakTimeScreen> {
                               onEditFunction: (breakTimeDetailDTO) {
                                 // print("onEditFunction index [$index] breakTimeDetailDTO");
                                 setState(() {
-                                  breakTimeDetailDTOList[index] = breakTimeDetailDTO;
+                                  breakTimeDetailDTOList[index] =
+                                      breakTimeDetailDTO;
                                 });
                               },
                             ),
@@ -84,7 +92,8 @@ class _BreakTimeScreenState extends State<BreakTimeScreen> {
                     showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                   },
                   label: "변경하기",
-                  disabled: const DeepCollectionEquality().equals(widget.breakTimeDetailDTOList, breakTimeDetailDTOList))
+                  disabled: const DeepCollectionEquality().equals(
+                      widget.breakTimeDetailDTOList, breakTimeDetailDTOList))
             ],
           ),
         ));
@@ -104,7 +113,8 @@ class __BreakTimeRegularHolidayCard extends StatelessWidget {
     return SGContainer(
       color: SGColors.white,
       borderColor: SGColors.line2,
-      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+      padding: EdgeInsets.symmetric(
+          horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
       borderRadius: BorderRadius.circular(SGSpacing.p4),
       boxShadow: SGBoxShadow.large,
       child: Column(
@@ -113,9 +123,13 @@ class __BreakTimeRegularHolidayCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SGTypography.body("${breakTimeDetailDTO.day}요일", size: FontSize.normal, weight: FontWeight.w500),
+              SGTypography.body("${breakTimeDetailDTO.day}요일",
+                  size: FontSize.normal, weight: FontWeight.w500),
               const Spacer(),
-              SGTypography.body("정기휴무일", size: FontSize.normal, weight: FontWeight.w600, color: SGColors.gray4),
+              SGTypography.body("정기휴무일",
+                  size: FontSize.normal,
+                  weight: FontWeight.w600,
+                  color: SGColors.gray4),
             ],
           )
         ],
@@ -141,7 +155,11 @@ class __BreakTimeCard extends StatelessWidget {
         ),
         minuteOptions = [
           SelectionOption(label: "00분", value: "00"),
+          SelectionOption(label: "10분", value: "10"),
+          SelectionOption(label: "20분", value: "20"),
           SelectionOption(label: "30분", value: "30"),
+          SelectionOption(label: "40분", value: "40"),
+          SelectionOption(label: "50분", value: "50"),
         ];
 
   final List<SelectionOption<String>> hourOptions;
@@ -159,7 +177,8 @@ class __BreakTimeCard extends StatelessWidget {
     return SGContainer(
       color: SGColors.white,
       borderColor: SGColors.line2,
-      padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
+      padding: EdgeInsets.symmetric(
+          horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
       borderRadius: BorderRadius.circular(SGSpacing.p4),
       boxShadow: SGBoxShadow.large,
       child: Column(
@@ -168,21 +187,24 @@ class __BreakTimeCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SGTypography.body("${breakTimeDetailDTO.day}요일", size: FontSize.normal, weight: FontWeight.w500),
+              SGTypography.body("${breakTimeDetailDTO.day}요일",
+                  size: FontSize.normal, weight: FontWeight.w500),
               Spacer(),
-              SGTypography.body("24시", size: FontSize.normal, weight: FontWeight.w600, color: breakTimeDetailDTO.isNoBreak() ? SGColors.primary : SGColors.gray4),
               SizedBox(width: SGSpacing.p1),
               SGSwitch(
-                value: breakTimeDetailDTO.isNoBreak(),
+                value: breakTimeDetailDTO.toggle,
                 onChanged: (noBreak) {
-                  onEditFunction(noBreak ? breakTimeDetailDTO.toNoBreak : breakTimeDetailDTO.toDefaultBreakHour);
+                  onEditFunction(noBreak
+                      ? breakTimeDetailDTO.toDefaultBreakHour
+                      : breakTimeDetailDTO.toNoBreak);
                 },
               ),
             ],
           ),
           if (!breakTimeDetailDTO.isNoBreak()) ...[
             SizedBox(height: SGSpacing.p4),
-            SGTypography.body("시작 시간", weight: FontWeight.w600, color: SGColors.gray4),
+            SGTypography.body("시작 시간",
+                weight: FontWeight.w600, color: SGColors.gray4),
             SizedBox(height: SGSpacing.p2),
             Row(children: [
               Expanded(
@@ -193,17 +215,26 @@ class __BreakTimeCard extends StatelessWidget {
                         title: "시작 시간을 설정해 주세요.",
                         options: hourOptions,
                         onSelect: (value) {
-                          onEditFunction(breakTimeDetailDTO.copyWith(startTime: "$value:$startMinute"));
+                          onEditFunction(breakTimeDetailDTO.copyWith(
+                              startTime: "$value:$startMinute"));
                         },
                         selected: startHour);
                   },
                   child: SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      SGTypography.body(formatHourToAmPmWithKoreanSuffix(startHour), color: SGColors.black, size: FontSize.normal, weight: FontWeight.w500),
-                      Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
-                    ]),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SGTypography.body(
+                              formatHourToAmPmWithKoreanSuffix(startHour),
+                              color: SGColors.black,
+                              size: FontSize.normal,
+                              weight: FontWeight.w500),
+                          Image.asset('assets/images/dropdown-arrow.png',
+                              width: 16, height: 16),
+                        ]),
                   )),
                 ),
               ),
@@ -216,23 +247,32 @@ class __BreakTimeCard extends StatelessWidget {
                         title: "시작 시간(분)을 설정해 주세요.",
                         options: minuteOptions,
                         onSelect: (minute) {
-                          onEditFunction(breakTimeDetailDTO.copyWith(startTime: "$startHour:$minute"));
+                          onEditFunction(breakTimeDetailDTO.copyWith(
+                              startTime: "$startHour:$minute"));
                         },
                         selected: startMinute);
                   },
                   child: SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      SGTypography.body("$startMinute분", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w500),
-                      Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
-                    ]),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SGTypography.body("$startMinute분",
+                              color: SGColors.black,
+                              size: FontSize.normal,
+                              weight: FontWeight.w500),
+                          Image.asset('assets/images/dropdown-arrow.png',
+                              width: 16, height: 16),
+                        ]),
                   )),
                 ),
               ),
             ]),
             SizedBox(height: SGSpacing.p4 + SGSpacing.p05),
-            SGTypography.body("종료 시간", weight: FontWeight.w600, color: SGColors.gray4),
+            SGTypography.body("종료 시간",
+                weight: FontWeight.w600, color: SGColors.gray4),
             SizedBox(height: SGSpacing.p2),
             Row(children: [
               Expanded(
@@ -243,17 +283,26 @@ class __BreakTimeCard extends StatelessWidget {
                         title: "종료 시간을 설정해 주세요.",
                         options: hourOptions,
                         onSelect: (value) {
-                          onEditFunction(breakTimeDetailDTO.copyWith(endTime: "$value:$endMinute"));
+                          onEditFunction(breakTimeDetailDTO.copyWith(
+                              endTime: "$value:$endMinute"));
                         },
                         selected: endHour);
                   },
                   child: SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      SGTypography.body(formatHourToAmPmWithKoreanSuffix(endHour), color: SGColors.black, size: FontSize.normal, weight: FontWeight.w500),
-                      Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
-                    ]),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SGTypography.body(
+                              formatHourToAmPmWithKoreanSuffix(endHour),
+                              color: SGColors.black,
+                              size: FontSize.normal,
+                              weight: FontWeight.w500),
+                          Image.asset('assets/images/dropdown-arrow.png',
+                              width: 16, height: 16),
+                        ]),
                   )),
                 ),
               ),
@@ -266,17 +315,25 @@ class __BreakTimeCard extends StatelessWidget {
                         title: "종료 시간(분)을 설정해 주세요.",
                         options: minuteOptions,
                         onSelect: (minute) {
-                          onEditFunction(breakTimeDetailDTO.copyWith(endTime: "$endHour:$minute"));
+                          onEditFunction(breakTimeDetailDTO.copyWith(
+                              endTime: "$endHour:$minute"));
                         },
                         selected: endMinute);
                   },
                   child: SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                      SGTypography.body("$endMinute분", color: SGColors.black, size: FontSize.normal, weight: FontWeight.w500),
-                      Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16),
-                    ]),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SGTypography.body("$endMinute분",
+                              color: SGColors.black,
+                              size: FontSize.normal,
+                              weight: FontWeight.w500),
+                          Image.asset('assets/images/dropdown-arrow.png',
+                              width: 16, height: 16),
+                        ]),
                   )),
                 ),
               ),

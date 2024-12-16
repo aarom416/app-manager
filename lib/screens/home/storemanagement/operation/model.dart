@@ -42,18 +42,23 @@ abstract class OperationDataModel with _$OperationDataModel {
   const factory OperationDataModel({
     @Default(0) int deliveryStatus,
     @Default(0) int takeOutStatus,
-    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> operationTimeDetailDTOList,
-    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> breakTimeDetailDTOList,
-    @Default(<OperationTimeDetailModel>[]) List<OperationTimeDetailModel> holidayDetailDTOList,
+    @Default(<OperationTimeDetailModel>[])
+    List<OperationTimeDetailModel> operationTimeDetailDTOList,
+    @Default(<OperationTimeDetailModel>[])
+    List<OperationTimeDetailModel> breakTimeDetailDTOList,
+    @Default(<OperationTimeDetailModel>[])
+    List<OperationTimeDetailModel> holidayDetailDTOList,
     @Default(0) int holidayStatus,
   }) = _OperationDataModel;
 
-  factory OperationDataModel.fromJson(Map<String, dynamic> json) => _$OperationDataModelFromJson(json);
+  factory OperationDataModel.fromJson(Map<String, dynamic> json) =>
+      _$OperationDataModelFromJson(json);
 }
 
 @freezed
 abstract class OperationTimeDetailModel with _$OperationTimeDetailModel {
   const factory OperationTimeDetailModel({
+    @Default(false) bool toggle,
     @Default(0) int holidayType,
     @Default(0) int cycle,
     @Default('') String day,
@@ -64,12 +69,12 @@ abstract class OperationTimeDetailModel with _$OperationTimeDetailModel {
     @Default('') String ment,
   }) = _OperationTimeDetailModel;
 
-  factory OperationTimeDetailModel.fromJson(Map<String, dynamic> json) => _$OperationTimeDetailModelFromJson(json);
+  factory OperationTimeDetailModel.fromJson(Map<String, dynamic> json) =>
+      _$OperationTimeDetailModelFromJson(json);
 }
 
 /// OperationTimeDetailModel 확장함수
 extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
-
   /// OperationTimeDetailModel 에서 DateRange 를 생성
   DateRange get toDateRange {
     final dateFormat = DateFormat("yyyy.MM.dd");
@@ -101,12 +106,12 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
 
   /// 휴게시간 없음으로 변경
   OperationTimeDetailModel get toNoBreak {
-    return copyWith(startTime: "00:00", endTime: "00:00");
+    return copyWith(toggle: false, startTime: "00:00", endTime: "00:00");
   }
 
   /// 기본 휴게시간으로 변경
   OperationTimeDetailModel get toDefaultBreakHour {
-    return copyWith(startTime: "15:00", endTime: "17:00");
+    return copyWith(toggle: true, startTime: "15:00", endTime: "17:00");
   }
 
   /// 정기 휴무 인지의 여부
@@ -124,4 +129,3 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
     return isRegularHoliday() && cycle == 0;
   }
 }
-

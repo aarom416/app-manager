@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:singleeat/main.dart';
 
 /// 네트워크 이미지 뷰
-class NetworkImageContainer extends StatelessWidget {
+class NetworkImageContainer extends StatefulWidget {
   final String networkImageUrl;
   final double width;
   final double height;
@@ -16,25 +17,41 @@ class NetworkImageContainer extends StatelessWidget {
   });
 
   @override
+  State<NetworkImageContainer> createState() => _NetworkImageContainerState();
+}
+
+class _NetworkImageContainerState extends State<NetworkImageContainer> {
+  String imageUrl = '';
+
+  @override
+  void didUpdateWidget(covariant NetworkImageContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // image rebuild
+    if (widget.networkImageUrl != oldWidget.networkImageUrl) {
+      imageUrl = widget.networkImageUrl;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: [
         Container(
-          width: width,
-          height: height,
+          width: widget.width,
+          height: widget.height,
           decoration: BoxDecoration(
             color: const Color(0xFFEEEEEE),
-            borderRadius: BorderRadius.circular(borderRadius),
+            borderRadius: BorderRadius.circular(widget.borderRadius),
           ),
         ),
-        if (networkImageUrl.isNotEmpty)
+        if (imageUrl.isNotEmpty)
           ClipRRect(
-            borderRadius: BorderRadius.circular(borderRadius),
+            borderRadius: BorderRadius.circular(widget.borderRadius),
             child: Image.network(
-              networkImageUrl,
-              width: width,
-              height: height,
+              imageUrl,
+              width: widget.width,
+              height: widget.height,
               fit: BoxFit.cover,
               loadingBuilder: (
                 BuildContext context,
@@ -45,12 +62,12 @@ class NetworkImageContainer extends StatelessWidget {
                   return child;
                 } else {
                   return SizedBox(
-                    width: width,
-                    height: height,
+                    width: widget.width,
+                    height: widget.height,
                     child: Center(
                       child: SizedBox(
-                        width: width / 4,
-                        height: height / 4,
+                        width: widget.width / 4,
+                        height: widget.height / 4,
                         child: CircularProgressIndicator(
                           value: loadingProgress.expectedTotalBytes != null
                               ? loadingProgress.cumulativeBytesLoaded /
@@ -69,12 +86,12 @@ class NetworkImageContainer extends StatelessWidget {
                 StackTrace? stackTrace,
               ) {
                 return Container(
-                  width: width,
-                  height: height,
+                  width: widget.width,
+                  height: widget.height,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: const Color(0xFFEEEEEE),
-                    borderRadius: BorderRadius.circular(borderRadius),
+                    borderRadius: BorderRadius.circular(widget.borderRadius),
                   ),
                   child: const Text(
                     "이미지 로드 실패",
@@ -91,11 +108,11 @@ class NetworkImageContainer extends StatelessWidget {
           )
         else
           ClipRRect(
-            borderRadius: BorderRadius.circular(borderRadius),
+            borderRadius: BorderRadius.circular(widget.borderRadius),
             child: Image.asset(
               'assets/images/home-store.png',
-              width: width,
-              height: height,
+              width: widget.width,
+              height: widget.height,
               fit: BoxFit.cover,
             ),
           )
