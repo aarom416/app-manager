@@ -179,7 +179,7 @@ class _Page_0_OptionCategoryNameState extends State<_Page_0_OptionCategoryName> 
               padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
               child: ListView(
                 children: [
-                  SGTypography.body("옵션 카테고리명 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+                  SGTypography.body("옵션 카테고리명을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
                   SizedBox(height: SGSpacing.p3),
                   SGTextFieldWrapper(
                       child: SGContainer(
@@ -354,28 +354,41 @@ class _Page_1_MenuOptionsState extends State<_Page_1_MenuOptions> {
                 },
                 footer: Padding(
                   padding: EdgeInsets.only(top: SGSpacing.p4, bottom: SGSpacing.p4),
-                  child: SGContainer(
-                    color: SGColors.white,
-                    padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
-                    borderRadius: BorderRadius.circular(SGSpacing.p2),
-                    borderColor: SGColors.primary,
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            "assets/images/plus.png",
-                            width: SGSpacing.p3,
-                            height: SGSpacing.p3,
-                          ),
-                          SizedBox(width: SGSpacing.p2),
-                          SGTypography.body(
-                            "새 옵션 설정",
-                            size: FontSize.small,
-                            weight: FontWeight.w500,
-                            color: SGColors.primary,
-                          ),
-                        ],
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AddOptionScreen(
+                            onSubmit: (menuOptionModel) {
+                              setState(() {
+                                selectedMenuOptions.add(menuOptionModel);
+                              });
+                              widget.onEditFunction(selectedMenuOptions);
+                            },
+                          )));
+                    },
+                    child: SGContainer(
+                      color: SGColors.white,
+                      padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
+                      borderRadius: BorderRadius.circular(SGSpacing.p2),
+                      borderColor: SGColors.primary,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/plus.png",
+                              width: SGSpacing.p3,
+                              height: SGSpacing.p3,
+                            ),
+                            SizedBox(width: SGSpacing.p2),
+                            SGTypography.body(
+                              "새 옵션 설정",
+                              size: FontSize.small,
+                              weight: FontWeight.w500,
+                              color: SGColors.primary,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -514,14 +527,14 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
                   }
                 },
                 child: SGContainer(
-                    color: maxChoice == 0 ? SGColors.gray2 : SGColors.primary,
+                    color: SGColors.gray3,
                     padding: EdgeInsets.all(SGSpacing.p4),
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Center(
                         child: SGTypography.body(
                       "다음",
                       size: FontSize.large,
-                      color: maxChoice == 0 ? SGColors.gray5 : SGColors.white,
+                      color: Colors.white,
                       weight: FontWeight.w700,
                     ))),
               )),
