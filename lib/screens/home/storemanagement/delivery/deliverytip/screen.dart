@@ -140,6 +140,14 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
                       subTitle: "현재 최대 주문 금액이 다음\n최소 주문 금액과 같아야 합니다.");
                   return;
                 }
+
+                if (storeDeliveryTipDTOList[i].deliveryTip >
+                    storeDeliveryTipDTOList[i - 1].deliveryTip) {
+                  showFailDialogWithImage(
+                      mainTitle: "배달팁 등록 실패",
+                      subTitle: "다음 배달팁은 이전 배달팁보다 작아야합니다.");
+                  return;
+                }
               }
 
               if (baseDeliveryTip > widget.deliveryTipMax ||
