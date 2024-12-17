@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -6,15 +7,16 @@ import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/office/providers/bad_word_provider.dart';
 
-class TextFieldEditScreen extends StatefulWidget {
+class TextFieldEditScreen extends ConsumerStatefulWidget {
   final String value;
   final String title;
   final String hintText;
   final String buttonText;
   final Function(String) onSubmit;
 
-  TextFieldEditScreen({
+  const TextFieldEditScreen({
     Key? key,
     required this.value,
     required this.title,
@@ -24,10 +26,11 @@ class TextFieldEditScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<TextFieldEditScreen> createState() => _TextFieldEditScreenState();
+  ConsumerState<TextFieldEditScreen> createState() =>
+      _TextFieldEditScreenState();
 }
 
-class _TextFieldEditScreenState extends State<TextFieldEditScreen> {
+class _TextFieldEditScreenState extends ConsumerState<TextFieldEditScreen> {
   late String value;
   late TextEditingController controller = TextEditingController();
 
@@ -43,6 +46,7 @@ class _TextFieldEditScreenState extends State<TextFieldEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final hasBadWord = ref.watch(badWordNotifierProvider).hasBadWord;
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: widget.title),
       floatingActionButton: Container(
@@ -50,6 +54,7 @@ class _TextFieldEditScreenState extends State<TextFieldEditScreen> {
               maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
               maxHeight: 58),
           child: SGActionButton(
+              disabled: hasBadWord,
               onPressed: () {
                 widget.onSubmit(controller.text);
                 // Navigator.of(context).pop();
@@ -91,6 +96,10 @@ class _TextFieldEditScreenState extends State<TextFieldEditScreen> {
                   controller: controller,
                   style: baseStyle.copyWith(color: SGColors.black),
                   onChanged: (value) {
+                    ref
+                        .read(badWordNotifierProvider.notifier)
+                        .checkBadWord(value);
+
                     setState(() {
                       this.value = value;
                     });
@@ -106,6 +115,21 @@ class _TextFieldEditScreenState extends State<TextFieldEditScreen> {
                         borderSide: BorderSide.none),
                   )),
             ),
+            if (hasBadWord) ...[
+              Padding(
+                padding: EdgeInsets.only(top: SGSpacing.p2),
+                child: const Text(
+                  '욕설 및 비하 발언이 포함되어있습니다.\n다시 한 번 확인해주세요.',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFFF62B2B),
+                    textBaseline: TextBaseline.alphabetic,
+                  ),
+                ),
+              ),
+            ],
           ])),
     );
   }
