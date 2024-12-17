@@ -4,6 +4,7 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/office/providers/home_provider.dart';
 import 'package:singleeat/screens/bottom/myinfo/profile_screen.dart';
 import 'package:singleeat/screens/bottom/order/operation/screen.dart';
 import 'package:singleeat/screens/main_screen.dart';
@@ -18,14 +19,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  int selectedIndex = 1;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
-
   TextStyle get _textStyle => TextStyle(
         color: SGColors.gray4,
         fontSize: FontSize.tiny,
@@ -41,14 +34,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = ref.read(homeNotifierProvider.notifier);
+    final state = ref.watch(homeNotifierProvider);
+
     return Scaffold(
       backgroundColor:
-          selectedIndex != 0 ? const Color(0xFFFAFAFA) : SGColors.black,
+          state.selectedIndex != 0 ? const Color(0xFFFAFAFA) : SGColors.black,
       body: SGContainer(
           borderWidth: 0,
-          color: selectedIndex != 0 ? const Color(0xFFFAFAFA) : SGColors.black,
+          color: state.selectedIndex != 0
+              ? const Color(0xFFFAFAFA)
+              : SGColors.black,
           boxShadow: SGBoxShadow.large,
-          child: _screens[selectedIndex]),
+          child: _screens[state.selectedIndex]),
       bottomNavigationBar: ClipRRect(
         borderRadius: BorderRadiusDirectional.only(
             topStart: Radius.circular(SGSpacing.p4),
@@ -58,18 +56,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             //     topStart: Radius.circular(SGSpacing.p4), topEnd: Radius.circular(SGSpacing.p4)),
             borderRadius: BorderRadius.circular(SGSpacing.p4),
             borderColor:
-                selectedIndex != 0 ? SGColors.line2 : SGColors.lineDark,
+                state.selectedIndex != 0 ? SGColors.line2 : SGColors.lineDark,
             borderWidth: 1,
             child: BottomNavigationBar(
               backgroundColor:
-                  selectedIndex == 0 ? SGColors.black : SGColors.white,
+                  state.selectedIndex == 0 ? SGColors.black : SGColors.white,
               selectedItemColor: SGColors.primary,
               unselectedItemColor: SGColors.gray4,
               selectedLabelStyle: _textStyle.copyWith(color: SGColors.primary),
               unselectedLabelStyle: _textStyle,
-              currentIndex: selectedIndex,
+              currentIndex: state.selectedIndex,
               showUnselectedLabels: true,
-              onTap: _onItemTapped,
+              onTap: provider.onChangeSelectedIndex,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: Image.asset('assets/images/orders-off.png',

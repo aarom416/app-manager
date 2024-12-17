@@ -9,6 +9,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
+import 'package:singleeat/office/providers/home_provider.dart';
 import 'package:singleeat/office/providers/login_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -35,11 +36,12 @@ class _ProfileDeleteSessionScreenState
           child: Column(children: [
             SGContainer(
               width: double.infinity,
-              child: SGTypography.body("계정 설정",
-                  size: FontSize.normal,
-                  weight: FontWeight.w700,
-                  lineHeight: 1.25,
-                  align: TextAlign.start,
+              child: SGTypography.body(
+                "계정 설정",
+                size: FontSize.normal,
+                weight: FontWeight.w700,
+                lineHeight: 1.25,
+                align: TextAlign.start,
               ),
             ),
             SizedBox(height: SGSpacing.p3),
@@ -80,7 +82,26 @@ class _ProfileDeleteSessionScreenState
                                 onTap: () {
                                   ref
                                       .read(loginNotifierProvider.notifier)
-                                      .logout();
+                                      .logout(
+                                    errorCallback: () {
+                                      ref.read(goRouterProvider).pop();
+                                      showFailDialogWithImage(
+                                          context: context,
+                                          mainTitle: '로그아웃 실패',
+                                          subTitle:
+                                              '현재 가게가 영업 중이거나 진행 중인 주문이 있어\n로그아웃을 진행할 수 없습니다.',
+                                          onTapFunction: () {
+                                            // 내정보 이동
+                                            ref
+                                                .read(homeNotifierProvider
+                                                    .notifier)
+                                                .onChangeSelectedIndex(2);
+                                            ref
+                                                .read(goRouterProvider)
+                                                .go(AppRoutes.home);
+                                          });
+                                    },
+                                  );
                                   // JSS 2024.12.05
                                   /*then((value) {
                                     if (value) {
@@ -214,7 +235,8 @@ class _ProfileDeleteSessionScreenState
             SizedBox(height: SGSpacing.p3),
             SGContainer(
               width: double.infinity,
-              child: SGTypography.body("서비스 약관",
+              child: SGTypography.body(
+                "서비스 약관",
                 size: FontSize.normal,
                 weight: FontWeight.w700,
                 lineHeight: 1.25,
@@ -227,8 +249,10 @@ class _ProfileDeleteSessionScreenState
                 Navigator.push(
                   context,
                   PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) => ServiceAgreementScreen(title: "이용약관"),
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        ServiceAgreementScreen(title: "이용약관"),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
                       return child;
                     },
                   ),
@@ -252,44 +276,5 @@ class _ProfileDeleteSessionScreenState
             ),
           ])),
     );
-  }
-
-  void showFailDialogWithImage(String mainTitle, String subTitle) {
-    showSGDialogWithImage(
-        context: context,
-        childrenBuilder: (ctx) => [
-              Center(
-                  child: SGTypography.body(mainTitle,
-                      size: FontSize.medium,
-                      weight: FontWeight.w700,
-                      lineHeight: 1.25,
-                      align: TextAlign.center)),
-              SizedBox(height: SGSpacing.p2),
-              Center(
-                  child: SGTypography.body(subTitle,
-                      color: SGColors.gray4,
-                      size: FontSize.small,
-                      weight: FontWeight.w700,
-                      lineHeight: 1.25,
-                      align: TextAlign.center)),
-              SizedBox(height: SGSpacing.p6),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(ctx);
-                },
-                child: SGContainer(
-                  color: SGColors.primary,
-                  width: double.infinity,
-                  borderColor: SGColors.primary,
-                  padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
-                  borderRadius: BorderRadius.circular(SGSpacing.p3),
-                  child: Center(
-                      child: SGTypography.body("확인",
-                          color: SGColors.white,
-                          weight: FontWeight.w700,
-                          size: FontSize.normal)),
-                ),
-              )
-            ]);
   }
 }

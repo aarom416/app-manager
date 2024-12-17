@@ -243,7 +243,9 @@ class LoginNotifier extends _$LoginNotifier {
   }
 
   // JSS 2024.12.05
-  Future<void> logout() async {
+  Future<void> logout({
+    Function? errorCallback,
+  }) async {
     try {
       final response = await ref
           .read(loginServiceProvider)
@@ -251,27 +253,29 @@ class LoginNotifier extends _$LoginNotifier {
 
       switch (response.statusCode) {
         case 200:
+          UserHive.set(user: const UserModel());
+
+          state = const LoginState();
+          ref.invalidate(authenticateWithPhoneNumberNotifierProvider);
+          ref.invalidate(loginWebViewNotifierProvider);
+          ref.invalidate(findAccountWebViewNotifierProvider);
+          ref.invalidate(findByPasswordWebViewNotifierProvider);
+          ref.invalidate(signupWebViewNotifierProvider);
+          ref.invalidate(signupNotifierProvider);
+          ref.invalidate(findByPasswordNotifierProvider);
+
+          ref.read(goRouterProvider).go(AppRoutes.welcome, extra: UniqueKey());
           break;
         default:
+          if (errorCallback != null) {
+            errorCallback();
+          }
           break;
       }
     } catch (e) {
       ref.read(goRouterProvider).go(AppRoutes.login, extra: UniqueKey());
       return;
     }
-
-    UserHive.set(user: const UserModel());
-
-    state = const LoginState();
-    ref.invalidate(authenticateWithPhoneNumberNotifierProvider);
-    ref.invalidate(loginWebViewNotifierProvider);
-    ref.invalidate(findAccountWebViewNotifierProvider);
-    ref.invalidate(findByPasswordWebViewNotifierProvider);
-    ref.invalidate(signupWebViewNotifierProvider);
-    ref.invalidate(signupNotifierProvider);
-    ref.invalidate(findByPasswordNotifierProvider);
-
-    ref.read(goRouterProvider).go(AppRoutes.welcome, extra: UniqueKey());
   }
 
   Future<void> autoLogin() async {
