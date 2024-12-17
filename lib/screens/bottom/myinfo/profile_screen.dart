@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/container.dart';
+import 'package:singleeat/core/components/numeric_textfield.dart';
 import 'package:singleeat/core/components/reload_button.dart';
 import 'package:singleeat/core/components/sizing.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/screens/bottom/myinfo/orderlist/screen.dart';
@@ -82,7 +84,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                     size: FontSize.small,
                                     weight: FontWeight.w700),
                                 SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                                SGTypography.body("${state.totalAmount}",
+                                SGTypography.body(state.totalAmount.toKoreanCurrency,
                                     size:
                                         (FontSize.large + FontSize.xlarge) / 2,
                                     color: Colors.black,
@@ -90,7 +92,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 SizedBox(height: SGSpacing.p4 + SGSpacing.p05),
                                 Row(children: [
                                   SGTypography.body(
-                                      "배달 ${state.deliveryTotalOrderAmount}원"),
+                                      "배달 ${state.deliveryTotalOrderAmount.toKoreanCurrency}원"),
                                   SGContainer(
                                       color: SGColors.line3,
                                       width: 1,
@@ -98,7 +100,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                       margin: EdgeInsets.symmetric(
                                           horizontal: SGSpacing.p2)),
                                   SGTypography.body(
-                                      "포장 ${state.pickupTotalOrderAmount}원"),
+                                      "포장 ${state.pickupTotalOrderAmount.toKoreanCurrency}원"),
                                 ])
                               ],
                             )),
