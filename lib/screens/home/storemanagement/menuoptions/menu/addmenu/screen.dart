@@ -54,7 +54,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
   NutritionModel nutrition = const NutritionModel();
   String imagePath = "";
   String menuBriefDescription = "";
-  String menuDescription = "";
+  String menuIntroduction = "";
   List<MenuOptionCategoryModel> selectedMenuOptionCategories = [];
 
   void animateToPage(int index) => pageController.animateToPage(
@@ -120,7 +120,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
         _Page_4_MenuRegistration(
           imagePath: imagePath,
           menuBriefDescription: menuBriefDescription,
-          menuDescription: menuDescription,
+          menuIntroduction: menuIntroduction,
           selectedMenuOptionCategories: selectedMenuOptionCategories,
           onPrev: () => animateToPage(3),
           onNext: () => {
@@ -133,7 +133,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
               nutrition,
               imagePath,
               menuBriefDescription,
-              menuDescription,
+              menuIntroduction,
               selectedMenuOptionCategories,
             )
                 .then((resultFailResponseModel) {
@@ -155,12 +155,12 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
               }
             }),
           },
-          onEditFunction: (imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories) {
+          onEditFunction: (imagePath, menuBriefDescription, menuIntroduction, selectedMenuOptionCategories) {
             logger.d("_Page_4_MenuRegistration onEditFunction selectedMenuOptionCategories ${selectedMenuOptionCategories.toFormattedJson()} ");
             setState(() {
               this.imagePath = imagePath;
               this.menuBriefDescription = menuBriefDescription;
-              this.menuDescription = menuDescription;
+              this.menuIntroduction = menuIntroduction;
               this.selectedMenuOptionCategories = selectedMenuOptionCategories;
             });
           },
@@ -821,13 +821,13 @@ class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
 class _Page_4_MenuRegistration extends StatefulWidget {
   final String imagePath;
   final String menuBriefDescription;
-  final String menuDescription;
+  final String menuIntroduction;
   final List<MenuOptionCategoryModel> selectedMenuOptionCategories;
   final VoidCallback onNext;
   final VoidCallback onPrev;
   final Function(String, String, String, List<MenuOptionCategoryModel>) onEditFunction;
 
-  const _Page_4_MenuRegistration({required this.imagePath, required this.menuBriefDescription, required this.menuDescription, required this.selectedMenuOptionCategories, required this.onNext, required this.onPrev, required this.onEditFunction});
+  const _Page_4_MenuRegistration({required this.imagePath, required this.menuBriefDescription, required this.menuIntroduction, required this.selectedMenuOptionCategories, required this.onNext, required this.onPrev, required this.onEditFunction});
 
   @override
   State<_Page_4_MenuRegistration> createState() => _Page_4_MenuRegistrationState();
@@ -836,7 +836,7 @@ class _Page_4_MenuRegistration extends StatefulWidget {
 class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
   late String imagePath;
   late String menuBriefDescription;
-  late String menuDescription;
+  late String menuIntroduction;
   late List<MenuOptionCategoryModel> selectedMenuOptionCategories;
 
   static const columns = 3;
@@ -846,7 +846,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
     super.initState();
     imagePath = widget.imagePath;
     menuBriefDescription = widget.menuBriefDescription;
-    menuDescription = widget.menuDescription;
+    menuIntroduction = widget.menuIntroduction;
     selectedMenuOptionCategories = widget.selectedMenuOptionCategories;
   }
 
@@ -865,7 +865,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                  if (menuBriefDescription.isNotEmpty && menuDescription.isNotEmpty && imagePath.isNotEmpty && selectedMenuOptionCategories.isNotEmpty) {
+                  if (menuBriefDescription.isNotEmpty && menuIntroduction.isNotEmpty && imagePath.isNotEmpty && selectedMenuOptionCategories.isNotEmpty) {
                     widget.onNext();
                   }
                 },
@@ -876,19 +876,19 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                  if (menuBriefDescription.isNotEmpty && menuDescription.isNotEmpty && imagePath.isNotEmpty && selectedMenuOptionCategories.isNotEmpty) {
+                  if (menuBriefDescription.isNotEmpty && menuIntroduction.isNotEmpty && imagePath.isNotEmpty && selectedMenuOptionCategories.isNotEmpty) {
                     widget.onNext();
                   }
                 },
                 child: SGContainer(
-                    color: menuBriefDescription.isEmpty || menuDescription.isEmpty || imagePath.isEmpty || selectedMenuOptionCategories.isEmpty ? SGColors.gray2 : SGColors.primary,
+                    color: menuBriefDescription.isEmpty || menuIntroduction.isEmpty || imagePath.isEmpty || selectedMenuOptionCategories.isEmpty ? SGColors.gray2 : SGColors.primary,
                     padding: EdgeInsets.all(SGSpacing.p4),
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Center(
                         child: SGTypography.body(
                       "등록",
                       size: FontSize.large,
-                      color: menuBriefDescription.isEmpty || menuDescription.isEmpty || imagePath.isEmpty || selectedMenuOptionCategories.isEmpty ? SGColors.gray5 : SGColors.white,
+                      color: menuBriefDescription.isEmpty || menuIntroduction.isEmpty || imagePath.isEmpty || selectedMenuOptionCategories.isEmpty ? SGColors.gray5 : SGColors.white,
                       weight: FontWeight.w700,
                     ))),
               )),
@@ -923,7 +923,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                                 setState(() {
                                   imagePath = imagePaths[0];
                                 });
-                                widget.onEditFunction(imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories);
+                                widget.onEditFunction(imagePath, menuBriefDescription, menuIntroduction, selectedMenuOptionCategories);
                               },
                             ),
                           ),
@@ -992,7 +992,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                               setState(() {
                                 menuBriefDescription = value;
                               });
-                              widget.onEditFunction(imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories);
+                              widget.onEditFunction(imagePath, menuBriefDescription, menuIntroduction, selectedMenuOptionCategories);
                               Navigator.pop(context);
                             },
                           )));
@@ -1016,16 +1016,16 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => TextAreaScreen(
-                            value: menuDescription,
+                            value: menuIntroduction,
                             title: "메뉴 설명",
                             fieldLabel: "메뉴 설명을 입력해주세요.",
                             buttonText: "변경하기",
                             hintText: "메뉴 설명을 입력해주세요.",
                             onSubmit: (value) {
                               setState(() {
-                                menuDescription = value;
+                                menuIntroduction = value;
                               });
-                              widget.onEditFunction(imagePath, menuBriefDescription, menuDescription, selectedMenuOptionCategories);
+                              widget.onEditFunction(imagePath, menuBriefDescription, menuIntroduction, selectedMenuOptionCategories);
                               Navigator.pop(context);
                             },
                           )));
@@ -1039,7 +1039,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                 ),
               ),
               SizedBox(height: SGSpacing.p5),
-              SGTypography.body(menuDescription, size: FontSize.small, weight: FontWeight.w500, lineHeight: 1.25),
+              SGTypography.body(menuIntroduction, size: FontSize.small, weight: FontWeight.w500, lineHeight: 1.25),
             ]),
             SizedBox(height: SGSpacing.p8),
 
@@ -1060,7 +1060,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                           widget.onEditFunction(
                             imagePath,
                             menuBriefDescription,
-                            menuDescription,
+                            menuIntroduction,
                             selectedMenuOptionCategories,
                           );
                         },
@@ -1107,7 +1107,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                                     widget.onEditFunction(
                                       imagePath,
                                       menuBriefDescription,
-                                      menuDescription,
+                                      menuIntroduction,
                                       updatedSelectedMenuOptionCategories,
                                     );
                                   },

@@ -37,8 +37,8 @@ class _UpdateMenuCategoryScreenState extends ConsumerState<UpdateMenuCategoryScr
   @override
   void initState() {
     super.initState();
-    menuCategoryDescriptionController = TextEditingController(text: widget.menuCategoryModel.menuDescription);
-    menuCategoryDescription = widget.menuCategoryModel.menuDescription;
+    menuCategoryDescriptionController = TextEditingController(text: widget.menuCategoryModel.menuIntroduction);
+    menuCategoryDescription = widget.menuCategoryModel.menuIntroduction;
     menuCategoryNameController = TextEditingController(text: widget.menuCategoryModel.menuCategoryName);
     menuCategoryName = widget.menuCategoryModel.menuCategoryName;
   }
@@ -58,11 +58,11 @@ class _UpdateMenuCategoryScreenState extends ConsumerState<UpdateMenuCategoryScr
                 provider.updateMenuCategoryName(MenuCategoryModel(
                   storeMenuCategoryId: widget.menuCategoryModel.storeMenuCategoryId,
                   menuCategoryName: menuCategoryName,
-                  menuDescription: menuCategoryDescription,
+                  menuIntroduction: menuCategoryDescription,
                 ));
                 Navigator.of(context).pop();
               },
-              disabled: menuCategoryName.isEmpty || menuCategoryDescription.isEmpty || (menuCategoryDescription == widget.menuCategoryModel.menuDescription && menuCategoryName == widget.menuCategoryModel.menuCategoryName),
+              disabled: menuCategoryName.isEmpty || menuCategoryDescription.isEmpty || (menuCategoryDescription == widget.menuCategoryModel.menuIntroduction && menuCategoryName == widget.menuCategoryModel.menuCategoryName),
               label: "변경하기")),
 
       body: SGContainer(

@@ -24,7 +24,7 @@ abstract class MenuCategoryModel with _$MenuCategoryModel {
     @Default(-1) int storeId,
     @Default(-1) int storeMenuCategoryId,
     @Default('') String menuCategoryName,
-    @Default('') String menuDescription, // categoryDescription 이어야 함.
+    @Default('') String menuIntroduction, // categoryDescription 이어야 함.
     @Default(<MenuModel>[]) List<MenuModel> menuList,
   }) = _MenuCategoryModel;
 
@@ -40,12 +40,12 @@ abstract class MenuModel with _$MenuModel {
     @Default(0) int bestStatus,
     @Default(0) int soldOutStatus,
     @Default('') String menuName,
-    @Default('') String menuParts, // 메뉴 구성. 필요해 보이나, api 규격에 존재하지 않음.
-    @Default('') String menuDescription, // 메뉴 설명. 필요해 보이나, api 규격에 존재하지 않음.
+    @Default('') String madeOf,
+    @Default('') String menuIntroduction,
     @Default(0) int price,
     @Default('https://via.placeholder.com/150') String menuPictureURL,
     @Default(NutritionModel())
-    NutritionModel nutrition, //Nutrition. 필요해 보이나, api 규격에 존재하지 않음.
+    NutritionModel nutrition,
     @Default(<MenuOptionCategoryModel>[]) List<MenuOptionCategoryModel> menuCategoryOptions,
   }) = _MenuModel;
 
@@ -107,4 +107,23 @@ abstract class MenuOptionRelationshipModel with _$MenuOptionRelationshipModel {
   }) = _MenuOptionRelationshipModel;
 
   factory MenuOptionRelationshipModel.fromJson(Map<String, dynamic> json) => _$MenuOptionRelationshipModelFromJson(json);
+}
+
+@freezed
+abstract class GetMenuDataModel with _$GetMenuDataModel {
+  const factory GetMenuDataModel({
+    @Default('') String madeOf,
+    @Default('') String menuIntroduction,
+    @Default(0) int servingAmount,
+    @Default('g') String servingAmountType,
+    @Default(0) int calories,
+    @Default(0) int carbohydrate,
+    @Default(0) int protein,
+    @Default(0) int fat,
+    @Default(0) int sugar,
+    @Default(0) int saturatedFat,
+    @Default(0) int natrium,
+  }) = _GetMenuDataModel;
+
+  factory GetMenuDataModel.fromJson(Map<String, dynamic> json) => _$GetMenuDataModelFromJson(json);
 }

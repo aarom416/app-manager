@@ -7,6 +7,7 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
+import 'package:singleeat/core/extensions/dynamic.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/main.dart';
 
@@ -230,6 +231,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
               SizedBox(height: SGSpacing.p32),
               SGActionButton(
                 onPressed: () {
+                  // logger.d("onPressed nutrition ${nutrition.toFormattedJson()}");
                   widget.onConfirm(nutrition, context);
                 },
                 label: "수정하기",
