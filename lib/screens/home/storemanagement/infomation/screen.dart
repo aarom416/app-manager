@@ -16,6 +16,7 @@ import 'package:singleeat/core/screens/textarea_screen.dart';
 import 'package:singleeat/screens/home/storemanagement/infomation/provider.dart';
 
 import '../../../../core/components/network_image_container.dart';
+import '../../../../core/components/snackbar.dart';
 import '../../../../main.dart';
 
 class StoreManagementBasicInfoScreen extends ConsumerStatefulWidget {
@@ -205,17 +206,14 @@ class _StoreManagementBasicInfoScreenState
                       hintText: "가게 소개를 입력해주세요",
                       buttonText: "변경하기",
                       onSubmit: (value) {
-                        provider.storeIntroduction(value).then((value) {
-                          if (value) {
-                            showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
-                            context.pop();
-                          } else {
-                            showFailDialogWithImage(
-                              context: context,
-                              mainTitle: "가게 소개 변경 오류",
-                              subTitle: "가게 소개 변경 오류",
-                            );
-                          }
+                        provider.onChangeStoreIntroduction(value);
+                        provider.storeIntroduction(successCallback: () {
+                          context.pop();
+                        }, errorCallback: (errorMessage) {
+                          showFailDialogWithImage(
+                            context: context,
+                            mainTitle: errorMessage,
+                          );
                         });
                       })));
             }),

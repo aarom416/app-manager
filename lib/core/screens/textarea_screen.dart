@@ -38,8 +38,8 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
   final int maxStoreIntroductionLength = 300;
   final int maxLength = 100;
 
-  TextStyle baseStyle =
-  TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
+  bool hasBadWord = false;
+  TextStyle baseStyle = const TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
 
   @override
   void initState() {
@@ -194,6 +194,20 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
                 ),
               ),
             ),
+            if (hasBadWord)
+              Padding(
+                padding: EdgeInsets.only(top: SGSpacing.p2),
+                child: const Text(
+                  '욕설 및 비하 발언이 포함되어있습니다.\n다시 한 번 확인해주세요.',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFFF62B2B),
+                    textBaseline: TextBaseline.alphabetic,
+                  ),
+                ),
+              ),
           ],
         ),
       ),

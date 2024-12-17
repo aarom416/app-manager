@@ -865,7 +865,9 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                  widget.onPrev();
+                  if (menuBriefDescription.isNotEmpty && menuDescription.isNotEmpty && imagePath.isNotEmpty && selectedMenuOptionCategories.isNotEmpty) {
+                    widget.onNext();
+                  }
                 },
                 child: SGContainer(
                     color: SGColors.gray3, padding: EdgeInsets.all(SGSpacing.p4), borderRadius: BorderRadius.circular(SGSpacing.p3), child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
