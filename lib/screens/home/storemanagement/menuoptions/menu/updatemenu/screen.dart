@@ -152,20 +152,21 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                         child: GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => TextFieldEditScreen(
-                                  value: menuModel.menuName,
-                                  title: "메뉴명 변경",
-                                  buttonText: "변경하기",
-                                  hintText: "메뉴명을 입력해주세요.",
-                                  onSubmit: (value) {
-                                    provider.updateMenuName(widget.menuId, value).then((success) {
-                                      logger.d("updateMenuName success $success $value");
-                                      if (success) {
-                                        showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
-                                      }
-                                    });
-                                  },
-                                )));
+                          builder: (context) => TextFieldEditScreen(
+                            value: menuModel.menuName,
+                            title: "메뉴명 변경",
+                            buttonText: "변경하기",
+                            hintText: "메뉴명을 입력해주세요.",
+                            onSubmit: (value) {
+                              provider.updateMenuName(widget.menuId, value).then((success) {
+                                logger.d("updateMenuName success $success $value");
+                                if (success) {
+                                  showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
+                                }
+                              });
+                            },
+                          ),
+                        ));
                       },
                       child: SGContainer(
                         borderColor: SGColors.line3,
@@ -275,7 +276,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => TextareaEditScreen(
+                            builder: (context) => TextAreaEditScreen(
                                   value: menuModel.madeOf,
                                   title: "메뉴 구성",
                                   buttonText: "변경하기",
@@ -309,7 +310,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => TextareaEditScreen(
+                            builder: (context) => TextAreaEditScreen(
                                   value: menuModel.menuIntroduction,
                                   title: "메뉴 설명",
                                   buttonText: "변경하기",
