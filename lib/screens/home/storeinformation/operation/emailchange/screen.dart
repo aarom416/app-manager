@@ -12,6 +12,9 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/screens/home/storeinformation/operation/provider.dart';
 
+import '../../../../../core/components/snackbar.dart';
+import '../../../../../office/providers/signup_provider.dart';
+
 class EmailEditScreen extends ConsumerStatefulWidget {
   final String value;
   final String title;
@@ -318,6 +321,38 @@ class _EmailEditScreenState extends ConsumerState<EmailEditScreen> {
                             weight: FontWeight.w500,
                             size: FontSize.small))),
               ),
+              SizedBox(
+                height: SGSpacing.p4,
+              ),
+              GestureDetector(
+                onTap: () async {
+                  if (isNotEmpty) {
+                    provider.sendEmailCode(
+                        '${controller.text}@${emailDomainController.text}',
+                        successCallback: () {
+                          setState(() {
+                            isSendCode = true;
+                          });
+                          showDialog("사장님 이메일로 인증메일을\n보내드렸습니다.");
+                        });
+                  }
+                },
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SGTypography.body(
+                        "인증번호 다시 받기 ",
+                        color: SGColors.primary,
+                        weight: FontWeight.w400,
+                        size: FontSize.tiny,
+                      ),
+                      Image.asset("assets/images/recycle.png",
+                          height: 15, width: 15),
+                    ],
+                  ),
+                ),
+              )
             ] else ...[
               GestureDetector(
                 onTap: () {
@@ -387,8 +422,8 @@ class _EmailEditScreenState extends ConsumerState<EmailEditScreen> {
         childrenBuilder: (ctx) => [
               Center(
                   child: SGTypography.body(subTitle,
-                      color: SGColors.gray4,
-                      size: FontSize.small,
+                      color: SGColors.black,
+                      size: FontSize.medium,
                       weight: FontWeight.w700,
                       lineHeight: 1.25,
                       align: TextAlign.center)),
