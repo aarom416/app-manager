@@ -6,7 +6,6 @@ import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/sizing.dart';
-import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -123,6 +122,7 @@ class _CouponDetailScreenState extends ConsumerState<CouponDetailScreen> {
                 children: [
                   Expanded(
                     child: TextField(
+                        keyboardType: TextInputType.number,
                         enabled: false,
                         decoration: InputDecoration(
                           hintText: coupon.minOrderAmount.toKoreanCurrency,
@@ -287,15 +287,14 @@ class _CouponDetailScreenState extends ConsumerState<CouponDetailScreen> {
 
   Future<void> deleteCoupon(CouponInformationNotifier provider) async {
     await provider.deleteIssuedCoupon(
-      successCallback: () {
-        if (!context.mounted) return;
-        popUntil(context: context, path: AppRoutes.couponInformation);
-      },
-      failCallback: () => {
-        Navigator.pop(context),
-        showFailDialogWithImage("해당 쿠폰은 삭제할 수 없습니다.\n고객센터로 문의해주세요", ""),
-      }
-    );
+        successCallback: () {
+          if (!context.mounted) return;
+          popUntil(context: context, path: AppRoutes.couponInformation);
+        },
+        failCallback: () => {
+              Navigator.pop(context),
+              showFailDialogWithImage("해당 쿠폰은 삭제할 수 없습니다.\n고객센터로 문의해주세요", ""),
+            });
   }
 
   void showFailDialogWithImage(String mainTitle, String subTitle) {
