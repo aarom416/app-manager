@@ -96,6 +96,23 @@ class StoreInformationService {
       return Future.error(e);
     }
   }
+
+  /// POST - 이메일 재설정
+  Future<Response<dynamic>> resetEmail({required String email}) {
+    try {
+      final response = ref.read(requestApiProvider).post(
+            RestApiUri.resetEmail.replaceAll('{email}', email),
+          );
+
+      return response;
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
 }
 
 final storeInformationServiceProvider =

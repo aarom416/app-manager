@@ -128,9 +128,14 @@ class _StoreInformationScreenState
                               hintText: "이메일을 입력해주세요.",
                               buttonText: "변경하기",
                               onSubmit: (value) {
-                                setState(() {
-                                  email = value;
-                                });
+                                if (ref
+                                    .watch(storeInformationNotifierProvider)
+                                    .isVerifyCode) {
+                                  ref
+                                      .read(storeInformationNotifierProvider
+                                          .notifier)
+                                      .resetEmail(email: value);
+                                }
                               })));
                     }),
                 SizedBox(height: SGSpacing.p8),

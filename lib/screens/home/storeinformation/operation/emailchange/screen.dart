@@ -62,12 +62,19 @@ class _EmailEditScreenState extends ConsumerState<EmailEditScreen> {
     value = widget.value;
     isVerify = false;
     //controller.text = widget.value;
+
+    Future.microtask(() {
+      ref.read(storeInformationNotifierProvider.notifier).clearBool();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(storeInformationNotifierProvider);
     final provider = ref.read(storeInformationNotifierProvider.notifier);
+    final isNotEmpty =
+        controller.text.isNotEmpty && emailDomainController.text.isNotEmpty;
+
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: widget.title),
       floatingActionButton: Container(
@@ -76,7 +83,8 @@ class _EmailEditScreenState extends ConsumerState<EmailEditScreen> {
               maxHeight: 58),
           child: SGActionButton(
               onPressed: () {
-                widget.onSubmit(controller.text);
+                widget.onSubmit(
+                    '${controller.text}@${emailDomainController.text}');
                 Navigator.of(context).pop();
               },
               disabled: isVerify ? false : true,
@@ -289,16 +297,14 @@ class _EmailEditScreenState extends ConsumerState<EmailEditScreen> {
                 onTap: () async {
                   await provider.verifyEmailCode(
                       '${controller.text}@${emailDomainController.text}',
-                      authController.text);
-
-                  if (state.status == StoreInformationStatus.success) {
+                      authController.text, success: () {
                     showDialog("이메일 인증이 완료되었습니다.");
                     setState(() {
                       isVerify = true;
                     });
-                  } else {
+                  }, error: () {
                     showFailDialogWithImage("인증에 실패하였습니다.\n잠시후 다시 시도해주세요");
-                  }
+                  });
                 },
                 child: SGContainer(
                     padding: EdgeInsets.symmetric(
@@ -315,24 +321,27 @@ class _EmailEditScreenState extends ConsumerState<EmailEditScreen> {
             ] else ...[
               GestureDetector(
                 onTap: () {
-                  provider.sendEmailCode(
-                      '${controller.text}@${emailDomainController.text}');
-
-                  setState(() {
-                    isSendCode = true;
-                  });
-
-                  showDialog("사장님 이메일로 인증메일을\n보내드렸습니다.");
+                  if (isNotEmpty) {
+                    provider.sendEmailCode(
+                        '${controller.text}@${emailDomainController.text}',
+                        successCallback: () {
+                      setState(() {
+                        isSendCode = true;
+                      });
+                      showDialog("사장님 이메일로 인증메일을\n보내드렸습니다.");
+                    });
+                  }
                 },
                 child: SGContainer(
                     padding: EdgeInsets.symmetric(
                         vertical: SGSpacing.p4 + SGSpacing.p05),
                     width: double.infinity,
-                    borderColor: SGColors.primary,
+                    borderColor: isNotEmpty ? SGColors.primary : SGColors.gray3,
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Center(
                         child: SGTypography.body("이메일 인증",
-                            color: SGColors.primary,
+                            color:
+                                isNotEmpty ? SGColors.primary : SGColors.gray3,
                             weight: FontWeight.w700,
                             size: FontSize.small))),
               ),
