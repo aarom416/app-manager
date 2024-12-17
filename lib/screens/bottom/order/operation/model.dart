@@ -13,7 +13,6 @@ abstract class NewOrderModel with _$NewOrderModel {
     @Default('') String receiveFoodType,
     @Default(0) int orderAmount,
     @Default('') String createdDate,
-    @Default('') String receivedDate,
     @Default(0) int expectedTime,
     @Default([]) List<OrderMenuDTO> orderMenuDTOList,
     @Default([]) List<List<OrderMenuOptionDTO>> orderMenuOptionDTOList,
@@ -22,7 +21,6 @@ abstract class NewOrderModel with _$NewOrderModel {
   factory NewOrderModel.fromJson(Map<String, dynamic> json) =>
       _$NewOrderModelFromJson(json);
 }
-
 
 /*
 @freezed
