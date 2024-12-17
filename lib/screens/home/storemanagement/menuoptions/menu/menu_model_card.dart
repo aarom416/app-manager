@@ -20,7 +20,8 @@ class MenuModelCard extends StatelessWidget {
       color: SGColors.white,
       borderRadius: BorderRadius.circular(SGSpacing.p4),
       boxShadow: SGBoxShadow.large,
-      padding: EdgeInsets.symmetric(vertical: SGSpacing.p4, horizontal: SGSpacing.p4),
+      padding: EdgeInsets.symmetric(
+          vertical: SGSpacing.p4, horizontal: SGSpacing.p4),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,16 +63,17 @@ class MenuModelCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 191,
-                    child: SGTypography.body(
-                      menuModel.menuName,
-                      color: SGColors.black,
-                      size: FontSize.normal,
-                      weight: FontWeight.w700,
-                      overflow: TextOverflow.ellipsis
-                    )),
+                      width: 191,
+                      child: SGTypography.body(menuModel.menuName,
+                          color: SGColors.black,
+                          size: FontSize.normal,
+                          weight: FontWeight.w700,
+                          overflow: TextOverflow.ellipsis)),
                   SizedBox(height: SGSpacing.p2),
-                  SGTypography.body("${menuModel.price.toKoreanCurrency}원", color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w400),
+                  SGTypography.body("${menuModel.price.toKoreanCurrency}원",
+                      color: SGColors.gray4,
+                      size: FontSize.normal,
+                      weight: FontWeight.w400),
                 ],
               ),
             ],
@@ -83,9 +85,12 @@ class MenuModelCard extends StatelessWidget {
                 borderWidth: 0,
                 width: SGSpacing.p5,
                 height: SGSpacing.p5,
-                borderRadius: BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
+                borderRadius:
+                    BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
                 color: SGColors.warningRed,
-                child: Center(child: Image.asset('assets/images/minus-white.png', width: 16, height: 16)),
+                child: Center(
+                    child: Image.asset('assets/images/minus-white.png',
+                        width: 16, height: 16)),
               ),
             ),
         ],

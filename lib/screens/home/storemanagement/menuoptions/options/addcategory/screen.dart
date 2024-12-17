@@ -111,6 +111,11 @@ class _AddOptionCategoryScreenState
               maxChoice: maxChoice,
               appliedMenus: appliedMenus,
               onPrev: () => animateToPage(3),
+              onEditFunction: (appliedMenus) {
+                setState(() {
+                  this.appliedMenus = appliedMenus;
+                });
+              },
               onNext: () => {
                 provider
                     .createOptionCategory(
@@ -899,7 +904,7 @@ class _Page_3_AppliedMenusState extends State<_Page_3_AppliedMenus> {
   }
 }
 
-class _Page_4_ConfirmAddition extends StatelessWidget {
+class _Page_4_ConfirmAddition extends StatefulWidget {
   final String menuOptionCategoryName;
   final List<MenuOptionModel> selectedMenuOptions;
   final int essentialStatus;
@@ -908,6 +913,7 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
   final List<MenuModel> appliedMenus;
   final VoidCallback onNext;
   final VoidCallback onPrev;
+  final Function(List<MenuModel>) onEditFunction;
 
   const _Page_4_ConfirmAddition({
     required this.menuOptionCategoryName,
@@ -918,13 +924,31 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
     required this.appliedMenus,
     required this.onNext,
     required this.onPrev,
+    required this.onEditFunction,
   });
+
+  @override
+  State<_Page_4_ConfirmAddition> createState() =>
+      _Page_4_ConfirmAdditionState();
+}
+
+class _Page_4_ConfirmAdditionState extends State<_Page_4_ConfirmAddition> {
+  late List<MenuModel> appliedMenus;
+
+  @override
+  void initState() {
+    super.initState();
+    appliedMenus = widget.appliedMenus;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBarWithStepIndicator(
-            title: "옵션 카테고리 추가", currentStep: 5, totalStep: 5, onTap: onPrev),
+            title: "옵션 카테고리 추가",
+            currentStep: 5,
+            totalStep: 5,
+            onTap: widget.onPrev),
         floatingActionButton: Container(
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
@@ -934,7 +958,7 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
-                    onPrev();
+                    widget.onPrev();
                   },
                   child: SGContainer(
                       color: SGColors.gray3,
@@ -950,7 +974,7 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
-                    onNext();
+                    widget.onNext();
                   },
                   child: SGContainer(
                       color: SGColors.primary,
@@ -983,7 +1007,7 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                     borderColor: SGColors.line3,
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Row(children: [
-                      SGTypography.body(menuOptionCategoryName,
+                      SGTypography.body(widget.menuOptionCategoryName,
                           size: FontSize.normal,
                           weight: FontWeight.w400,
                           color: SGColors.gray5),
@@ -1003,7 +1027,7 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                   borderColor: SGColors.line3,
                   borderRadius: BorderRadius.circular(SGSpacing.p3),
                   child: Column(
-                    children: selectedMenuOptions.map((menuOption) {
+                    children: widget.selectedMenuOptions.map((menuOption) {
                       return Row(
                         children: [
                           SGTypography.body(menuOption.optionContent,
@@ -1034,7 +1058,7 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Row(children: [
                       SGTypography.body(
-                          essentialStatus == 1 ? "필수 옵션" : "필수 아님",
+                          widget.essentialStatus == 1 ? "필수 옵션" : "필수 아님",
                           size: FontSize.normal),
                     ])),
                 SizedBox(height: SGSpacing.p15 / 2),
@@ -1048,7 +1072,8 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                     borderColor: SGColors.line3,
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Row(children: [
-                      SGTypography.body("최소 ${minChoice}개, 최대 ${maxChoice}개",
+                      SGTypography.body(
+                          "최소 ${widget.minChoice}개, 최대 ${widget.maxChoice}개",
                           size: FontSize.normal,
                           weight: FontWeight.w400,
                           color: SGColors.gray5),
@@ -1060,7 +1085,18 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                     .mapIndexed(
                       (index, menuModel) => [
                         SizedBox(height: SGSpacing.p3),
-                        MenuModelCard(menuModel: menuModel)
+                        MenuModelCard(
+                            menuModel: menuModel,
+                            onRemove: () {
+                              final updatedAppliedMenus =
+                                  List<MenuModel>.from(appliedMenus);
+                              updatedAppliedMenus.removeAt(index);
+                              widget.onEditFunction(updatedAppliedMenus);
+
+                              setState(() {
+                                appliedMenus = updatedAppliedMenus;
+                              });
+                            }),
                       ],
                     )
                     .flattened,
