@@ -314,14 +314,14 @@ class _Page_1_MenuCategoryState extends State<_Page_1_MenuCategory> {
                     }
                   },
                   child: SGContainer(
-                      color: selectedMenuCategory.storeMenuCategoryId == -1 ? SGColors.gray2 : SGColors.primary,
+                      color: SGColors.gray3,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
                       child: Center(
                           child: SGTypography.body(
                         "다음",
                         size: FontSize.large,
-                        color: selectedMenuCategory.storeMenuCategoryId == -1 ? SGColors.gray5 : SGColors.white,
+                        color: SGColors.white,
                         weight: FontWeight.w700,
                       ))),
                 )),
@@ -677,16 +677,16 @@ class _Page_2_MenuPriceState extends State<_Page_2_MenuPrice> {
                     }
                   },
                   child: SGContainer(
-                      color: price == 0 ? SGColors.gray2 : SGColors.primary,
+                      color: price != 0 ? SGColors.primary : SGColors.gray3,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
                       child: Center(
                           child: SGTypography.body(
-                        "다음",
-                        size: FontSize.large,
-                        color: price == 0 ? SGColors.gray5 : SGColors.white,
-                        weight: FontWeight.w700,
-                      ))),
+                            "다음",
+                            size: FontSize.large,
+                            color: SGColors.white,
+                            weight: FontWeight.w700,
+                          ))),
                 )),
               ],
             )),
