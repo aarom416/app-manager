@@ -4,6 +4,7 @@ import 'package:singleeat/core/extensions/dynamic.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/models/result_response_model.dart';
+import 'package:singleeat/office/providers/bad_word_provider.dart';
 import 'package:singleeat/screens/home/storemanagement/menuoptions/service.dart';
 
 import '../../../../main.dart';
@@ -236,6 +237,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
 
   /// POST - 메뉴 이름 변경
   Future<bool> updateMenuName(int menuId, String menuName) async {
+    if (ref.read(badWordNotifierProvider).hasBadWord) return false;
+
     final response = await ref.read(menuOptionsServiceProvider).updateMenuName(
         storeId: UserHive.getBox(key: UserKey.storeId),
         menuId: menuId,
