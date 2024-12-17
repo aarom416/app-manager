@@ -198,6 +198,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                   title: "가격 변경",
                                   buttonText: "변경하기",
                                   hintText: "가격을 입력해주세요.",
+                                  keyboardType: TextInputType.number,
                                   onSubmit: (value) {
                                     int? price = int.tryParse(value);
                                     if (price != null) {

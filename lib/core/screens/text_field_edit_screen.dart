@@ -8,12 +8,14 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/office/providers/bad_word_provider.dart';
+import 'package:singleeat/office/providers/text_field_edit_provider.dart';
 
 class TextFieldEditScreen extends ConsumerStatefulWidget {
   final String value;
   final String title;
   final String hintText;
   final String buttonText;
+  final TextInputType? keyboardType;
   final Function(String) onSubmit;
 
   const TextFieldEditScreen({
@@ -22,6 +24,7 @@ class TextFieldEditScreen extends ConsumerStatefulWidget {
     required this.title,
     required this.hintText,
     required this.buttonText,
+    this.keyboardType,
     required this.onSubmit,
   }) : super(key: key);
 
@@ -42,11 +45,16 @@ class _TextFieldEditScreenState extends ConsumerState<TextFieldEditScreen> {
     super.initState();
     value = widget.value;
     controller.text = widget.value;
+
+    Future.microtask(() {
+      ref.read(textFieldEditNotifierProvider.notifier).clear();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final hasBadWord = ref.watch(badWordNotifierProvider).hasBadWord;
+    final isButton = ref.watch(textFieldEditNotifierProvider).isButton;
     return Scaffold(
       appBar: AppBarWithLeftArrow(title: widget.title),
       floatingActionButton: Container(
@@ -54,10 +62,15 @@ class _TextFieldEditScreenState extends ConsumerState<TextFieldEditScreen> {
               maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
               maxHeight: 58),
           child: SGActionButton(
-              disabled: hasBadWord,
+              disabled: hasBadWord
+                  ? true
+                  : isButton
+                      ? false
+                      : true,
               onPressed: () {
-                widget.onSubmit(controller.text);
-                // Navigator.of(context).pop();
+                if (isButton) {
+                  widget.onSubmit(controller.text);
+                }
               },
               label: widget.buttonText)),
       body: SGContainer(
@@ -93,9 +106,14 @@ class _TextFieldEditScreenState extends ConsumerState<TextFieldEditScreen> {
               borderColor: SGColors.line3,
               borderRadius: BorderRadius.circular(SGSpacing.p3),
               child: TextField(
+                  keyboardType: widget.keyboardType,
                   controller: controller,
                   style: baseStyle.copyWith(color: SGColors.black),
                   onChanged: (value) {
+                    ref
+                        .read(textFieldEditNotifierProvider.notifier)
+                        .onChangeButton(true);
+
                     ref
                         .read(badWordNotifierProvider.notifier)
                         .checkBadWord(value);
