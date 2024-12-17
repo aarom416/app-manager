@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -46,7 +47,15 @@ const AndroidNotificationChannel takeoutChannel = AndroidNotificationChannel(
 );
 
 Future<void> _showForegroundNotification(RemoteMessage message) async {
-  String notificationType = message.data['type'] ?? 'DELIVERY';
+  String notificationType;
+  if (message.data['type'] == 'DELIVERY') {
+    notificationType = message.data['type'];
+  } else if (message.data['type'] == 'TAKEOUT') {
+    notificationType = message.data['type'];
+  } else {
+    notificationType = "DEFAULT";
+  }
+
   AndroidNotificationDetails androidPlatformChannelSpecifics;
   if (notificationType == 'DELIVERY') {
     androidPlatformChannelSpecifics = const AndroidNotificationDetails(
@@ -59,7 +68,7 @@ Future<void> _showForegroundNotification(RemoteMessage message) async {
       color: Color(0xFF2CB682),
       sound: RawResourceAndroidNotificationSound('delivery_alarm'),
     );
-  } else {
+  } else if (notificationType == 'TAKEOUT') {
     androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       'takeout_channel',
       '싱그릿 포장 주문 알림음',
@@ -70,12 +79,23 @@ Future<void> _showForegroundNotification(RemoteMessage message) async {
       color: Color(0xFF2CB682),
       sound: RawResourceAndroidNotificationSound('takeout_alarm'),
     );
+  } else {
+    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'default_channel',
+      '기본 알림음',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: "push_icon",
+      color: Color(0xFF2CB682),
+    );
   }
 
   final DarwinNotificationDetails iOSPlatformChannelSpecifics = DarwinNotificationDetails(
     sound: notificationType == 'DELIVERY'
         ? 'delivery_alarm.wav'
-        : 'takeout_alarm.wav',
+        : notificationType == 'TAKEOUT'
+        ? 'takeout_alarm.wav'
+        : 'default',
   );
 
   final NotificationDetails platformChannelSpecifics = NotificationDetails(
@@ -83,17 +103,25 @@ Future<void> _showForegroundNotification(RemoteMessage message) async {
     iOS: iOSPlatformChannelSpecifics,
   );
 
-  await flutterLocalNotificationsPlugin.show(
-    0,
+  flutterLocalNotificationsPlugin.show(
+    Random().nextInt(100000),
     message.data['title'],
     message.data['body'],
     platformChannelSpecifics,
   );
 }
 
-Future<void> _showBackgroundNotification(RemoteMessage message) async {
-  String notificationType = message.data['type'] ?? 'DELIVERY';
 
+
+Future<void> _showBackgroundNotification(RemoteMessage message) async {
+  String notificationType;
+  if (message.data['type'] == 'DELIVERY') {
+    notificationType = message.data['type'];
+  } else if (message.data['type'] == 'TAKEOUT') {
+    notificationType = message.data['type'];
+  } else {
+    notificationType = "DEFAULT";
+  }
   AndroidNotificationDetails androidPlatformChannelSpecifics;
   if (notificationType == 'DELIVERY') {
     androidPlatformChannelSpecifics = const AndroidNotificationDetails(
@@ -102,30 +130,41 @@ Future<void> _showBackgroundNotification(RemoteMessage message) async {
       importance: Importance.high,
       priority: Priority.high,
       playSound: true,
-      sound: RawResourceAndroidNotificationSound('delivery_alarm'),
       icon: "push_icon",
       color: Color(0xFF2CB682),
+      sound: RawResourceAndroidNotificationSound('delivery_alarm'),
     );
-  } else {
+  } else if (notificationType == 'TAKEOUT'){
     androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       'takeout_channel',
       '싱그릿 포장 주문 알림음',
       importance: Importance.high,
       priority: Priority.high,
       playSound: true,
+      icon: "push_icon",
+      color: Color(0xFF2CB682),
       sound: RawResourceAndroidNotificationSound('takeout_alarm'),
+    );
+  } else {
+    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'default_channel',
+      '기본 알림음',
+      importance: Importance.high,
+      priority: Priority.high,
       icon: "push_icon",
       color: Color(0xFF2CB682),
     );
   }
 
+
   final DarwinNotificationDetails iOSPlatformChannelSpecifics = DarwinNotificationDetails(
     sound: notificationType == 'DELIVERY'
         ? 'delivery_alarm.wav'
-        : 'takeout_alarm.wav',
+        : notificationType == 'TAKEOUT'
+        ? 'takeout_alarm.wav'
+        : 'default',
     presentSound: true,
     presentAlert: true,
-
   );
 
   final NotificationDetails platformChannelSpecifics = NotificationDetails(
@@ -134,7 +173,7 @@ Future<void> _showBackgroundNotification(RemoteMessage message) async {
   );
 
   await flutterLocalNotificationsPlugin.show(
-    0,
+    Random().nextInt(100000),
     message.data['title'],
     message.data['body'],
     platformChannelSpecifics,
