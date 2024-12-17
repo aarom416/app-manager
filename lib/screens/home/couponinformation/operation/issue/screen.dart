@@ -369,6 +369,7 @@ class _CouponIssueScreenState extends ConsumerState<CouponIssueScreen> {
                           ...inputFormatterForNumericValue(
                               maximumAmount: 50000),
                         ],
+                        keyboardType: TextInputType.number,
                         controller: _minimumOrderAmountController,
                         onChanged: (value) {
                           final minOrderAmount = value.isEmpty
