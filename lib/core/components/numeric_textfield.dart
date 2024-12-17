@@ -15,7 +15,7 @@ class NumericTextField extends StatefulWidget {
   final int maxLength;
   final int? initialValue;
   final TextEditingController? controller;
-
+  final bool readOnly;
   const NumericTextField({
     super.key,
     required this.onValueChanged,
@@ -24,6 +24,7 @@ class NumericTextField extends StatefulWidget {
     this.maxLength = 10, // 기본 최대 입력 길이
     this.initialValue,
     this.controller,
+    this.readOnly = false,
   });
 
   @override
@@ -59,6 +60,7 @@ class _NumericTextFieldState extends State<NumericTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      readOnly: widget.readOnly,
       key: widget.key,
       controller: _controller,
       style: widget.style ??

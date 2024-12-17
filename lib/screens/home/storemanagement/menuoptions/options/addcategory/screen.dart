@@ -627,6 +627,7 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
                   onChanged: (value) {
                     setState(() {
                       essentialStatus = value ? 1 : 0;
+                      minChoice = value ? 1 : 0;
                     });
                   },
                 ),
@@ -650,6 +651,7 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
                   Expanded(
                     child: NumericTextField(
                       key: const ValueKey('minChoice'),
+                      readOnly: true,
                       initialValue: minChoice,
                       style: const TextStyle(
                               fontFamily: "Pretendard",
