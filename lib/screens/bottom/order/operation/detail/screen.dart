@@ -860,16 +860,15 @@ class _OrderInformation extends StatelessWidget {
           SizedBox(height: SGSpacing.p4),
           _DataTableRow(left: "배달 주소", right: order.address.substring(0, 20)),
           if (order.receiveFoodType == "DELIVERY" &&
-                  order.orderStatus == OrderStatus.inProgress ||
-              order.orderStatus == OrderStatus.completed ||
-              order.orderStatus == OrderStatus.cancelled) ...[
+                  tab == "접수" ||
+               tab == "완료") ...[
             SizedBox(height: SGSpacing.p3),
             _DataTableRow(
-                left: "연락처",
-                right: [OrderStatus.newOrder, OrderStatus.inProgress]
-                        .contains(OrderStatus.newOrder)
-                    ? "010-0000-1111"
-                    : "010-****-****"),
+              left: "연락처",
+              right: (tab == "완료" && order.phone.startsWith("010"))
+                  ? "010-****-****"
+                  : order.phone, // 그 외의 경우
+            ),
           ],
         ]),
       ],
@@ -902,9 +901,8 @@ class _OrderInformation extends StatelessWidget {
         _DataTableRow(left: "주문번호", right: order.orderNumber),
       ]),
       if (order.receiveFoodType == 'TAKEOUT' &&
-          (order.orderStatus == OrderStatus.inProgress ||
-              order.orderStatus == OrderStatus.completed ||
-              order.orderStatus == OrderStatus.cancelled)) ...[
+          (tab == "접수" ||
+              tab == "완료")) ...[
         SizedBox(height: SGSpacing.p3),
         _DataTable(children: [
           SGTypography.body("주문자 정보",
@@ -913,11 +911,11 @@ class _OrderInformation extends StatelessWidget {
               weight: FontWeight.w600),
           SizedBox(height: SGSpacing.p4),
           _DataTableRow(
-              left: "연락처",
-              right: [OrderStatus.newOrder, OrderStatus.inProgress]
-                      .contains(OrderStatus.newOrder)
-                  ? "010-0000-1111"
-                  : "010-****-****"),
+            left: "연락처",
+            right: (tab == "완료" && order.phone.startsWith("010"))
+                ? "010-****-****"
+                : order.phone, // 그 외의 경우
+          ),
         ]),
       ]
     ]);

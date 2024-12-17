@@ -139,6 +139,8 @@ class OrderNotifier extends _$OrderNotifier {
       );
       return true;
     } else {
+      state = state.copyWith(
+          error: ResultFailResponseModel.fromJson(response.data));
       return false;
     }
   }
@@ -159,6 +161,8 @@ class OrderNotifier extends _$OrderNotifier {
       );
       return true;
     } else {
+      state = state.copyWith(
+          error: ResultFailResponseModel.fromJson(response.data));
       return false;
     }
   }

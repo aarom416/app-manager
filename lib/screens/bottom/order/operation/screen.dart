@@ -13,6 +13,7 @@ import 'package:singleeat/office/models/order_model.dart';
 import 'package:singleeat/screens/bottom/order/operation/detail/screen.dart';
 import 'package:singleeat/screens/bottom/order/operation/model.dart';
 import 'package:singleeat/screens/bottom/order/operation/provider.dart';
+import 'package:singleeat/screens/store_not_found_screen.dart';
 
 import '../../../../core/components/snackbar.dart';
 
@@ -490,13 +491,13 @@ class _NewOrderListView extends ConsumerWidget {
                                       showSnackBar(context, "주문이 접수되었습니다.");
                                       ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
                                     } else {
-                                      if (state.error.errorCode == 409) {
+                                      if (state.error.errorCode == "ORDER_CANCEL_EXCEPTION") {
                                         showFailDialogWithImage(
                                             context: context,
                                             mainTitle: "해당 주문은 이미 접수된 주문입니다.",
                                             subTitle: "새로고침을 통해 다시 한번 확인해주세요."
                                         );
-                                      } else if (state.error.errorCode == 400) {
+                                      } else if (state.error.errorCode == "PAYMENT_CANCEL_EXCEPTION") {
                                         showFailDialogWithImage(
                                             context: context,
                                             mainTitle: "시스템 오류",
@@ -561,6 +562,7 @@ class _InProgressOrderListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final OrderState state = ref.watch(orderNotifierProvider);
     if (orders.isEmpty) {
       return RefreshIndicator(
           backgroundColor: Colors.transparent,
@@ -594,6 +596,18 @@ class _InProgressOrderListView extends ConsumerWidget {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (ctx) => InProgressOrderDetailScreen(
                           order: ref.watch(orderNotifierProvider).orderDetail)));
+                } else {
+                  if (state.error.errorCode == "ORDER_CANCEL_EXCEPTION") {
+                    showFailDialogWithImage(
+                      context: context,
+                      mainTitle: "해당 주문은 이미 취소된 주문입니다.\n잠시 후 다시 시도해주세요.",
+                    );
+                  } else if (state.error.errorCode == "STORE_NOT_FOUND") {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const StoreNotFoundScreen()),
+                          (route) => false, // 스택의 모든 기존 경로 제거
+                    );
+                  }
                 }
               },
               child: Stack(
@@ -691,6 +705,8 @@ class _CompleteOrderListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final OrderState state = ref.watch(orderNotifierProvider);
+
     if (orders.isEmpty) return _NoOrderScreen();
     return ListView.separated(
         shrinkWrap: true,
@@ -705,10 +721,23 @@ class _CompleteOrderListView extends ConsumerWidget {
               bool result = await ref
                   .read(orderNotifierProvider.notifier)
                   .getCompletedOrderDetail(orders[index].orderInformationId);
+              state.error.errorCode;
               if (result) {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (ctx) => CompletedOrderDetailScreen(
                         order: ref.watch(orderNotifierProvider).orderDetail)));
+              } else {
+                if (state.error.errorCode == "ORDER_CANCEL_EXCEPTION") {
+                  showFailDialogWithImage(
+                      context: context,
+                      mainTitle: "해당 주문은 이미 취소된 주문입니다.\n잠시 후 다시 시도해주세요.",
+                  );
+                } else if (state.error.errorCode == "STORE_NOT_FOUND") {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => const StoreNotFoundScreen()),
+                        (route) => false, // 스택의 모든 기존 경로 제거
+                  );
+                }
               }
             },
             child: Stack(
@@ -750,9 +779,9 @@ class _CompleteOrderListView extends ConsumerWidget {
     if (order.orderStatus == OrderStatus.cancelled.orderStatusName) {
       return SGColors.warningRed;
     } else if (order.receiveFoodType == "DELIVERY") {
-      return SGColors.success;
-    } else if (order.receiveFoodType == "TAKEOUT") {
       return SGColors.warningOrange;
+    } else if (order.receiveFoodType == "TAKEOUT") {
+      return SGColors.success;
     }
 
     return SGColors.primary;
@@ -822,7 +851,7 @@ class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
           if (check) {
             widget.onReject();
           } else {
-            if (state.error.errorCode == 400) {
+            if (state.error.errorCode == "PAYMENT_CANCEL_EXCEPTION") {
               showFailDialogWithImage(
                   context: context,
                   mainTitle: "시스템 오류",
@@ -961,7 +990,7 @@ class _OrderCard extends StatelessWidget {
             vertical: SGSpacing.p4, horizontal: SGSpacing.p3),
         borderWidth: 0,
         child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               children: [
