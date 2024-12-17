@@ -39,7 +39,8 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
   final int maxLength = 100;
 
   bool hasBadWord = false;
-  TextStyle baseStyle = const TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
+  TextStyle baseStyle =
+      const TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
 
   @override
   void initState() {
@@ -131,7 +132,7 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
                       style: baseStyle.copyWith(color: SGColors.black),
-                      onChanged: (text) {
+                      onChanged: (text) async {
                         final maxLimit = widget.fieldLabel == "가게 소개"
                             ? maxStoreIntroductionLength
                             : maxLength;
@@ -142,6 +143,9 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
                             TextPosition(offset: maxLimit),
                           );
                         }
+
+                        await _checkBadWord(text);
+
                         setState(() {
                           value = controller.text;
                         });
