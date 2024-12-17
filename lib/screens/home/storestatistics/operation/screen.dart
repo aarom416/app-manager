@@ -779,7 +779,7 @@ class HistogramState extends State<Histogram> {
                           ...widget.data.items[groupIndex]
                               .map((e) => [
                                     TextSpan(
-                                      text: "\n${e.itemType} ",
+                                      text: "\n주문",
                                       style: TextStyle(
                                           color: SGColors.black,
                                           fontSize: FontSize.tiny,
