@@ -55,7 +55,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
   NutritionModel nutrition = const NutritionModel();
   String imagePath = "";
   String menuBriefDescription = "";
-  String menuDescription = "";
+  String menuIntroduction = "";
   List<MenuOptionCategoryModel> selectedMenuOptionCategories = [];
 
   void animateToPage(int index) => pageController.animateToPage(
@@ -178,6 +178,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
               },
             ),
           ]),
+      
     );
   }
 }
@@ -953,7 +954,7 @@ class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
 class _Page_4_MenuRegistration extends StatefulWidget {
   final String imagePath;
   final String menuBriefDescription;
-  final String menuDescription;
+  final String menuIntroduction;
   final List<MenuOptionCategoryModel> selectedMenuOptionCategories;
   final VoidCallback onNext;
   final VoidCallback onPrev;
@@ -977,7 +978,7 @@ class _Page_4_MenuRegistration extends StatefulWidget {
 class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
   late String imagePath;
   late String menuBriefDescription;
-  late String menuDescription;
+  late String menuIntroduction;
   late List<MenuOptionCategoryModel> selectedMenuOptionCategories;
 
   static const columns = 3;
@@ -987,7 +988,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
     super.initState();
     imagePath = widget.imagePath;
     menuBriefDescription = widget.menuBriefDescription;
-    menuDescription = widget.menuDescription;
+    menuIntroduction = widget.menuIntroduction;
     selectedMenuOptionCategories = widget.selectedMenuOptionCategories;
   }
 
@@ -1206,14 +1207,14 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => TextAreaScreen(
-                            value: menuDescription,
+                            value: menuIntroduction,
                             title: "메뉴 설명",
                             fieldLabel: "메뉴 설명을 입력해주세요.",
                             buttonText: "변경하기",
                             hintText: "메뉴 설명을 입력해주세요.",
                             onSubmit: (value) {
                               setState(() {
-                                menuDescription = value;
+                                menuIntroduction = value;
                               });
                               widget.onEditFunction(
                                   imagePath,
@@ -1261,7 +1262,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                           widget.onEditFunction(
                             imagePath,
                             menuBriefDescription,
-                            menuDescription,
+                            menuIntroduction,
                             selectedMenuOptionCategories,
                           );
                         },
@@ -1315,7 +1316,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                                     widget.onEditFunction(
                                       imagePath,
                                       menuBriefDescription,
-                                      menuDescription,
+                                      menuIntroduction,
                                       updatedSelectedMenuOptionCategories,
                                     );
                                   },

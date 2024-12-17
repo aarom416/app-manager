@@ -64,7 +64,7 @@ class _AddMenuCategoryScreenState extends ConsumerState<AddMenuCategoryScreen> {
                   provider
                       .createMenuCategory(MenuCategoryModel(
                     menuCategoryName: menuCategoryName,
-                    menuDescription: menuCategoryDescription,
+                    menuIntroduction: menuCategoryDescription,
                     menuList: selectedMenuList,
                   ))
                       .then((value) {

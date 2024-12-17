@@ -39,8 +39,7 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
   final int maxLength = 100;
 
   bool hasBadWord = false;
-  TextStyle baseStyle =
-      const TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
+  TextStyle baseStyle = const TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
 
   @override
   void initState() {
@@ -102,6 +101,7 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
             widget.onSubmit(controller.text);
           },
           label: widget.buttonText,
+          disabled: controller.text.isEmpty || hasBadWord,
         ),
       ),
       body: SGContainer(
@@ -133,9 +133,7 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
                       keyboardType: TextInputType.multiline,
                       style: baseStyle.copyWith(color: SGColors.black),
                       onChanged: (text) async {
-                        final maxLimit = widget.fieldLabel == "가게 소개"
-                            ? maxStoreIntroductionLength
-                            : maxLength;
+                        final maxLimit = widget.fieldLabel == "가게 소개" ? maxStoreIntroductionLength : maxLength;
 
                         if (text.length > maxLimit) {
                           controller.text = text.substring(0, maxLimit);

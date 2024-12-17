@@ -41,8 +41,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           children: [
             Container(
               alignment: Alignment.center,
-              margin: const EdgeInsets.only(left: 78, right: 78),
-              child: Image.asset("assets/images/splash-logo.png"),
+              margin: const EdgeInsets.only(left: 108, right: 108),
+              child: Image.asset("assets/images/splash.png"),
             ),
             Positioned(
               bottom: 54,

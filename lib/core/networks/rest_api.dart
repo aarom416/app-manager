@@ -245,7 +245,7 @@ class RestApiUri {
 
   /// StoreMenuGet
   /// 가게 메뉴 조회 API
-  // GET - 메뉴 정보 조회 TODO
+  // GET - 메뉴 정보 조회
   static const String getMenu = '/api/v1/owner/store-menu/menu/{menuId}';
   // GET - 메뉴 옵션 정보 조회
   static const String getMenuInfo =
@@ -328,7 +328,7 @@ class RestApiUri {
   // POST - 메뉴 설명 변경
   static const String updateMenuIntroduction =
       '/api/v1/owner/store-menu/menu-introduction';
-  // POST - 메뉴 정보 변경 TODO
+  // POST - 메뉴 정보 변경
   static const String updateMenuInfo = '/api/v1/owner/store-menu/menu-info';
   // POST - 메뉴 카테고리 이름 및 설명 수정
   static const String updateMenuCategoryName =

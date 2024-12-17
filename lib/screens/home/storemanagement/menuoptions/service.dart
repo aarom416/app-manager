@@ -42,9 +42,9 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.createMenuCategory,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuCategoryName': newMenuCategoryModel.menuCategoryName,
-          'description': newMenuCategoryModel.menuDescription,
+          'description': newMenuCategoryModel.menuIntroduction,
           'menuIdList': newMenuCategoryModel.menuList.map((menu) => menu.menuId).toList(),
         },
       );
@@ -63,7 +63,7 @@ class MenuOptionsService {
         "storeId": 1,
         "storeMenuCategoryId": 11,
         "menuCategoryName": "대표메뉴",
-        "menuDescription": "대표메뉴입니다!"
+        "menuIntroduction": "대표메뉴입니다!"
       }
    */
   Future<Response<dynamic>> updateMenuCategoryName({required String storeId, required MenuCategoryModel menuCategoryModel}) async {
@@ -71,10 +71,10 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuCategoryName,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'storeMenuCategoryId': menuCategoryModel.storeMenuCategoryId,
           'menuCategoryName': menuCategoryModel.menuCategoryName,
-          'menuDescription': menuCategoryModel.menuDescription,
+          'menuIntroduction': menuCategoryModel.menuIntroduction,
         },
       );
     } on DioException catch (e) {
@@ -99,7 +99,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).delete(
         RestApiUri.deleteMenuCategory,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuCategoryId': menuCategoryModel.storeMenuCategoryId,
           'menuCategoryName': menuCategoryModel.menuCategoryName,
         },
@@ -135,7 +135,7 @@ class MenuOptionsService {
     required String servingAmountType,
     required String imagePath,
     required String menuBriefDescription,
-    required String menuDescription,
+    required String menuIntroduction,
     required List<MenuOptionCategoryModel> selectedMenuOptionCategories,
   }) async {
     logger.d(
@@ -153,7 +153,7 @@ class MenuOptionsService {
           // "sugar: ${nutrition.sugar}\r\n" +
           // "saturatedFat: ${nutrition.saturatedFat}\r\n" +
           // "natrium: ${nutrition.natrium}\r\n" +
-          "menuIntroduction: ${menuDescription}\r\n" +
+          "menuIntroduction: ${menuIntroduction}\r\n" +
           "madeOf: ${menuBriefDescription}\r\n" +
           "menuOptionCategoryIdList: ${selectedMenuOptionCategories.map((optionCategory) => optionCategory.menuOptionCategoryId).toList()}\r\n" +
           "menuPicture: ${imagePath}\r\n",
@@ -161,7 +161,7 @@ class MenuOptionsService {
 
     try {
       final formData = FormData.fromMap({
-        'storeId': UserHive.getBox(key: UserKey.storeId),
+        'storeId': storeId,
         'storeMenuCategoryId': selectedMenuCategory.storeMenuCategoryId,
         'menuName': menuName,
         'category': selectedUserMenuCategoryIdsFlatString,
@@ -175,7 +175,7 @@ class MenuOptionsService {
         'sugar': nutrition.sugar,
         'saturatedFat': nutrition.saturatedFat,
         'natrium': nutrition.natrium,
-        'menuIntroduction': menuDescription,
+        'menuIntroduction': menuIntroduction,
         'madeOf': menuBriefDescription,
         'menuOptionCategoryIdList': selectedMenuOptionCategories.map((optionCategory) => optionCategory.menuOptionCategoryId).toList(),
         'menuPicture': await MultipartFile.fromFile(imagePath, filename: imagePath.split('/').last),
@@ -197,13 +197,26 @@ class MenuOptionsService {
     }
   }
 
+  /// GET - 메뉴 정보 조회
+  Future<Response<dynamic>> getMenu({required int menuId}) async {
+    try {
+      return ref.read(requestApiProvider).get(path: RestApiUri.getMenu.replaceAll('{menuId}', menuId.toString()));
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
   /// POST - 메뉴 이름 변경
   Future<Response<dynamic>> updateMenuName({required String storeId, required int menuId, required String menuName}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuName,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuId': menuId,
           'menuName': menuName,
         },
@@ -223,7 +236,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuPrice,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuId': menuId,
           'price': price,
         },
@@ -245,7 +258,7 @@ class MenuOptionsService {
   }) async {
     try {
       final formData = FormData.fromMap({
-        'storeId': UserHive.getBox(key: UserKey.storeId),
+        'storeId': storeId,
         'menuId': menuId,
         'menuPicture': await MultipartFile.fromFile(imagePath, filename: imagePath.split('/').last),
       });
@@ -272,7 +285,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuSoldOutStatus,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuId': menuId,
           'menuSoldOutStatus': soldOutStatus,
         },
@@ -292,7 +305,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuPopularity,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuId': menuId,
           'menuPopularityStatus': popularityStatus,
         },
@@ -312,7 +325,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuBestStatus,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuId': menuId,
           'menuBestStatus': bestStatus,
         },
@@ -327,14 +340,14 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 구성 변경
-  Future<Response<dynamic>> updateMenuMadeOf({required String storeId, required int menuId, required String menuParts}) async {
+  Future<Response<dynamic>> updateMenuMadeOf({required String storeId, required int menuId, required String madeOf}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuMadeOf,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuId': menuId,
-          'madeOf': menuParts,
+          'madeOf': madeOf,
         },
       );
     } on DioException catch (e) {
@@ -347,14 +360,42 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 설명 변경
-  Future<Response<dynamic>> updateMenuIntroduction({required String storeId, required int menuId, required String menuDescription}) async {
+  Future<Response<dynamic>> updateMenuIntroduction({required String storeId, required int menuId, required String menuIntroduction}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuIntroduction,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuId': menuId,
-          'menuIntroduction': menuDescription,
+          'menuIntroduction': menuIntroduction,
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 메뉴 정보 변경
+  Future<Response<dynamic>> updateMenuInfo({required String storeId, required int menuId, required NutritionModel nutrition}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.updateMenuInfo,
+        data: {
+          'storeId': storeId,
+          'menuId': menuId,
+          'servingAmount': nutrition.servingAmount,
+          'servingAmountType': nutrition.servingAmountType,
+          'calories': nutrition.calories,
+          'carbohydrate': nutrition.carbohydrate,
+          'protein': nutrition.protein,
+          'fat': nutrition.fat,
+          'sugar': nutrition.sugar,
+          'saturatedFat': nutrition.saturatedFat,
+          'natrium': nutrition.natrium,
         },
       );
     } on DioException catch (e) {
@@ -372,7 +413,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).delete(
         RestApiUri.deleteMenu,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuId': menuModel.menuId,
           'menuName': menuModel.menuName,
         },
@@ -392,7 +433,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionCategoryEssential,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuOptionCategoryId': menuOptionCategoryId,
           'essentialStatus': essentialStatus,
         },
@@ -412,7 +453,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionCategoryMaxChoice,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'minChoice': minChoice,
           'maxChoice': maxChoice,
         },
@@ -432,7 +473,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionCategorySoldOutStatus,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuOptionCategoryId': menuOptionCategoryId,
           'menuOptionCategorySoldOutStatus': soldOutStatus,
         },
@@ -452,7 +493,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionCategoryName,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuOptionCategoryId': menuOptionCategoryId,
           'menuOptionCategoryName': menuOptionCategoryName,
         },
@@ -486,7 +527,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionCategoryUseMenu,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'addMenuIdList': addMenuIdList,
           'removeMenuIdList': removeMenuIdList,
         },
@@ -544,7 +585,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.createOptionCategory,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'optionCategoryName': menuOptionCategoryName,
           'createMenuOptionInfoDTOList': selectedMenuOptions
               .map((menuOption) => {
@@ -582,7 +623,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).delete(
         RestApiUri.deleteMenuOptionCategory,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'optionCategoryId': optionCategoryModel.menuOptionCategoryId,
           'optionCategoryName': optionCategoryModel.menuOptionCategoryName,
         },
@@ -602,7 +643,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionName,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuOptionId': menuOptionId,
           'menuOptionName': optionContent,
         },
@@ -622,7 +663,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionPrice,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuOptionId': menuOptionId,
           'menuOptionPrice': price,
         },
@@ -642,7 +683,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionSoldOutStatus,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuOptionId': menuOptionId,
           'menuOptionSoldOutStatus': soldOutStatus,
         },
@@ -675,7 +716,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionSoldOutStatus,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'menuOptionId': menuOptionId,
           'servingAmount': nutrition.servingAmount,
           'servingAmountType': nutrition.servingAmountType,
@@ -703,7 +744,7 @@ class MenuOptionsService {
       return await ref.read(requestApiProvider).delete(
         RestApiUri.deleteMenuOption,
         data: {
-          'storeId': UserHive.getBox(key: UserKey.storeId),
+          'storeId': storeId,
           'optionId': menuOptionModel.menuOptionId,
           'optionName': menuOptionModel.optionContent,
         },

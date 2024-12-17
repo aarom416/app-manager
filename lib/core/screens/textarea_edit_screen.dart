@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_left_arrow.dart';
@@ -7,7 +8,9 @@ import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
-class TextareaEditScreen extends StatefulWidget {
+import '../../main.dart';
+
+class TextAreaEditScreen extends StatefulWidget {
   final String value;
   final String title;
   final String hintText;
@@ -15,31 +18,71 @@ class TextareaEditScreen extends StatefulWidget {
   final Function(String) onSubmit;
   int? maxLength;
 
-  TextareaEditScreen({
-    Key? key,
+  TextAreaEditScreen({
+    super.key,
     required this.value,
     required this.title,
     required this.hintText,
     required this.buttonText,
     required this.onSubmit,
     this.maxLength,
-  }) : super(key: key);
+  });
 
   @override
-  State<TextareaEditScreen> createState() => _TextareaEditScreenState();
+  State<TextAreaEditScreen> createState() => _TextAreaEditScreenState();
 }
 
-class _TextareaEditScreenState extends State<TextareaEditScreen> {
+class _TextAreaEditScreenState extends State<TextAreaEditScreen> {
+  late TextEditingController controller;
   late String value;
-  late TextEditingController controller = TextEditingController();
 
-  TextStyle baseStyle = TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
+  bool hasBadWord = false;
+  TextStyle baseStyle = const TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
 
   @override
   void initState() {
     super.initState();
+    controller = TextEditingController(text: widget.value);
     value = widget.value;
-    controller.text = widget.value;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        controller.selection = TextSelection.fromPosition(
+          TextPosition(offset: controller.text.length),
+        );
+      });
+    });
+
+    controller.addListener(() {
+      setState(() {
+        value = controller.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> _checkBadWord(String input) async {
+    try {
+      final response = await Dio().get(
+        'https://singleatapp.com/api/v1/user/auth/bad-word',
+        queryParameters: {'word': input},
+      );
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        setState(() {
+          hasBadWord = response.data['data'] == true;
+        });
+      }
+    } catch (e) {
+      logger.d("Error occurred: $e");
+      setState(() {
+        hasBadWord = false;
+      });
+    }
   }
 
   @override
@@ -49,13 +92,15 @@ class _TextareaEditScreenState extends State<TextareaEditScreen> {
       floatingActionButton: Container(
           constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
           child: SGActionButton(
-              onPressed: () {
-                widget.onSubmit(controller.text);
-                Navigator.of(context).pop();
-              },
-              label: widget.buttonText)),
+            onPressed: () {
+              widget.onSubmit(controller.text);
+              Navigator.of(context).pop();
+            },
+            label: widget.buttonText,
+            disabled: controller.text.isEmpty || hasBadWord,
+          )),
       body: SGContainer(
-          color: Color(0xFFFAFAFA),
+          color: const Color(0xFFFAFAFA),
           padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p5),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             SGTypography.label("변경 전"),
@@ -88,7 +133,9 @@ class _TextareaEditScreenState extends State<TextareaEditScreen> {
                     controller: controller,
                     maxLines: 5,
                     style: baseStyle.copyWith(color: SGColors.black),
-                    onChanged: (value) {
+                    onChanged: (value) async {
+                      await _checkBadWord(value);
+
                       setState(() {
                         if (widget.maxLength != null && value.length > widget.maxLength!) {
                           controller.text = value.substring(0, widget.maxLength!);
@@ -128,6 +175,20 @@ class _TextareaEditScreenState extends State<TextareaEditScreen> {
                       ]))
               ]),
             ),
+            if (hasBadWord)
+              Padding(
+                padding: EdgeInsets.only(top: SGSpacing.p2),
+                child: const Text(
+                  '욕설 및 비하 발언이 포함되어있습니다.\n다시 한 번 확인해주세요.',
+                  style: TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xFFF62B2B),
+                    textBaseline: TextBaseline.alphabetic,
+                  ),
+                ),
+              ),
           ])),
     );
   }

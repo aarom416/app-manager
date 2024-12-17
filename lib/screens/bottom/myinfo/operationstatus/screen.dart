@@ -55,9 +55,9 @@ class _TemporaryClosedScreenState extends ConsumerState<TemporaryClosedScreen> {
                       onChanged: (value) {
                         setState(() {
                           if (state.operationStatus == 0) {
-                            provider.onChangeOperationStatus(1);
-                          } else {
                             showOperationStopDialog(context: context, provider: provider);
+                          } else {
+                            provider.onChangeOperationStatus(1);
                           }
                         });
                       })
@@ -160,7 +160,7 @@ class _TemporaryClosedScreenState extends ConsumerState<TemporaryClosedScreen> {
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(ctx).pop();
-                    provider.onChangeOperationStatus(1);
+                    provider.onChangeOperationStatus(0);
                   },
                   child: SGContainer(
                     width: double.infinity,
