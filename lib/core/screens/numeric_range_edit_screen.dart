@@ -50,34 +50,27 @@ class NumericRangeEditScreen extends ConsumerStatefulWidget {
 }
 
 class _NumericRangeEditScreen extends ConsumerState<NumericRangeEditScreen> {
-  /*const NumericRangeEditScreen({
-    super.key,
-    required this.title,
-    required this.description,
-    this.minLabel = "최소",
-    this.maxLabel = "최대",
-    this.unitLabel = "개",
-    this.allowMinZero = false,
-    this.allowMaxZero = false,
-    this.maxMinValue = 99999,
-    this.maxMaxValue = 99999,
-    this.hideMinInput = false,
-    this.minValue = 0,
-    this.maxValue = 0,
-    this.confirmButtonLabel = "변경하기",
-    required this.onConfirm,
-  });*/
+  final TextEditingController minValueController = TextEditingController();
+  final TextEditingController maxValueController = TextEditingController();
+  String minErrorMessage = "";
+  String maxErrorMessage = "";
+
   bool isEnable = false;
+
+  @override
+  void initState() {
+    super.initState();
+    minValueController.text = widget.minValue.toString();
+    maxValueController.text = widget.maxValue.toString();
+    if (!widget.allowMinZero && widget.minValue == 0) {
+      setState(() {
+        isEnable = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController minValueController =
-        TextEditingController(text: widget.minValue.toString());
-    final TextEditingController maxValueController =
-        TextEditingController(text: widget.maxValue.toString());
-
-    String minErrorMessage = "";
-    String maxErrorMessage = "";
-
     void validateInputs() {
       minErrorMessage = "";
       maxErrorMessage = "";
@@ -122,6 +115,23 @@ class _NumericRangeEditScreen extends ConsumerState<NumericRangeEditScreen> {
         ),
         child: SGActionButton(
           onPressed: () {
+            var minValue = 0;
+            if (minValueController.text != '') {
+              minValue = int.parse(minValueController.text);
+            }
+
+            var maxValue = 0;
+            if (maxValueController.text != '') {
+              maxValue = int.parse(maxValueController.text);
+            }
+
+            if ((minValue > widget.maxMaxValue ||
+                    maxValue > widget.maxMaxValue) ||
+                minValue > maxValue ||
+                (!widget.allowMinZero && minValue == 0)) {
+              return;
+            }
+
             validateInputs();
             if (minErrorMessage.isEmpty && maxErrorMessage.isEmpty) {
               final minValue = int.tryParse(minValueController.text) ?? 0;
@@ -165,16 +175,34 @@ class _NumericRangeEditScreen extends ConsumerState<NumericRangeEditScreen> {
                   children: [
                     Expanded(
                       child: NumericTextField(
+                        key: const ValueKey('minValue'),
                         initialValue: widget.minValue,
                         maxLength: widget.maxMinValue.toString().length,
                         onValueChanged: (value) {
                           setState(() {
                             minValueController.text = value.toString();
-                            if (minValueController.text == '0' ||
+                            validateInputs();
+
+                            if (minValueController.text == '' ||
+                                maxValueController.text == '' ||
+                                (!widget.allowMinZero &&
+                                    minValueController.text == '0') ||
                                 maxValueController.text == '0') {
                               isEnable = true;
-                            } else {
-                              isEnable = false;
+                            } else if (value <= widget.maxMaxValue) {
+                              var minValue = 0;
+                              if (minValueController.text != '') {
+                                minValue = int.parse(minValueController.text);
+                              }
+
+                              var maxValue = 0;
+                              if (maxValueController.text != '') {
+                                maxValue = int.parse(maxValueController.text);
+                              }
+
+                              if (minValue <= maxValue) {
+                                isEnable = false;
+                              }
                             }
                           });
                         },
@@ -186,11 +214,9 @@ class _NumericRangeEditScreen extends ConsumerState<NumericRangeEditScreen> {
                   ],
                 ),
               ),
-              if (minErrorMessage.isNotEmpty) ...[
-                SizedBox(height: SGSpacing.p2),
-                SGTypography.body(minErrorMessage,
-                    size: FontSize.small, color: Colors.red),
-              ],
+              SizedBox(height: SGSpacing.p2),
+              SGTypography.body(minErrorMessage,
+                  size: FontSize.small, color: Colors.red),
               SizedBox(height: SGSpacing.p3),
             ],
             SGTypography.body(widget.maxLabel,
@@ -204,16 +230,34 @@ class _NumericRangeEditScreen extends ConsumerState<NumericRangeEditScreen> {
                 children: [
                   Expanded(
                     child: NumericTextField(
+                      key: const ValueKey('maxValue'),
                       initialValue: widget.maxValue,
                       maxLength: widget.maxMaxValue.toString().length,
                       onValueChanged: (value) {
+                        maxValueController.text = value.toString();
+                        validateInputs();
+
                         setState(() {
-                          maxValueController.text = value.toString();
-                          if (minValueController.text == '0' ||
+                          if (minValueController.text == '' ||
+                              maxValueController.text == '' ||
+                              (!widget.allowMinZero &&
+                                  minValueController.text == '0') ||
                               maxValueController.text == '0') {
                             isEnable = true;
-                          } else {
-                            isEnable = false;
+                          } else if (value <= widget.maxMaxValue) {
+                            var minValue = 0;
+                            if (minValueController.text != '') {
+                              minValue = int.parse(minValueController.text);
+                            }
+
+                            var maxValue = 0;
+                            if (maxValueController.text != '') {
+                              maxValue = int.parse(maxValueController.text);
+                            }
+
+                            if (minValue <= maxValue) {
+                              isEnable = false;
+                            }
                           }
                         });
                       },
@@ -225,11 +269,9 @@ class _NumericRangeEditScreen extends ConsumerState<NumericRangeEditScreen> {
                 ],
               ),
             ),
-            if (maxErrorMessage.isNotEmpty) ...[
-              SizedBox(height: SGSpacing.p2),
-              SGTypography.body(maxErrorMessage,
-                  size: FontSize.small, color: Colors.red),
-            ],
+            SizedBox(height: SGSpacing.p2),
+            SGTypography.body(maxErrorMessage,
+                size: FontSize.small, color: Colors.red),
           ],
         ),
       ),
