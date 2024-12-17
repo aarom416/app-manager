@@ -109,7 +109,7 @@ class _NotificationConfigurationScreenState
                         ),
                       )
                     ])),
-            SizedBox(height: SGSpacing.p8),
+            SizedBox(height: SGSpacing.p4),
             SGTypography.body("사장님 알림 센터",
                 size: FontSize.normal, weight: FontWeight.w700),
             SizedBox(height: SGSpacing.p3),
