@@ -28,7 +28,7 @@ class SuccessChangePasswordScreen extends ConsumerWidget {
                 onPressed: () {
                   ref.read(loginNotifierProvider.notifier).logout();
                 },
-                label: "확인")),
+                label: "로그인")),
         body: SGContainer(
             color: SGColors.white,
             child: Center(

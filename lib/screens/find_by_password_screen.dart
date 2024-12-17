@@ -65,43 +65,6 @@ class _FindByPasswordScreenState extends ConsumerState<FindByPasswordScreen> {
             animateToPage(3);
             break;
           case FindByPasswordStatus.error:
-            showSGDialog(
-                context: context,
-                childrenBuilder: (ctx) => [
-                      Center(
-                        child: SGTypography.body(
-                          ref
-                              .read(findByPasswordNotifierProvider)
-                              .error
-                              .errorMessage,
-                          size: FontSize.medium,
-                          weight: FontWeight.w700,
-                          align: TextAlign.center,
-                        ),
-                      ),
-                      SizedBox(height: SGSpacing.p5),
-                      Row(children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.of(ctx).pop();
-                            },
-                            child: SGContainer(
-                              color: SGColors.primary,
-                              padding:
-                                  EdgeInsets.symmetric(vertical: SGSpacing.p4),
-                              borderRadius: BorderRadius.circular(SGSpacing.p3),
-                              child: Center(
-                                child: SGTypography.body("확인",
-                                    size: FontSize.normal,
-                                    weight: FontWeight.normal,
-                                    color: SGColors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]),
-                    ]);
             break;
         }
       }
@@ -185,7 +148,8 @@ class _SuccessChangePasswordScreen extends StatelessWidget {
                 onPressed: () {
                   onNext();
                 },
-                label: "로그인")),
+                label: "로그인")
+        ),
         body: SGContainer(
             color: SGColors.white,
             child: Center(
@@ -233,11 +197,13 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
   late TextEditingController controller = TextEditingController();
   late TextEditingController controllerConfirm = TextEditingController();
 
-  bool get isPasswordValid =>
-      ref.read(findByPasswordNotifierProvider).password.isNotEmpty &&
-      ref.read(findByPasswordNotifierProvider).passwordConfirm.isNotEmpty &&
-      ref.read(findByPasswordNotifierProvider).password ==
-          ref.read(findByPasswordNotifierProvider).passwordConfirm;
+  bool get isPasswordValid {
+    final state = ref.watch(findByPasswordNotifierProvider);
+    return state.password.isNotEmpty &&
+        state.passwordConfirm.isNotEmpty &&
+        state.password == state.passwordConfirm;
+  }
+
 
   String? _passwordErrorText;
 
@@ -375,7 +341,9 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
                     Expanded(
                       child: TextField(
                           onChanged: (value) {
-                            provider.onChangePasswordConfirm(value);
+                            if (controller.text.isNotEmpty && controllerConfirm.text.isNotEmpty) {
+                              provider.onChangePasswordConfirm(value);
+                            }
                           },
                           controller: controllerConfirm,
                           style: TextStyle(
@@ -426,7 +394,7 @@ class ChangePasswordScreenState extends ConsumerState<ChangePasswordScreen> {
               Center(
                   child: SGTypography.body(subTitle,
                       color: SGColors.black,
-                      size: FontSize.small,
+                      size: FontSize.medium,
                       weight: FontWeight.w700,
                       lineHeight: 1.25,
                       align: TextAlign.center)),
