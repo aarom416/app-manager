@@ -579,8 +579,7 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                  if (maxChoice > 0 &&
-                      (minChoice <= widget.selectedMenuOptionLength &&
+                  if ((minChoice <= widget.selectedMenuOptionLength &&
                           minChoice <= maxChoice) &&
                       maxChoice <= widget.selectedMenuOptionLength) {
                     widget.onEditFunction(
@@ -590,8 +589,7 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
                   }
                 },
                 child: SGContainer(
-                    color: (maxChoice > 0 &&
-                            (minChoice <= widget.selectedMenuOptionLength &&
+                    color: ((minChoice <= widget.selectedMenuOptionLength &&
                                 minChoice <= maxChoice) &&
                             maxChoice <= widget.selectedMenuOptionLength)
                         ? SGColors.primary
