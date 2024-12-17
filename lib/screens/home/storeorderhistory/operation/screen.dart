@@ -678,11 +678,11 @@ class _OrderHistoryDetailScreen extends StatelessWidget {
                 ],
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "가게 요청 사항", right: storeOrderHistory.toOwner, overflow: false, width: 168),
+                    left: "가게 요청 사항", right: storeOrderHistory.toOwner == 'null' ? '-' : storeOrderHistory.toOwner, overflow: false, width: 168),
                 if (storeOrderHistory.receiveFoodType == "DELIVERY") ... [
                   SizedBox(height: SGSpacing.p4),
                   DataTableRow(
-                      left: "배달 요청 사항", right: storeOrderHistory.toRider, overflow: false, width: 168),
+                      left: "배달 요청 사항", right: storeOrderHistory.toRider == 'null' ? '-' : storeOrderHistory.toRider ?? '-', overflow: false, width: 168),
                 ],
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
