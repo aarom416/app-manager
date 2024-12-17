@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:singleeat/core/extensions/dynamic.dart';
@@ -108,11 +109,13 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     final menuModelMap = storeMenuDTOList.map((menu) {
       final relatedOptionCategories = menuOptionRelationshipDTOList
           .where((relationship) => relationship.menuId == menu.menuId)
-          .map((relationship) => menuOptionCategoryMap.firstWhere(
+          .map((relationship) => menuOptionCategoryMap.firstWhereOrNull(
                 (category) =>
                     category.menuOptionCategoryId ==
                     relationship.menuOptionCategoryId,
               ))
+          .where((category) => category != null) // null 값 제거
+          .cast<MenuOptionCategoryModel>() // null-safe 타입으로 캐스팅
           .toList();
       return menu.copyWith(menuCategoryOptions: relatedOptionCategories);
     }).toList();
