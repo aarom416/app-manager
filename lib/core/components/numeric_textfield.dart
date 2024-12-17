@@ -59,6 +59,7 @@ class _NumericTextFieldState extends State<NumericTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      key: widget.key,
       controller: _controller,
       style: widget.style ??
           TextStyle(
@@ -83,14 +84,16 @@ class _NumericTextFieldState extends State<NumericTextField> {
       onChanged: (input) {
         // 숫자 형식으로 변환
         String numericValue = input.replaceAll(',', '');
-        if (numericValue.startsWith('0')) {
+        if (numericValue != '0' && numericValue.startsWith('0')) {
           numericValue = numericValue.substring(1);
         }
 
         // 포맷팅된 값으로 컨트롤러 업데이트
-        String formattedValue = int.tryParse(numericValue)?.toKoreanCurrency ?? '';
+        String formattedValue =
+            int.tryParse(numericValue)?.toKoreanCurrency ?? '';
         _controller.text = formattedValue;
-        _controller.selection = TextSelection.collapsed(offset: formattedValue.length);
+        _controller.selection =
+            TextSelection.collapsed(offset: formattedValue.length);
 
         widget.onValueChanged(numericValue.toIntFromCurrency);
       },

@@ -25,10 +25,12 @@ class AddOptionCategoryScreen extends ConsumerStatefulWidget {
   const AddOptionCategoryScreen({super.key});
 
   @override
-  ConsumerState<AddOptionCategoryScreen> createState() => _AddOptionCategoryScreenState();
+  ConsumerState<AddOptionCategoryScreen> createState() =>
+      _AddOptionCategoryScreenState();
 }
 
-class _AddOptionCategoryScreenState extends ConsumerState<AddOptionCategoryScreen> {
+class _AddOptionCategoryScreenState
+    extends ConsumerState<AddOptionCategoryScreen> {
   PageController pageController = PageController();
 
   String menuOptionCategoryName = "";
@@ -47,86 +49,92 @@ class _AddOptionCategoryScreenState extends ConsumerState<AddOptionCategoryScree
   @override
   Widget build(BuildContext context) {
     final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
-    final MenuOptionsNotifier provider = ref.read(menuOptionsNotifierProvider.notifier);
+    final MenuOptionsNotifier provider =
+        ref.read(menuOptionsNotifierProvider.notifier);
 
     return Scaffold(
-      body: PageView(controller: pageController, physics: const NeverScrollableScrollPhysics(), children: [
-        _Page_0_OptionCategoryName(
-          menuOptionCategoryName: menuOptionCategoryName,
-          onPrev: () => Navigator.of(context).pop(),
-          onNext: () => animateToPage(1),
-          onEditFunction: (menuOptionCategoryName) {
-            setState(() {
-              this.menuOptionCategoryName = menuOptionCategoryName;
-            });
-          },
-        ),
-        _Page_1_MenuOptions(
-          selectedMenuOptions: selectedMenuOptions,
-          onPrev: () => animateToPage(0),
-          onNext: () => animateToPage(2),
-          onEditFunction: (selectedMenuOptions) {
-            setState(() {
-              this.selectedMenuOptions = selectedMenuOptions;
-            });
-          },
-        ),
-        _Page_2_OptionEssential(
-          essentialStatus: essentialStatus,
-          minChoice: minChoice,
-          maxChoice: maxChoice,
-          onPrev: () => animateToPage(1),
-          onNext: () => animateToPage(3),
-          onEditFunction: (essentialStatus, minChoice, maxChoice) {
-            setState(() {
-              this.essentialStatus = essentialStatus;
-              this.minChoice = minChoice;
-              this.maxChoice = maxChoice;
-            });
-          },
-        ),
-        _Page_3_AppliedMenus(
-          storeMenuDTOList: state.storeMenuDTOList,
-          appliedMenus: appliedMenus,
-          onPrev: () => animateToPage(2),
-          onNext: () => animateToPage(4),
-          onEditFunction: (appliedMenus) {
-            setState(() {
-              this.appliedMenus = appliedMenus;
-            });
-          },
-        ),
-        _Page_4_ConfirmAddition(
-          menuOptionCategoryName: menuOptionCategoryName,
-          selectedMenuOptions: selectedMenuOptions,
-          essentialStatus: essentialStatus,
-          minChoice: minChoice,
-          maxChoice: maxChoice,
-          appliedMenus: appliedMenus,
-          onPrev: () => animateToPage(3),
-          onNext: () => {
-            provider
-                .createOptionCategory(
-              menuOptionCategoryName,
-              selectedMenuOptions,
-              essentialStatus,
-              minChoice,
-              maxChoice,
-              appliedMenus,
-            )
-                .then(
-              (success) {
-                logger.d("updateMenuOptionCategoryUseMenu success $success");
-                if (success) {
-                  if (mounted) {
-                    showGlobalSnackBar(context, "성공적으로 등록되었습니다.");
-                  }
-                }
+      body: PageView(
+          controller: pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            _Page_0_OptionCategoryName(
+              menuOptionCategoryName: menuOptionCategoryName,
+              onPrev: () => Navigator.of(context).pop(),
+              onNext: () => animateToPage(1),
+              onEditFunction: (menuOptionCategoryName) {
+                setState(() {
+                  this.menuOptionCategoryName = menuOptionCategoryName;
+                });
               },
-            )
-          },
-        ),
-      ]),
+            ),
+            _Page_1_MenuOptions(
+              selectedMenuOptions: selectedMenuOptions,
+              onPrev: () => animateToPage(0),
+              onNext: () => animateToPage(2),
+              onEditFunction: (selectedMenuOptions) {
+                setState(() {
+                  this.selectedMenuOptions = selectedMenuOptions;
+                });
+              },
+            ),
+            _Page_2_OptionEssential(
+              essentialStatus: essentialStatus,
+              minChoice: minChoice,
+              maxChoice: maxChoice,
+              selectedMenuOptionLength: selectedMenuOptions.length,
+              onPrev: () => animateToPage(1),
+              onNext: () => animateToPage(3),
+              onEditFunction: (essentialStatus, minChoice, maxChoice) {
+                setState(() {
+                  this.essentialStatus = essentialStatus;
+                  this.minChoice = minChoice;
+                  this.maxChoice = maxChoice;
+                });
+              },
+            ),
+            _Page_3_AppliedMenus(
+              storeMenuDTOList: state.storeMenuDTOList,
+              appliedMenus: appliedMenus,
+              onPrev: () => animateToPage(2),
+              onNext: () => animateToPage(4),
+              onEditFunction: (appliedMenus) {
+                setState(() {
+                  this.appliedMenus = appliedMenus;
+                });
+              },
+            ),
+            _Page_4_ConfirmAddition(
+              menuOptionCategoryName: menuOptionCategoryName,
+              selectedMenuOptions: selectedMenuOptions,
+              essentialStatus: essentialStatus,
+              minChoice: minChoice,
+              maxChoice: maxChoice,
+              appliedMenus: appliedMenus,
+              onPrev: () => animateToPage(3),
+              onNext: () => {
+                provider
+                    .createOptionCategory(
+                  menuOptionCategoryName,
+                  selectedMenuOptions,
+                  essentialStatus,
+                  minChoice,
+                  maxChoice,
+                  appliedMenus,
+                )
+                    .then(
+                  (success) {
+                    logger
+                        .d("updateMenuOptionCategoryUseMenu success $success");
+                    if (success) {
+                      if (mounted) {
+                        showGlobalSnackBar(context, "성공적으로 등록되었습니다.");
+                      }
+                    }
+                  },
+                )
+              },
+            ),
+          ]),
     );
   }
 }
@@ -137,13 +145,19 @@ class _Page_0_OptionCategoryName extends StatefulWidget {
   final VoidCallback onPrev;
   final Function(String) onEditFunction;
 
-  const _Page_0_OptionCategoryName({required this.menuOptionCategoryName, required this.onNext, required this.onPrev, required this.onEditFunction});
+  const _Page_0_OptionCategoryName(
+      {required this.menuOptionCategoryName,
+      required this.onNext,
+      required this.onPrev,
+      required this.onEditFunction});
 
   @override
-  State<_Page_0_OptionCategoryName> createState() => _Page_0_OptionCategoryNameState();
+  State<_Page_0_OptionCategoryName> createState() =>
+      _Page_0_OptionCategoryNameState();
 }
 
-class _Page_0_OptionCategoryNameState extends State<_Page_0_OptionCategoryName> {
+class _Page_0_OptionCategoryNameState
+    extends State<_Page_0_OptionCategoryName> {
   late String menuOptionCategoryName;
   late TextEditingController menuOptionCategoryNameController;
 
@@ -151,7 +165,8 @@ class _Page_0_OptionCategoryNameState extends State<_Page_0_OptionCategoryName> 
   void initState() {
     super.initState();
     menuOptionCategoryName = widget.menuOptionCategoryName;
-    menuOptionCategoryNameController = TextEditingController(text: menuOptionCategoryName);
+    menuOptionCategoryNameController =
+        TextEditingController(text: menuOptionCategoryName);
   }
 
   @override
@@ -161,9 +176,15 @@ class _Page_0_OptionCategoryNameState extends State<_Page_0_OptionCategoryName> 
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-          appBar: AppBarWithStepIndicator(title: "옵션 카테고리 추가", currentStep: 1, totalStep: 5, onTap: widget.onPrev),
+          appBar: AppBarWithStepIndicator(
+              title: "옵션 카테고리 추가",
+              currentStep: 1,
+              totalStep: 5,
+              onTap: widget.onPrev),
           floatingActionButton: Container(
-              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
+                  maxHeight: 58),
               child: SGActionButton(
                   disabled: menuOptionCategoryName.isEmpty,
                   onPressed: () {
@@ -176,10 +197,12 @@ class _Page_0_OptionCategoryNameState extends State<_Page_0_OptionCategoryName> 
                   label: "다음")),
           body: SGContainer(
               color: const Color(0xFFFAFAFA),
-              padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+              padding: EdgeInsets.symmetric(
+                  horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
               child: ListView(
                 children: [
-                  SGTypography.body("옵션 카테고리명을 입력해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+                  SGTypography.body("옵션 카테고리명을 입력해주세요.",
+                      size: FontSize.normal, weight: FontWeight.w700),
                   SizedBox(height: SGSpacing.p3),
                   SGTextFieldWrapper(
                       child: SGContainer(
@@ -192,13 +215,19 @@ class _Page_0_OptionCategoryNameState extends State<_Page_0_OptionCategoryName> 
                             menuOptionCategoryName = value;
                           });
                         },
-                        style: TextStyle(fontSize: FontSize.small, color: SGColors.gray5),
+                        style: TextStyle(
+                            fontSize: FontSize.small, color: SGColors.gray5),
                         decoration: InputDecoration(
                           isDense: true,
                           isCollapsed: true,
-                          hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                          hintStyle: TextStyle(
+                              color: SGColors.gray3,
+                              fontSize: FontSize.small,
+                              fontWeight: FontWeight.w400),
                           hintText: "Ex) 2인 샐러드 포케 세트",
-                          border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                          border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.zero,
+                              borderSide: BorderSide.none),
                         )),
                   )),
                 ],
@@ -213,7 +242,11 @@ class _Page_1_MenuOptions extends StatefulWidget {
   final VoidCallback onPrev;
   final Function(List<MenuOptionModel>) onEditFunction;
 
-  const _Page_1_MenuOptions({required this.selectedMenuOptions, required this.onNext, required this.onPrev, required this.onEditFunction});
+  const _Page_1_MenuOptions(
+      {required this.selectedMenuOptions,
+      required this.onNext,
+      required this.onPrev,
+      required this.onEditFunction});
 
   @override
   State<_Page_1_MenuOptions> createState() => _Page_1_MenuOptionsState();
@@ -353,18 +386,19 @@ class _Page_1_MenuOptionsState extends State<_Page_1_MenuOptions> {
                   );
                 },
                 footer: Padding(
-                  padding: EdgeInsets.only(top: SGSpacing.p4, bottom: SGSpacing.p4),
+                  padding:
+                      EdgeInsets.only(top: SGSpacing.p4, bottom: SGSpacing.p4),
                   child: GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => AddOptionScreen(
-                            onSubmit: (menuOptionModel) {
-                              setState(() {
-                                selectedMenuOptions.add(menuOptionModel);
-                              });
-                              widget.onEditFunction(selectedMenuOptions);
-                            },
-                          )));
+                                onSubmit: (menuOptionModel) {
+                                  setState(() {
+                                    selectedMenuOptions.add(menuOptionModel);
+                                  });
+                                  widget.onEditFunction(selectedMenuOptions);
+                                },
+                              )));
                     },
                     child: SGContainer(
                       color: SGColors.white,
@@ -413,7 +447,6 @@ class _Page_1_MenuOptionsState extends State<_Page_1_MenuOptions> {
   }
 }
 
-
 class __MenuOptionCard extends StatelessWidget {
   final MenuOptionModel menuOption;
   final Function(MenuOptionModel) onRemove;
@@ -440,9 +473,11 @@ class __MenuOptionCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SGTypography.body(menuOption.optionContent, size: FontSize.normal, weight: FontWeight.w700),
+                    SGTypography.body(menuOption.optionContent,
+                        size: FontSize.normal, weight: FontWeight.w700),
                     SizedBox(height: SGSpacing.p3),
-                    SGTypography.body("${menuOption.price.toKoreanCurrency}원", size: FontSize.small, weight: FontWeight.w400),
+                    SGTypography.body("${menuOption.price.toKoreanCurrency}원",
+                        size: FontSize.small, weight: FontWeight.w400),
                   ],
                 ),
                 Spacer(),
@@ -454,9 +489,12 @@ class __MenuOptionCard extends StatelessWidget {
                       borderWidth: 0,
                       width: SGSpacing.p5,
                       height: SGSpacing.p5,
-                      borderRadius: BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
+                      borderRadius:
+                          BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
                       color: SGColors.warningRed,
-                      child: Center(child: Image.asset('assets/images/minus-white.png', width: 16, height: 16)),
+                      child: Center(
+                          child: Image.asset('assets/images/minus-white.png',
+                              width: 16, height: 16)),
                     )),
               ],
             )),
@@ -469,6 +507,7 @@ class _Page_2_OptionEssential extends StatefulWidget {
   final int essentialStatus;
   final int minChoice;
   final int maxChoice;
+  final int selectedMenuOptionLength;
   final VoidCallback onPrev;
   final VoidCallback onNext;
   final Function(int, int, int) onEditFunction;
@@ -477,13 +516,15 @@ class _Page_2_OptionEssential extends StatefulWidget {
     required this.essentialStatus,
     required this.minChoice,
     required this.maxChoice,
+    required this.selectedMenuOptionLength,
     required this.onPrev,
     required this.onNext,
     required this.onEditFunction,
   });
 
   @override
-  State<_Page_2_OptionEssential> createState() => _Page_2_OptionEssentialState();
+  State<_Page_2_OptionEssential> createState() =>
+      _Page_2_OptionEssentialState();
 }
 
 class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
@@ -502,9 +543,15 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarWithStepIndicator(title: "옵션 카테고리 추가", currentStep: 3, totalStep: 5, onTap: widget.onPrev),
+      appBar: AppBarWithStepIndicator(
+          title: "옵션 카테고리 추가",
+          currentStep: 3,
+          totalStep: 5,
+          onTap: widget.onPrev),
       floatingActionButton: Container(
-          constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+          constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
+              maxHeight: 58),
           child: Row(
             children: [
               Expanded(
@@ -514,20 +561,36 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
                   widget.onPrev();
                 },
                 child: SGContainer(
-                    color: SGColors.gray3, padding: EdgeInsets.all(SGSpacing.p4), borderRadius: BorderRadius.circular(SGSpacing.p3), child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                    color: SGColors.gray3,
+                    padding: EdgeInsets.all(SGSpacing.p4),
+                    borderRadius: BorderRadius.circular(SGSpacing.p3),
+                    child: Center(
+                        child: SGTypography.body("이전",
+                            size: FontSize.large,
+                            color: SGColors.white,
+                            weight: FontWeight.w700))),
               )),
               SizedBox(width: SGSpacing.p3),
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                  if (maxChoice > 0) {
-                    widget.onEditFunction(essentialStatus, minChoice, maxChoice);
+                  if (maxChoice > 0 &&
+                      (minChoice <= widget.selectedMenuOptionLength &&
+                          minChoice <= maxChoice) &&
+                      maxChoice <= widget.selectedMenuOptionLength) {
+                    widget.onEditFunction(
+                        essentialStatus, minChoice, maxChoice);
                     widget.onNext();
                     FocusScope.of(context).unfocus();
                   }
                 },
                 child: SGContainer(
-                    color: maxChoice > 0 ? SGColors.primary : SGColors.gray3,
+                    color: (maxChoice > 0 &&
+                            (minChoice <= widget.selectedMenuOptionLength &&
+                                minChoice <= maxChoice) &&
+                            maxChoice <= widget.selectedMenuOptionLength)
+                        ? SGColors.primary
+                        : SGColors.gray3,
                     padding: EdgeInsets.all(SGSpacing.p4),
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Center(
@@ -543,13 +606,17 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
       body: SGContainer(
         borderWidth: 0,
         color: const Color(0xFFFAFAFA),
-        padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+        padding: EdgeInsets.symmetric(
+            horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
         child: ListView(children: [
-          SGTypography.body("옵션 필수 여부를 설정해주세요.", weight: FontWeight.w700, size: FontSize.normal),
+          SGTypography.body("옵션 필수 여부를 설정해주세요.",
+              weight: FontWeight.w700, size: FontSize.normal),
           SizedBox(height: SGSpacing.p4),
           SGContainer(
               color: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3 + SGSpacing.p05),
+              padding: EdgeInsets.symmetric(
+                  horizontal: SGSpacing.p4,
+                  vertical: SGSpacing.p3 + SGSpacing.p05),
               borderColor: SGColors.line2,
               borderRadius: BorderRadius.circular(SGSpacing.p3),
               child: Row(children: [
@@ -567,10 +634,12 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
           SizedBox(height: SGSpacing.p3),
           SGTypography.body("메뉴 주문 시 옵션을 필수로 선택해야 해요.", color: SGColors.gray4),
           SizedBox(height: SGSpacing.p8),
-          SGTypography.body("옵션 선택 개수를 설정해주세요.", weight: FontWeight.w700, size: FontSize.normal),
+          SGTypography.body("옵션 선택 개수를 설정해주세요.",
+              weight: FontWeight.w700, size: FontSize.normal),
           SizedBox(height: SGSpacing.p4),
           if (essentialStatus == 1) ...[
-            SGTypography.body("최소", size: FontSize.small, color: SGColors.gray4),
+            SGTypography.body("최소",
+                size: FontSize.small, color: SGColors.gray4),
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
             SGContainer(
               color: Colors.white,
@@ -580,13 +649,20 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
                 children: [
                   Expanded(
                     child: NumericTextField(
-                      initialValue: widget.minChoice,
-                      style: const TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small).copyWith(color: SGColors.black),
+                      key: const ValueKey('minChoice'),
+                      initialValue: minChoice,
+                      style: const TextStyle(
+                              fontFamily: "Pretendard",
+                              fontSize: FontSize.small)
+                          .copyWith(color: SGColors.black),
                       decoration: InputDecoration(
                         isDense: true,
                         contentPadding: EdgeInsets.all(SGSpacing.p4),
                         isCollapsed: true,
-                        hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                        hintStyle: TextStyle(
+                            color: SGColors.gray3,
+                            fontSize: FontSize.small,
+                            fontWeight: FontWeight.w400),
                         hintText: minChoice.toKoreanCurrency,
                         border: const OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
@@ -600,7 +676,8 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
                       },
                     ),
                   ),
-                  SGTypography.body("개", size: FontSize.small, color: SGColors.gray4),
+                  SGTypography.body("개",
+                      size: FontSize.small, color: SGColors.gray4),
                   SizedBox(width: SGSpacing.p4),
                 ],
               ),
@@ -617,15 +694,23 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
               children: [
                 Expanded(
                   child: NumericTextField(
-                    initialValue: widget.maxChoice,
-                    style: const TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small).copyWith(color: SGColors.black),
+                    key: const ValueKey('maxChoice'),
+                    initialValue: maxChoice,
+                    style: const TextStyle(
+                            fontFamily: "Pretendard", fontSize: FontSize.small)
+                        .copyWith(color: SGColors.black),
                     decoration: InputDecoration(
                       isDense: true,
                       contentPadding: EdgeInsets.all(SGSpacing.p4),
                       isCollapsed: true,
-                      hintStyle: TextStyle(color: SGColors.gray3, fontSize: FontSize.small, fontWeight: FontWeight.w400),
+                      hintStyle: TextStyle(
+                          color: SGColors.gray3,
+                          fontSize: FontSize.small,
+                          fontWeight: FontWeight.w400),
                       hintText: maxChoice.toKoreanCurrency,
-                      border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                      border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.zero,
+                          borderSide: BorderSide.none),
                     ),
                     onValueChanged: (maxChoice) {
                       setState(() {
@@ -634,7 +719,8 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
                     },
                   ),
                 ),
-                SGTypography.body("개", size: FontSize.small, color: SGColors.gray4),
+                SGTypography.body("개",
+                    size: FontSize.small, color: SGColors.gray4),
                 SizedBox(width: SGSpacing.p4),
               ],
             ),
@@ -652,7 +738,12 @@ class _Page_3_AppliedMenus extends StatefulWidget {
   final VoidCallback onPrev;
   final Function(List<MenuModel>) onEditFunction;
 
-  const _Page_3_AppliedMenus({required this.storeMenuDTOList, required this.appliedMenus, required this.onNext, required this.onPrev, required this.onEditFunction});
+  const _Page_3_AppliedMenus(
+      {required this.storeMenuDTOList,
+      required this.appliedMenus,
+      required this.onNext,
+      required this.onPrev,
+      required this.onEditFunction});
 
   @override
   State<_Page_3_AppliedMenus> createState() => _Page_3_AppliedMenusState();
@@ -670,9 +761,15 @@ class _Page_3_AppliedMenusState extends State<_Page_3_AppliedMenus> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWithStepIndicator(title: "옵션 카테고리 추가", currentStep: 4, totalStep: 5, onTap: widget.onPrev),
+        appBar: AppBarWithStepIndicator(
+            title: "옵션 카테고리 추가",
+            currentStep: 4,
+            totalStep: 5,
+            onTap: widget.onPrev),
         floatingActionButton: Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
+                maxHeight: 58),
             child: Row(
               children: [
                 Expanded(
@@ -685,13 +782,16 @@ class _Page_3_AppliedMenusState extends State<_Page_3_AppliedMenus> {
                       color: SGColors.gray3,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(
+                          child: SGTypography.body("이전",
+                              size: FontSize.large,
+                              color: SGColors.white,
+                              weight: FontWeight.w700))),
                 )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
                     child: GestureDetector(
                   onTap: () {
-
                     widget.onEditFunction(appliedMenus);
                     widget.onNext();
                   },
@@ -711,10 +811,12 @@ class _Page_3_AppliedMenusState extends State<_Page_3_AppliedMenus> {
             )),
         body: SGContainer(
             color: const Color(0xFFFAFAFA),
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+            padding: EdgeInsets.symmetric(
+                horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
             child: ListView(
               children: [
-                SGTypography.body("옵션을 포함할 메뉴를 선택해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+                SGTypography.body("옵션을 포함할 메뉴를 선택해주세요.",
+                    size: FontSize.normal, weight: FontWeight.w700),
                 if (widget.appliedMenus.isEmpty) ...[
                   SizedBox(height: SGSpacing.p3),
                   GestureDetector(
@@ -726,7 +828,15 @@ class _Page_3_AppliedMenusState extends State<_Page_3_AppliedMenus> {
                           padding: EdgeInsets.symmetric(vertical: SGSpacing.p3),
                           borderRadius: BorderRadius.circular(SGSpacing.p2),
                           borderColor: SGColors.primary,
-                          child: Center(child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [SGTypography.body("메뉴 선택하기", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)]))))
+                          child: Center(
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                SGTypography.body("메뉴 선택하기",
+                                    size: FontSize.small,
+                                    weight: FontWeight.w500,
+                                    color: SGColors.primary)
+                              ]))))
                 ] else ...[
                   ...appliedMenus
                       .mapIndexed(
@@ -735,7 +845,8 @@ class _Page_3_AppliedMenusState extends State<_Page_3_AppliedMenus> {
                           MenuModelCard(
                               menuModel: menuModel,
                               onRemove: () {
-                                final updatedAppliedMenus = List<MenuModel>.from(appliedMenus);
+                                final updatedAppliedMenus =
+                                    List<MenuModel>.from(appliedMenus);
                                 updatedAppliedMenus.removeAt(index);
                                 setState(() {
                                   appliedMenus = updatedAppliedMenus;
@@ -755,11 +866,17 @@ class _Page_3_AppliedMenusState extends State<_Page_3_AppliedMenus> {
                           borderRadius: BorderRadius.circular(SGSpacing.p2),
                           borderColor: SGColors.primary,
                           child: Center(
-                              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                            Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3),
-                            SizedBox(width: SGSpacing.p2),
-                            SGTypography.body("메뉴 추가하기", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)
-                          ]))))
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                Image.asset("assets/images/plus.png",
+                                    width: SGSpacing.p3, height: SGSpacing.p3),
+                                SizedBox(width: SGSpacing.p2),
+                                SGTypography.body("메뉴 추가하기",
+                                    size: FontSize.small,
+                                    weight: FontWeight.w500,
+                                    color: SGColors.primary)
+                              ]))))
                 ]
               ],
             )));
@@ -772,7 +889,8 @@ class _Page_3_AppliedMenusState extends State<_Page_3_AppliedMenus> {
         menuModels: widget.storeMenuDTOList,
         onSelect: (selectedMenuList) {
           setState(() {
-            appliedMenus = selectedMenuList.toList()..sort((a, b) => a.menuName.compareTo(b.menuName));
+            appliedMenus = selectedMenuList.toList()
+              ..sort((a, b) => a.menuName.compareTo(b.menuName));
           });
         },
         selectedMenus: appliedMenus);
@@ -803,9 +921,12 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWithStepIndicator(title: "옵션 카테고리 추가", currentStep: 5, totalStep: 5, onTap: onPrev),
+        appBar: AppBarWithStepIndicator(
+            title: "옵션 카테고리 추가", currentStep: 5, totalStep: 5, onTap: onPrev),
         floatingActionButton: Container(
-            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8, maxHeight: 58),
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width - SGSpacing.p8,
+                maxHeight: 58),
             child: Row(
               children: [
                 Expanded(
@@ -817,7 +938,11 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                       color: SGColors.gray3,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(child: SGTypography.body("이전", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(
+                          child: SGTypography.body("이전",
+                              size: FontSize.large,
+                              color: SGColors.white,
+                              weight: FontWeight.w700))),
                 )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
@@ -829,47 +954,66 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                       color: SGColors.primary,
                       padding: EdgeInsets.all(SGSpacing.p4),
                       borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(child: SGTypography.body("카테고리 추가", size: FontSize.medium, color: SGColors.white, weight: FontWeight.w700))),
+                      child: Center(
+                          child: SGTypography.body("카테고리 추가",
+                              size: FontSize.medium,
+                              color: SGColors.white,
+                              weight: FontWeight.w700))),
                 )),
               ],
             )),
         body: SGContainer(
             color: const Color(0xFFFAFAFA),
-            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+            padding: EdgeInsets.symmetric(
+                horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
             child: ListView(
               children: [
-                SGTypography.body("마지막으로 한 번 더 확인해주세요.", size: FontSize.large, weight: FontWeight.w700),
+                SGTypography.body("마지막으로 한 번 더 확인해주세요.",
+                    size: FontSize.large, weight: FontWeight.w700),
                 SizedBox(height: SGSpacing.p8),
-                SGTypography.body("옵션 카테고리명", size: FontSize.normal, weight: FontWeight.w700),
+                SGTypography.body("옵션 카테고리명",
+                    size: FontSize.normal, weight: FontWeight.w700),
                 SizedBox(height: SGSpacing.p5 / 2),
                 SGContainer(
                     color: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
                     borderColor: SGColors.line3,
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Row(children: [
-                      SGTypography.body(menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray5),
+                      SGTypography.body(menuOptionCategoryName,
+                          size: FontSize.normal,
+                          weight: FontWeight.w400,
+                          color: SGColors.gray5),
                     ])),
                 SizedBox(height: SGSpacing.p15 / 2),
                 SGTypography.body(
-                    "옵션명",
-                    size: FontSize.normal,
-                    weight: FontWeight.w700,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  "옵션명",
+                  size: FontSize.normal,
+                  weight: FontWeight.w700,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 SizedBox(height: SGSpacing.p5 / 2),
                 SGContainer(
                   color: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
                   borderColor: SGColors.line3,
                   borderRadius: BorderRadius.circular(SGSpacing.p3),
                   child: Column(
                     children: selectedMenuOptions.map((menuOption) {
                       return Row(
                         children: [
-                          SGTypography.body(menuOption.optionContent, size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray5),
+                          SGTypography.body(menuOption.optionContent,
+                              size: FontSize.normal,
+                              weight: FontWeight.w400,
+                              color: SGColors.gray5),
                           const Spacer(),
-                          SGTypography.body("${menuOption.price.toKoreanCurrency}원", size: FontSize.normal, weight: FontWeight.w500, color: SGColors.gray4),
+                          SGTypography.body(
+                              "${menuOption.price.toKoreanCurrency}원",
+                              size: FontSize.normal,
+                              weight: FontWeight.w500,
+                              color: SGColors.gray4),
                         ],
                       );
                     }).toList(),
@@ -877,32 +1021,45 @@ class _Page_4_ConfirmAddition extends StatelessWidget {
                 ),
                 SGContainer(),
                 SizedBox(height: SGSpacing.p15 / 2),
-                SGTypography.body("필수 여부", size: FontSize.normal, weight: FontWeight.w700),
+                SGTypography.body("필수 여부",
+                    size: FontSize.normal, weight: FontWeight.w700),
                 SizedBox(height: SGSpacing.p5 / 2),
                 SGContainer(
                     color: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
                     borderColor: SGColors.line2,
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Row(children: [
-                      SGTypography.body(essentialStatus == 1 ? "필수 옵션" : "필수 아님", size: FontSize.normal),
+                      SGTypography.body(
+                          essentialStatus == 1 ? "필수 옵션" : "필수 아님",
+                          size: FontSize.normal),
                     ])),
                 SizedBox(height: SGSpacing.p15 / 2),
-                SGTypography.body("선택 개수", size: FontSize.normal, weight: FontWeight.w700),
+                SGTypography.body("선택 개수",
+                    size: FontSize.normal, weight: FontWeight.w700),
                 SizedBox(height: SGSpacing.p5 / 2),
                 SGContainer(
                     color: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
                     borderColor: SGColors.line3,
                     borderRadius: BorderRadius.circular(SGSpacing.p3),
                     child: Row(children: [
-                      SGTypography.body("최소 ${minChoice}개, 최대 ${maxChoice}개", size: FontSize.normal, weight: FontWeight.w400, color: SGColors.gray5),
+                      SGTypography.body("최소 ${minChoice}개, 최대 ${maxChoice}개",
+                          size: FontSize.normal,
+                          weight: FontWeight.w400,
+                          color: SGColors.gray5),
                     ])),
                 SizedBox(height: SGSpacing.p15 / 2),
-                SGTypography.body("이 옵션을 포함하는 메뉴", size: FontSize.normal, weight: FontWeight.w700),
+                SGTypography.body("이 옵션을 포함하는 메뉴",
+                    size: FontSize.normal, weight: FontWeight.w700),
                 ...appliedMenus
                     .mapIndexed(
-                      (index, menuModel) => [SizedBox(height: SGSpacing.p3), MenuModelCard(menuModel: menuModel)],
+                      (index, menuModel) => [
+                        SizedBox(height: SGSpacing.p3),
+                        MenuModelCard(menuModel: menuModel)
+                      ],
                     )
                     .flattened,
                 SizedBox(height: SGSpacing.p32),
