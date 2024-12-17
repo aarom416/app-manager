@@ -104,66 +104,87 @@ class OrderNotifier extends _$OrderNotifier {
   }
 
   /// 신규 주문 상세
-  Future<bool> getNewOrderDetail(int orderInformationId) async {
-    final response = await ref
-        .read(orderServiceProvider)
-        .getNewOrderDetail(orderInformationId: orderInformationId);
+  Future<bool> getNewOrderDetail(BuildContext context, int orderInformationId) async {
+    try {
+      Loading.show(context);
+      final response = await ref
+          .read(orderServiceProvider)
+          .getNewOrderDetail(orderInformationId: orderInformationId);
 
-    if (response.statusCode == 200) {
-      final result = ResultResponseModel.fromJson(response.data);
+      if (response.statusCode == 200) {
+        final result = ResultResponseModel.fromJson(response.data);
 
-      final orderDetail = MyInfoOrderHistoryModel.fromJson(result.data);
+        final orderDetail = MyInfoOrderHistoryModel.fromJson(result.data);
 
-      state = state.copyWith(
-        orderDetail: orderDetail,
-      );
-      return true;
-    } else {
+        state = state.copyWith(
+          orderDetail: orderDetail,
+        );
+        return true;
+      } else {
+        return false;
+      }
+    } catch(e) {
       return false;
+    } finally {
+      Loading.hide();
     }
   }
 
   /// 접수 주문 상세
-  Future<bool> getAcceptedOrderDetail(int orderInformationId) async {
-    final response = await ref
-        .read(orderServiceProvider)
-        .getAcceptedOrderDetail(orderInformationId: orderInformationId);
+  Future<bool> getAcceptedOrderDetail(BuildContext context, int orderInformationId) async {
+    try {
+      Loading.show(context);
+      final response = await ref
+          .read(orderServiceProvider)
+          .getAcceptedOrderDetail(orderInformationId: orderInformationId);
 
-    if (response.statusCode == 200) {
-      final result = ResultResponseModel.fromJson(response.data);
+      if (response.statusCode == 200) {
+        final result = ResultResponseModel.fromJson(response.data);
 
-      final orderDetail = MyInfoOrderHistoryModel.fromJson(result.data);
+        final orderDetail = MyInfoOrderHistoryModel.fromJson(result.data);
 
-      state = state.copyWith(
-        orderDetail: orderDetail,
-      );
-      return true;
-    } else {
-      state = state.copyWith(
-          error: ResultFailResponseModel.fromJson(response.data));
+        state = state.copyWith(
+          orderDetail: orderDetail,
+        );
+        return true;
+      } else {
+        state = state.copyWith(
+            error: ResultFailResponseModel.fromJson(response.data));
+        return false;
+      }
+    } catch (e) {
       return false;
+    } finally {
+      Loading.hide();
     }
   }
 
   /// 완료 주문 상세
-  Future<bool> getCompletedOrderDetail(int orderInformationId) async {
-    final response = await ref
-        .read(orderServiceProvider)
-        .getCompletedOrderDetail(orderInformationId: orderInformationId);
+  Future<bool> getCompletedOrderDetail(BuildContext context, int orderInformationId) async {
+    try {
+      Loading.show(context);
+      final response = await ref
+          .read(orderServiceProvider)
+          .getCompletedOrderDetail(orderInformationId: orderInformationId);
 
-    if (response.statusCode == 200) {
-      final result = ResultResponseModel.fromJson(response.data);
+      if (response.statusCode == 200) {
+        final result = ResultResponseModel.fromJson(response.data);
 
-      final orderDetail = MyInfoOrderHistoryModel.fromJson(result.data);
+        final orderDetail = MyInfoOrderHistoryModel.fromJson(result.data);
 
-      state = state.copyWith(
-        orderDetail: orderDetail,
-      );
-      return true;
-    } else {
-      state = state.copyWith(
-          error: ResultFailResponseModel.fromJson(response.data));
+        state = state.copyWith(
+          orderDetail: orderDetail,
+        );
+        return true;
+      } else {
+        state = state.copyWith(
+            error: ResultFailResponseModel.fromJson(response.data));
+        return false;
+      }
+    } catch(e) {
       return false;
+    } finally {
+      Loading.hide();
     }
   }
 

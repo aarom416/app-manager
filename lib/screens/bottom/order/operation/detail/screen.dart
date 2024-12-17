@@ -948,6 +948,7 @@ class _CancelDialogBodyState extends ConsumerState<_CancelDialogBody> {
       "재료 소진",
       "가게 사정",
       "기타 사정",
+      if (widget.order.receiveFoodType == 'DELIVERY') "배차 실패",
     ];
     return Column(children: [
       Center(

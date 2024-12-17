@@ -55,9 +55,9 @@ class _TemporaryClosedScreenState extends ConsumerState<TemporaryClosedScreen> {
                       onChanged: (value) {
                         setState(() {
                           if (state.operationStatus == 0) {
-                            showOperationStopDialog(context: context, provider: provider);
-                          } else {
                             provider.onChangeOperationStatus(1);
+                          } else {
+                            showOperationStopDialog(context: context, provider: provider);
                           }
                         });
                       })

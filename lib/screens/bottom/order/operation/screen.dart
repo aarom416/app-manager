@@ -10,6 +10,7 @@ import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 import 'package:singleeat/core/extensions/integer.dart';
 import 'package:singleeat/office/models/order_model.dart';
+import 'package:singleeat/screens/bottom/myinfo/orderlist/model.dart';
 import 'package:singleeat/screens/bottom/order/operation/detail/screen.dart';
 import 'package:singleeat/screens/bottom/order/operation/model.dart';
 import 'package:singleeat/screens/bottom/order/operation/provider.dart';
@@ -89,7 +90,7 @@ class _OrderManagementScreenState extends ConsumerState<OrderManagementScreen>
             break;
           case 2:
             tab = "완료";
-            ref.read(orderNotifierProvider.notifier).getCompletedOrderList(context); // context 전달
+            ref.read(orderNotifierProvider.notifier).getCompletedOrderList(context);
             break;
         }
       });
@@ -394,8 +395,7 @@ class _NewOrderListView extends ConsumerWidget {
                                             bool result = await ref
                                                 .read(orderNotifierProvider
                                                     .notifier)
-                                                .getNewOrderDetail(orders[index]
-                                                    .orderInformationId);
+                                                .getNewOrderDetail(context, orders[index].orderInformationId);
                                             if (result) {
                                              Navigator.of(context).push(
                                                 MaterialPageRoute(
@@ -549,7 +549,6 @@ class _NewOrderListView extends ConsumerWidget {
     );
   }
 }
-
 class _InProgressOrderListView extends ConsumerWidget {
   List<NewOrderModel> orders;
   String tab;
@@ -579,112 +578,128 @@ class _InProgressOrderListView extends ConsumerWidget {
         ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
       },
       color: SGColors.primary,
-      child: ListView.separated(
-          shrinkWrap: true,
-          itemCount: orders.length,
-          separatorBuilder: (ctx, index) => Divider(
-                thickness: 0.5,
-                color: SGColors.lineDark,
-              ),
-          itemBuilder: (ctx, index) {
-            return GestureDetector(
-              onTap: () async {
-                bool result = await ref
-                    .read(orderNotifierProvider.notifier)
-                    .getAcceptedOrderDetail(orders[index].orderInformationId);
-                if (result) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => InProgressOrderDetailScreen(
-                          order: ref.watch(orderNotifierProvider).orderDetail)));
-                } else {
-                  if (state.error.errorCode == "ORDER_CANCEL_EXCEPTION") {
-                    showFailDialogWithImage(
-                      context: context,
-                      mainTitle: "해당 주문은 이미 취소된 주문입니다.\n잠시 후 다시 시도해주세요.",
-                    );
-                  } else if (state.error.errorCode == "STORE_NOT_FOUND") {
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => const StoreNotFoundScreen()),
-                          (route) => false, // 스택의 모든 기존 경로 제거
-                    );
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        child: ListView.separated(
+            shrinkWrap: true,
+            itemCount: orders.length,
+            separatorBuilder: (ctx, index) => Divider(
+              thickness: 0.5,
+              color: SGColors.lineDark,
+            ),
+            itemBuilder: (ctx, index) {
+              return GestureDetector(
+                onTap: () async {
+                  bool result = await ref
+                      .read(orderNotifierProvider.notifier)
+                      .getAcceptedOrderDetail(context, orders[index].orderInformationId);
+                  if (result) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => InProgressOrderDetailScreen(
+                            order: ref.watch(orderNotifierProvider).orderDetail)));
+                  } else {
+                    if (state.error.errorCode == "ORDER_CANCEL_EXCEPTION") {
+                      showFailDialogWithImage(
+                        context: context,
+                        mainTitle: "해당 주문은 이미 취소된 주문입니다.\n잠시 후 다시 시도해주세요.",
+                      );
+                    } else if (state.error.errorCode == "STORE_NOT_FOUND") {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => const StoreNotFoundScreen()),
+                            (route) => false, // 스택의 모든 기존 경로 제거
+                      );
+                    }
                   }
-                }
-              },
-              child: Stack(
-                alignment: Alignment.topRight,
-                children: [
-                  _OrderCard(
-                    tab: tab,
-                    order: orders[index],
-                    tailing: PercentageIndicator(
-                      percentage: calculatePercentage(orders[index]),
-                      radius: 25,
-                      strokeWidth: 3,
-                      strokeColor: strokeColor(orders[index]),
-                      color: Colors.transparent,
-                      label: calculateLabel(orders[index]),
+                },
+                child: Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    _OrderCard(
+                      tab: tab,
+                      order: orders[index],
+                      tailing: PercentageIndicator(
+                        percentage: calculatePercentage(orders[index]),
+                        radius: 25,
+                        strokeWidth: 3,
+                        strokeColor: strokeColor(orders[index]),
+                        color: Colors.transparent,
+                        label: calculateLabel(orders[index]),
+                      ),
                     ),
-                  ),
-                  Positioned(
-                      top: SGSpacing.p4,
-                      right: SGSpacing.p2,
-                      child: CircleAvatar(
-                          radius: SGSpacing.p3 + SGSpacing.p05,
-                          backgroundColor: strokeColor(orders[index]),
-                          child: Center(
-                              child: SGTypography.body(
-                                  orders[index].receiveFoodType == 'DELIVERY'
-                                      ? '배달'
-                                      : '포장',
-                                  color: SGColors.white,
-                                  weight: FontWeight.w700))))
-                ],
-              ),
-            );
-          }),
+                    Positioned(
+                        top: SGSpacing.p4,
+                        right: SGSpacing.p2,
+                        child: CircleAvatar(
+                            radius: SGSpacing.p3 + SGSpacing.p05,
+                            backgroundColor: strokeColor(orders[index]),
+                            child: Center(
+                                child: SGTypography.body(
+                                    orders[index].receiveFoodType == 'DELIVERY'
+                                        ? '배달'
+                                        : '포장',
+                                    color: SGColors.white,
+                                    weight: FontWeight.w700))))
+                  ],
+                ),
+              );
+            }),
+      ),
     );
   }
   double calculatePercentage(NewOrderModel order) {
     final currentTime = DateTime.now();
 
     final createdDateParts = order.createdDate.split(":");
-    final createdDate = DateTime(
+    final hours = int.parse(createdDateParts[0]);
+    final minutes = int.parse(createdDateParts[1]);
+
+    DateTime createdDate = DateTime(
       currentTime.year,
       currentTime.month,
       currentTime.day,
-      int.parse(createdDateParts[0]),
-      int.parse(createdDateParts[1]),
+      hours,
+      minutes,
     );
+
+    if (createdDate.isAfter(currentTime)) {
+      createdDate = createdDate.subtract(const Duration(days: 1));
+    }
 
     final elapsedTime = currentTime.difference(createdDate).inMinutes;
     final percentage = elapsedTime / order.expectedTime;
 
-    return percentage > 1 ? 1.0 : percentage;
+    return percentage > 1.0 ? 1.0 : percentage;
   }
+
 
   String calculateLabel(NewOrderModel order) {
     final currentTime = DateTime.now();
 
     final createdDateParts = order.createdDate.split(":");
-    final createdDate = DateTime(
+    final hours = int.parse(createdDateParts[0]);
+    final minutes = int.parse(createdDateParts[1]);
+
+    DateTime createdDate = DateTime(
       currentTime.year,
       currentTime.month,
       currentTime.day,
-      int.parse(createdDateParts[0]),
-      int.parse(createdDateParts[1]),
+      hours,
+      minutes,
     );
 
+    if (createdDate.isAfter(currentTime)) {
+      createdDate = createdDate.subtract(const Duration(days: 1));
+    }
+
     final elapsedTime = currentTime.difference(createdDate).inMinutes;
-    final remainingTime = order.expectedTime - elapsedTime;
+    final remainingTime = (order.expectedTime - elapsedTime).clamp(0, order.expectedTime);
 
     if (remainingTime <= 0) {
       return "완료";
-    } else {
-      return "$remainingTime분";
     }
+
+    return "$remainingTime분";
   }
-
-
 
   Color strokeColor(NewOrderModel order) {
     if (order.receiveFoodType == "TAKEOUT") return SGColors.success;
@@ -692,6 +707,8 @@ class _InProgressOrderListView extends ConsumerWidget {
     return SGColors.primary;
   }
 }
+
+
 
 class _CompleteOrderListView extends ConsumerWidget {
   String tab;
@@ -720,7 +737,7 @@ class _CompleteOrderListView extends ConsumerWidget {
             onTap: () async {
               bool result = await ref
                   .read(orderNotifierProvider.notifier)
-                  .getCompletedOrderDetail(orders[index].orderInformationId);
+                  .getCompletedOrderDetail(context, orders[index].orderInformationId);
               state.error.errorCode;
               if (result) {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -735,7 +752,7 @@ class _CompleteOrderListView extends ConsumerWidget {
                 } else if (state.error.errorCode == "STORE_NOT_FOUND") {
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => const StoreNotFoundScreen()),
-                        (route) => false, // 스택의 모든 기존 경로 제거
+                        (route) => false,
                   );
                 }
               }
