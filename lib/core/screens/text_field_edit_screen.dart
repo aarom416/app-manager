@@ -69,7 +69,9 @@ class _TextFieldEditScreenState extends ConsumerState<TextFieldEditScreen> {
                       : true,
               onPressed: () {
                 if (isButton) {
-                  widget.onSubmit(controller.text);
+                  if (!hasBadWord) {
+                    widget.onSubmit(controller.text);
+                  }
                 }
               },
               label: widget.buttonText)),
