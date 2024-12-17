@@ -23,17 +23,17 @@ class StoreHistoryNotifier extends _$StoreHistoryNotifier {
 
   /// GET - 영업 정보 조회
   void getStoreHistory(
-    String startDate,
-    String endDate,
-  ) async {
+      String startDate,
+      String endDate,
+      ) async {
     final response = await ref
         .read(storeHistoryServiceProvider)
         .getStoreHistory(
-            storeId: UserHive.getBox(key: UserKey.storeId),
-            page: state.page.toString(),
-            filter: state.filter == '가게' ? '0' : '1',
-            startDate: startDate,
-            endDate: endDate);
+        storeId: UserHive.getBox(key: UserKey.storeId),
+        page: state.page.toString(),
+        filter: state.filter == '가게' ? '0' : '1',
+        startDate: startDate,
+        endDate: endDate);
 
     if (response.statusCode == 200) {
       final result = ResultResponseListModel.fromJson(response.data);
@@ -54,9 +54,9 @@ class StoreHistoryNotifier extends _$StoreHistoryNotifier {
         storeHistoryList: state.page == 0
             ? storeHistoryList
             : [
-                ...state.storeHistoryList,
-                ...storeHistoryList,
-              ],
+          ...state.storeHistoryList,
+          ...storeHistoryList,
+        ],
         error: const ResultFailResponseModel(),
       );
     } else {

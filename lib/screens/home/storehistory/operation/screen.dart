@@ -28,12 +28,12 @@ class Event {
 
   Event(
       {required this.id,
-      required this.title,
-      required this.datetime,
-      required this.modifiedBy,
-      required this.modifiedAt,
-      required this.reason,
-      required this.beforeModifiedAt});
+        required this.title,
+        required this.datetime,
+        required this.modifiedBy,
+        required this.modifiedAt,
+        required this.reason,
+        required this.beforeModifiedAt});
 }
 
 class EventHistoryScreen extends ConsumerStatefulWidget {
@@ -85,12 +85,12 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
       }
 
       final storeHistoryProvider =
-          ref.read(storeHistoryNotifierProvider.notifier);
+      ref.read(storeHistoryNotifierProvider.notifier);
       final page = storeHistoryState.page;
 
       storeHistoryProvider.onChangePage(page + 1);
       throttle.run(
-        () => storeHistoryProvider.getStoreHistory(
+            () => storeHistoryProvider.getStoreHistory(
           dateRange.start.toShortDateStringWithZeroPadding,
           dateRange.end.toShortDateStringWithZeroPadding,
         ),
@@ -159,7 +159,7 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
                           SizedBox(height: SGSpacing.p4),
                           SGContainer(
                             padding:
-                                EdgeInsets.symmetric(horizontal: SGSpacing.p4),
+                            EdgeInsets.symmetric(horizontal: SGSpacing.p4),
                             width: double.infinity,
                             color: SGColors.primary,
                             borderRadius: BorderRadius.circular(SGSpacing.p2),
@@ -199,7 +199,7 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ...state.storeHistoryList.map(
-                        (StoreHistoryModel event) {
+                            (StoreHistoryModel event) {
                           return _EventCard(
                               key: Key(event.hashCode.toString()),
                               event: event);
@@ -222,10 +222,10 @@ class _EventCard extends StatefulWidget {
 }
 
 final COLLAPSED_DIVIDER = () => Divider(
-      height: SGSpacing.p8,
-      color: SGColors.line1,
-      thickness: 1,
-    );
+  height: SGSpacing.p8,
+  color: SGColors.line1,
+  thickness: 1,
+);
 
 class _EventCardState extends State<_EventCard> {
   bool collapsed = true;
@@ -245,64 +245,64 @@ class _EventCardState extends State<_EventCard> {
         padding: EdgeInsets.all(SGSpacing.p4),
         child: Container(
             child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  collapsed = !collapsed;
-                });
-              },
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SGTypography.body(
-                              widget.event.createdDate,
-                              color: SGColors.gray4,
-                              size: FontSize.small,
-                              weight: FontWeight.w500),
-                          SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                          Container(
-                            width: 220,
-                            child: SGTypography.body(
-                              widget.event.content,
-                              weight: FontWeight.w700,
-                              size: FontSize.normal,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ]),
-                    Icon(collapsed
-                        ? Icons.keyboard_arrow_down
-                        : Icons.keyboard_arrow_up),
-                  ]),
-            ),
-            if (!collapsed) ...[
-              COLLAPSED_DIVIDER(),
-              Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    ...[
-                      ["작업자", "사장님"],
-                      ["변경 시간", widget.event.createdDate],
-                    ].map((List<String> pair) {
-                      return [
-                        DataTableRow(left: pair[0], right: pair[1]),
-                        SizedBox(height: SGSpacing.p3)
-                      ];
-                    }).flattened,
-                  ]),
-              DataTableRow(left: "변경 전", right: widget.event.previousDate),
-            ],
-          ],
-        )));
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      collapsed = !collapsed;
+                    });
+                  },
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SGTypography.body(
+                                  widget.event.createdDate,
+                                  color: SGColors.gray4,
+                                  size: FontSize.small,
+                                  weight: FontWeight.w500),
+                              SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+                              Container(
+                                width: 220,
+                                child: SGTypography.body(
+                                  widget.event.content,
+                                  weight: FontWeight.w700,
+                                  size: FontSize.normal,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ]),
+                        Icon(collapsed
+                            ? Icons.keyboard_arrow_down
+                            : Icons.keyboard_arrow_up),
+                      ]),
+                ),
+                if (!collapsed) ...[
+                  COLLAPSED_DIVIDER(),
+                  Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ...[
+                          ["작업자", "사장님"],
+                          ["변경 시간", widget.event.createdDate],
+                        ].map((List<String> pair) {
+                          return [
+                            DataTableRow(left: pair[0], right: pair[1]),
+                            SizedBox(height: SGSpacing.p3)
+                          ];
+                        }).flattened,
+                      ]),
+                  DataTableRow(left: "변경 전", right: widget.event.previousDate),
+                ],
+              ],
+            )));
   }
 }
 
