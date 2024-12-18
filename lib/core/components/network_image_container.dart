@@ -24,6 +24,12 @@ class _NetworkImageContainerState extends State<NetworkImageContainer> {
   String imageUrl = '';
 
   @override
+  void initState() {
+    super.initState();
+    imageUrl = widget.networkImageUrl;
+  }
+
+  @override
   void didUpdateWidget(covariant NetworkImageContainer oldWidget) {
     super.didUpdateWidget(oldWidget);
     // image rebuild

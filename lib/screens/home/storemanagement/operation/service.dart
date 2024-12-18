@@ -108,17 +108,25 @@ class OperationService {
         RestApiUri.updateBreakTime,
         data: {
           'storeId': UserHive.getBox(key: UserKey.storeId),
-          'dayList': breakTimeDetails.asMap().entries.map((entry) {
+          'dayList': breakTimeDetails
+              .asMap()
+              .entries
+              .where((breakTime) => breakTime.value.toggle)
+              .map((entry) {
             if (entry.value.day == '일') {
               return 0;
             } else {
               return entry.key + 1;
             }
           }).toList(),
-          'startTimeList': breakTimeDetails.map((operationTimeDetail) {
+          'startTimeList': breakTimeDetails
+              .where((breakTime) => breakTime.toggle)
+              .map((operationTimeDetail) {
             return operationTimeDetail.startTime;
           }).toList(),
-          'endTimeList': breakTimeDetails.map((operationTimeDetail) {
+          'endTimeList': breakTimeDetails
+              .where((breakTime) => breakTime.toggle)
+              .map((operationTimeDetail) {
             return operationTimeDetail.endTime;
           }).toList()
         },
