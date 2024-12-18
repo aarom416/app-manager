@@ -20,7 +20,7 @@
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
             android:showWhenLocked="true"
-            android:theme="@style/LaunchTheme"
+            android:theme="@style/Theme.RemoveSplashScreenTheme"
             android:turnScreenOn="true"
             android:windowSoftInputMode="adjustResize">
             <!-- Specifies an Android theme to apply to this Activity as soon as

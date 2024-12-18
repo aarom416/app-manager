@@ -49,7 +49,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
 
   String menuName = "";
   MenuCategoryModel selectedMenuCategory =
-      const MenuCategoryModel(storeMenuCategoryId: -1);
+  const MenuCategoryModel(storeMenuCategoryId: -1);
   List<String> selectedUserMenuCategories = [];
   int price = 0;
   NutritionModel nutrition = const NutritionModel();
@@ -59,16 +59,16 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
   List<MenuOptionCategoryModel> selectedMenuOptionCategories = [];
 
   void animateToPage(int index) => pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
+    index,
+    duration: const Duration(milliseconds: 400),
+    curve: Curves.easeInOut,
+  );
 
   @override
   Widget build(BuildContext context) {
     final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
     final MenuOptionsNotifier provider =
-        ref.read(menuOptionsNotifierProvider.notifier);
+    ref.read(menuOptionsNotifierProvider.notifier);
 
     return Scaffold(
       body: PageView(
@@ -125,7 +125,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
             _Page_4_MenuRegistration(
               imagePath: imagePath,
               menuBriefDescription: menuBriefDescription,
-              menuDescription: menuDescription,
+              menuIntroduction: menuIntroduction,
               selectedMenuOptionCategories: selectedMenuOptionCategories,
               onPrev: () => animateToPage(3),
               onNext: () => {
@@ -141,7 +141,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
                   nutrition,
                   imagePath,
                   menuBriefDescription,
-                  menuDescription,
+                  menuIntroduction,
                   selectedMenuOptionCategories,
                 )
                     .then((resultFailResponseModel) {
@@ -164,21 +164,21 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
                   }
                 }),
               },
-              onEditFunction: (imagePath, menuBriefDescription, menuDescription,
+              onEditFunction: (imagePath, menuBriefDescription, menuIntroduction,
                   selectedMenuOptionCategories) {
                 logger.d(
                     "_Page_4_MenuRegistration onEditFunction selectedMenuOptionCategories ${selectedMenuOptionCategories.toFormattedJson()} ");
                 setState(() {
                   this.imagePath = imagePath;
                   this.menuBriefDescription = menuBriefDescription;
-                  this.menuDescription = menuDescription;
+                  this.menuIntroduction = menuIntroduction;
                   this.selectedMenuOptionCategories =
                       selectedMenuOptionCategories;
                 });
               },
             ),
           ]),
-      
+
     );
   }
 }
@@ -191,9 +191,9 @@ class _Page_0_MenuName extends StatefulWidget {
 
   const _Page_0_MenuName(
       {required this.menuName,
-      required this.onNext,
-      required this.onPrev,
-      required this.onEditFunction});
+        required this.onNext,
+        required this.onPrev,
+        required this.onEditFunction});
 
   @override
   State<_Page_0_MenuName> createState() => _Page_0_MenuNameState();
@@ -253,30 +253,30 @@ class _Page_0_MenuNameState extends State<_Page_0_MenuName> {
                   SizedBox(height: SGSpacing.p3),
                   SGTextFieldWrapper(
                       child: SGContainer(
-                    padding: EdgeInsets.all(SGSpacing.p4),
-                    width: double.infinity,
-                    child: TextField(
-                        controller: menuNameController,
-                        onChanged: (value) {
-                          setState(() {
-                            menuName = value;
-                          });
-                        },
-                        style: TextStyle(
-                            fontSize: FontSize.small, color: SGColors.gray5),
-                        decoration: InputDecoration(
-                          isDense: true,
-                          isCollapsed: true,
-                          hintStyle: TextStyle(
-                              color: SGColors.gray3,
-                              fontSize: FontSize.small,
-                              fontWeight: FontWeight.w400),
-                          hintText: "Ex) 바베큐 샐러드",
-                          border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.zero,
-                              borderSide: BorderSide.none),
-                        )),
-                  )),
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        width: double.infinity,
+                        child: TextField(
+                            controller: menuNameController,
+                            onChanged: (value) {
+                              setState(() {
+                                menuName = value;
+                              });
+                            },
+                            style: TextStyle(
+                                fontSize: FontSize.small, color: SGColors.gray5),
+                            decoration: InputDecoration(
+                              isDense: true,
+                              isCollapsed: true,
+                              hintStyle: TextStyle(
+                                  color: SGColors.gray3,
+                                  fontSize: FontSize.small,
+                                  fontWeight: FontWeight.w400),
+                              hintText: "Ex) 바베큐 샐러드",
+                              border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.zero,
+                                  borderSide: BorderSide.none),
+                            )),
+                      )),
                 ],
               ))),
     );
@@ -333,39 +333,39 @@ class _Page_1_MenuCategoryState extends State<_Page_1_MenuCategory> {
               children: [
                 Expanded(
                     child: GestureDetector(
-                  onTap: () {
-                    widget.onPrev();
-                  },
-                  child: SGContainer(
-                      color: SGColors.gray3,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("이전",
-                              size: FontSize.large,
-                              color: SGColors.white,
-                              weight: FontWeight.w700))),
-                )),
+                      onTap: () {
+                        widget.onPrev();
+                      },
+                      child: SGContainer(
+                          color: SGColors.gray3,
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                          child: Center(
+                              child: SGTypography.body("이전",
+                                  size: FontSize.large,
+                                  color: SGColors.white,
+                                  weight: FontWeight.w700))),
+                    )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
                     child: GestureDetector(
-                  onTap: () {
-                    if (selectedMenuCategory.storeMenuCategoryId != -1) {
-                      widget.onNext();
-                    }
-                  },
-                  child: SGContainer(
-                      color: SGColors.gray3,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body(
-                        "다음",
-                        size: FontSize.large,
-                        color: SGColors.white,
-                        weight: FontWeight.w700,
-                      ))),
-                )),
+                      onTap: () {
+                        if (selectedMenuCategory.storeMenuCategoryId != -1) {
+                          widget.onNext();
+                        }
+                      },
+                      child: SGContainer(
+                          color: SGColors.gray3,
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                          child: Center(
+                              child: SGTypography.body(
+                                "다음",
+                                size: FontSize.large,
+                                color: SGColors.white,
+                                weight: FontWeight.w700,
+                              ))),
+                    )),
               ],
             )),
         body: SGContainer(
@@ -382,33 +382,33 @@ class _Page_1_MenuCategoryState extends State<_Page_1_MenuCategory> {
                     showSGDialogWithCloseButton(
                         context: context,
                         childrenBuilder: (ctx) => [
-                              __SelectMenuCategoryDialog(
-                                  context: ctx,
-                                  selectedMenuCategory:
-                                      widget.selectedMenuCategory,
-                                  onConfirm: (selectedMenuCategory) {
-                                    widget.onEditMenuCategoryFunction(
-                                        selectedMenuCategory);
-                                    showSGDialogWithCloseButton(
-                                        context: context,
-                                        childrenBuilder: (ctx) => [
-                                              __SelectUserMenuCategoryDialog(
-                                                context: ctx,
-                                                selectedUserMenuCategories: widget
-                                                    .selectedUserMenuCategories,
-                                                onConfirm:
-                                                    (selectedUserMenuCategories) {
-                                                  widget.onEditUserMenuCategoryFunction(
-                                                      selectedUserMenuCategories);
-                                                  FocusScope.of(context)
-                                                      .unfocus();
-                                                  Navigator.of(ctx).pop();
-                                                  widget.onNext();
-                                                },
-                                              )
-                                            ]);
-                                  }),
-                            ]);
+                          __SelectMenuCategoryDialog(
+                              context: ctx,
+                              selectedMenuCategory:
+                              widget.selectedMenuCategory,
+                              onConfirm: (selectedMenuCategory) {
+                                widget.onEditMenuCategoryFunction(
+                                    selectedMenuCategory);
+                                showSGDialogWithCloseButton(
+                                    context: context,
+                                    childrenBuilder: (ctx) => [
+                                      __SelectUserMenuCategoryDialog(
+                                        context: ctx,
+                                        selectedUserMenuCategories: widget
+                                            .selectedUserMenuCategories,
+                                        onConfirm:
+                                            (selectedUserMenuCategories) {
+                                          widget.onEditUserMenuCategoryFunction(
+                                              selectedUserMenuCategories);
+                                          FocusScope.of(context)
+                                              .unfocus();
+                                          Navigator.of(ctx).pop();
+                                          widget.onNext();
+                                        },
+                                      )
+                                    ]);
+                              }),
+                        ]);
                   },
                   child: SGTextFieldWrapper(
                       child: SGContainer(
@@ -437,8 +437,8 @@ class __SelectMenuCategoryDialog extends ConsumerStatefulWidget {
 
   __SelectMenuCategoryDialog(
       {required this.context,
-      required this.selectedMenuCategory,
-      required this.onConfirm});
+        required this.selectedMenuCategory,
+        required this.onConfirm});
 
   @override
   ConsumerState<__SelectMenuCategoryDialog> createState() =>
@@ -488,7 +488,7 @@ class __SelectMenuCategoryDialogState
                 shrinkWrap: true,
                 children: [
                   ...state.storeMenuCategoryDTOList.map(
-                    (menuCategory) => GestureDetector(
+                        (menuCategory) => GestureDetector(
                       onTap: () {
                         setState(() {
                           selectedMenuCategory = menuCategory;
@@ -519,7 +519,7 @@ class __SelectMenuCategoryDialogState
                   vertical: SGSpacing.p3 * (screenHeight / 812),
                 ),
                 borderRadius:
-                    BorderRadius.circular(SGSpacing.p2 * (screenWidth / 375)),
+                BorderRadius.circular(SGSpacing.p2 * (screenWidth / 375)),
                 borderColor: SGColors.primary,
                 child: Center(
                   child: Row(
@@ -558,7 +558,7 @@ class __SelectMenuCategoryDialogState
                   vertical: SGSpacing.p4 * (screenHeight / 812),
                 ),
                 borderRadius:
-                    BorderRadius.circular(SGSpacing.p3 * (screenWidth / 375)),
+                BorderRadius.circular(SGSpacing.p3 * (screenWidth / 375)),
                 child: Center(
                   child: SGTypography.body(
                     "확인",
@@ -585,8 +585,8 @@ class __SelectUserMenuCategoryDialog extends StatefulWidget {
 
   __SelectUserMenuCategoryDialog(
       {required this.context,
-      required this.selectedUserMenuCategories,
-      required this.onConfirm});
+        required this.selectedUserMenuCategories,
+        required this.onConfirm});
 
   @override
   State<__SelectUserMenuCategoryDialog> createState() =>
@@ -722,9 +722,9 @@ class _Page_2_MenuPrice extends StatefulWidget {
 
   _Page_2_MenuPrice(
       {required this.price,
-      required this.onNext,
-      required this.onPrev,
-      required this.onEditFunction});
+        required this.onNext,
+        required this.onPrev,
+        required this.onEditFunction});
 
   @override
   State<_Page_2_MenuPrice> createState() => _Page_2_MenuPriceState();
@@ -755,42 +755,42 @@ class _Page_2_MenuPriceState extends State<_Page_2_MenuPrice> {
               children: [
                 Expanded(
                     child: GestureDetector(
-                  onTap: () {
-                    widget.onEditFunction(price);
-                    widget.onPrev();
-                  },
-                  child: SGContainer(
-                      color: SGColors.gray3,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("이전",
-                              size: FontSize.large,
-                              color: SGColors.white,
-                              weight: FontWeight.w700))),
-                )),
+                      onTap: () {
+                        widget.onEditFunction(price);
+                        widget.onPrev();
+                      },
+                      child: SGContainer(
+                          color: SGColors.gray3,
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                          child: Center(
+                              child: SGTypography.body("이전",
+                                  size: FontSize.large,
+                                  color: SGColors.white,
+                                  weight: FontWeight.w700))),
+                    )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
                     child: GestureDetector(
-                  onTap: () {
-                    if (price > 0) {
-                      widget.onEditFunction(price);
-                      widget.onNext();
-                      FocusScope.of(context).unfocus();
-                    }
-                  },
-                  child: SGContainer(
-                      color: price != 0 ? SGColors.primary : SGColors.gray3,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body(
-                            "다음",
-                            size: FontSize.large,
-                            color: SGColors.white,
-                            weight: FontWeight.w700,
-                          ))),
-                )),
+                      onTap: () {
+                        if (price > 0) {
+                          widget.onEditFunction(price);
+                          widget.onNext();
+                          FocusScope.of(context).unfocus();
+                        }
+                      },
+                      child: SGContainer(
+                          color: price != 0 ? SGColors.primary : SGColors.gray3,
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                          child: Center(
+                              child: SGTypography.body(
+                                "다음",
+                                size: FontSize.large,
+                                color: SGColors.white,
+                                weight: FontWeight.w700,
+                              ))),
+                    )),
               ],
             )),
         body: SGContainer(
@@ -804,39 +804,39 @@ class _Page_2_MenuPriceState extends State<_Page_2_MenuPrice> {
                 SizedBox(height: SGSpacing.p3),
                 SGTextFieldWrapper(
                     child: SGContainer(
-                  padding: EdgeInsets.all(SGSpacing.p4),
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: NumericTextField(
-                          initialValue: widget.price,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            isCollapsed: true,
-                            hintStyle: TextStyle(
-                                color: SGColors.gray3,
-                                fontSize: FontSize.small,
-                                fontWeight: FontWeight.w400),
-                            hintText: price.toKoreanCurrency,
-                            border: const OutlineInputBorder(
-                                borderRadius: BorderRadius.zero,
-                                borderSide: BorderSide.none),
+                      padding: EdgeInsets.all(SGSpacing.p4),
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: NumericTextField(
+                              initialValue: widget.price,
+                              decoration: InputDecoration(
+                                isDense: true,
+                                isCollapsed: true,
+                                hintStyle: TextStyle(
+                                    color: SGColors.gray3,
+                                    fontSize: FontSize.small,
+                                    fontWeight: FontWeight.w400),
+                                hintText: price.toKoreanCurrency,
+                                border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero,
+                                    borderSide: BorderSide.none),
+                              ),
+                              onValueChanged: (price) {
+                                setState(() {
+                                  this.price = price;
+                                });
+                              },
+                            ),
                           ),
-                          onValueChanged: (price) {
-                            setState(() {
-                              this.price = price;
-                            });
-                          },
-                        ),
+                          SGTypography.body("원",
+                              color: SGColors.gray4,
+                              size: FontSize.small,
+                              weight: FontWeight.w500),
+                        ],
                       ),
-                      SGTypography.body("원",
-                          color: SGColors.gray4,
-                          size: FontSize.small,
-                          weight: FontWeight.w500),
-                    ],
-                  ),
-                )),
+                    )),
               ],
             )));
   }
@@ -884,37 +884,37 @@ class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
               children: [
                 Expanded(
                     child: GestureDetector(
-                  onTap: () {
-                    widget.onEditFunction(nutrition);
-                    widget.onPrev();
-                  },
-                  child: SGContainer(
-                      color: SGColors.gray3,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("이전",
-                              size: FontSize.large,
-                              color: SGColors.white,
-                              weight: FontWeight.w700))),
-                )),
+                      onTap: () {
+                        widget.onEditFunction(nutrition);
+                        widget.onPrev();
+                      },
+                      child: SGContainer(
+                          color: SGColors.gray3,
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                          child: Center(
+                              child: SGTypography.body("이전",
+                                  size: FontSize.large,
+                                  color: SGColors.white,
+                                  weight: FontWeight.w700))),
+                    )),
                 SizedBox(width: SGSpacing.p3),
                 Expanded(
                     child: GestureDetector(
-                  onTap: () {
-                    widget.onEditFunction(nutrition);
-                    widget.onNext();
-                  },
-                  child: SGContainer(
-                      color: SGColors.primary,
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      borderRadius: BorderRadius.circular(SGSpacing.p3),
-                      child: Center(
-                          child: SGTypography.body("다음",
-                              size: FontSize.large,
-                              color: SGColors.white,
-                              weight: FontWeight.w700))),
-                )),
+                      onTap: () {
+                        widget.onEditFunction(nutrition);
+                        widget.onNext();
+                      },
+                      child: SGContainer(
+                          color: SGColors.primary,
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          borderRadius: BorderRadius.circular(SGSpacing.p3),
+                          child: Center(
+                              child: SGTypography.body("다음",
+                                  size: FontSize.large,
+                                  color: SGColors.white,
+                                  weight: FontWeight.w700))),
+                    )),
               ],
             )),
         body: SGContainer(
@@ -932,15 +932,15 @@ class _Page_3_MenuNutritionState extends State<_Page_3_MenuNutrition> {
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => UpdateNutritionScreen(
-                                title: "영양성분 설정",
-                                nutrition: nutrition,
-                                onConfirm: (nutrition, context) {
-                                  setState(() {
-                                    this.nutrition = nutrition;
-                                  });
-                                  Navigator.of(context).pop();
-                                },
-                              )));
+                            title: "영양성분 설정",
+                            nutrition: nutrition,
+                            onConfirm: (nutrition, context) {
+                              setState(() {
+                                this.nutrition = nutrition;
+                              });
+                              Navigator.of(context).pop();
+                            },
+                          )));
                     }),
               ],
             )));
@@ -955,16 +955,16 @@ class _Page_4_MenuRegistration extends StatefulWidget {
   final VoidCallback onNext;
   final VoidCallback onPrev;
   final Function(String, String, String, List<MenuOptionCategoryModel>)
-      onEditFunction;
+  onEditFunction;
 
   const _Page_4_MenuRegistration(
       {required this.imagePath,
-      required this.menuBriefDescription,
-      required this.menuDescription,
-      required this.selectedMenuOptionCategories,
-      required this.onNext,
-      required this.onPrev,
-      required this.onEditFunction});
+        required this.menuBriefDescription,
+        required this.menuIntroduction,
+        required this.selectedMenuOptionCategories,
+        required this.onNext,
+        required this.onPrev,
+        required this.onEditFunction});
 
   @override
   State<_Page_4_MenuRegistration> createState() =>
@@ -991,8 +991,8 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
   @override
   Widget build(BuildContext context) {
     final double imageSize = (MediaQuery.of(context).size.width -
-            (SGSpacing.p3 * (columns - 1)) -
-            (SGSpacing.p4 * 2)) /
+        (SGSpacing.p3 * (columns - 1)) -
+        (SGSpacing.p4 * 2)) /
         columns;
 
     return Scaffold(
@@ -1008,57 +1008,57 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
             children: [
               Expanded(
                   child: GestureDetector(
-                onTap: () {
-                  if (menuBriefDescription.isNotEmpty &&
-                      menuDescription.isNotEmpty &&
-                      imagePath.isNotEmpty &&
-                      selectedMenuOptionCategories.isNotEmpty) {
-                    widget.onNext();
-                  }
-                },
-                child: SGContainer(
-                    color: SGColors.gray3,
-                    padding: EdgeInsets.all(SGSpacing.p4),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(
-                        child: SGTypography.body("이전",
-                            size: FontSize.large,
-                            color: SGColors.white,
-                            weight: FontWeight.w700))),
-              )),
+                    onTap: () {
+                      if (menuBriefDescription.isNotEmpty &&
+                          menuIntroduction.isNotEmpty &&
+                          imagePath.isNotEmpty &&
+                          selectedMenuOptionCategories.isNotEmpty) {
+                        widget.onNext();
+                      }
+                    },
+                    child: SGContainer(
+                        color: SGColors.gray3,
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        borderRadius: BorderRadius.circular(SGSpacing.p3),
+                        child: Center(
+                            child: SGTypography.body("이전",
+                                size: FontSize.large,
+                                color: SGColors.white,
+                                weight: FontWeight.w700))),
+                  )),
               SizedBox(width: SGSpacing.p3),
               Expanded(
                   child: GestureDetector(
-                onTap: () {
-                  if (menuBriefDescription.isNotEmpty &&
-                      menuDescription.isNotEmpty &&
-                      imagePath.isNotEmpty &&
-                      selectedMenuOptionCategories.isNotEmpty) {
-                    widget.onNext();
-                  }
-                },
-                child: SGContainer(
-                    color: menuBriefDescription.isEmpty ||
-                            menuDescription.isEmpty ||
+                    onTap: () {
+                      if (menuBriefDescription.isNotEmpty &&
+                          menuIntroduction.isNotEmpty &&
+                          imagePath.isNotEmpty &&
+                          selectedMenuOptionCategories.isNotEmpty) {
+                        widget.onNext();
+                      }
+                    },
+                    child: SGContainer(
+                        color: menuBriefDescription.isEmpty ||
+                            menuIntroduction.isEmpty ||
                             imagePath.isEmpty ||
                             selectedMenuOptionCategories.isEmpty
-                        ? SGColors.gray2
-                        : SGColors.primary,
-                    padding: EdgeInsets.all(SGSpacing.p4),
-                    borderRadius: BorderRadius.circular(SGSpacing.p3),
-                    child: Center(
-                        child: SGTypography.body(
-                      "등록",
-                      size: FontSize.large,
-                      color: menuBriefDescription.isEmpty ||
-                              menuDescription.isEmpty ||
-                              imagePath.isEmpty ||
-                              selectedMenuOptionCategories.isEmpty
-                          ? SGColors.gray5
-                          : SGColors.white,
-                      weight: FontWeight.w700,
-                    ))),
-              )),
+                            ? SGColors.gray2
+                            : SGColors.primary,
+                        padding: EdgeInsets.all(SGSpacing.p4),
+                        borderRadius: BorderRadius.circular(SGSpacing.p3),
+                        child: Center(
+                            child: SGTypography.body(
+                              "등록",
+                              size: FontSize.large,
+                              color: menuBriefDescription.isEmpty ||
+                                  menuIntroduction.isEmpty ||
+                                  imagePath.isEmpty ||
+                                  selectedMenuOptionCategories.isEmpty
+                                  ? SGColors.gray5
+                                  : SGColors.white,
+                              weight: FontWeight.w700,
+                            ))),
+                  )),
             ],
           )),
 
@@ -1095,7 +1095,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                                 widget.onEditFunction(
                                     imagePath,
                                     menuBriefDescription,
-                                    menuDescription,
+                                    menuIntroduction,
                                     selectedMenuOptionCategories);
                               },
                             ),
@@ -1104,51 +1104,51 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                       },
                       child: imagePath.isEmpty
                           ? SGContainer(
-                              borderColor: SGColors.line2,
-                              color: SGColors.white,
-                              borderRadius: BorderRadius.circular(SGSpacing.p2),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ColorFiltered(
-                                    colorFilter: const ColorFilter.mode(
-                                        Colors.black, BlendMode.modulate),
-                                    child: Image.asset(
-                                      "assets/images/plus.png",
-                                      width: SGSpacing.p6,
-                                      height: SGSpacing.p6,
-                                    ),
-                                  ),
-                                  SizedBox(height: SGSpacing.p2),
-                                  SGTypography.body("이미지 등록",
-                                      weight: FontWeight.w600,
-                                      color: SGColors.gray5),
-                                ],
-                              ),
-                            )
-                          : SGContainer(
-                              borderColor: SGColors.line2,
-                              color: SGColors.white,
-                              borderRadius: BorderRadius.circular(SGSpacing.p2),
-                              child: Stack(
-                                children: [
-                                  Positioned.fill(
-                                    child: ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.circular(SGSpacing.p2),
-                                      child: Image.file(
-                                        File(imagePath),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: SGSpacing.p2),
-                                  SGTypography.body("이미지 등록",
-                                      weight: FontWeight.w600,
-                                      color: SGColors.gray5),
-                                ],
+                        borderColor: SGColors.line2,
+                        color: SGColors.white,
+                        borderRadius: BorderRadius.circular(SGSpacing.p2),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ColorFiltered(
+                              colorFilter: const ColorFilter.mode(
+                                  Colors.black, BlendMode.modulate),
+                              child: Image.asset(
+                                "assets/images/plus.png",
+                                width: SGSpacing.p6,
+                                height: SGSpacing.p6,
                               ),
                             ),
+                            SizedBox(height: SGSpacing.p2),
+                            SGTypography.body("이미지 등록",
+                                weight: FontWeight.w600,
+                                color: SGColors.gray5),
+                          ],
+                        ),
+                      )
+                          : SGContainer(
+                        borderColor: SGColors.line2,
+                        color: SGColors.white,
+                        borderRadius: BorderRadius.circular(SGSpacing.p2),
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: ClipRRect(
+                                borderRadius:
+                                BorderRadius.circular(SGSpacing.p2),
+                                child: Image.file(
+                                  File(imagePath),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: SGSpacing.p2),
+                            SGTypography.body("이미지 등록",
+                                weight: FontWeight.w600,
+                                color: SGColors.gray5),
+                          ],
+                        ),
+                      ),
                     ))),
             SizedBox(height: SGSpacing.p3),
             SGTypography.body("10MB 이하, JPG, PNG 형식의 파일을 등록해 주세요.",
@@ -1164,23 +1164,23 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => TextAreaScreen(
-                            value: menuBriefDescription,
-                            title: "메뉴 구성",
-                            fieldLabel: "메뉴 구성을 입력해주세요.",
-                            buttonText: "변경하기",
-                            hintText: "메뉴 구성을 입력해주세요.",
-                            onSubmit: (value) {
-                              setState(() {
-                                menuBriefDescription = value;
-                              });
-                              widget.onEditFunction(
-                                  imagePath,
-                                  menuBriefDescription,
-                                  menuDescription,
-                                  selectedMenuOptionCategories);
-                              Navigator.pop(context);
-                            },
-                          )));
+                        value: menuBriefDescription,
+                        title: "메뉴 구성",
+                        fieldLabel: "메뉴 구성을 입력해주세요.",
+                        buttonText: "변경하기",
+                        hintText: "메뉴 구성을 입력해주세요.",
+                        onSubmit: (value) {
+                          setState(() {
+                            menuBriefDescription = value;
+                          });
+                          widget.onEditFunction(
+                              imagePath,
+                              menuBriefDescription,
+                              menuIntroduction,
+                              selectedMenuOptionCategories);
+                          Navigator.pop(context);
+                        },
+                      )));
                 },
                 child: Row(
                   children: [
@@ -1203,23 +1203,23 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => TextAreaScreen(
-                            value: menuIntroduction,
-                            title: "메뉴 설명",
-                            fieldLabel: "메뉴 설명을 입력해주세요.",
-                            buttonText: "변경하기",
-                            hintText: "메뉴 설명을 입력해주세요.",
-                            onSubmit: (value) {
-                              setState(() {
-                                menuIntroduction = value;
-                              });
-                              widget.onEditFunction(
-                                  imagePath,
-                                  menuBriefDescription,
-                                  menuDescription,
-                                  selectedMenuOptionCategories);
-                              Navigator.pop(context);
-                            },
-                          )));
+                        value: menuIntroduction,
+                        title: "메뉴 설명",
+                        fieldLabel: "메뉴 설명을 입력해주세요.",
+                        buttonText: "변경하기",
+                        hintText: "메뉴 설명을 입력해주세요.",
+                        onSubmit: (value) {
+                          setState(() {
+                            menuIntroduction = value;
+                          });
+                          widget.onEditFunction(
+                              imagePath,
+                              menuBriefDescription,
+                              menuIntroduction,
+                              selectedMenuOptionCategories);
+                          Navigator.pop(context);
+                        },
+                      )));
                 },
                 child: Row(
                   children: [
@@ -1231,7 +1231,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                 ),
               ),
               SizedBox(height: SGSpacing.p5),
-              SGTypography.body(menuDescription,
+              SGTypography.body(menuIntroduction,
                   size: FontSize.small,
                   weight: FontWeight.w500,
                   lineHeight: 1.25),
@@ -1249,7 +1249,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => _MenuOptionCategorySelectionScreen(
                         selectedMenuOptionCategories:
-                            widget.selectedMenuOptionCategories,
+                        widget.selectedMenuOptionCategories,
                         onConfirm: (selectedMenuOptionCategories) {
                           setState(() {
                             this.selectedMenuOptionCategories =
@@ -1289,11 +1289,11 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                         ListView.builder(
                           shrinkWrap: true, // 내용물 크기에 맞게 높이를 줄임
                           physics:
-                              const NeverScrollableScrollPhysics(), // 스크롤 비활성화
+                          const NeverScrollableScrollPhysics(), // 스크롤 비활성화
                           itemCount: selectedMenuOptionCategories.length,
                           itemBuilder: (context, index) {
                             final category =
-                                selectedMenuOptionCategories[index];
+                            selectedMenuOptionCategories[index];
                             return Column(
                               children: [
                                 SizedBox(height: SGSpacing.p3),
@@ -1301,8 +1301,8 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                                   category: category,
                                   onRemove: (_) {
                                     final updatedSelectedMenuOptionCategories =
-                                        List<MenuOptionCategoryModel>.from(
-                                            selectedMenuOptionCategories);
+                                    List<MenuOptionCategoryModel>.from(
+                                        selectedMenuOptionCategories);
                                     updatedSelectedMenuOptionCategories
                                         .removeAt(index);
                                     setState(() {
@@ -1395,20 +1395,20 @@ class _MenuOptionCategorySelectionScreenState
             ),
             ...selectedMenuOptionCategories
                 .mapIndexed((index, category) => [
-                      SizedBox(height: SGSpacing.p3),
-                      __MenuOptionCataegoryCard(
-                        category: category,
-                        onRemove: (target) {
-                          final result = [
-                            ...selectedMenuOptionCategories.sublist(0, index),
-                            ...selectedMenuOptionCategories.sublist(index + 1)
-                          ];
-                          setState(() {
-                            selectedMenuOptionCategories = result;
-                          });
-                        },
-                      )
-                    ])
+              SizedBox(height: SGSpacing.p3),
+              __MenuOptionCataegoryCard(
+                category: category,
+                onRemove: (target) {
+                  final result = [
+                    ...selectedMenuOptionCategories.sublist(0, index),
+                    ...selectedMenuOptionCategories.sublist(index + 1)
+                  ];
+                  setState(() {
+                    selectedMenuOptionCategories = result;
+                  });
+                },
+              )
+            ])
                 .flattened,
             SizedBox(height: SGSpacing.p3),
             GestureDetector(
@@ -1422,9 +1422,9 @@ class _MenuOptionCategorySelectionScreenState
                         "onSelect selectedMenuOptionCategories ${selectedMenuOptionCategories.toFormattedJson()}");
                     setState(() {
                       this.selectedMenuOptionCategories =
-                          selectedMenuOptionCategories
-                            ..sort((a, b) => a.menuOptionCategoryName
-                                .compareTo(b.menuOptionCategoryName));
+                      selectedMenuOptionCategories
+                        ..sort((a, b) => a.menuOptionCategoryName
+                            .compareTo(b.menuOptionCategoryName));
                     });
                     widget.onConfirm(selectedMenuOptionCategories);
                   },
@@ -1491,13 +1491,13 @@ class __MenuOptionCataegoryCard extends StatelessWidget {
                     SizedBox(height: SGSpacing.p1),
                     ...category.menuOptions
                         .map((option) => [
-                              SizedBox(height: SGSpacing.p2),
-                              SGTypography.body(
-                                  "${option.optionContent} : ${option.price!.toKoreanCurrency}원",
-                                  size: FontSize.small,
-                                  weight: FontWeight.w500,
-                                  color: SGColors.gray4),
-                            ])
+                      SizedBox(height: SGSpacing.p2),
+                      SGTypography.body(
+                          "${option.optionContent} : ${option.price!.toKoreanCurrency}원",
+                          size: FontSize.small,
+                          weight: FontWeight.w500,
+                          color: SGColors.gray4),
+                    ])
                         .flattened
                   ],
                 ),
@@ -1511,7 +1511,7 @@ class __MenuOptionCataegoryCard extends StatelessWidget {
                       width: SGSpacing.p5,
                       height: SGSpacing.p5,
                       borderRadius:
-                          BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
+                      BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
                       color: SGColors.warningRed,
                       child: Center(
                           child: Image.asset('assets/images/minus-white.png',

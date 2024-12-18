@@ -95,10 +95,10 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
       final relatedOptionCategories = menuOptionRelationshipDTOList
           .where((relationship) => relationship.menuId == menu.menuId)
           .map((relationship) => menuOptionCategoryMap.firstWhereOrNull(
-                (category) =>
-                    category.menuOptionCategoryId ==
-                    relationship.menuOptionCategoryId,
-              ))
+            (category) =>
+        category.menuOptionCategoryId ==
+            relationship.menuOptionCategoryId,
+      ))
           .where((category) => category != null) // null 값 제거
           .cast<MenuOptionCategoryModel>() // null-safe 타입으로 캐스팅
           .toList();
@@ -135,8 +135,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuCategoryDTOList: state.menuOptionsDataModel.storeMenuCategoryDTOList.map((menuCategory) {
-        return menuCategory.storeMenuCategoryId == menuCategoryModel.storeMenuCategoryId ? menuCategoryModel : menuCategory;
-      }).toList());
+            return menuCategory.storeMenuCategoryId == menuCategoryModel.storeMenuCategoryId ? menuCategoryModel : menuCategory;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
     } else {
@@ -149,7 +149,7 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     final response = await ref.read(menuOptionsServiceProvider).deleteMenuCategory(storeId: UserHive.getBox(key: UserKey.storeId), menuCategoryModel: menuCategoryModel);
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel =
-          state.menuOptionsDataModel.copyWith(storeMenuCategoryDTOList: state.menuOptionsDataModel.storeMenuCategoryDTOList.where((menuCategory) => menuCategory.storeMenuCategoryId != menuCategoryModel.storeMenuCategoryId).toList());
+      state.menuOptionsDataModel.copyWith(storeMenuCategoryDTOList: state.menuOptionsDataModel.storeMenuCategoryDTOList.where((menuCategory) => menuCategory.storeMenuCategoryId != menuCategoryModel.storeMenuCategoryId).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
     } else {
@@ -159,30 +159,30 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
 
   /// POST - 메뉴 추가
   Future<ResultFailResponseModel> createMenu(
-    String menuName,
-    MenuCategoryModel selectedMenuCategory,
-    String selectedUserMenuCategoryIdsFlatString,
-    int price,
-    NutritionModel nutrition,
-    String imagePath,
-    String menuBriefDescription,
-    String menuIntroduction,
-    List<MenuOptionCategoryModel> selectedMenuOptionCategories,
-  ) async {
+      String menuName,
+      MenuCategoryModel selectedMenuCategory,
+      String selectedUserMenuCategoryIdsFlatString,
+      int price,
+      NutritionModel nutrition,
+      String imagePath,
+      String menuBriefDescription,
+      String menuIntroduction,
+      List<MenuOptionCategoryModel> selectedMenuOptionCategories,
+      ) async {
     final response = await ref.read(menuOptionsServiceProvider).createMenu(
-          storeId: UserHive.getBox(key: UserKey.storeId),
-          menuName: menuName,
-          selectedMenuCategory: selectedMenuCategory,
-          selectedUserMenuCategoryIdsFlatString: selectedUserMenuCategoryIdsFlatString,
-          price: price,
-          nutrition: nutrition,
-          servingAmount: nutrition.servingAmount,
-          servingAmountType: nutrition.servingAmountType,
-          imagePath: imagePath,
-          menuBriefDescription: menuBriefDescription,
-          menuIntroduction: menuIntroduction,
-          selectedMenuOptionCategories: selectedMenuOptionCategories,
-        );
+      storeId: UserHive.getBox(key: UserKey.storeId),
+      menuName: menuName,
+      selectedMenuCategory: selectedMenuCategory,
+      selectedUserMenuCategoryIdsFlatString: selectedUserMenuCategoryIdsFlatString,
+      price: price,
+      nutrition: nutrition,
+      servingAmount: nutrition.servingAmount,
+      servingAmountType: nutrition.servingAmountType,
+      imagePath: imagePath,
+      menuBriefDescription: menuBriefDescription,
+      menuIntroduction: menuIntroduction,
+      selectedMenuOptionCategories: selectedMenuOptionCategories,
+    );
     if (response.statusCode == 200) {
       return const ResultFailResponseModel();
     } else {
@@ -217,24 +217,24 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
       final getMenuDataModel = GetMenuDataModel.fromJson(result.data);
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
-        return menu.menuId == menuId
-            ? menu.copyWith(
-                madeOf: getMenuDataModel.madeOf,
-                menuIntroduction: getMenuDataModel.menuIntroduction,
-                nutrition: NutritionModel(
-                  servingAmount: getMenuDataModel.servingAmount,
-                  servingAmountType: getMenuDataModel.servingAmountType,
-                  calories: getMenuDataModel.calories,
-                  carbohydrate: getMenuDataModel.carbohydrate,
-                  protein: getMenuDataModel.protein,
-                  fat: getMenuDataModel.fat,
-                  sugar: getMenuDataModel.sugar,
-                  saturatedFat: getMenuDataModel.saturatedFat,
-                  natrium: getMenuDataModel.natrium,
-                ),
-              )
-            : menu;
-      }).toList());
+            return menu.menuId == menuId
+                ? menu.copyWith(
+              madeOf: getMenuDataModel.madeOf,
+              menuIntroduction: getMenuDataModel.menuIntroduction,
+              nutrition: NutritionModel(
+                servingAmount: getMenuDataModel.servingAmount,
+                servingAmountType: getMenuDataModel.servingAmountType,
+                calories: getMenuDataModel.calories,
+                carbohydrate: getMenuDataModel.carbohydrate,
+                protein: getMenuDataModel.protein,
+                fat: getMenuDataModel.fat,
+                sugar: getMenuDataModel.sugar,
+                saturatedFat: getMenuDataModel.saturatedFat,
+                natrium: getMenuDataModel.natrium,
+              ),
+            )
+                : menu;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
     } else {
@@ -250,8 +250,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
-        return menu.menuId == menuId ? menu.copyWith(menuName: menuName) : menu;
-      }).toList());
+            return menu.menuId == menuId ? menu.copyWith(menuName: menuName) : menu;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -267,8 +267,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
-        return menu.menuId == menuId ? menu.copyWith(price: price) : menu;
-      }).toList());
+            return menu.menuId == menuId ? menu.copyWith(price: price) : menu;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -281,10 +281,10 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   /// POST - 메뉴 사진 변경 - 관리자 제한 API
   void adminUpdateMenuPicture(int menuId, String imagePath) async {
     final response = await ref.read(menuOptionsServiceProvider).adminUpdateMenuPicture(
-          storeId: UserHive.getBox(key: UserKey.storeId),
-          menuId: menuId,
-          imagePath: imagePath,
-        );
+      storeId: UserHive.getBox(key: UserKey.storeId),
+      menuId: menuId,
+      imagePath: imagePath,
+    );
     if (response.statusCode == 200) {
       state = state.copyWith(error: const ResultFailResponseModel());
     } else {
@@ -298,8 +298,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
-        return menu.menuId == menuId ? menu.copyWith(soldOutStatus: soldOutStatus) : menu;
-      }).toList());
+            return menu.menuId == menuId ? menu.copyWith(soldOutStatus: soldOutStatus) : menu;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -315,8 +315,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
-        return menu.menuId == menuId ? menu.copyWith(popularityStatus: popularityStatus) : menu;
-      }).toList());
+            return menu.menuId == menuId ? menu.copyWith(popularityStatus: popularityStatus) : menu;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -332,8 +332,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
-        return menu.menuId == menuId ? menu.copyWith(bestStatus: bestStatus) : menu;
-      }).toList());
+            return menu.menuId == menuId ? menu.copyWith(bestStatus: bestStatus) : menu;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -349,8 +349,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
-        return menu.menuId == menuId ? menu.copyWith(madeOf: madeOf) : menu;
-      }).toList());
+            return menu.menuId == menuId ? menu.copyWith(madeOf: madeOf) : menu;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -366,8 +366,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
-        return menu.menuId == menuId ? menu.copyWith(menuIntroduction: menuIntroduction) : menu;
-      }).toList());
+            return menu.menuId == menuId ? menu.copyWith(menuIntroduction: menuIntroduction) : menu;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -380,15 +380,15 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   /// POST - 메뉴 정보 변경
   Future<bool> updateMenuInfo(int menuId, NutritionModel nutrition) async {
     final response = await ref.read(menuOptionsServiceProvider).updateMenuInfo(
-          storeId: UserHive.getBox(key: UserKey.storeId),
-          menuId: menuId,
+      storeId: UserHive.getBox(key: UserKey.storeId),
+      menuId: menuId,
       nutrition: nutrition,
-        );
+    );
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuDTOList: state.menuOptionsDataModel.storeMenuDTOList.map((menu) {
-        return menu.menuId == menuId ? menu.copyWith(nutrition: nutrition) : menu;
-      }).toList());
+            return menu.menuId == menuId ? menu.copyWith(nutrition: nutrition) : menu;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -417,8 +417,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           menuOptionCategoryDTOList: state.menuOptionsDataModel.menuOptionCategoryDTOList.map((optionCategory) {
-        return optionCategory.menuOptionCategoryId == menuOptionCategoryId ? optionCategory.copyWith(essentialStatus: essentialStatus) : optionCategory;
-      }).toList());
+            return optionCategory.menuOptionCategoryId == menuOptionCategoryId ? optionCategory.copyWith(essentialStatus: essentialStatus) : optionCategory;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -434,8 +434,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           menuOptionCategoryDTOList: state.menuOptionsDataModel.menuOptionCategoryDTOList.map((optionCategory) {
-        return optionCategory.menuOptionCategoryId == menuOptionCategoryId ? optionCategory.copyWith(minChoice: minChoice, maxChoice: maxChoice) : optionCategory;
-      }).toList());
+            return optionCategory.menuOptionCategoryId == menuOptionCategoryId ? optionCategory.copyWith(minChoice: minChoice, maxChoice: maxChoice) : optionCategory;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -451,8 +451,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuOptionDTOList: state.menuOptionsDataModel.storeMenuOptionDTOList.map((option) {
-        return option.menuOptionCategoryId == menuOptionCategoryId ? option.copyWith(soldOutStatus: soldOutStatus) : option;
-      }).toList());
+            return option.menuOptionCategoryId == menuOptionCategoryId ? option.copyWith(soldOutStatus: soldOutStatus) : option;
+          }).toList());
       // logger.i("updateMenuOptionCategorySoldOutStatus updatedMenuOptionsDataModel ${updatedMenuOptionsDataModel.toFormattedJson()}");
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
@@ -469,8 +469,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           menuOptionCategoryDTOList: state.menuOptionsDataModel.menuOptionCategoryDTOList.map((optionCategory) {
-        return optionCategory.menuOptionCategoryId == menuOptionCategoryId ? optionCategory.copyWith(menuOptionCategoryName: menuOptionCategoryName) : optionCategory;
-      }).toList());
+            return optionCategory.menuOptionCategoryId == menuOptionCategoryId ? optionCategory.copyWith(menuOptionCategoryName: menuOptionCategoryName) : optionCategory;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -487,11 +487,11 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     List<int> addMenuIdList = newIds.difference(oldIds).toList();
     List<int> removeMenuIdList = oldIds.difference(newIds).toList();
     final response = await ref.read(menuOptionsServiceProvider).updateMenuOptionCategoryUseMenu(
-          storeId: UserHive.getBox(key: UserKey.storeId),
-          menuOptionCategoryId: menuOptionCategoryId,
-          addMenuIdList: addMenuIdList,
-          removeMenuIdList: removeMenuIdList,
-        );
+      storeId: UserHive.getBox(key: UserKey.storeId),
+      menuOptionCategoryId: menuOptionCategoryId,
+      addMenuIdList: addMenuIdList,
+      removeMenuIdList: removeMenuIdList,
+    );
     if (response.statusCode == 200) {
       getMenuOptionInfo();
       return true;
@@ -503,22 +503,22 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
 
   /// POST - 옵션 카테고리 추가
   Future<bool> createOptionCategory(
-    String menuOptionCategoryName,
-    List<MenuOptionModel> selectedMenuOptions,
-    int essentialStatus,
-    int minChoice,
-    int maxChoice,
-    List<MenuModel> appliedMenus,
-  ) async {
+      String menuOptionCategoryName,
+      List<MenuOptionModel> selectedMenuOptions,
+      int essentialStatus,
+      int minChoice,
+      int maxChoice,
+      List<MenuModel> appliedMenus,
+      ) async {
     final response = await ref.read(menuOptionsServiceProvider).createOptionCategory(
-          storeId: UserHive.getBox(key: UserKey.storeId),
-          menuOptionCategoryName: menuOptionCategoryName,
-          selectedMenuOptions: selectedMenuOptions,
-          essentialStatus: essentialStatus,
-          minChoice: minChoice,
-          maxChoice: maxChoice,
-          appliedMenus: appliedMenus,
-        );
+      storeId: UserHive.getBox(key: UserKey.storeId),
+      menuOptionCategoryName: menuOptionCategoryName,
+      selectedMenuOptions: selectedMenuOptions,
+      essentialStatus: essentialStatus,
+      minChoice: minChoice,
+      maxChoice: maxChoice,
+      appliedMenus: appliedMenus,
+    );
     if (response.statusCode == 200) {
       getMenuOptionInfo();
       return true;
@@ -533,7 +533,7 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     final response = await ref.read(menuOptionsServiceProvider).deleteMenuOptionCategory(storeId: UserHive.getBox(key: UserKey.storeId), optionCategoryModel: optionCategoryModel);
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel =
-          state.menuOptionsDataModel.copyWith(menuOptionCategoryDTOList: state.menuOptionsDataModel.menuOptionCategoryDTOList.where((optionCategory) => optionCategory.menuOptionCategoryId != optionCategoryModel.menuOptionCategoryId).toList());
+      state.menuOptionsDataModel.copyWith(menuOptionCategoryDTOList: state.menuOptionsDataModel.menuOptionCategoryDTOList.where((optionCategory) => optionCategory.menuOptionCategoryId != optionCategoryModel.menuOptionCategoryId).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -549,8 +549,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuOptionDTOList: state.menuOptionsDataModel.storeMenuOptionDTOList.map((option) {
-        return option.menuOptionId == menuOptionId ? option.copyWith(optionContent: optionContent) : option;
-      }).toList());
+            return option.menuOptionId == menuOptionId ? option.copyWith(optionContent: optionContent) : option;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -566,8 +566,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuOptionDTOList: state.menuOptionsDataModel.storeMenuOptionDTOList.map((option) {
-        return option.menuOptionId == menuOptionId ? option.copyWith(price: price) : option;
-      }).toList());
+            return option.menuOptionId == menuOptionId ? option.copyWith(price: price) : option;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;
@@ -583,8 +583,8 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     if (response.statusCode == 200) {
       MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
           storeMenuOptionDTOList: state.menuOptionsDataModel.storeMenuOptionDTOList.map((option) {
-        return option.menuOptionId == menuOptionId ? option.copyWith(soldOutStatus: soldOutStatus) : option;
-      }).toList());
+            return option.menuOptionId == menuOptionId ? option.copyWith(soldOutStatus: soldOutStatus) : option;
+          }).toList());
       setState(updatedMenuOptionsDataModel);
       state = state.copyWith(error: const ResultFailResponseModel());
       return true;

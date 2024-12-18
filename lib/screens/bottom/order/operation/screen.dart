@@ -456,7 +456,7 @@ class _NewOrderListView extends ConsumerWidget {
                                         order: orders[index], ref: ref, context: context);
                                   },
                                   child: SGContainer(
-                                    height: MediaQuery.of(context).size.width <= 400 ? 45 : 50,
+                                    height: MediaQuery.of(context).size.width <= 320 ? 45 : 50,
                                     width: double.infinity,
                                     padding: EdgeInsets.symmetric(
                                         vertical: SGSpacing.p4),
@@ -466,7 +466,7 @@ class _NewOrderListView extends ConsumerWidget {
                                     child: Center(
                                       child: SGTypography.body(
                                           "거절",
-                                          size: MediaQuery.of(context).size.width <= 400 ? FontSize.tiny : FontSize.normal,
+                                          size: MediaQuery.of(context).size.width <= 320 ? FontSize.tiny : FontSize.small,
                                           weight: FontWeight.w700,
                                           color: SGColors.white
                                       ),
@@ -507,7 +507,7 @@ class _NewOrderListView extends ConsumerWidget {
                                     }
                                   },
                                   child: SGContainer(
-                                    height: MediaQuery.of(context).size.width <= 400 ? 45 : 50,
+                                    height: MediaQuery.of(context).size.width <= 320 ? 45 : 50,
                                     width: double.infinity,
                                     padding: EdgeInsets.symmetric(
                                         vertical: SGSpacing.p4),
@@ -516,7 +516,7 @@ class _NewOrderListView extends ConsumerWidget {
                                     color: SGColors.primary,
                                     child: Center(
                                       child: SGTypography.body("확인",
-                                          size: MediaQuery.of(context).size.width <= 400 ? FontSize.tiny : FontSize.normal,
+                                          size: MediaQuery.of(context).size.width <= 320 ? FontSize.tiny : FontSize.small,
                                           weight: FontWeight.w700,
                                           color: SGColors.white),
                                     ),
