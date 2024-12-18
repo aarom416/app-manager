@@ -397,6 +397,7 @@ class _Page_1_MenuOptionsState extends State<_Page_1_MenuOptions> {
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => AddOptionScreen(
+                                menuOptionCategoryId: -1,
                                 onSubmit: (menuOptionModel) {
                                   setState(() {
                                     selectedMenuOptions.add(menuOptionModel);

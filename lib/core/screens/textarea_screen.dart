@@ -102,7 +102,7 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
         ),
         child: SGActionButton(
           onPressed: (hasBadWord || controller.text.isEmpty)
-              ? () {} // Provide an empty function for disabled state
+              ? () {}
               : () {
             widget.onSubmit(controller.text);
           },
@@ -149,7 +149,6 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
                           );
                         }
 
-                        // Debounce 비속어 검사
                         if (_debounce?.isActive ?? false) _debounce?.cancel();
                         _debounce = Timer(const Duration(milliseconds: 100), () {
                           _checkBadWord(text);

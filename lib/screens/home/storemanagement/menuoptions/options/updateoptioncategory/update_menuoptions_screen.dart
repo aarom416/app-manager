@@ -136,9 +136,9 @@ class _UpdateMenuOptionsScreenState extends ConsumerState<UpdateMenuOptionsScree
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => AddOptionScreen(
+                              menuOptionCategoryId: menuOptionCategoryModel.menuOptionCategoryId,
                                   onSubmit: (menuOptionModel) {
                                     logger.d("onSubmit option ${menuOptionModel.toFormattedJson()}");
-                                    // todo 옵션추가 api
                                   },
                                 )));
                       },

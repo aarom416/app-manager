@@ -43,7 +43,7 @@ abstract class MenuModel with _$MenuModel {
     @Default('') String madeOf,
     @Default('') String menuIntroduction,
     @Default(0) int price,
-    @Default('https://via.placeholder.com/150') String menuPictureURL,
+    @Default('') String menuPictureURL,
     @Default(NutritionModel())
     NutritionModel nutrition,
     @Default(<MenuOptionCategoryModel>[]) List<MenuOptionCategoryModel> menuCategoryOptions,

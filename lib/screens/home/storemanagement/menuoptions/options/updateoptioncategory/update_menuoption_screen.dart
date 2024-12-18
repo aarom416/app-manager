@@ -250,8 +250,8 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                                           logger.d("updateMenuOptionInfo responseStatusCode $responseStatusCode");
                                           if (responseStatusCode == 200) {
                                             if (mounted) {
-                                              Navigator.of(ctx).pop();
                                               showGlobalSnackBar(context, "성공적으로 삭제되었습니다.");
+                                              Navigator.pop(context);
                                             }
                                           } else {
                                             if (responseStatusCode == 409) {

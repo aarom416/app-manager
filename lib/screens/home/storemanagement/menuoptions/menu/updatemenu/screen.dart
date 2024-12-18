@@ -78,28 +78,53 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              Image.network(
-                                menuModel.menuPictureURL,
-                                width: SGSpacing.p20,
-                                height: SGSpacing.p20,
-                                fit: BoxFit.cover,
-                              ),
-                              if (menuModel.soldOutStatus == 1)
-                                Container(
+                              if (menuModel.menuPictureURL.isNotEmpty) ... [
+                                Image.network(
+                                  menuModel.menuPictureURL,
                                   width: SGSpacing.p20,
                                   height: SGSpacing.p20,
-                                  color: const Color(0xFF808080).withOpacity(0.7),
-                                  child: const Center(
-                                    child: Text(
-                                      "품절",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: FontSize.small,
-                                        fontWeight: FontWeight.bold,
+                                  fit: BoxFit.cover,
+                                ),
+                                if (menuModel.soldOutStatus == 1)
+                                  Container(
+                                    width: SGSpacing.p20,
+                                    height: SGSpacing.p20,
+                                    color: const Color(0xFF808080).withOpacity(0.7),
+                                    child: const Center(
+                                      child: Text(
+                                        "품절",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: FontSize.small,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
+                              ]
+                              else ... [
+                                Container(
+                                    width: SGSpacing.p18,
+                                    height: SGSpacing.p18,
+                                    child: Image.asset("assets/images/default_poke.png")
                                 ),
+                                if (menuModel.soldOutStatus == 1)
+                                  Container(
+                                    width: SGSpacing.p20,
+                                    height: SGSpacing.p20,
+                                    color: const Color(0xFF808080).withOpacity(0.7),
+                                    child: const Center(
+                                      child: Text(
+                                        "품절",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: FontSize.small,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ]
                             ],
                           ),
                         ),

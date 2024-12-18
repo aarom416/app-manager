@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/components/app_bar_with_step_indicator.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -13,13 +15,15 @@ import 'package:singleeat/core/extensions/integer.dart';
 import '../../../../../../core/components/numeric_textfield.dart';
 import '../../../../../../main.dart';
 import '../../model.dart';
+import '../../provider.dart';
 import '../../updatenutrition/nutrition_card.dart';
 import '../../updatenutrition/screen.dart';
 
 class AddOptionScreen extends StatefulWidget {
   final Function(MenuOptionModel) onSubmit;
+  final int menuOptionCategoryId;
 
-  const AddOptionScreen({super.key, required this.onSubmit});
+  const AddOptionScreen({super.key, required this.menuOptionCategoryId, required this.onSubmit});
 
   @override
   State<AddOptionScreen> createState() => _AddOptionScreenState();
@@ -56,6 +60,7 @@ class _AddOptionScreenState extends State<AddOptionScreen> {
           ),
           _Page_1_Nutrition(
             menuOptionModel: menuOptionModel,
+            menuOptionCategoryId: widget.menuOptionCategoryId,
             onPrev: () => animateToPage(0),
             onNext: () {
               widget.onSubmit(menuOptionModel);
@@ -152,7 +157,7 @@ class _Page_0_OptionNameState extends State<_Page_0_OptionName> {
               padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
               child: ListView(
                 children: [
-                  SGTypography.body("옵션명 설정해주세요.", size: FontSize.normal, weight: FontWeight.w700),
+                  SGTypography.body("옵션명을 설정해주세요.", size: FontSize.normal, weight: FontWeight.w700),
                   SizedBox(height: SGSpacing.p3),
                   SGTextFieldWrapper(
                       child: SGContainer(
@@ -210,19 +215,20 @@ class _Page_0_OptionNameState extends State<_Page_0_OptionName> {
   }
 }
 
-class _Page_1_Nutrition extends StatefulWidget {
+class _Page_1_Nutrition extends ConsumerStatefulWidget {
   final MenuOptionModel menuOptionModel;
   final VoidCallback onNext;
   final VoidCallback onPrev;
   final Function(MenuOptionModel) onSubmit;
+  final int menuOptionCategoryId;
 
-  const _Page_1_Nutrition({required this.menuOptionModel, required this.onNext, required this.onPrev, required this.onSubmit});
+  const _Page_1_Nutrition({required this.menuOptionModel, required this.menuOptionCategoryId, required this.onNext, required this.onPrev, required this.onSubmit});
 
   @override
-  State<_Page_1_Nutrition> createState() => _Page_1_NutritionState();
+  ConsumerState<_Page_1_Nutrition> createState() => _Page_1_NutritionState();
 }
 
-class _Page_1_NutritionState extends State<_Page_1_Nutrition> {
+class _Page_1_NutritionState extends ConsumerState<_Page_1_Nutrition> {
   late MenuOptionModel menuOptionModel;
 
   @override
@@ -233,6 +239,7 @@ class _Page_1_NutritionState extends State<_Page_1_Nutrition> {
 
   @override
   Widget build(BuildContext context) {
+    final MenuOptionsNotifier provider = ref.read(menuOptionsNotifierProvider.notifier);
     return Scaffold(
         appBar: AppBarWithStepIndicator(title: "옵션 추가", currentStep: 2, totalStep: 2, onTap: widget.onPrev),
         floatingActionButton: Container(
@@ -257,13 +264,24 @@ class _Page_1_NutritionState extends State<_Page_1_Nutrition> {
                 Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        widget.onNext();
+                         provider
+                            .createOption(context, MenuOptionModel(
+                          menuOptionCategoryId: widget.menuOptionCategoryId,
+                          optionContent: menuOptionModel.optionContent,
+                          price: menuOptionModel.price ,
+                          nutrition: menuOptionModel.nutrition,
+                        )
+                         ).then((resultFailResponseModel) {
+                           widget.onNext();
+                           showGlobalSnackBar(context, "성공적으로 등록되었습니다.");
+                           ref.read(menuOptionsNotifierProvider.notifier).getMenuOptionInfo();
+                         });
                       },
                       child: SGContainer(
                           color: SGColors.primary,
                           padding: EdgeInsets.all(SGSpacing.p4),
                           borderRadius: BorderRadius.circular(SGSpacing.p3),
-                          child: Center(child: SGTypography.body("다음", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
+                          child: Center(child: SGTypography.body("확인", size: FontSize.large, color: SGColors.white, weight: FontWeight.w700))),
                     )),
               ],
             )),

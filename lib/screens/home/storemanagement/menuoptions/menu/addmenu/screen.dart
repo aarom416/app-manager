@@ -10,6 +10,7 @@ import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/components/multiple_information_box.dart';
 import 'package:singleeat/core/components/sizing.dart';
+import 'package:singleeat/core/components/snackbar.dart';
 import 'package:singleeat/core/components/spacing.dart';
 import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
@@ -131,6 +132,7 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
               onNext: () => {
                 provider
                     .createMenu(
+                  context,
                   menuName,
                   selectedMenuCategory,
                   selectedUserMenuCategories
@@ -146,18 +148,13 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
                 )
                     .then((resultFailResponseModel) {
                   if (resultFailResponseModel.errorCode.isEmpty) {
-                    showFailDialogWithImage(
-                        context: context,
-                        mainTitle: "성공적으로 등록되었습니다.",
-                        onTapFunction: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        });
+                    showGlobalSnackBar(context, "성공적으로 등록되었습니다.");
+                    ref.read(menuOptionsNotifierProvider.notifier).getMenuOptionInfo();
                   } else {
                     showFailDialogWithImage(
                         context: context,
-                        mainTitle: resultFailResponseModel.errorMessage,
-                        subTitle: '이미 동일한 메뉴가 등록되어있습니다.\n다시 한번 확인해주세요.',
+                        mainTitle: '이미 동일한 메뉴가 등록되어있습니다.\n다시 한번 확인해주세요.',
+                        subTitle: "",
                         onTapFunction: () {
                           Navigator.pop(context);
                         });
@@ -609,9 +606,8 @@ class __SelectUserMenuCategoryDialogState
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-              child: SGTypography.body("메뉴의 카테고리를 선택해 주세요.",
-                  size: FontSize.medium, weight: FontWeight.w700)),
+          SGTypography.body("메뉴의 카테고리를 선택해 주세요.",
+              size: FontSize.medium, weight: FontWeight.w700)
         ],
       ),
       SizedBox(height: SGSpacing.p4),
@@ -634,6 +630,9 @@ class __SelectUserMenuCategoryDialogState
                         } else {
                           selectedUserMenuCategories.add(userMenuCategory);
                         }
+                        selectedUserMenuCategories.sort(
+                              (a, b) => userMenuCategories.indexOf(a).compareTo(userMenuCategories.indexOf(b)),
+                        );
                       });
                     },
                     child: __CategoryOptionRadioButton(
@@ -1009,12 +1008,7 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
               Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      if (menuBriefDescription.isNotEmpty &&
-                          menuIntroduction.isNotEmpty &&
-                          imagePath.isNotEmpty &&
-                          selectedMenuOptionCategories.isNotEmpty) {
-                        widget.onNext();
-                      }
+                      widget.onPrev();
                     },
                     child: SGContainer(
                         color: SGColors.gray3,
@@ -1030,32 +1024,17 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
               Expanded(
                   child: GestureDetector(
                     onTap: () {
-                      if (menuBriefDescription.isNotEmpty &&
-                          menuIntroduction.isNotEmpty &&
-                          imagePath.isNotEmpty &&
-                          selectedMenuOptionCategories.isNotEmpty) {
-                        widget.onNext();
-                      }
+                      widget.onNext();
                     },
                     child: SGContainer(
-                        color: menuBriefDescription.isEmpty ||
-                            menuIntroduction.isEmpty ||
-                            imagePath.isEmpty ||
-                            selectedMenuOptionCategories.isEmpty
-                            ? SGColors.gray2
-                            : SGColors.primary,
+                        color: SGColors.primary,
                         padding: EdgeInsets.all(SGSpacing.p4),
                         borderRadius: BorderRadius.circular(SGSpacing.p3),
                         child: Center(
                             child: SGTypography.body(
                               "등록",
                               size: FontSize.large,
-                              color: menuBriefDescription.isEmpty ||
-                                  menuIntroduction.isEmpty ||
-                                  imagePath.isEmpty ||
-                                  selectedMenuOptionCategories.isEmpty
-                                  ? SGColors.gray5
-                                  : SGColors.white,
+                              color: SGColors.white,
                               weight: FontWeight.w700,
                             ))),
                   )),
@@ -1090,7 +1069,9 @@ class _Page_4_MenuRegistrationState extends State<_Page_4_MenuRegistration> {
                               onSubmit: (List<String> imagePaths) {
                                 logger.i("imagePaths $imagePaths");
                                 setState(() {
-                                  imagePath = imagePaths[0];
+                                  print(imagePaths);
+                                  imagePaths == null ? "" : imagePath = imagePaths[0];
+                                  print(imagePaths);
                                 });
                                 widget.onEditFunction(
                                     imagePath,

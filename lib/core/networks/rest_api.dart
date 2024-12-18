@@ -100,6 +100,9 @@ class RestApiUri {
   // POST - 메뉴 카테고리 추가
   static const String createMenuCategory =
       '/api/v1/owner/store-menu/menu-category';
+  // POST - 옵션 추가
+  static const String createOption =
+      '/api/v1/owner/store-menu/option';
 
   /// StoreInfoGet
   /// 가게 정보 조회 API

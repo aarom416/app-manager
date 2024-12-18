@@ -298,28 +298,33 @@ class _MenuCategoryCard extends StatelessWidget {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        Image.network(
-                          menu.menuPictureURL,
-                          width: SGSpacing.p18,
-                          height: SGSpacing.p18,
-                          fit: BoxFit.cover,
-                        ),
-                        if (menu.soldOutStatus == 1)
+                       menu.menuPictureURL.isEmpty ?
                           Container(
                             width: SGSpacing.p18,
                             height: SGSpacing.p18,
-                            color: const Color(0xFF808080).withOpacity(0.7),
-                            child: const Center(
-                              child: Text(
-                                "품절",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: FontSize.small,
-                                  fontWeight: FontWeight.bold,
+                            child: Image.asset("assets/images/default_poke.png")
+                          ) :  Image.network(
+                              menu.menuPictureURL,
+                              width: SGSpacing.p18,
+                              height: SGSpacing.p18,
+                              fit: BoxFit.cover,
+                            ),
+                          if (menu.soldOutStatus == 1)
+                            Container(
+                              width: SGSpacing.p18,
+                              height: SGSpacing.p18,
+                              color: const Color(0xFF808080).withOpacity(0.7),
+                              child: const Center(
+                                child: Text(
+                                  "품절",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: FontSize.small,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
                       ],
                     ),
                   ),

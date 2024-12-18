@@ -566,18 +566,18 @@ class _CouponIssueScreenState extends ConsumerState<CouponIssueScreen> {
                     },
                     child: SGTextFieldWrapper(
                         child: SGContainer(
-                      padding: EdgeInsets.all(SGSpacing.p4),
-                      child: Row(children: [
-                        SGTypography.body(
-                            !selectedOrderType ? "" : orderType.labelName,
-                            color: SGColors.gray5,
-                            size: FontSize.small,
-                            weight: FontWeight.w400),
-                        Spacer(),
-                        Image.asset('assets/images/dropdown-arrow.png',
-                            width: 16, height: 16),
-                      ]),
-                    )),
+                          padding: EdgeInsets.all(SGSpacing.p4),
+                          child: Row(children: [
+                            SGTypography.body(
+                                !selectedOrderType ? "" : orderType.labelName,
+                                color: SGColors.gray5,
+                                size: FontSize.small,
+                                weight: FontWeight.w400),
+                            Spacer(),
+                            Image.asset('assets/images/dropdown-arrow.png',
+                                width: 16, height: 16),
+                          ]),
+                        )),
                   ),
                 ],
                 SizedBox(height: SGSpacing.p12),
