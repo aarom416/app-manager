@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -36,102 +37,48 @@ const AndroidNotificationChannel deliveryChannel = AndroidNotificationChannel(
   'delivery_channel',
   '싱그릿 배달 주문 알림음',
   importance: Importance.high,
-  playSound: true,
-  sound: RawResourceAndroidNotificationSound('delivery_alarm'),
+  playSound: false,
 );
 
 const AndroidNotificationChannel takeoutChannel = AndroidNotificationChannel(
   'takeout_channel',
   '싱그릿 포장 주문 알림음',
   importance: Importance.high,
-  playSound: true,
-  sound: RawResourceAndroidNotificationSound('takeout_alarm'),
+  playSound: false,
 );
 
-Future<void> _showForegroundNotification(RemoteMessage message) async {
-  String notificationType;
-  if (message.data['type'] == 'DELIVERY') {
-    notificationType = message.data['type'];
-  } else if (message.data['type'] == 'TAKEOUT') {
-    notificationType = message.data['type'];
-  } else {
-    notificationType = "DEFAULT";
-  }
+// 알림 사운드가 아닌 미디어 사운드로 교체
+// 미디어 사운드 변경
+Future<void> playNotificationSound(String alarmSoundName) async {
+  await FlutterVolumeController.updateShowSystemUI(false);
+  double originalVolume = await FlutterVolumeController.getVolume() ?? 0.5;
+  await FlutterVolumeController.setVolume(UserHive.get().volume);
 
-  AndroidNotificationDetails androidPlatformChannelSpecifics;
-  if (notificationType == 'DELIVERY') {
-    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
-      'delivery_channel',
-      '싱그릿 배달 주문 알림음',
-      importance: Importance.high,
-      priority: Priority.high,
-      playSound: true,
-      icon: "push_icon",
-      color: Color(0xFF2CB682),
-      sound: RawResourceAndroidNotificationSound('delivery_alarm'),
-    );
-  } else if (notificationType == 'TAKEOUT') {
-    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
-      'takeout_channel',
-      '싱그릿 포장 주문 알림음',
-      importance: Importance.high,
-      priority: Priority.high,
-      playSound: true,
-      icon: "push_icon",
-      color: Color(0xFF2CB682),
-      sound: RawResourceAndroidNotificationSound('takeout_alarm'),
-    );
-  } else {
-    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
-      'default_channel',
-      '기본 알림음',
-      importance: Importance.high,
-      priority: Priority.high,
-      icon: "push_icon",
-      color: Color(0xFF2CB682),
-    );
-  }
+  final player = AudioPlayer();
+  await player.setVolume(UserHive.get().volume);
+  await player.play(AssetSource('$alarmSoundName.wav'));
 
-  final DarwinNotificationDetails iOSPlatformChannelSpecifics =
-      DarwinNotificationDetails(
-    sound: notificationType == 'DELIVERY'
-        ? 'delivery_alarm.wav'
-        : notificationType == 'TAKEOUT'
-            ? 'takeout_alarm.wav'
-            : 'default',
-  );
-
-  final NotificationDetails platformChannelSpecifics = NotificationDetails(
-    android: androidPlatformChannelSpecifics,
-    iOS: iOSPlatformChannelSpecifics,
-  );
-
-  FlutterVolumeController.updateShowSystemUI(false);
-
-  FlutterVolumeController.setVolume(
-    UserHive.get().volume,
-    stream: AudioStream.notification,
-  );
-
-  flutterLocalNotificationsPlugin.show(
-    Random().nextInt(100000),
-    message.data['title'],
-    message.data['body'],
-    platformChannelSpecifics,
-  );
-
-  FlutterVolumeController.updateShowSystemUI(true);
+  await Future.delayed(const Duration(milliseconds: 3000));
+  await FlutterVolumeController.setVolume(originalVolume);
+  await Future.delayed(const Duration(milliseconds: 300));
+  await FlutterVolumeController.updateShowSystemUI(true);
 }
 
-Future<void> _showBackgroundNotification(RemoteMessage message) async {
+// delay가 적용된 코드는 해당 코드가 종료되는 시점을 찾을 수 없어 적용함
+Future<void> _showForegroundNotification(RemoteMessage message) async {
   String notificationType;
+  String alarmSoundName = '';
+
   if (message.data['type'] == 'DELIVERY') {
     notificationType = message.data['type'];
+    alarmSoundName = 'delivery_alarm';
   } else if (message.data['type'] == 'TAKEOUT') {
     notificationType = message.data['type'];
+    alarmSoundName = 'takeout_alarm';
   } else {
     notificationType = "DEFAULT";
   }
+
   AndroidNotificationDetails androidPlatformChannelSpecifics;
   if (notificationType == 'DELIVERY') {
     androidPlatformChannelSpecifics = const AndroidNotificationDetails(
@@ -139,10 +86,9 @@ Future<void> _showBackgroundNotification(RemoteMessage message) async {
       '싱그릿 배달 주문 알림음',
       importance: Importance.high,
       priority: Priority.high,
-      playSound: true,
+      playSound: false,
       icon: "push_icon",
       color: Color(0xFF2CB682),
-      sound: RawResourceAndroidNotificationSound('delivery_alarm'),
     );
   } else if (notificationType == 'TAKEOUT') {
     androidPlatformChannelSpecifics = const AndroidNotificationDetails(
@@ -150,10 +96,9 @@ Future<void> _showBackgroundNotification(RemoteMessage message) async {
       '싱그릿 포장 주문 알림음',
       importance: Importance.high,
       priority: Priority.high,
-      playSound: true,
+      playSound: false,
       icon: "push_icon",
       color: Color(0xFF2CB682),
-      sound: RawResourceAndroidNotificationSound('takeout_alarm'),
     );
   } else {
     androidPlatformChannelSpecifics = const AndroidNotificationDetails(
@@ -163,18 +108,13 @@ Future<void> _showBackgroundNotification(RemoteMessage message) async {
       priority: Priority.high,
       icon: "push_icon",
       color: Color(0xFF2CB682),
+      playSound: true,
     );
   }
 
   final DarwinNotificationDetails iOSPlatformChannelSpecifics =
       DarwinNotificationDetails(
-    sound: notificationType == 'DELIVERY'
-        ? 'delivery_alarm.wav'
-        : notificationType == 'TAKEOUT'
-            ? 'takeout_alarm.wav'
-            : 'default',
-    presentSound: true,
-    presentAlert: true,
+    presentSound: notificationType == 'DEFAULT',
   );
 
   final NotificationDetails platformChannelSpecifics = NotificationDetails(
@@ -182,9 +122,25 @@ Future<void> _showBackgroundNotification(RemoteMessage message) async {
     iOS: iOSPlatformChannelSpecifics,
   );
 
-  FlutterVolumeController.updateShowSystemUI(false);
+  if (notificationType != 'DEFAULT') {
+    playNotificationSound(alarmSoundName);
 
-  FlutterVolumeController.setVolume(
+    await flutterLocalNotificationsPlugin.show(
+      Random().nextInt(100000),
+      message.data['title'],
+      message.data['body'],
+      platformChannelSpecifics,
+    );
+
+    return;
+  }
+
+  // setVolume은 AOS만 적용됨
+  await FlutterVolumeController.updateShowSystemUI(false);
+  double originalVolume = await FlutterVolumeController.getVolume(
+          stream: AudioStream.notification) ??
+      0.5;
+  await FlutterVolumeController.setVolume(
     UserHive.get().volume,
     stream: AudioStream.notification,
   );
@@ -196,6 +152,112 @@ Future<void> _showBackgroundNotification(RemoteMessage message) async {
     platformChannelSpecifics,
   );
 
+  // 알림 사운드가 종료되는 시점을 찾을 수 없어 delay
+  await Future.delayed(const Duration(milliseconds: 1000));
+  await FlutterVolumeController.setVolume(
+    originalVolume,
+    stream: AudioStream.notification,
+  );
+
+  await Future.delayed(const Duration(milliseconds: 300));
+  FlutterVolumeController.updateShowSystemUI(true);
+}
+
+Future<void> _showBackgroundNotification(RemoteMessage message) async {
+  String notificationType;
+  String alarmSoundName = '';
+
+  if (message.data['type'] == 'DELIVERY') {
+    notificationType = message.data['type'];
+    alarmSoundName = 'delivery_alarm';
+  } else if (message.data['type'] == 'TAKEOUT') {
+    notificationType = message.data['type'];
+    alarmSoundName = 'takeout_alarm';
+  } else {
+    notificationType = "DEFAULT";
+  }
+
+  AndroidNotificationDetails androidPlatformChannelSpecifics;
+  if (notificationType == 'DELIVERY') {
+    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'delivery_channel',
+      '싱그릿 배달 주문 알림음',
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: false,
+      icon: "push_icon",
+      color: Color(0xFF2CB682),
+    );
+  } else if (notificationType == 'TAKEOUT') {
+    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'takeout_channel',
+      '싱그릿 포장 주문 알림음',
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: false,
+      icon: "push_icon",
+      color: Color(0xFF2CB682),
+    );
+  } else {
+    androidPlatformChannelSpecifics = const AndroidNotificationDetails(
+      'default_channel',
+      '기본 알림음',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: "push_icon",
+      color: Color(0xFF2CB682),
+      playSound: true,
+    );
+  }
+
+  final DarwinNotificationDetails iOSPlatformChannelSpecifics =
+      DarwinNotificationDetails(
+    presentSound: notificationType == 'DEFAULT',
+  );
+
+  final NotificationDetails platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
+
+  if (notificationType != 'DEFAULT') {
+    playNotificationSound(alarmSoundName);
+
+    await flutterLocalNotificationsPlugin.show(
+      Random().nextInt(100000),
+      message.data['title'],
+      message.data['body'],
+      platformChannelSpecifics,
+    );
+
+    return;
+  }
+
+  // setVolume은 AOS만 적용됨
+  await FlutterVolumeController.updateShowSystemUI(false);
+  double originalVolume = await FlutterVolumeController.getVolume(
+          stream: AudioStream.notification) ??
+      0.5;
+  await FlutterVolumeController.setVolume(
+    UserHive.get().volume,
+    stream: AudioStream.notification,
+  );
+
+  await flutterLocalNotificationsPlugin.show(
+    Random().nextInt(100000),
+    message.data['title'],
+    message.data['body'],
+    platformChannelSpecifics,
+  );
+
+  // 알림 사운드가 종료되는 시점을 찾을 수 없어 delay
+  await Future.delayed(const Duration(milliseconds: 1000));
+  await FlutterVolumeController.setVolume(
+    originalVolume,
+    stream: AudioStream.notification,
+  );
+
+  await Future.delayed(const Duration(milliseconds: 300));
   FlutterVolumeController.updateShowSystemUI(true);
 }
 
@@ -218,14 +280,14 @@ void main() async {
         .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
-      sound: true,
+      sound: false,
     );
   } else if (Platform.isIOS) {
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
       alert: false,
       badge: true,
-      sound: true,
+      sound: false,
     );
   }
 
