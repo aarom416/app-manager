@@ -112,6 +112,10 @@ class StoreManagementBasicInfoNotifier
           imagePath: imagePath,
         );
 
+    // 응답을 받은 후 CDN 이미지 변경되는데 딜레이가 있어 state 변경 전 딜레이를 추가함
+    // 필요 시 딜레이 시간 수정
+    await Future.delayed(const Duration(milliseconds: 300));
+
     if (response.statusCode == 200) {
       if (response.data is Map<String, dynamic>) {
         logger.d("thumbnail: response.data ${response.data}");
@@ -120,7 +124,10 @@ class StoreManagementBasicInfoNotifier
           String? thumbnail = responseData['data'] as String?;
           if (thumbnail != null) {
             state = state.copyWith(
-              storeInfo: state.storeInfo.copyWith(thumbnail: thumbnail),
+              storeInfo: state.storeInfo.copyWith(
+                thumbnail:
+                    '$thumbnail?${DateTime.now().millisecondsSinceEpoch}',
+              ),
               error: const ResultFailResponseModel(),
             );
             logger.d("new state ${state.toFormattedJson()}");
@@ -142,6 +149,11 @@ class StoreManagementBasicInfoNotifier
           storeId: UserHive.getBox(key: UserKey.storeId),
           imagePaths: imagePaths,
         );
+
+    // 응답을 받은 후 CDN 이미지 변경되는데 딜레이가 있어 state 변경 전 딜레이를 추가함
+    // 필요 시 딜레이 시간 수정
+    await Future.delayed(const Duration(milliseconds: 300));
+
     if (response.statusCode == 200) {
       if (response.data is Map<String, dynamic>) {
         logger.d("storePictureURL1: response.data ${response.data}");
@@ -151,8 +163,10 @@ class StoreManagementBasicInfoNotifier
           String? storePictureURL1 = data[data.keys.first] as String?;
           if (storePictureURL1 != null) {
             state = state.copyWith(
-              storeInfo:
-                  state.storeInfo.copyWith(storePictureURL1: storePictureURL1),
+              storeInfo: state.storeInfo.copyWith(
+                storePictureURL1:
+                    '$storePictureURL1?${DateTime.now().millisecondsSinceEpoch}',
+              ),
               error: const ResultFailResponseModel(),
             );
             logger.d("new state ${state.toFormattedJson()}");
@@ -174,8 +188,12 @@ class StoreManagementBasicInfoNotifier
           storeId: UserHive.getBox(key: UserKey.storeId),
           imagePath: imagePath,
         );
+
+    // 응답을 받은 후 CDN 이미지 변경되는데 딜레이가 있어 state 변경 전 딜레이를 추가함
+    // 필요 시 딜레이 시간 수정
+    await Future.delayed(const Duration(milliseconds: 300));
+
     if (response.statusCode == 200) {
-      //   storeInfo();
       if (response.data is Map<String, dynamic>) {
         logger.d("storeInformationURL: response.data ${response.data}");
         final responseData = response.data as Map<String, dynamic>;
@@ -183,8 +201,10 @@ class StoreManagementBasicInfoNotifier
           String? storeInformationURL = responseData['data'] as String?;
           if (storeInformationURL != null) {
             state = state.copyWith(
-              storeInfo: state.storeInfo
-                  .copyWith(storeInformationURL: storeInformationURL),
+              storeInfo: state.storeInfo.copyWith(
+                storeInformationURL:
+                    '$storeInformationURL?${DateTime.now().millisecondsSinceEpoch}',
+              ),
               error: const ResultFailResponseModel(),
             );
             logger.d("new state ${state.toFormattedJson()}");

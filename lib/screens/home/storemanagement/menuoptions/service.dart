@@ -15,7 +15,9 @@ class MenuOptionsService {
   /// GET - 메뉴/옵션 정보 조회
   Future<Response<dynamic>> getMenuOptionInfo({required String storeId}) async {
     try {
-      return ref.read(requestApiProvider).get(path: RestApiUri.getMenuOptionInfo.replaceAll('{storeId}', storeId));
+      return ref.read(requestApiProvider).get(
+            path: RestApiUri.getMenuOptionInfo.replaceAll('{storeId}', storeId),
+          );
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);
@@ -37,7 +39,9 @@ class MenuOptionsService {
       ]
     }
    */
-  Future<Response<dynamic>> createMenuCategory({required String storeId, required MenuCategoryModel newMenuCategoryModel}) async {
+  Future<Response<dynamic>> createMenuCategory(
+      {required String storeId,
+      required MenuCategoryModel newMenuCategoryModel}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.createMenuCategory,
@@ -45,7 +49,8 @@ class MenuOptionsService {
           'storeId': storeId,
           'menuCategoryName': newMenuCategoryModel.menuCategoryName,
           'description': newMenuCategoryModel.menuIntroduction,
-          'menuIdList': newMenuCategoryModel.menuList.map((menu) => menu.menuId).toList(),
+          'menuIdList':
+              newMenuCategoryModel.menuList.map((menu) => menu.menuId).toList(),
         },
       );
     } on DioException catch (e) {
@@ -66,7 +71,9 @@ class MenuOptionsService {
         "menuIntroduction": "대표메뉴입니다!"
       }
    */
-  Future<Response<dynamic>> updateMenuCategoryName({required String storeId, required MenuCategoryModel menuCategoryModel}) async {
+  Future<Response<dynamic>> updateMenuCategoryName(
+      {required String storeId,
+      required MenuCategoryModel menuCategoryModel}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuCategoryName,
@@ -94,7 +101,9 @@ class MenuOptionsService {
         "menuCategoryName": "1인 세트"
       }
    */
-  Future<Response<dynamic>> deleteMenuCategory({required String storeId, required MenuCategoryModel menuCategoryModel}) async {
+  Future<Response<dynamic>> deleteMenuCategory(
+      {required String storeId,
+      required MenuCategoryModel menuCategoryModel}) async {
     try {
       return await ref.read(requestApiProvider).delete(
         RestApiUri.deleteMenuCategory,
@@ -177,8 +186,11 @@ class MenuOptionsService {
         'natrium': nutrition.natrium,
         'menuIntroduction': menuIntroduction,
         'madeOf': menuBriefDescription,
-        'menuOptionCategoryIdList': selectedMenuOptionCategories.map((optionCategory) => optionCategory.menuOptionCategoryId).toList(),
-        'menuPicture': await MultipartFile.fromFile(imagePath, filename: imagePath.split('/').last),
+        'menuOptionCategoryIdList': selectedMenuOptionCategories
+            .map((optionCategory) => optionCategory.menuOptionCategoryId)
+            .toList(),
+        'menuPicture': await MultipartFile.fromFile(imagePath,
+            filename: imagePath.split('/').last),
       });
 
       return await ref.read(requestApiProvider).post(
@@ -200,7 +212,8 @@ class MenuOptionsService {
   /// GET - 메뉴 정보 조회
   Future<Response<dynamic>> getMenu({required int menuId}) async {
     try {
-      return ref.read(requestApiProvider).get(path: RestApiUri.getMenu.replaceAll('{menuId}', menuId.toString()));
+      return ref.read(requestApiProvider).get(
+          path: RestApiUri.getMenu.replaceAll('{menuId}', menuId.toString()));
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);
@@ -211,7 +224,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 이름 변경
-  Future<Response<dynamic>> updateMenuName({required String storeId, required int menuId, required String menuName}) async {
+  Future<Response<dynamic>> updateMenuName(
+      {required String storeId,
+      required int menuId,
+      required String menuName}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuName,
@@ -231,7 +247,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 가격 변경
-  Future<Response<dynamic>> updateMenuPrice({required String storeId, required int menuId, required int price}) async {
+  Future<Response<dynamic>> updateMenuPrice(
+      {required String storeId,
+      required int menuId,
+      required int price}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuPrice,
@@ -260,7 +279,8 @@ class MenuOptionsService {
       final formData = FormData.fromMap({
         'storeId': storeId,
         'menuId': menuId,
-        'menuPicture': await MultipartFile.fromFile(imagePath, filename: imagePath.split('/').last),
+        'menuPicture': await MultipartFile.fromFile(imagePath,
+            filename: imagePath.split('/').last),
       });
 
       return await ref.read(requestApiProvider).post(
@@ -280,7 +300,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 품절 상태 변경
-  Future<Response<dynamic>> updateMenuSoldOutStatus({required String storeId, required int menuId, required int soldOutStatus}) async {
+  Future<Response<dynamic>> updateMenuSoldOutStatus(
+      {required String storeId,
+      required int menuId,
+      required int soldOutStatus}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuSoldOutStatus,
@@ -300,7 +323,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 인기 상태 변경
-  Future<Response<dynamic>> updateMenuPopularity({required String storeId, required int menuId, required int popularityStatus}) async {
+  Future<Response<dynamic>> updateMenuPopularity(
+      {required String storeId,
+      required int menuId,
+      required int popularityStatus}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuPopularity,
@@ -320,7 +346,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 베스트 상태 변경
-  Future<Response<dynamic>> updateMenuBestStatus({required String storeId, required int menuId, required int bestStatus}) async {
+  Future<Response<dynamic>> updateMenuBestStatus(
+      {required String storeId,
+      required int menuId,
+      required int bestStatus}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuBestStatus,
@@ -340,7 +369,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 구성 변경
-  Future<Response<dynamic>> updateMenuMadeOf({required String storeId, required int menuId, required String madeOf}) async {
+  Future<Response<dynamic>> updateMenuMadeOf(
+      {required String storeId,
+      required int menuId,
+      required String madeOf}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuMadeOf,
@@ -360,7 +392,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 설명 변경
-  Future<Response<dynamic>> updateMenuIntroduction({required String storeId, required int menuId, required String menuIntroduction}) async {
+  Future<Response<dynamic>> updateMenuIntroduction(
+      {required String storeId,
+      required int menuId,
+      required String menuIntroduction}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuIntroduction,
@@ -380,7 +415,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 정보 변경
-  Future<Response<dynamic>> updateMenuInfo({required String storeId, required int menuId, required NutritionModel nutrition}) async {
+  Future<Response<dynamic>> updateMenuInfo(
+      {required String storeId,
+      required int menuId,
+      required NutritionModel nutrition}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuInfo,
@@ -408,7 +446,8 @@ class MenuOptionsService {
   }
 
   /// DELETE - 메뉴 삭제
-  Future<Response<dynamic>> deleteMenu({required String storeId, required MenuModel menuModel}) async {
+  Future<Response<dynamic>> deleteMenu(
+      {required String storeId, required MenuModel menuModel}) async {
     try {
       return await ref.read(requestApiProvider).delete(
         RestApiUri.deleteMenu,
@@ -428,7 +467,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 옵션 카테고리 필수 여부 변경
-  Future<Response<dynamic>> updateMenuOptionCategoryEssential({required String storeId, required int menuOptionCategoryId, required int essentialStatus}) async {
+  Future<Response<dynamic>> updateMenuOptionCategoryEssential(
+      {required String storeId,
+      required int menuOptionCategoryId,
+      required int essentialStatus}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionCategoryEssential,
@@ -448,7 +490,11 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 옵션 카테고리 최대, 최소 개수 변경
-  Future<Response<dynamic>> updateMenuOptionCategoryMaxChoice({required String storeId, required int menuOptionCategoryId, required int minChoice, required int maxChoice}) async {
+  Future<Response<dynamic>> updateMenuOptionCategoryMaxChoice(
+      {required String storeId,
+      required int menuOptionCategoryId,
+      required int minChoice,
+      required int maxChoice}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionCategoryMaxChoice,
@@ -468,7 +514,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 옵션 카테고리 품절 상태 변경
-  Future<Response<dynamic>> updateMenuOptionCategorySoldOutStatus({required String storeId, required int menuOptionCategoryId, required int soldOutStatus}) async {
+  Future<Response<dynamic>> updateMenuOptionCategorySoldOutStatus(
+      {required String storeId,
+      required int menuOptionCategoryId,
+      required int soldOutStatus}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionCategorySoldOutStatus,
@@ -488,7 +537,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 옵션 카테고리 이름 변경
-  Future<Response<dynamic>> updateMenuOptionCategoryName({required String storeId, required int menuOptionCategoryId, required String menuOptionCategoryName}) async {
+  Future<Response<dynamic>> updateMenuOptionCategoryName(
+      {required String storeId,
+      required int menuOptionCategoryId,
+      required String menuOptionCategoryName}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionCategoryName,
@@ -522,7 +574,11 @@ class MenuOptionsService {
       ]
     }
    */
-  Future<Response<dynamic>> updateMenuOptionCategoryUseMenu({required String storeId, required int menuOptionCategoryId, required List<int> addMenuIdList, required List<int> removeMenuIdList}) async {
+  Future<Response<dynamic>> updateMenuOptionCategoryUseMenu(
+      {required String storeId,
+      required int menuOptionCategoryId,
+      required List<int> addMenuIdList,
+      required List<int> removeMenuIdList}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionCategoryUseMenu,
@@ -618,7 +674,9 @@ class MenuOptionsService {
   }
 
   /// DELETE - 메뉴 옵션 카테고리 삭제
-  Future<Response<dynamic>> deleteMenuOptionCategory({required String storeId, required MenuOptionCategoryModel optionCategoryModel}) async {
+  Future<Response<dynamic>> deleteMenuOptionCategory(
+      {required String storeId,
+      required MenuOptionCategoryModel optionCategoryModel}) async {
     try {
       return await ref.read(requestApiProvider).delete(
         RestApiUri.deleteMenuOptionCategory,
@@ -638,7 +696,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 옵션 이름 변경
-  Future<Response<dynamic>> updateMenuOptionName({required String storeId, required int menuOptionId, required String optionContent}) async {
+  Future<Response<dynamic>> updateMenuOptionName(
+      {required String storeId,
+      required int menuOptionId,
+      required String optionContent}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionName,
@@ -658,7 +719,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 옵션 가격 변경
-  Future<Response<dynamic>> updateMenuOptionPrice({required String storeId, required int menuOptionId, required int price}) async {
+  Future<Response<dynamic>> updateMenuOptionPrice(
+      {required String storeId,
+      required int menuOptionId,
+      required int price}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionPrice,
@@ -678,7 +742,10 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 옵션 품절 상태 변경
-  Future<Response<dynamic>> updateMenuOptionSoldOutStatus({required String storeId, required int menuOptionId, required int soldOutStatus}) async {
+  Future<Response<dynamic>> updateMenuOptionSoldOutStatus(
+      {required String storeId,
+      required int menuOptionId,
+      required int soldOutStatus}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.updateMenuOptionSoldOutStatus,
@@ -700,7 +767,9 @@ class MenuOptionsService {
   /// GET - 메뉴 옵션 정보 조회
   Future<Response<dynamic>> getMenuInfo({required int menuOptionId}) async {
     try {
-      return ref.read(requestApiProvider).get(path: RestApiUri.getMenuInfo.replaceAll('{menuOptionId}', "$menuOptionId"));
+      return ref.read(requestApiProvider).get(
+          path: RestApiUri.getMenuInfo
+              .replaceAll('{menuOptionId}', "$menuOptionId"));
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);
@@ -711,10 +780,13 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 옵션 정보 변경
-  Future<Response<dynamic>> updateMenuOptionInfo({required String storeId, required int menuOptionId, required NutritionModel nutrition}) async {
+  Future<Response<dynamic>> updateMenuOptionInfo(
+      {required String storeId,
+      required int menuOptionId,
+      required NutritionModel nutrition}) async {
     try {
       return await ref.read(requestApiProvider).post(
-        RestApiUri.updateMenuOptionSoldOutStatus,
+        RestApiUri.updateMenuOptionInfo,
         data: {
           'storeId': storeId,
           'menuOptionId': menuOptionId,
@@ -739,7 +811,9 @@ class MenuOptionsService {
   }
 
   /// DELETE - 메뉴 옵션 삭제
-  Future<Response<dynamic>> deleteMenuOption({required String storeId, required MenuOptionModel menuOptionModel}) async {
+  Future<Response<dynamic>> deleteMenuOption(
+      {required String storeId,
+      required MenuOptionModel menuOptionModel}) async {
     try {
       return await ref.read(requestApiProvider).delete(
         RestApiUri.deleteMenuOption,
@@ -759,4 +833,5 @@ class MenuOptionsService {
   }
 }
 
-final menuOptionsServiceProvider = Provider<MenuOptionsService>((ref) => MenuOptionsService(ref));
+final menuOptionsServiceProvider =
+    Provider<MenuOptionsService>((ref) => MenuOptionsService(ref));
