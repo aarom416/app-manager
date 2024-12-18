@@ -221,9 +221,8 @@ void main() async {
       sound: true,
     );
   } else if (Platform.isIOS) {
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-      alert: false,
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true,
       badge: true,
       sound: true,
     );

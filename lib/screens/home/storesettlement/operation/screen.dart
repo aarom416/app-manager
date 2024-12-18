@@ -377,7 +377,7 @@ class SettlementDetailScreen extends StatelessWidget {
                     size: FontSize.small,
                     weight: FontWeight.w500),
                 SGTypography.body(
-                    "${(-settlement.agentFeeTax).toKoreanCurrency}원",
+                    "${(-settlement.storeCouponDiscount).toKoreanCurrency}원",
                     color: SGColors.gray4,
                     size: FontSize.small,
                     weight: FontWeight.w500),
