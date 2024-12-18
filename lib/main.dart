@@ -6,11 +6,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_file.dart';
 import 'package:logger/logger.dart';
-import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/utils/fcm.dart';
 import 'package:singleeat/screens/bottom/order/operation/screen.dart';
@@ -30,7 +28,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin();
 
 const AndroidNotificationChannel deliveryChannel = AndroidNotificationChannel(
   'delivery_channel',
@@ -92,25 +90,17 @@ Future<void> _showForegroundNotification(RemoteMessage message) async {
     );
   }
 
-  final DarwinNotificationDetails iOSPlatformChannelSpecifics =
-      DarwinNotificationDetails(
+  final DarwinNotificationDetails iOSPlatformChannelSpecifics = DarwinNotificationDetails(
     sound: notificationType == 'DELIVERY'
         ? 'delivery_alarm.wav'
         : notificationType == 'TAKEOUT'
-            ? 'takeout_alarm.wav'
-            : 'default',
+        ? 'takeout_alarm.wav'
+        : 'default',
   );
 
   final NotificationDetails platformChannelSpecifics = NotificationDetails(
     android: androidPlatformChannelSpecifics,
     iOS: iOSPlatformChannelSpecifics,
-  );
-
-  FlutterVolumeController.updateShowSystemUI(false);
-
-  FlutterVolumeController.setVolume(
-    UserHive.get().volume,
-    stream: AudioStream.notification,
   );
 
   flutterLocalNotificationsPlugin.show(
@@ -119,9 +109,9 @@ Future<void> _showForegroundNotification(RemoteMessage message) async {
     message.data['body'],
     platformChannelSpecifics,
   );
-
-  FlutterVolumeController.updateShowSystemUI(true);
 }
+
+
 
 Future<void> _showBackgroundNotification(RemoteMessage message) async {
   String notificationType;
@@ -144,7 +134,7 @@ Future<void> _showBackgroundNotification(RemoteMessage message) async {
       color: Color(0xFF2CB682),
       sound: RawResourceAndroidNotificationSound('delivery_alarm'),
     );
-  } else if (notificationType == 'TAKEOUT') {
+  } else if (notificationType == 'TAKEOUT'){
     androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       'takeout_channel',
       '싱그릿 포장 주문 알림음',
@@ -166,13 +156,13 @@ Future<void> _showBackgroundNotification(RemoteMessage message) async {
     );
   }
 
-  final DarwinNotificationDetails iOSPlatformChannelSpecifics =
-      DarwinNotificationDetails(
+
+  final DarwinNotificationDetails iOSPlatformChannelSpecifics = DarwinNotificationDetails(
     sound: notificationType == 'DELIVERY'
         ? 'delivery_alarm.wav'
         : notificationType == 'TAKEOUT'
-            ? 'takeout_alarm.wav'
-            : 'default',
+        ? 'takeout_alarm.wav'
+        : 'default',
     presentSound: true,
     presentAlert: true,
   );
@@ -182,25 +172,15 @@ Future<void> _showBackgroundNotification(RemoteMessage message) async {
     iOS: iOSPlatformChannelSpecifics,
   );
 
-  FlutterVolumeController.updateShowSystemUI(false);
-
-  FlutterVolumeController.setVolume(
-    UserHive.get().volume,
-    stream: AudioStream.notification,
-  );
-
   await flutterLocalNotificationsPlugin.show(
     Random().nextInt(100000),
     message.data['title'],
     message.data['body'],
     platformChannelSpecifics,
   );
-
-  FlutterVolumeController.updateShowSystemUI(true);
 }
 
-final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -214,15 +194,14 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   if (Platform.isAndroid) {
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
     );
   } else if (Platform.isIOS) {
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-      alert: true,
+      alert: false,
       badge: true,
       sound: true,
     );
@@ -237,13 +216,11 @@ void main() async {
 
   if (Platform.isAndroid) {
     await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(deliveryChannel);
 
     await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(takeoutChannel);
   }
 
