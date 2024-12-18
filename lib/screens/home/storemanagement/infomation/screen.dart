@@ -93,7 +93,7 @@ class _StoreManagementBasicInfoScreenState
         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
         SingleInformationBox(label: '가게 번호', value: state.storeInfo.storeNum),
         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-        SingleInformationBox(label: '가게 카테고리', value: '카테고리'),
+        SingleInformationBox(label: '가게 카테고리', value: state.storeInfo.brand),
         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
         SingleInformationBox(label: '가게 위치', value: state.storeInfo.address),
         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),

@@ -250,32 +250,32 @@ class RunApp extends ConsumerWidget {
 }
 
 // class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
+// const MyApp({super.key});
 //
-//   @override
-//   Widget build(BuildContext context) {
-//     return MultiBlocProvider(
-//         providers: [
-//           BlocProvider<ManagerBloc>(
-//             create: (BuildContext context) => ManagerBloc(),
-//           ),
-//           BlocProvider<StoreListBloc>(
-//               create: (BuildContext context) => StoreListBloc()),
-//           BlocProvider<StoreBloc>(
-//               create: (BuildContext context) => StoreBloc()),
-//           BlocProvider<CouponListBloc>(
-//               create: (BuildContext context) => CouponListBloc()),
-//         ],
-//         child: MaterialApp(
-//             title: 'Flutter Demo',
-//             debugShowCheckedModeBanner: false,
-//             theme: ThemeData(
-//               colorSchemeSeed: Colors.black,
-//               appBarTheme: const AppBarTheme(
-//                 backgroundColor: Colors.white,
-//               ),
-//               useMaterial3: true,
-//             ),
-//             home: HomeScreen(title: 'Flutter Demo Home Page')));
-//   }
+// @override
+// Widget build(BuildContext context) {
+// return MultiBlocProvider(
+// providers: [
+// BlocProvider<ManagerBloc>(
+// create: (BuildContext context) => ManagerBloc(),
+// ),
+// BlocProvider<StoreListBloc>(
+// create: (BuildContext context) => StoreListBloc()),
+// BlocProvider<StoreBloc>(
+// create: (BuildContext context) => StoreBloc()),
+// BlocProvider<CouponListBloc>(
+// create: (BuildContext context) => CouponListBloc()),
+// ],
+// child: MaterialApp(
+// title: 'Flutter Demo',
+// debugShowCheckedModeBanner: false,
+// theme: ThemeData(
+// colorSchemeSeed: Colors.black,
+// appBarTheme: const AppBarTheme(
+// backgroundColor: Colors.white,
+// ),
+// useMaterial3: true,
+// ),
+// home: HomeScreen(title: 'Flutter Demo Home Page')));
+// }
 // }
