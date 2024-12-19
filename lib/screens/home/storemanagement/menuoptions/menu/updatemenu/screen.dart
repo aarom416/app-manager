@@ -367,6 +367,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                   ...menuModel.menuCategoryOptions.asMap().entries.map((entry) {
                     final idx = entry.key;
                     final category = entry.value;
+                   print(menuModel);
                     return [
                       SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
                       MenuOptionCategoryCard(category: category),

@@ -1356,7 +1356,7 @@ class _MenuOptionCategorySelectionScreenState
             Navigator.of(context).pop();
           },
           disabled: selectedMenuOptionCategories.isEmpty,
-          label: "변경하기",
+          label: "추가하기",
         ),
       ),
       body: SGContainer(
