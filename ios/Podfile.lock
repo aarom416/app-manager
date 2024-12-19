@@ -173,7 +173,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 58cf94dabf1e2bb2fa87725a9be5c2249171cda0
   FirebaseMessaging: c9ec7b90c399c7a6100297e9d16f8a27fc7f7152
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_local_notifications: df98d66e515e1ca797af436137b4459b160ad8c9
+  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   flutter_volume_controller: e4d5832f08008180f76e30faf671ffd5a425e529
   GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d

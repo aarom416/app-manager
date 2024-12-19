@@ -152,7 +152,7 @@ class _UpdateMenuCategoryScreenState extends ConsumerState<UpdateMenuCategoryScr
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  provider.deleteMenuCategory(MenuCategoryModel(
+                                  provider.deleteMenuCategory(context, MenuCategoryModel(
                                     storeMenuCategoryId: widget.menuCategoryModel.storeMenuCategoryId,
                                     menuCategoryName: menuCategoryName,
                                   ));

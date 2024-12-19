@@ -18,6 +18,7 @@ import 'package:singleeat/core/screens/order_menu_option_screen.dart';
 import 'package:singleeat/core/utils/throttle.dart';
 import 'package:singleeat/office/models/order_model.dart';
 import 'package:singleeat/screens/bottom/myinfo/orderlist/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'model.dart';
 
@@ -308,72 +309,39 @@ class _ReceiptCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 시간대
-              SGTypography.body(order.orderDate,
-                  size: FontSize.normal, weight: FontWeight.w600),
-              SizedBox(height: SGSpacing.p3 + SGSpacing.p05),
               Row(
                 children: [
-                  SGTypography.body(order.orderMenuDTOList[0].menuName,
-                      size: FontSize.small, weight: FontWeight.w700),
-                  SizedBox(width: SGSpacing.p2),
+                  SGTypography.body(order.orderTime,
+                      size: FontSize.normal, weight: FontWeight.w600),
+                  const SizedBox(width: 8),
                   SGContainer(
-                      color: order.orderStatus == OrderStatus.cancelled
+                      color: order.orderStatus == "주문 취소"
                           ? SGColors.warningRed.withOpacity(0.1)
                           : SGColors.gray1,
                       padding: EdgeInsets.all(SGSpacing.p1),
                       borderRadius:
-                          BorderRadius.circular(SGSpacing.p2 + SGSpacing.p05),
-                      child: SGTypography.body(order.orderStatus,
+                      BorderRadius.circular(SGSpacing.p2 + SGSpacing.p05),
+                      child: SGTypography.body(
+                          order.orderStatus == "주문 취소" ? "주문 취소" : "결제 완료",
                           weight: FontWeight.w500,
-                          color: order.orderStatus ==
-                                  OrderStatus.cancelled.orderStatusName
+                          color: order.orderStatus == "주문 취소"
                               ? SGColors.warningRed
                               : SGColors.gray4)),
-                  SizedBox(width: SGSpacing.p2),
+                  const SizedBox(width: 8),
                   if (order.receiveFoodType == "TAKEOUT")
                     SGContainer(
-                        color: order.orderStatus == "주문 취소"
-                            ? SGColors.warningRed.withOpacity(0.1)
-                            : SGColors.gray1,
+                        color: SGColors.primary.withOpacity(0.1),
                         padding: EdgeInsets.all(SGSpacing.p1),
                         borderRadius:
                         BorderRadius.circular(6),
-                        child: order.orderStatus == "주문 취소"
-                            ? SGTypography.body(
-                          "주문 취소",
-                          weight: FontWeight.w500,
-                          color: SGColors.warningRed,
-                        )
-                            : SGTypography.body(
-                          "결제 완료",
-                          weight: FontWeight.w500,
-                          color: SGColors.gray4,
-                        )
-                    ),
-                    const SizedBox(width: 8),
-                    if (order.receiveFoodType == "TAKEOUT")
-                      SGContainer(
-                          color: SGColors.primary.withOpacity(0.1),
-                          padding: EdgeInsets.all(SGSpacing.p1),
-                          borderRadius:
-                          BorderRadius.circular(6),
-                          child: SGTypography.body("포장 ${order.pickUpNumber}",
-                              weight: FontWeight.w500, color: SGColors.primary)),
-
-                  ],
-                ),
-              SizedBox(height: SGSpacing.p3 + SGSpacing.p05),
-              Container(
-                height: 15,
-                width: 215,
-                child: SGTypography.body(
-                    order.orderMenuDTOList[0].menuName,
-                    size: FontSize.small,
-                    weight: FontWeight.w700,
-                    overflow: TextOverflow.ellipsis
-                ),
+                        child: SGTypography.body("포장 ${order.pickUpNumber}",
+                            weight: FontWeight.w500, color: SGColors.primary))
+                ]
               ),
-              // 제목
+              SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+              SGTypography.body(order.orderMenuDTOList[0].menuName,
+                  size: FontSize.small, weight: FontWeight.w700),
+
               SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -402,7 +370,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBarWithLeftArrow(
-            title: order.receiveFoodType == 'DELIVERY' ? '배달' : '포장'),
+            title: order.receiveFoodType == 'DELIVERY' ? '배달 ${order.orderNumber.substring(order.orderNumber.length - 4)}'  : '포장 ${order.pickUpNumber}'),
         body: SGContainer(
             color: const Color(0xFFFAFAFA),
             width: double.infinity,
@@ -451,7 +419,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                     SGTypography.body("요청 사항",
                         size: FontSize.normal, weight: FontWeight.w600),
                     SizedBox(height: SGSpacing.p4),
-                    DataTableRow(left: "가게", right: order.toOwner),
+                    DataTableRow(left: "가게", right: order.toOwner == "null" ? '-' : order.toOwner),
                     if (order.receiveFoodType == "DELIVERY") ...[
                       SizedBox(height: SGSpacing.p4),
                       DataTableRow(left: "배달", right: order.toRider),
@@ -491,7 +459,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                           orderMenuOptionDTOList:
                               order.orderMenuOptionDTOList[0],
                           orderMenu: e,
-                          colorType: SGColors.whiteForDarkMode,
+                          colorType: SGColors.black,
                         )),
                     SizedBox(height: SGSpacing.p4),
                     Divider(height: 1, thickness: 1, color: SGColors.line1),
@@ -590,7 +558,7 @@ class _ReceiptDetailScreen extends StatelessWidget {
                           size: FontSize.normal, weight: FontWeight.w600),
                       SizedBox(height: SGSpacing.p4),
                       DataTableRow(
-                          left: "배달 주소", right: order.address.substring(0, 30)),
+                          left: "배달 주소", right: order.address),
                       SizedBox(height: SGSpacing.p4),
                       DataTableRow(left: "연락처", right: order.phone),
                     ])
@@ -633,7 +601,11 @@ class _ReceiptDetailScreen extends StatelessWidget {
                         maxWidth:
                             MediaQuery.of(context).size.width - SGSpacing.p8,
                         maxHeight: 58),
-                    child: SGActionButton(onPressed: () {}, label: "고객 센터")),
+                    child: SGActionButton(onPressed: () {
+                      launchUrl(Uri.parse(
+                        'tel://1600-7723',
+                      ));
+                    }, label: "고객 센터")),
               ],
             )));
   }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:singleeat/core/networks/request_api.dart';
@@ -51,6 +53,38 @@ class MenuOptionsService {
           'description': newMenuCategoryModel.menuIntroduction,
           'menuIdList':
               newMenuCategoryModel.menuList.map((menu) => menu.menuId).toList(),
+        },
+      );
+    } on DioException catch (e) {
+      logger.e("DioException: ${e.message}");
+      return Future.error(e);
+    } on Exception catch (e) {
+      logger.e(e);
+      return Future.error(e);
+    }
+  }
+
+  /// POST - 옵션 추가
+  Future<Response<dynamic>> createOption(
+      {required String storeId,
+        required MenuOptionModel newMenuOptionModel}) async {
+    try {
+      return await ref.read(requestApiProvider).post(
+        RestApiUri.createOption,
+        data: {
+          'storeId': storeId,
+          'menuOptionCategoryId': newMenuOptionModel.menuOptionCategoryId,
+          'optionContent': newMenuOptionModel.optionContent,
+          'price': newMenuOptionModel.price,
+          'servingAmount': newMenuOptionModel.nutrition.servingAmount,
+          'servingAmountType': newMenuOptionModel.nutrition.servingAmountType,
+          'calories': newMenuOptionModel.nutrition.calories,
+          'carbohydrate': newMenuOptionModel.nutrition.carbohydrate,
+          'protein': newMenuOptionModel.nutrition.protein,
+          'fat': newMenuOptionModel.nutrition.fat,
+          'sugar': newMenuOptionModel.nutrition.sugar,
+          'saturatedFat': newMenuOptionModel.nutrition.saturatedFat,
+          'natrium': newMenuOptionModel.nutrition.natrium,
         },
       );
     } on DioException catch (e) {
@@ -142,29 +176,19 @@ class MenuOptionsService {
     required NutritionModel nutrition,
     required int servingAmount,
     required String servingAmountType,
-    required String imagePath,
-    required String menuBriefDescription,
-    required String menuIntroduction,
-    required List<MenuOptionCategoryModel> selectedMenuOptionCategories,
+    required String? imagePath,
+    required String? menuBriefDescription,
+    required String? menuIntroduction,
+    required List<MenuOptionCategoryModel>? selectedMenuOptionCategories,
   }) async {
     logger.d(
       "storeId: ${storeId}\r\n" +
           "storeMenuCategoryId: ${selectedMenuCategory.storeMenuCategoryId}\r\n" +
           "menuName: ${menuName}\r\n" +
           "category: ${selectedUserMenuCategoryIdsFlatString}\r\n" +
-          // "menuPrice: ${price}\r\n" +
-          // "servingAmount: ${servingAmount}\r\n" +
-          // "servingAmountType: ${servingAmountType}\r\n" +
-          // "calories: ${nutrition.calories}\r\n" +
-          // "carbohydrate: ${nutrition.carbohydrate}\r\n" +
-          // "protein: ${nutrition.protein}\r\n" +
-          // "fat: ${nutrition.fat}\r\n" +
-          // "sugar: ${nutrition.sugar}\r\n" +
-          // "saturatedFat: ${nutrition.saturatedFat}\r\n" +
-          // "natrium: ${nutrition.natrium}\r\n" +
           "menuIntroduction: ${menuIntroduction}\r\n" +
           "madeOf: ${menuBriefDescription}\r\n" +
-          "menuOptionCategoryIdList: ${selectedMenuOptionCategories.map((optionCategory) => optionCategory.menuOptionCategoryId).toList()}\r\n" +
+          "menuOptionCategoryIdList: ${selectedMenuOptionCategories?.map((optionCategory) => optionCategory.menuOptionCategoryId).toList()}\r\n" +
           "menuPicture: ${imagePath}\r\n",
     );
 
@@ -184,22 +208,25 @@ class MenuOptionsService {
         'sugar': nutrition.sugar,
         'saturatedFat': nutrition.saturatedFat,
         'natrium': nutrition.natrium,
-        'menuIntroduction': menuIntroduction,
-        'madeOf': menuBriefDescription,
-        'menuOptionCategoryIdList': selectedMenuOptionCategories
-            .map((optionCategory) => optionCategory.menuOptionCategoryId)
-            .toList(),
-        'menuPicture': await MultipartFile.fromFile(imagePath,
-            filename: imagePath.split('/').last),
+        'menuIntroduction': menuIntroduction ?? '',
+        'madeOf': menuBriefDescription ?? '',
+        'menuOptionCategoryIdList': selectedMenuOptionCategories != null && selectedMenuOptionCategories.isNotEmpty
+            ? selectedMenuOptionCategories.map((optionCategory) => optionCategory.menuOptionCategoryId).toList()
+            : [""],
+        if (imagePath != '')
+        'menuPicture': await MultipartFile.fromFile(
+          imagePath!,
+          filename: imagePath.split('/').last,
+        )
       });
 
       return await ref.read(requestApiProvider).post(
-            RestApiUri.createMenu,
-            data: formData,
-            options: Options(
-              contentType: 'multipart/form-data',
-            ),
-          );
+        RestApiUri.createMenu,
+        data: formData,
+        options: Options(
+          contentType: 'multipart/form-data',
+        ),
+      );
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);
@@ -208,6 +235,7 @@ class MenuOptionsService {
       return Future.error(e);
     }
   }
+
 
   /// GET - 메뉴 정보 조회
   Future<Response<dynamic>> getMenu({required int menuId}) async {

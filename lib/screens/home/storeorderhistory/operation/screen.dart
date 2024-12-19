@@ -539,7 +539,7 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                                 orderMenu: e,
                                 colorType: Colors.black,
                               )),
-                      SizedBox(height: SGSpacing.p4),
+                      SizedBox(height: SGSpacing.p3),
                       Divider(height: 1, thickness: 1, color: SGColors.line1),
                       SizedBox(height: SGSpacing.p3),
                       Row(children: [
@@ -589,7 +589,7 @@ class _CollasipleOrderCardState extends State<_CollasipleOrderCard> {
                                   color: SGColors.gray4)),
                         ]),
                       ],
-                      if (widget.storeOrderHistory.receiveFoodType != "DELIVERY") ... [
+                      if (widget.storeOrderHistory.receiveFoodType == "DELIVERY") ... [
                         SizedBox(height: SGSpacing.p3),
                         Row(children: [
                           SGFlexible(
@@ -692,7 +692,7 @@ class _OrderHistoryDetailScreen extends StatelessWidget {
                     left: "접수 시각", right: storeOrderHistory.receivedDate, overflow: false, width: 201),
                 SizedBox(height: SGSpacing.p4),
                 DataTableRow(
-                    left: "완료 시각", right: storeOrderHistory.completedDate, overflow: false, width: 201),
+                    left: "완료 시각", right: storeOrderHistory.completedDate == '' ? '-' : storeOrderHistory.completedDate, overflow: false, width: 201),
               ],
             )
           ])),

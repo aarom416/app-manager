@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:singleeat/core/components/action_button.dart';
@@ -37,6 +39,8 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
   late String value;
   final int maxStoreIntroductionLength = 300;
   final int maxLength = 100;
+
+  Timer? _debounce;
 
   bool hasBadWord = false;
   TextStyle baseStyle = const TextStyle(fontFamily: "Pretendard", fontSize: FontSize.small);
@@ -97,13 +101,16 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
           maxHeight: 58,
         ),
         child: SGActionButton(
-          onPressed: () {
+          onPressed: (hasBadWord || controller.text.isEmpty)
+              ? () {}
+              : () {
             widget.onSubmit(controller.text);
           },
           label: widget.buttonText,
-          disabled: controller.text.isEmpty || hasBadWord,
+          disabled: hasBadWord || controller.text.isEmpty,
         ),
       ),
+
       body: SGContainer(
         color: const Color(0xFFFAFAFA),
         padding: EdgeInsets.symmetric(
@@ -132,7 +139,7 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
                       maxLines: null,
                       keyboardType: TextInputType.multiline,
                       style: baseStyle.copyWith(color: SGColors.black),
-                      onChanged: (text) async {
+                      onChanged: (text) {
                         final maxLimit = widget.fieldLabel == "가게 소개" ? maxStoreIntroductionLength : maxLength;
 
                         if (text.length > maxLimit) {
@@ -142,7 +149,10 @@ class _TextAreaScreenState extends State<TextAreaScreen> {
                           );
                         }
 
-                        await _checkBadWord(text);
+                        if (_debounce?.isActive ?? false) _debounce?.cancel();
+                        _debounce = Timer(const Duration(milliseconds: 100), () {
+                          _checkBadWord(text);
+                        });
 
                         setState(() {
                           value = controller.text;

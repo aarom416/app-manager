@@ -50,9 +50,13 @@ class _OrderMenuListState extends State<OrderMenuList> {
                     size: FontSize.small,
                     color: widget.colorType)),
           ]),
-          SizedBox(height: SGSpacing.p3),
+          SizedBox(height: SGSpacing.p2),
           ...widget.orderMenuOptionDTOList
-              .map((e) => _OrderMenuOptionList(orderMenuOption: e)),
+              .map((e) => Padding(
+                padding: EdgeInsets.only(bottom: SGSpacing.p1),
+                child: _OrderMenuOptionList(orderMenuOption: e, colorType: widget.colorType,),
+              )),
+          SizedBox(height: SGSpacing.p3),
         ],
       ),
     );
@@ -60,8 +64,10 @@ class _OrderMenuListState extends State<OrderMenuList> {
 }
 
 class _OrderMenuOptionList extends StatefulWidget {
-  _OrderMenuOptionList({super.key, required this.orderMenuOption});
+  _OrderMenuOptionList({super.key, required this.orderMenuOption, required this.colorType});
   final OrderMenuOptionDTO orderMenuOption;
+  Color colorType;
+
   @override
   State<_OrderMenuOptionList> createState() => _OrderMenuOptionListState();
 }
@@ -76,7 +82,7 @@ class _OrderMenuOptionListState extends State<_OrderMenuOptionList> {
             child: SGTypography.body(
               "ㄴ ${widget.orderMenuOption.menuOptionName}",
               size: FontSize.small,
-              color: SGColors.gray1,
+              color: widget.colorType,
             )),
         SGFlexible(
             flex: 1,
@@ -84,7 +90,7 @@ class _OrderMenuOptionListState extends State<_OrderMenuOptionList> {
               child: SGTypography.body(
               widget.orderMenuOption.count.toString(),
               size: FontSize.small,
-              color: SGColors.gray1,
+              color: widget.colorType,
             ))),
         SGFlexible(
             flex: 1,
@@ -92,7 +98,7 @@ class _OrderMenuOptionListState extends State<_OrderMenuOptionList> {
               widget.orderMenuOption.menuOptionPrice.toKoreanCurrency,
               align: TextAlign.right,
               size: FontSize.small,
-              color: SGColors.gray1,
+              color: widget.colorType,
             )),
       ]),
     );

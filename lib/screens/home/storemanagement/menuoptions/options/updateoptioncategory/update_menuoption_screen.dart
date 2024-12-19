@@ -116,7 +116,7 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                                       setState(() {
                                         menuOptionModel = menuOptionModel.copyWith(price: value);
                                       });
-                                      showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
+                                      showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
                                     }
                                   });
                                 },
@@ -250,8 +250,8 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                                           logger.d("updateMenuOptionInfo responseStatusCode $responseStatusCode");
                                           if (responseStatusCode == 200) {
                                             if (mounted) {
-                                              Navigator.of(ctx).pop();
                                               showGlobalSnackBar(context, "성공적으로 삭제되었습니다.");
+                                              Navigator.pop(context);
                                             }
                                           } else {
                                             if (responseStatusCode == 409) {

@@ -92,12 +92,17 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                       // half of appbar's height
                       SizedBox(height: SGSpacing.p7),
                     ]))
-              : ListView(controller: scrollController, children: [
-                  ...state.notification
-                      .map((notification) =>
-                          _NotificationCard(notification: notification))
-                      .toList(),
-                ]),
+              : ListView(
+                    controller: scrollController,
+                    children: [
+                        ...state.notification
+                            .map((notification) =>
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: SGSpacing.p2),
+                                  child: _NotificationCard(notification: notification),
+                                ))
+                            .toList(),
+                      ]),
         ));
   }
 }

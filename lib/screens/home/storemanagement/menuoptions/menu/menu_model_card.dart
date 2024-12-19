@@ -32,7 +32,12 @@ class MenuModelCard extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(SGSpacing.p4),
-                    child: Image.network(
+                    child: menuModel.menuPictureURL.isEmpty ?
+                    Container(
+                        width: SGSpacing.p18,
+                        height: SGSpacing.p18,
+                        child: Image.asset("assets/images/default_poke.png")
+                    ) :  Image.network(
                       menuModel.menuPictureURL,
                       width: SGSpacing.p18,
                       height: SGSpacing.p18,

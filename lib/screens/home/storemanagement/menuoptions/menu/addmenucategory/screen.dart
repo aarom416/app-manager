@@ -62,7 +62,9 @@ class _AddMenuCategoryScreenState extends ConsumerState<AddMenuCategoryScreen> {
               onPressed: () {
                 if (menuCategoryName.isNotEmpty) {
                   provider
-                      .createMenuCategory(MenuCategoryModel(
+                      .createMenuCategory(
+                    context,
+                      MenuCategoryModel(
                     menuCategoryName: menuCategoryName,
                     menuIntroduction: menuCategoryDescription,
                     menuList: selectedMenuList,

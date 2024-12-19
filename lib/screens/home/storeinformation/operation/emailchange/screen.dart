@@ -86,9 +86,11 @@ class _EmailEditScreenState extends ConsumerState<EmailEditScreen> {
               maxHeight: 58),
           child: SGActionButton(
               onPressed: () {
-                widget.onSubmit(
-                    '${controller.text}@${emailDomainController.text}');
-                Navigator.of(context).pop();
+                if (isVerify) {
+                  widget.onSubmit(
+                      '${controller.text}@${emailDomainController.text}');
+                  Navigator.of(context).pop();
+                }
               },
               disabled: isVerify ? false : true,
               label: widget.buttonText)),

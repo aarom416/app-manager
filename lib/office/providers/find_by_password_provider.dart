@@ -1,10 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:singleeat/core/components/dialog.dart';
 import 'package:singleeat/core/hives/user_hive.dart';
 import 'package:singleeat/core/routers/app_router.dart';
 import 'package:singleeat/core/routers/app_routes.dart';
 import 'package:singleeat/office/models/result_fail_response_model.dart';
 import 'package:singleeat/office/services/find_by_password_service.dart';
+
+import '../../core/components/container.dart';
+import '../../core/components/sizing.dart';
+import '../../core/components/spacing.dart';
+import '../../core/components/typography.dart';
+import '../../core/constants/colors.dart';
 
 part 'find_by_password_provider.freezed.dart';
 part 'find_by_password_provider.g.dart';
@@ -28,7 +36,7 @@ class FindByPasswordNotifier extends _$FindByPasswordNotifier {
     state = state.copyWith(passwordConfirm: passwordConfirm);
   }
 
-  void findPassword() async {
+  Future<int> findPassword() async {
     final response = await ref
         .read(findByPasswordServiceProvider)
         .findPassword(loginId: state.loginId);
@@ -36,14 +44,14 @@ class FindByPasswordNotifier extends _$FindByPasswordNotifier {
     switch (response.statusCode) {
       case 200:
         state = state.copyWith(status: FindByPasswordStatus.step2);
-        break;
+        return 200;
       case 404:
       default:
         final error = ResultFailResponseModel.fromJson(response.data);
         state = state.copyWith(
             status: FindByPasswordStatus.error,
             error: error.copyWith(errorMessage: '해당 아이디로 가입된\n사실이 없습니다'));
-        break;
+        return 404;
     }
   }
 

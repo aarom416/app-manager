@@ -326,11 +326,15 @@ class _UpdateOptionCategoryScreenState
                                 ClipRRect(
                                   borderRadius:
                                       BorderRadius.circular(SGSpacing.p4),
-                                  child: Image.network(
+                                  child: cuisine.menuPictureURL.isNotEmpty ?Image.network(
                                     cuisine.menuPictureURL,
                                     width: SGSpacing.p18,
                                     height: SGSpacing.p18,
                                     fit: BoxFit.cover,
+                                  ) :  Container(
+                                      width: SGSpacing.p18,
+                                      height: SGSpacing.p18,
+                                      child: Image.asset("assets/images/default_poke.png")
                                   ),
                                 ),
                                 if (cuisine.soldOutStatus == 1)
@@ -402,7 +406,9 @@ class _UpdateOptionCategoryScreenState
                               onTap: () {
                                 provider
                                     .deleteMenuOptionCategory(
-                                        optionCategoryModel)
+                                  context,
+                                    optionCategoryModel
+                                )
                                     .then(
                                   (success) {
                                     logger.d(

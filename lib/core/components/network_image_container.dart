@@ -91,22 +91,13 @@ class _NetworkImageContainerState extends State<NetworkImageContainer> {
                 Object error,
                 StackTrace? stackTrace,
               ) {
-                return Container(
-                  width: widget.width,
-                  height: widget.height,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEEEEEE),
-                    borderRadius: BorderRadius.circular(widget.borderRadius),
-                  ),
-                  child: const Text(
-                    "이미지 로드 실패",
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    textAlign: TextAlign.center,
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(widget.borderRadius),
+                  child: Image.asset(
+                    'assets/images/home-store.png',
+                    width: widget.width,
+                    height: widget.height,
+                    fit: BoxFit.cover,
                   ),
                 );
               },

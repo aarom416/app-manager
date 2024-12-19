@@ -37,7 +37,6 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
     SelectionOption(label: "50분", value: 50),
     SelectionOption(label: "60분", value: 60),
     SelectionOption(label: "70분", value: 70),
-    SelectionOption(label: "80분", value: 80),
   ];
 
   List<SelectionOption<int>> getAvailableMaxOptions(int minDeliveryTime) {
