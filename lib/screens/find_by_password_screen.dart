@@ -15,6 +15,8 @@ import 'package:singleeat/office/providers/authenticate_with_phone_number_provid
 import 'package:singleeat/office/providers/find_by_password_provider.dart';
 import 'package:singleeat/screens/authenticate_with_phone_number_screen.dart';
 
+import '../core/components/flex.dart';
+
 class FindByPasswordScreen extends ConsumerStatefulWidget {
   const FindByPasswordScreen({super.key});
 
@@ -75,13 +77,73 @@ class _FindByPasswordScreenState extends ConsumerState<FindByPasswordScreen> {
         controller: pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: [
-          _LookUpUsernameScreen(onPrev: () {
-            FocusScope.of(context).unfocus();
-
-            Navigator.pop(context);
-          }, onNext: () {
-            ref.read(findByPasswordNotifierProvider.notifier).findPassword();
-          }),
+          _LookUpUsernameScreen(
+            onPrev: () {
+              FocusScope.of(context).unfocus();
+              Navigator.pop(context);
+            },
+            onNext: () async {
+              int statusCode = await ref.read(findByPasswordNotifierProvider.notifier).findPassword();
+              final state = ref.read(findByPasswordNotifierProvider);
+              if (statusCode == 404) {
+                showDialog(
+                  context: context,
+                  builder: (ctx) {
+                    return Dialog(
+                      insetPadding: EdgeInsets.all(SGSpacing.p10),
+                      backgroundColor: Colors.transparent,
+                      child: SGContainer(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(SGSpacing.p3),
+                        padding: EdgeInsets.all(SGSpacing.p4).copyWith(bottom: 0),
+                        child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SGContainer(
+                                padding:
+                                EdgeInsets.only(bottom: SGSpacing.p5, top: SGSpacing.p6),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SGTypography.body(state.error.errorMessage, color: SGColors.black, size: FontSize.large, align: TextAlign.center, weight: FontWeight.w600),
+                                    SizedBox(
+                                      height: SGSpacing.p7,
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Container(
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                            color: SGColors.primary,
+                                            borderRadius: BorderRadius.circular(12)
+                                        ) ,
+                                        child: Center(
+                                          child: Text(
+                                            "확인",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: FontSize.medium,
+                                                fontWeight: FontWeight.w500
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ]),
+                      ),
+                    );
+                  },
+                );
+              }
+            },
+          ),
           AuthenticateWithPhoneNumberScreen(
             title: "비밀번호 찾기",
             onPrev: () {

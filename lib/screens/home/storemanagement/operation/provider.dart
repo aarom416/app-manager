@@ -36,9 +36,10 @@ class OperationNotifier extends _$OperationNotifier {
       }).toList();
 
       var breakTimeDetailDTOList =
-          operationDataModel.breakTimeDetailDTOList.toList();
+      operationDataModel.breakTimeDetailDTOList.toList();
       breakTimeDetailDTOList = breakTimeDetailDTOList.map((breakTime) {
-        return breakTime.copyWith(toggle: true);
+        final isToggleTrue = (breakTime.startTime == "00:00" && breakTime.endTime == "00:00");
+        return breakTime.copyWith(toggle: !isToggleTrue);
       }).toList();
 
       state = state.copyWith(

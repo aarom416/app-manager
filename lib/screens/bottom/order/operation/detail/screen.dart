@@ -66,6 +66,7 @@ class _DataTableRow extends StatelessWidget {
             color: SGColors.whiteForDarkMode,
             weight: FontWeight.w500,
             size: FontSize.small,
+            align: TextAlign.right,
           ),
         ),
       ],
@@ -759,7 +760,7 @@ class _OrderInformation extends StatelessWidget {
           ...order.orderMenuDTOList.map((e) => OrderMenuList(
                 orderMenuOptionDTOList: order.orderMenuOptionDTOList[0],
                 orderMenu: e,
-                colorType: SGColors.whiteForDarkMode,
+                colorType: SGColors.white,
               )),
           SizedBox(height: SGSpacing.p4),
           Divider(height: 1, thickness: 1, color: SGColors.lineDark2),
@@ -858,7 +859,7 @@ class _OrderInformation extends StatelessWidget {
               weight: FontWeight.w600,
         ),
           SizedBox(height: SGSpacing.p4),
-          _DataTableRow(left: "배달 주소", right: order.address.substring(0, 20)),
+          _DataTableRow(left: "배달 주소", right: order.address),
           if (order.receiveFoodType == "DELIVERY" &&
                   tab == "접수" ||
                tab == "완료") ...[

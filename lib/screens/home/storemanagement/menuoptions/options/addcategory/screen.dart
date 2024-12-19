@@ -119,6 +119,7 @@ class _AddOptionCategoryScreenState
               onNext: () => {
                 provider
                     .createOptionCategory(
+                  context,
                   menuOptionCategoryName,
                   selectedMenuOptions,
                   essentialStatus,

@@ -319,7 +319,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                                 ? state.deliveryDailyCount[0].toDouble() +
                                     state.takeoutDailyCount[0].toDouble()
                                 : 0.0,
-                            itemType: "추천"),
+                            itemType: "주문"),
                       ],
                       [
                         BarChartItem(
@@ -327,7 +327,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                                 ? state.deliveryDailyCount[1].toDouble() +
                                     state.takeoutDailyCount[1].toDouble()
                                 : 0.0,
-                            itemType: "추천"),
+                            itemType: "주문"),
                       ],
                       [
                         BarChartItem(
@@ -335,7 +335,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                                 ? state.deliveryDailyCount[2].toDouble() +
                                     state.takeoutDailyCount[2].toDouble()
                                 : 0.0,
-                            itemType: "추천"),
+                            itemType: "주문"),
                       ],
                       [
                         BarChartItem(
@@ -343,7 +343,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                                 ? state.deliveryDailyCount[3].toDouble() +
                                     state.takeoutDailyCount[3].toDouble()
                                 : 0.0,
-                            itemType: "추천"),
+                            itemType: "주문"),
                       ],
                       [
                         BarChartItem(
@@ -351,7 +351,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                                 ? state.deliveryDailyCount[4].toDouble() +
                                     state.takeoutDailyCount[4].toDouble()
                                 : 0.0,
-                            itemType: "추천"),
+                            itemType: "주문"),
                       ],
                       [
                         BarChartItem(
@@ -359,7 +359,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                                 ? state.deliveryDailyCount[5].toDouble() +
                                     state.takeoutDailyCount[5].toDouble()
                                 : 0.0,
-                            itemType: "추천"),
+                            itemType: "주문"),
                       ],
                       [
                         BarChartItem(
@@ -367,7 +367,7 @@ class _StatisticsScreenState extends ConsumerState<StatisticsScreen> {
                                 ? state.deliveryDailyCount[6].toDouble() +
                                     state.takeoutDailyCount[6].toDouble()
                                 : 0.0,
-                            itemType: "추천"),
+                            itemType: "주문"),
                       ],
                     ],
                   ))
@@ -779,7 +779,7 @@ class HistogramState extends State<Histogram> {
                           ...widget.data.items[groupIndex]
                               .map((e) => [
                                     TextSpan(
-                                      text: "\n주문",
+                                      text: "\n${e.itemType}",
                                       style: TextStyle(
                                           color: SGColors.black,
                                           fontSize: FontSize.tiny,
@@ -868,6 +868,7 @@ class HistogramState extends State<Histogram> {
                   rodStackItems: extractRodStackItems(item),
                   borderRadius: BorderRadius.circular(SGSpacing.p1),
                   width: barsWidth,
+                  color: SGColors.primary
                 ),
               ],
             ))
@@ -886,6 +887,7 @@ class HistogramState extends State<Histogram> {
 
   Map<String, Color> labelToColorMap = {
     "추천": SGColors.primary,
+    "주문": SGColors.primary,
     "배달": SGColors.warningOrange,
     "포장": SGColors.success,
   };

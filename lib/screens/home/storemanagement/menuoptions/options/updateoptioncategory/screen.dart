@@ -406,7 +406,9 @@ class _UpdateOptionCategoryScreenState
                               onTap: () {
                                 provider
                                     .deleteMenuOptionCategory(
-                                        optionCategoryModel)
+                                  context,
+                                    optionCategoryModel
+                                )
                                     .then(
                                   (success) {
                                     logger.d(

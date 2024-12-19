@@ -264,18 +264,22 @@ class _Page_1_NutritionState extends ConsumerState<_Page_1_Nutrition> {
                 Expanded(
                     child: GestureDetector(
                       onTap: () {
-                         provider
-                            .createOption(context, MenuOptionModel(
-                          menuOptionCategoryId: widget.menuOptionCategoryId,
-                          optionContent: menuOptionModel.optionContent,
-                          price: menuOptionModel.price ,
-                          nutrition: menuOptionModel.nutrition,
-                        )
-                         ).then((resultFailResponseModel) {
-                           widget.onNext();
-                           showGlobalSnackBar(context, "성공적으로 등록되었습니다.");
-                           ref.read(menuOptionsNotifierProvider.notifier).getMenuOptionInfo();
-                         });
+                        if(widget.menuOptionCategoryId == -1) {
+                          widget.onNext();
+                        } else {
+                          provider
+                              .createOption(context, MenuOptionModel(
+                            menuOptionCategoryId: widget.menuOptionCategoryId,
+                            optionContent: menuOptionModel.optionContent,
+                            price: menuOptionModel.price ,
+                            nutrition: menuOptionModel.nutrition,
+                          )
+                          ).then((resultFailResponseModel) {
+
+                            showGlobalSnackBar(context, "성공적으로 등록되었습니다.");
+                            ref.read(menuOptionsNotifierProvider.notifier).getMenuOptionInfo();
+                          });
+                        }
                       },
                       child: SGContainer(
                           color: SGColors.primary,

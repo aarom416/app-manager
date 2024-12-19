@@ -116,7 +116,7 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                                       setState(() {
                                         menuOptionModel = menuOptionModel.copyWith(price: value);
                                       });
-                                      showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
+                                      showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
                                     }
                                   });
                                 },

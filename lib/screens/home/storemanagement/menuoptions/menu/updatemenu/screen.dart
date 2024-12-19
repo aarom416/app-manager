@@ -461,7 +461,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
-                                        provider.deleteMenu(menuModel).then((resultFailResponseModel) {
+                                        provider.deleteMenu(context, menuModel).then((resultFailResponseModel) {
                                           logger.d("deleteMenu resultFailResponseModel ${resultFailResponseModel.toFormattedJson()}");
                                           if (resultFailResponseModel.errorCode.isEmpty) {
                                             showGlobalSnackBarWithoutContext("성공적으로 삭제되었습니다.");
