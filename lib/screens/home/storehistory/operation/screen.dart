@@ -198,16 +198,16 @@ class _EventHistoryScreenState extends ConsumerState<EventHistoryScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ...state.storeHistoryList.map(
-                            (StoreHistoryModel event) {
-                          return _EventCard(
-                              key: Key(event.hashCode.toString()),
-                              event: event);
-                        },
-                      ),
+                      ...state.storeHistoryList.mapIndexed((index, StoreHistoryModel event) {
+                        return _EventCard(
+                          key: ValueKey('${event.hashCode}_$index'), // 고유 키 생성
+                          event: event,
+                        );
+                      }),
                     ],
                   ),
                 ),
+
               ]),
         ));
   }

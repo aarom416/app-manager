@@ -107,7 +107,7 @@ class DeliveryService {
       required List<DeliveryTipModel> storeDeliveryTipDTOList}) async {
     try {
       return await ref.read(requestApiProvider).post(
-        RestApiUri.updatePickupTime,
+        RestApiUri.updateDeliveryTip,
         data: {
           'storeId': UserHive.getBox(key: UserKey.storeId),
           'contentList': storeDeliveryTipDTOList.map((deliveryTipModel) {

@@ -115,7 +115,7 @@ class MenuOptionsService {
           'storeId': storeId,
           'storeMenuCategoryId': menuCategoryModel.storeMenuCategoryId,
           'menuCategoryName': menuCategoryModel.menuCategoryName,
-          'menuIntroduction': menuCategoryModel.menuIntroduction,
+          'menuDescription': menuCategoryModel.menuIntroduction,
         },
       );
     } on DioException catch (e) {

@@ -172,8 +172,8 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
               }
             },
             label: "변경하기",
-            disabled: widget.minimumOrderPrice == minimumOrderPrice &&
-                widget.baseDeliveryTip == baseDeliveryTip &&
+            disabled: baseDeliveryTip == widget.baseDeliveryTip &&
+                minimumOrderPrice == widget.minimumOrderPrice &&
                 const DeepCollectionEquality().equals(
                     widget.storeDeliveryTipDTOList, storeDeliveryTipDTOList),
           )),
@@ -194,77 +194,91 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
                   size: FontSize.small,
                   weight: FontWeight.w600),
               SizedBox(height: SGSpacing.p4),
-              Row(children: [
-                Expanded(
-                  child: SGTextFieldWrapper(
+              Row(
+                children: [
+                  Expanded(
+                    child: SGTextFieldWrapper(
                       child: Row(
-                    children: [
-                      Expanded(
-                        child: NumericTextField(
-                          initialValue: widget.minimumOrderPrice,
-                          decoration: InputDecoration(
-                            hintText: "",
-                            hintStyle: TextStyle(color: SGColors.gray4),
-                            contentPadding:
-                                EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
-                            border: const OutlineInputBorder(
-                                borderRadius: BorderRadius.zero,
-                                borderSide: BorderSide.none),
+                        children: [
+                          Expanded(
+                            child: NumericTextField(
+                              initialValue: minimumOrderPrice,
+                              decoration: InputDecoration(
+                                hintText: "",
+                                hintStyle: TextStyle(color: SGColors.gray4),
+                                contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
+                                border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                              ),
+                              onValueChanged: (value) {
+                                setState(() {
+                                  minimumOrderPrice = value;
+                                });
+                                if (minimumOrderPrice >= baseDeliveryTip) {
+                                  showFailDialogWithImage(
+                                    mainTitle: "금액 설정 오류",
+                                    subTitle: "최소 금액은 최대 금액보다 작아야 합니다.",
+                                  );
+                                }
+                              },
+                            ),
                           ),
-                          onValueChanged: (minimumOrderPrice) {
-                            setState(() {
-                              this.minimumOrderPrice = minimumOrderPrice;
-                            });
-                            // print("Updated minimumOrderPrice tip: $minimumOrderPrice");
-                          },
-                        ),
-                      ),
-                      SGContainer(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: SGSpacing.p4),
-                          child: SGTypography.body("원 이상",
+                          SGContainer(
+                            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
+                            child: SGTypography.body(
+                              "원 이상",
                               color: SGColors.gray4,
                               size: FontSize.small,
-                              weight: FontWeight.w500)),
-                    ],
-                  )),
-                ),
-                SizedBox(width: SGSpacing.p2),
-                Expanded(
-                  child: SGTextFieldWrapper(
-                      child: Row(
-                    children: [
-                      Expanded(
-                        child: NumericTextField(
-                          initialValue: widget.baseDeliveryTip,
-                          decoration: InputDecoration(
-                            hintText: "",
-                            hintStyle: TextStyle(color: SGColors.gray4),
-                            contentPadding:
-                                EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
-                            border: const OutlineInputBorder(
-                                borderRadius: BorderRadius.zero,
-                                borderSide: BorderSide.none),
+                              weight: FontWeight.w500,
+                            ),
                           ),
-                          onValueChanged: (baseDeliveryTip) {
-                            setState(() {
-                              this.baseDeliveryTip = baseDeliveryTip;
-                            });
-                            // print("Updated delivery tip: $baseDeliveryTip");
-                          },
-                        ),
+                        ],
                       ),
-                      SGContainer(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: SGSpacing.p4),
-                          child: SGTypography.body("원",
+                    ),
+                  ),
+                  SizedBox(width: SGSpacing.p2),
+                  Expanded(
+                    child: SGTextFieldWrapper(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: NumericTextField(
+                              initialValue: baseDeliveryTip,
+                              decoration: InputDecoration(
+                                hintText: "",
+                                hintStyle: TextStyle(color: SGColors.gray4),
+                                contentPadding: EdgeInsets.all(SGSpacing.p4).copyWith(right: 0),
+                                border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
+                              ),
+                              onValueChanged: (value) {
+                                setState(() {
+                                  baseDeliveryTip = value;
+                                });
+                                if (minimumOrderPrice >= baseDeliveryTip) {
+                                  showFailDialogWithImage(
+                                    mainTitle: "금액 설정 오류",
+                                    subTitle: "최대 금액은 최소 금액보다 커야 합니다.",
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                          SGContainer(
+                            padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
+                            child: SGTypography.body(
+                              "원 미만",
                               color: SGColors.gray4,
                               size: FontSize.small,
-                              weight: FontWeight.w500)),
-                    ],
-                  )),
-                ),
-              ])
+                              weight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ]),
 
             SizedBox(height: SGSpacing.p5),

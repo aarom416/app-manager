@@ -120,7 +120,7 @@ class _DeliveryScreenState extends ConsumerState<DeliveryScreen> {
                                   storeDeliveryTipDTOList: state.storeDeliveryTipDTOList,
                                   deliveryTipInfo: state.deliveryDataModel.deliveryTipInfo,
                                   onSaveFunction: (baseDeliveryTip, minimumOrderPrice, storeDeliveryTipDTOList) {
-                                    // print("onSaveFunction $baseDeliveryTip $minimumOrderPrice $storeDeliveryTipDTOList");
+                                    print("onSaveFunction $baseDeliveryTip $minimumOrderPrice $storeDeliveryTipDTOList");
                                     provider.updateDeliveryTip(baseDeliveryTip, minimumOrderPrice, storeDeliveryTipDTOList);
                                   },
                                 )));

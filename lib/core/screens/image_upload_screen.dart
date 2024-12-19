@@ -85,8 +85,20 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       return;
     }
 
+
+    // 중복 이미지 경로 확인
+    if (widget.imagePaths.contains(imagePath)) {
+      showFailDialogWithImage(
+        context: context,
+        mainTitle: "이미 추가된 이미지",
+        subTitle: "해당 이미지는 이미 추가되었습니다.",
+      );
+      return;
+    }
+
     setState(() {
       widget.imagePaths.add(imagePath);
+      print(widget.imagePaths);
     });
   }
 
@@ -96,17 +108,6 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
       widget.imagePaths.removeAt(index);
     });
   }
-
-  /// 이미지 슬롯 생성
-  List<(int, String?)> get imageSlots => [
-        ...widget.imagePaths,
-        ...List.generate(
-            widget.maximumImages - widget.imagePaths.length, (_) => null),
-        ...List.generate(
-            (widget.maximumImages + columns - 1) ~/ columns * columns -
-                widget.maximumImages,
-            (_) => null),
-      ].mapIndexed((index, value) => (index, value)).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +120,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
         child: SGActionButton(
           onPressed: () {
             widget.onSubmit(widget.imagePaths);
-            // showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
+            showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
             Navigator.pop(context);
           },
           disabled: widget.imagePaths.isEmpty,
