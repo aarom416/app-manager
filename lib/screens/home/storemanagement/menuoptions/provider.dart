@@ -177,13 +177,98 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
     try {
       Loading.show(context);
       final response = await ref.read(menuOptionsServiceProvider).createOption(
-          storeId: UserHive.getBox(key: UserKey.storeId),
-          newMenuOptionModel: newMenuOptionModel);
+            storeId: UserHive.getBox(key: UserKey.storeId),
+            newMenuOptionModel: newMenuOptionModel,
+          );
       if (response.statusCode == 200) {
-        // MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(storeMenuCategoryDTOList: [...state.menuOptionsDataModel.storeMenuCategoryDTOList, newMenuCategoryModel]);
-        // setState(updatedMenuOptionsDataModel);
-        // state = state.copyWith(error: const ResultFailResponseModel());
-        getMenuOptionInfo();
+        final json = ResultResponseModel.fromJson(response.data).data;
+        final resultMenuOption = MenuOptionModel(
+          menuOptionId: (json['menuOptionId'] ?? 0) as int,
+          menuOptionCategoryId: (json['menuOptionCategoryId'] ?? 0) as int,
+          optionContent: (json['optionContent'] ?? '') as String,
+          price: (json['menuOptionPrice'] ?? 0) as int,
+          soldOutStatus: 0,
+          nutrition: NutritionModel(
+            servingAmount: ((json['servingAmount'] ?? 0) as double).toInt(),
+            servingAmountType: (json['servingAmountType'] ?? 'g') as String,
+            calories: ((json['calories'] ?? 0) as double).toInt(),
+            carbohydrate: ((json['carbohydrate'] ?? 0) as double).toInt(),
+            protein: ((json['protein'] ?? 0) as double).toInt(),
+            fat: ((json['fat'] ?? 0) as double).toInt(),
+            sugar: ((json['sugar'] ?? 0) as double).toInt(),
+            saturatedFat: ((json['saturatedFat'] ?? 0) as double).toInt(),
+            natrium: ((json['natrium'] ?? 0) as double).toInt(),
+          ),
+        );
+
+        final updatedMenuCategoryList =
+            state.menuCategoryList.map((menuCategory) {
+          final updatedMenuList = menuCategory.menuList.map((menu) {
+            final updatedMenuCategoryOptions =
+                menu.menuCategoryOptions.map((menuCategoryOption) {
+              if (menuCategoryOption.menuOptionCategoryId ==
+                  resultMenuOption.menuOptionCategoryId) {
+                final updateMenuCategoryOption = menuCategoryOption.copyWith(
+                  menuOptions: [
+                    ...menuCategoryOption.menuOptions,
+                    resultMenuOption,
+                  ],
+                );
+
+                return updateMenuCategoryOption;
+              }
+              return menuCategoryOption;
+            }).toList();
+
+            return menu.copyWith(
+                menuCategoryOptions: updatedMenuCategoryOptions);
+          }).toList();
+
+          return menuCategory.copyWith(menuList: updatedMenuList);
+        }).toList();
+
+        final filteredMenuCategoryOption = updatedMenuCategoryList
+            .expand((menuCategory) => menuCategory.menuList)
+            .expand((menu) => menu.menuCategoryOptions)
+            .firstWhere((menuCategoryOption) =>
+                menuCategoryOption.menuOptionCategoryId ==
+                resultMenuOption.menuOptionCategoryId);
+
+        final updatedMenuOptionCategoryDTOList = [
+          ...state.menuOptionCategoryDTOList
+        ];
+
+        final existingIndex = updatedMenuOptionCategoryDTOList.indexWhere(
+            (option) =>
+                option.menuOptionCategoryId ==
+                filteredMenuCategoryOption.menuOptionCategoryId);
+
+        if (existingIndex != -1) {
+          updatedMenuOptionCategoryDTOList[existingIndex] =
+              filteredMenuCategoryOption;
+        } else {
+          updatedMenuOptionCategoryDTOList.add(filteredMenuCategoryOption);
+        }
+
+        final storeMenuOptionDTOList = [
+          ...state.storeMenuOptionDTOList,
+          resultMenuOption,
+        ];
+
+        state = state.copyWith(
+          menuCategoryList: updatedMenuCategoryList,
+          menuOptionCategoryDTOList: updatedMenuOptionCategoryDTOList,
+          storeMenuOptionDTOList: storeMenuOptionDTOList,
+        );
+
+        MenuOptionsDataModel updatedMenuOptionsDataModel =
+            state.menuOptionsDataModel.copyWith(
+          storeMenuCategoryDTOList: updatedMenuCategoryList,
+          storeMenuOptionDTOList: storeMenuOptionDTOList,
+        );
+
+        setState(updatedMenuOptionsDataModel);
+
         return null;
       } else {
         state = state.copyWith(

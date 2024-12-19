@@ -255,7 +255,11 @@ class _UpdateOptionCategoryScreenState
                   ),
                 ]),
               ),
-              ...optionCategoryModel.menuOptions
+              ...state.menuOptionCategoryDTOList
+                  .firstWhere((menuOptionCategory) =>
+                      menuOptionCategory.menuOptionCategoryId ==
+                      optionCategoryModel.menuOptionCategoryId)
+                  .menuOptions
                   .mapIndexed((index, option) => [
                         if (index == 0)
                           SizedBox(height: SGSpacing.p5)
@@ -326,16 +330,18 @@ class _UpdateOptionCategoryScreenState
                                 ClipRRect(
                                   borderRadius:
                                       BorderRadius.circular(SGSpacing.p4),
-                                  child: cuisine.menuPictureURL.isNotEmpty ?Image.network(
-                                    cuisine.menuPictureURL,
-                                    width: SGSpacing.p18,
-                                    height: SGSpacing.p18,
-                                    fit: BoxFit.cover,
-                                  ) :  Container(
-                                      width: SGSpacing.p18,
-                                      height: SGSpacing.p18,
-                                      child: Image.asset("assets/images/default_poke.png")
-                                  ),
+                                  child: cuisine.menuPictureURL.isNotEmpty
+                                      ? Image.network(
+                                          cuisine.menuPictureURL,
+                                          width: SGSpacing.p18,
+                                          height: SGSpacing.p18,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Container(
+                                          width: SGSpacing.p18,
+                                          height: SGSpacing.p18,
+                                          child: Image.asset(
+                                              "assets/images/default_poke.png")),
                                 ),
                                 if (cuisine.soldOutStatus == 1)
                                   Positioned.fill(
@@ -406,9 +412,7 @@ class _UpdateOptionCategoryScreenState
                               onTap: () {
                                 provider
                                     .deleteMenuOptionCategory(
-                                  context,
-                                    optionCategoryModel
-                                )
+                                        context, optionCategoryModel)
                                     .then(
                                   (success) {
                                     logger.d(
