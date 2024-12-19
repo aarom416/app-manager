@@ -795,7 +795,97 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
                 appliedMenus: appliedMenus,
               );
       if (response.statusCode == 200) {
-        getMenuOptionInfo();
+        final data = ResultResponseModel.fromJson(response.data).data;
+
+        final newMenuOptions = (data['menuOptionDTOList'] as List)
+            .map(
+              (json) => MenuOptionModel(
+                menuOptionId: (json['menuOptionId'] ?? 0) as int,
+                menuOptionCategoryId:
+                    (json['menuOptionCategoryId'] ?? 0) as int,
+                optionContent: (json['menuOptionName'] ?? '') as String,
+                price: (json['menuOptionPrice'] ?? 0) as int,
+                soldOutStatus: 0,
+                nutrition: NutritionModel(
+                  servingAmount:
+                      ((json['servingAmount'] ?? 0) as double).toInt(),
+                  servingAmountType:
+                      (json['servingAmountType'] ?? 'g') as String,
+                  calories: ((json['calories'] ?? 0) as double).toInt(),
+                  carbohydrate: ((json['carbohydrate'] ?? 0) as double).toInt(),
+                  protein: ((json['protein'] ?? 0) as double).toInt(),
+                  fat: ((json['fat'] ?? 0) as double).toInt(),
+                  sugar: ((json['sugar'] ?? 0) as double).toInt(),
+                  saturatedFat: ((json['saturatedFat'] ?? 0) as double).toInt(),
+                  natrium: ((json['natrium'] ?? 0) as double).toInt(),
+                ),
+              ),
+            )
+            .toList();
+
+        final menuOptionCategoryDTOList =
+            state.menuOptionCategoryDTOList.toList();
+        menuOptionCategoryDTOList.add(MenuOptionCategoryModel(
+          menuOptionCategoryId: (data['menuOptionCategoryId'] ?? 0) as int,
+          menuOptionCategoryName:
+              (data['menuOptionCategoryName'] ?? '') as String,
+          essentialStatus: (data['essentialStatus'] ?? 0) as int,
+          minChoice: (data['minChoice'] ?? 0) as int,
+          maxChoice: (data['maxChoice'] ?? 0) as int,
+          menuOptions: newMenuOptions,
+        ));
+
+        final newMenuOptionRelationship =
+            (data['menuOptionRelationshipDTOList'] as List)
+                .map((json) => MenuOptionRelationshipModel.fromJson(json))
+                .toList();
+        final menuOptionRelationshipDTOList =
+            state.menuOptionRelationshipDTOList.toList();
+        menuOptionRelationshipDTOList.addAll(newMenuOptionRelationship);
+
+        final updatedMenuCategoryList =
+            state.menuCategoryList.map((menuCategory) {
+          if (appliedMenus.any((appliedMenu) =>
+              appliedMenu.storeMenuCategoryId ==
+              menuCategory.storeMenuCategoryId)) {
+            return menuCategory.copyWith(
+              menuList: menuCategory.menuList.map((menu) {
+                if (appliedMenus
+                    .any((appliedMenu) => appliedMenu.menuId == menu.menuId)) {
+                  final updatedMenuCategoryOptions =
+                      menu.menuCategoryOptions.toList();
+
+                  updatedMenuCategoryOptions.addAll(
+                    newMenuOptions.map(
+                      (newMenuOption) => MenuOptionCategoryModel(
+                        menuOptionCategoryId:
+                            newMenuOption.menuOptionCategoryId,
+                        menuOptionCategoryName: menuOptionCategoryName,
+                        essentialStatus: essentialStatus,
+                        minChoice: minChoice,
+                        maxChoice: maxChoice,
+                        menuOptions: [newMenuOption],
+                      ),
+                    ),
+                  );
+
+                  return menu.copyWith(
+                    menuCategoryOptions: updatedMenuCategoryOptions,
+                  );
+                }
+                return menu;
+              }).toList(),
+            );
+          }
+          return menuCategory;
+        }).toList();
+
+        state = state.copyWith(
+          menuCategoryList: updatedMenuCategoryList,
+          menuOptionCategoryDTOList: menuOptionCategoryDTOList,
+          menuOptionRelationshipDTOList: newMenuOptionRelationship,
+        );
+
         return true;
       } else {
         state = state.copyWith(
