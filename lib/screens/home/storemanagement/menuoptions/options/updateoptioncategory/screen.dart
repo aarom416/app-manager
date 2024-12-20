@@ -36,6 +36,7 @@ class _UpdateOptionCategoryScreenState
     extends ConsumerState<UpdateOptionCategoryScreen> {
   late MenuOptionCategoryModel optionCategoryModel;
   late List<MenuModel> appliedMenus = [];
+  late List<MenuModel> originAppliedMenus = [];
 
   @override
   void initState() {
@@ -66,6 +67,8 @@ class _UpdateOptionCategoryScreenState
             optionCategoryModel.menuOptionCategoryId))
         .toSet()
         .toList();
+
+    originAppliedMenus = appliedMenus.toList();
 
     return Scaffold(
       key: ValueKey(state.menuOptionsDataModel.toFormattedJson()),
@@ -286,7 +289,7 @@ class _UpdateOptionCategoryScreenState
                             provider
                                 .updateMenuOptionCategoryUseMenu(
                                     optionCategoryModel.menuOptionCategoryId,
-                                    this.appliedMenus,
+                                    originAppliedMenus,
                                     appliedMenus)
                                 .then(
                               (success) {

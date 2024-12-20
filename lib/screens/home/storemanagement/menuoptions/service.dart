@@ -616,6 +616,7 @@ class MenuOptionsService {
           'storeId': storeId,
           'addMenuIdList': addMenuIdList,
           'removeMenuIdList': removeMenuIdList,
+          'menuOptionCategoryId': menuOptionCategoryId,
         },
       );
     } on DioException catch (e) {
