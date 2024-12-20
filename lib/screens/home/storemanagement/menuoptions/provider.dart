@@ -152,14 +152,35 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
               storeId: UserHive.getBox(key: UserKey.storeId),
               newMenuCategoryModel: newMenuCategoryModel);
       if (response.statusCode == 200) {
+        final result = ResultResponseModel.fromJson(response.data);
+        final storeMenuCategoryDTO =
+            result.data['storeMenuCategoryDTO'] as Map<String, dynamic>;
+
+        final newCategory = MenuCategoryModel(
+          storeId: (storeMenuCategoryDTO['storeId'] ?? -1) as int,
+          storeMenuCategoryId:
+              (storeMenuCategoryDTO['storeMenuCategoryId'] ?? -1) as int,
+          menuCategoryName:
+              (storeMenuCategoryDTO['menuCategoryName'] ?? '') as String,
+          menuIntroduction:
+              (storeMenuCategoryDTO['menuDescription'] ?? '') as String,
+          menuList: newMenuCategoryModel.menuList,
+        );
+
         MenuOptionsDataModel updatedMenuOptionsDataModel =
             state.menuOptionsDataModel.copyWith(storeMenuCategoryDTOList: [
           ...state.menuOptionsDataModel.storeMenuCategoryDTOList,
-          newMenuCategoryModel
+          newCategory,
         ]);
+
+        final menuCategoryList = state.menuCategoryList.toList();
+        menuCategoryList.add(newCategory);
+
         setState(updatedMenuOptionsDataModel);
-        state = state.copyWith(error: const ResultFailResponseModel());
-        // getMenuOptionInfo();
+        state = state.copyWith(
+          menuCategoryList: menuCategoryList,
+          error: const ResultFailResponseModel(),
+        );
         return null;
       } else {
         state = state.copyWith(
@@ -370,28 +391,6 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
             selectedMenuOptionCategories: selectedMenuOptionCategories,
           );
       if (response.statusCode == 200) {
-        final result = ResultResponseModel.fromJson(response.data);
-
-        final addedStoreMenuDTOList = [
-          ...state.storeMenuDTOList,
-          MenuModel.fromJson(result.data).copyWith(
-            price: result.data['menuPrice'] as int? ?? 0,
-          )
-        ]..sort((a, b) => a.menuName.compareTo(b.menuName));
-
-        state = state.copyWith(
-          // 조합된 데이타
-          menuCategoryList: createMenuCategoryModels(
-              storeMenuCategoryDTOList: state.storeMenuCategoryDTOList,
-              storeMenuDTOList: addedStoreMenuDTOList,
-              menuOptionCategoryDTOList: state.menuOptionCategoryDTOList,
-              storeMenuOptionDTOList: state.storeMenuOptionDTOList,
-              menuOptionRelationshipDTOList:
-                  state.menuOptionRelationshipDTOList),
-          // 조회 원본
-          storeMenuDTOList: addedStoreMenuDTOList,
-        );
-
         return const ResultFailResponseModel(); // Success
       } else {
         return ResultFailResponseModel.fromJson(
