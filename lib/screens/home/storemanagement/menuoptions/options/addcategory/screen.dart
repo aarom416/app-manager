@@ -1099,7 +1099,7 @@ class _Page_4_ConfirmAdditionState extends State<_Page_4_ConfirmAddition> {
                               widget.onEditFunction(updatedAppliedMenus);
 
                               setState(() {
-                                appliedMenus = updatedAppliedMenus;
+                                // appliedMenus = updatedAppliedMenus;
                               });
                             }),
                       ],

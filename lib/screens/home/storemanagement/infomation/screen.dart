@@ -49,42 +49,42 @@ class _StoreManagementBasicInfoScreenState
         provider.storeInfo();
       },
       child: ListView(shrinkWrap: true, children: [
-        SGContainer(
-          padding: EdgeInsets.symmetric(
-              horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-          color: SGColors.white,
-          borderColor: SGColors.line2,
-          borderRadius: BorderRadius.circular(SGSpacing.p4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SGTypography.body("로고 (썸네일 이미지)",
-                  size: FontSize.normal, weight: FontWeight.w600),
-              SizedBox(width: SGSpacing.p1),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ImageUploadScreen(
-                      title: "가게 로고 변경",
-                      imagePaths: [],
-                      maximumImages: 1,
-                      fieldLabel: "로고 이미지",
-                      buttonText: "변경하기",
-                      onSubmit: (List<String> imagePaths) {
-                        logger.i("imagePaths $imagePaths");
-                        provider.updateStoreThumbnail(imagePaths[0]);
-                      },
-                    ),
-                  ));
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ImageUploadScreen(
+                title: "가게 로고 변경",
+                imagePaths: [],
+                maximumImages: 1,
+                fieldLabel: "로고 이미지",
+                buttonText: "변경하기",
+                onSubmit: (List<String> imagePaths) {
+                  logger.i("imagePaths $imagePaths");
+                  provider.updateStoreThumbnail(imagePaths[0]);
                 },
-                child: const Icon(Icons.edit, size: FontSize.small),
               ),
-              const Spacer(),
-              NetworkImageContainer(
-                key: ValueKey(state.storeInfo.thumbnail),
-                networkImageUrl: state.storeInfo.thumbnail,
-              ),
-            ],
+            ));
+          },
+          child: SGContainer(
+            padding: EdgeInsets.symmetric(
+                horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+            color: SGColors.white,
+            borderColor: SGColors.line2,
+            borderRadius: BorderRadius.circular(SGSpacing.p4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SGTypography.body("로고 (썸네일 이미지)",
+                    size: FontSize.normal, weight: FontWeight.w600),
+                SizedBox(width: SGSpacing.p1),
+                const Icon(Icons.edit, size: FontSize.small),
+                const Spacer(),
+                NetworkImageContainer(
+                  key: ValueKey(state.storeInfo.thumbnail),
+                  networkImageUrl: state.storeInfo.thumbnail,
+                ),
+              ],
+            ),
           ),
         ),
         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
@@ -156,107 +156,108 @@ class _StoreManagementBasicInfoScreenState
                       })));
             }),
         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-        SGContainer(
-          padding: EdgeInsets.symmetric(
-              horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-          color: SGColors.white,
-          borderColor: SGColors.line2,
-          borderRadius: BorderRadius.circular(SGSpacing.p4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SGTypography.body("가게 이미지",
-                  size: FontSize.normal, weight: FontWeight.w600),
-              SizedBox(width: SGSpacing.p1),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ImageUploadScreen(
-                      title: "가게 이미지 변경",
-                      imagePaths: [],
-                      maximumImages: 3,
-                      fieldLabel: "가게 이미지",
-                      buttonText: "변경하기",
-                      onSubmit: (List<String> imagePaths) {
-                        logger.i("imagePaths $imagePaths");
-                        provider.updateStorePicture(imagePaths);
-                      },
-                    ),
-                  ));
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ImageUploadScreen(
+                title: "가게 이미지 변경",
+                imagePaths: [],
+                maximumImages: 3,
+                fieldLabel: "가게 이미지",
+                buttonText: "변경하기",
+                onSubmit: (List<String> imagePaths) {
+                  logger.i("imagePaths $imagePaths");
+                  provider.updateStorePicture(imagePaths);
                 },
-                child: const Icon(Icons.edit, size: FontSize.small),
               ),
-              const Spacer(),
-              NetworkImageContainer(
-                key: ValueKey(state.storeInfo.storePictureURL1),
-                networkImageUrl: state.storeInfo.storePictureURL1,
-              ),
-            ],
+            ));
+          },
+          child: SGContainer(
+            padding: EdgeInsets.symmetric(
+                horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+            color: SGColors.white,
+            borderColor: SGColors.line2,
+            borderRadius: BorderRadius.circular(SGSpacing.p4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SGTypography.body("가게 이미지",
+                    size: FontSize.normal, weight: FontWeight.w600),
+                SizedBox(width: SGSpacing.p1),
+                const Icon(Icons.edit, size: FontSize.small),
+                const Spacer(),
+                NetworkImageContainer(
+                  key: ValueKey(state.storeInfo.storePictureURL1),
+                  networkImageUrl: state.storeInfo.storePictureURL1,
+                ),
+              ],
+            ),
           ),
         ),
         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
         GestureDetector(
-            child: SingleInformationBox(
-                label: '가게 소개',
-                value: state.storeInfo.introduction,
-                editable: true),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => TextAreaScreen(
-                      value: state.storeInfo.introduction,
-                      title: "가게 소개 변경",
-                      fieldLabel: "가게 소개",
-                      hintText: "가게 소개를 입력해주세요",
-                      buttonText: "변경하기",
-                      onSubmit: (value) {
-                        provider.onChangeStoreIntroduction(value);
-                        provider.storeIntroduction(successCallback: () {
-                          context.pop();
-                        }, errorCallback: (errorMessage) {
-                          showFailDialogWithImage(
-                            context: context,
-                            mainTitle: errorMessage,
-                          );
-                        });
-                      })));
-            }),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => TextAreaScreen(
+                    value: state.storeInfo.introduction,
+                    title: "가게 소개 변경",
+                    fieldLabel: "가게 소개",
+                    hintText: "가게 소개를 입력해주세요",
+                    buttonText: "변경하기",
+                    onSubmit: (value) {
+                      provider.onChangeStoreIntroduction(value);
+                      provider.storeIntroduction(successCallback: () {
+                        context.pop();
+                      }, errorCallback: (errorMessage) {
+                        showFailDialogWithImage(
+                          context: context,
+                          mainTitle: errorMessage,
+                        );
+                      });
+                    })));
+          },
+          child: SingleInformationBox(
+              label: '가게 소개',
+              value: state.storeInfo.introduction,
+              editable: true),
+        ),
         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-        SGContainer(
-          padding: EdgeInsets.symmetric(
-              horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-          color: SGColors.white,
-          borderColor: SGColors.line2,
-          borderRadius: BorderRadius.circular(SGSpacing.p4),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SGTypography.body("가게 소개 이미지",
-                  size: FontSize.normal, weight: FontWeight.w600),
-              SizedBox(width: SGSpacing.p1),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ImageUploadScreen(
-                      title: "가게 소개 이미지 변경",
-                      imagePaths: [],
-                      maximumImages: 1,
-                      fieldLabel: "가게 소개 이미지",
-                      buttonText: "변경하기",
-                      onSubmit: (List<String> imagePaths) {
-                        logger.i("imagePaths $imagePaths");
-                        provider.updateIntroductionPicture(imagePaths[0]);
-                      },
-                    ),
-                  ));
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => ImageUploadScreen(
+                title: "가게 소개 이미지 변경",
+                imagePaths: [],
+                maximumImages: 1,
+                fieldLabel: "가게 소개 이미지",
+                buttonText: "변경하기",
+                onSubmit: (List<String> imagePaths) {
+                  logger.i("imagePaths $imagePaths");
+                  provider.updateIntroductionPicture(imagePaths[0]);
                 },
-                child: const Icon(Icons.edit, size: FontSize.small),
               ),
-              const Spacer(),
-              NetworkImageContainer(
-                key: ValueKey(state.storeInfo.storeInformationURL),
-                networkImageUrl: state.storeInfo.storeInformationURL,
-              ),
-            ],
+            ));
+          },
+          child: SGContainer(
+            padding: EdgeInsets.symmetric(
+                horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+            color: SGColors.white,
+            borderColor: SGColors.line2,
+            borderRadius: BorderRadius.circular(SGSpacing.p4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SGTypography.body("가게 소개 이미지",
+                    size: FontSize.normal, weight: FontWeight.w600),
+                SizedBox(width: SGSpacing.p1),
+                const Icon(Icons.edit, size: FontSize.small),
+                const Spacer(),
+                NetworkImageContainer(
+                  key: ValueKey(state.storeInfo.storeInformationURL),
+                  networkImageUrl: state.storeInfo.storeInformationURL,
+                ),
+              ],
+            ),
           ),
         ),
         SizedBox(height: SGSpacing.p2 + SGSpacing.p05),

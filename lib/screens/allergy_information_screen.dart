@@ -46,16 +46,25 @@ class _AllergyInformationScreenState
                 maxHeight: 58),
             child: SGActionButton(
               onPressed: () {
+                String text = controller.text.trim();
+
+                // https:// 붙이기
+                if (!text.startsWith('https://')) {
+                  text = 'https://' + text;
+                  controller.text = text;
+                }
+
                 ref
                     .read(storeManagementBasicInfoNotifierProvider.notifier)
-                    .storeOriginInformation(controller.text)
+                    .storeOriginInformation(text)
                     .then((value) {
                   if (value) {
                     showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
                   } else {
                     showFailDialogWithImage(
-                        mainTitle: '원산지 및 알러지 변경 오류',
-                        subTitle: '원산지 및 알러지 변경에 실패하였습니다.');
+                      mainTitle: '원산지 및 알러지 변경 오류',
+                      subTitle: '원산지 및 알러지 변경에 실패하였습니다.',
+                    );
                   }
                 });
               },
