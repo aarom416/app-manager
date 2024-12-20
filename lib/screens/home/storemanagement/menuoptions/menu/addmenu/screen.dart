@@ -149,6 +149,9 @@ class _AddMenuScreenState extends ConsumerState<AddMenuScreen> {
                     .then((resultFailResponseModel) {
                   if (resultFailResponseModel.errorCode.isEmpty) {
                     showGlobalSnackBar(context, "성공적으로 등록되었습니다.");
+                    ref
+                        .read(menuOptionsNotifierProvider.notifier)
+                        .getMenuOptionInfo();
                   } else {
                     showFailDialogWithImage(
                         context: context,
