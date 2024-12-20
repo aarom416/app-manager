@@ -849,7 +849,84 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
           removeMenuIdList: removeMenuIdList,
         );
     if (response.statusCode == 200) {
-      getMenuOptionInfo();
+      final menuOptionRelationshipDTOList =
+          state.menuOptionRelationshipDTOList.toList();
+
+      final newRelationshipMenus = newAppliedMenus
+          .where((addMenu) => addMenuIdList.contains(addMenu.menuId))
+          .toList();
+
+      for (var newRelationshipMenu in newRelationshipMenus) {
+        final menuOptions = state.menuOptionCategoryDTOList
+            .toList()
+            .firstWhere(
+                (test) => test.menuOptionCategoryId == menuOptionCategoryId)
+            .menuOptions;
+
+        for (var menuOption in menuOptions) {
+          menuOptionRelationshipDTOList.add(MenuOptionRelationshipModel(
+            menuId: newRelationshipMenu.menuId,
+            menuOptionCategoryId: menuOptionCategoryId,
+            menuOptionId: menuOption.menuOptionId,
+          ));
+        }
+      }
+
+      final removeRelationshipMenus = oldAppliedMenus
+          .where((removeMenu) => removeMenuIdList.contains(removeMenu.menuId))
+          .toList();
+
+      for (var removeRelationshipMenu in removeRelationshipMenus) {
+        menuOptionRelationshipDTOList.removeWhere((test) =>
+            test.menuId == removeRelationshipMenu.menuId &&
+            test.menuOptionCategoryId == menuOptionCategoryId);
+      }
+
+      final menuCategoryList = state.menuCategoryList.map((menuCategory) {
+        final updatedMenuList = menuCategory.menuList.map((menu) {
+          final isAddingMenu = newRelationshipMenus
+              .any((newMenu) => newMenu.menuId == menu.menuId);
+          if (isAddingMenu) {
+            final menuOptionCategory =
+                state.menuOptionCategoryDTOList.firstWhere(
+              (category) =>
+                  category.menuOptionCategoryId == menuOptionCategoryId,
+            );
+
+            final menuOptions = menu.menuCategoryOptions.toList();
+            if (!menuOptions.contains(menuOptionCategory)) {
+              menuOptions.add(menuOptionCategory);
+
+              return menu.copyWith(menuCategoryOptions: menuOptions);
+            }
+          }
+
+          final isRemovingMenu = removeRelationshipMenus
+              .any((removeMenu) => removeMenu.menuId == menu.menuId);
+          if (isRemovingMenu) {
+            final menuOptionCategory =
+                state.menuOptionCategoryDTOList.firstWhere(
+              (category) =>
+                  category.menuOptionCategoryId == menuOptionCategoryId,
+            );
+
+            final updatedMenuOptions = menu.menuCategoryOptions.toList();
+            updatedMenuOptions.remove(menuOptionCategory);
+
+            return menu.copyWith(menuCategoryOptions: updatedMenuOptions);
+          }
+
+          return menu;
+        }).toList();
+
+        return menuCategory.copyWith(menuList: updatedMenuList);
+      }).toList();
+
+      state = state.copyWith(
+        menuCategoryList: menuCategoryList,
+        menuOptionRelationshipDTOList: menuOptionRelationshipDTOList,
+      );
+
       return true;
     } else {
       state = state.copyWith(
@@ -1112,7 +1189,6 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
         .getMenuInfo(menuOptionId: menuOptionId);
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);
-      logger.i("getMenuInfo result ${result.toFormattedJson()}");
       return NutritionModel.fromJson(result.data);
     } else {
       return const NutritionModel();
