@@ -67,12 +67,12 @@ class MenuOptionsService {
   /// POST - 옵션 추가
   Future<Response<dynamic>> createOption(
       {required String storeId,
-        required MenuOptionModel newMenuOptionModel}) async {
+      required MenuOptionModel newMenuOptionModel}) async {
     try {
       return await ref.read(requestApiProvider).post(
         RestApiUri.createOption,
         data: {
-          'storeId': storeId,
+          'storeId': int.parse(storeId),
           'menuOptionCategoryId': newMenuOptionModel.menuOptionCategoryId,
           'optionContent': newMenuOptionModel.optionContent,
           'price': newMenuOptionModel.price,
@@ -210,23 +210,26 @@ class MenuOptionsService {
         'natrium': nutrition.natrium,
         'menuIntroduction': menuIntroduction ?? '',
         'madeOf': menuBriefDescription ?? '',
-        'menuOptionCategoryIdList': selectedMenuOptionCategories != null && selectedMenuOptionCategories.isNotEmpty
-            ? selectedMenuOptionCategories.map((optionCategory) => optionCategory.menuOptionCategoryId).toList()
+        'menuOptionCategoryIdList': selectedMenuOptionCategories != null &&
+                selectedMenuOptionCategories.isNotEmpty
+            ? selectedMenuOptionCategories
+                .map((optionCategory) => optionCategory.menuOptionCategoryId)
+                .toList()
             : [""],
         if (imagePath != '')
-        'menuPicture': await MultipartFile.fromFile(
-          imagePath!,
-          filename: imagePath.split('/').last,
-        )
+          'menuPicture': await MultipartFile.fromFile(
+            imagePath!,
+            filename: imagePath.split('/').last,
+          )
       });
 
       return await ref.read(requestApiProvider).post(
-        RestApiUri.createMenu,
-        data: formData,
-        options: Options(
-          contentType: 'multipart/form-data',
-        ),
-      );
+            RestApiUri.createMenu,
+            data: formData,
+            options: Options(
+              contentType: 'multipart/form-data',
+            ),
+          );
     } on DioException catch (e) {
       logger.e("DioException: ${e.message}");
       return Future.error(e);
@@ -235,7 +238,6 @@ class MenuOptionsService {
       return Future.error(e);
     }
   }
-
 
   /// GET - 메뉴 정보 조회
   Future<Response<dynamic>> getMenu({required int menuId}) async {

@@ -22,13 +22,16 @@ import '../../provider.dart';
 class UpdateMenuOptionsScreen extends ConsumerStatefulWidget {
   final MenuOptionCategoryModel menuOptionCategoryModel;
 
-  const UpdateMenuOptionsScreen({super.key, required this.menuOptionCategoryModel});
+  const UpdateMenuOptionsScreen(
+      {super.key, required this.menuOptionCategoryModel});
 
   @override
-  ConsumerState<UpdateMenuOptionsScreen> createState() => _UpdateMenuOptionsScreenState();
+  ConsumerState<UpdateMenuOptionsScreen> createState() =>
+      _UpdateMenuOptionsScreenState();
 }
 
-class _UpdateMenuOptionsScreenState extends ConsumerState<UpdateMenuOptionsScreen> {
+class _UpdateMenuOptionsScreenState
+    extends ConsumerState<UpdateMenuOptionsScreen> {
   late MenuOptionCategoryModel menuOptionCategoryModel;
 
   @override
@@ -40,7 +43,8 @@ class _UpdateMenuOptionsScreenState extends ConsumerState<UpdateMenuOptionsScree
   @override
   Widget build(BuildContext context) {
     final MenuOptionsState state = ref.watch(menuOptionsNotifierProvider);
-    final MenuOptionsNotifier provider = ref.read(menuOptionsNotifierProvider.notifier);
+    final MenuOptionsNotifier provider =
+        ref.read(menuOptionsNotifierProvider.notifier);
 
     return WillPopScope(
         onWillPop: () async {
@@ -56,7 +60,8 @@ class _UpdateMenuOptionsScreenState extends ConsumerState<UpdateMenuOptionsScree
             ),
             body: SGContainer(
                 color: const Color(0xFFFAFAFA),
-                padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+                padding: EdgeInsets.symmetric(
+                    horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
                 child: ListView(children: [
                   // --------------------------- menuOptionCategoryName 수정 ---------------------------
                   MultipleInformationBox(children: [
@@ -64,19 +69,31 @@ class _UpdateMenuOptionsScreenState extends ConsumerState<UpdateMenuOptionsScree
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => TextFieldEditScreen(
-                                  value: menuOptionCategoryModel.menuOptionCategoryName,
+                                  value: menuOptionCategoryModel
+                                      .menuOptionCategoryName,
                                   title: "옵션 카테고리 변경",
                                   onSubmit: (value) {
-                                    provider.updateMenuOptionCategoryName(menuOptionCategoryModel.menuOptionCategoryId, value).then((success) {
-                                      logger.d("updateMenuOptionCategoryName success $success $value");
+                                    provider
+                                        .updateMenuOptionCategoryName(
+                                            menuOptionCategoryModel
+                                                .menuOptionCategoryId,
+                                            value)
+                                        .then((success) {
+                                      logger.d(
+                                          "updateMenuOptionCategoryName success $success $value");
                                       if (success) {
                                         setState(() {
-                                          menuOptionCategoryModel = menuOptionCategoryModel.copyWith(menuOptionCategoryName: value);
+                                          menuOptionCategoryModel =
+                                              menuOptionCategoryModel.copyWith(
+                                                  menuOptionCategoryName:
+                                                      value);
                                         });
                                       }
                                       if (mounted) {
-                                        showGlobalSnackBarWithoutContext("성공적으로 변경되었습니다.");
-                                        Navigator.pop(context, menuOptionCategoryModel);
+                                        showGlobalSnackBarWithoutContext(
+                                            "성공적으로 변경되었습니다.");
+                                        Navigator.pop(
+                                            context, menuOptionCategoryModel);
                                       }
                                     });
                                   },
@@ -85,7 +102,10 @@ class _UpdateMenuOptionsScreenState extends ConsumerState<UpdateMenuOptionsScree
                                 )));
                       },
                       child: Row(children: [
-                        SGTypography.body(menuOptionCategoryModel.menuOptionCategoryName, size: FontSize.normal, weight: FontWeight.w600),
+                        SGTypography.body(
+                            menuOptionCategoryModel.menuOptionCategoryName,
+                            size: FontSize.normal,
+                            weight: FontWeight.w600),
                         SizedBox(width: SGSpacing.p1),
                         const Icon(Icons.edit, size: FontSize.small),
                       ]),
@@ -94,37 +114,56 @@ class _UpdateMenuOptionsScreenState extends ConsumerState<UpdateMenuOptionsScree
                   SizedBox(height: SGSpacing.p5),
 
                   // --------------------------- menuOptions 수정 ---------------------------
-                  ...menuOptionCategoryModel.menuOptions
+                  ...state.menuOptionCategoryDTOList
+                      .firstWhere((menuOptionCategory) =>
+                          menuOptionCategory.menuOptionCategoryId ==
+                          menuOptionCategoryModel.menuOptionCategoryId)
+                      .menuOptions
                       .mapIndexed((index, menuOptionModel) => [
                             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
                             MultipleInformationBox(
                               children: [
                                 GestureDetector(
                                   onTap: () async {
-                                    final updatedMenuOptionModel = await Navigator.of(context).push(
+                                    final updatedMenuOptionModel =
+                                        await Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => UpdateMenuOptionModelScreen(
+                                        builder: (context) =>
+                                            UpdateMenuOptionModelScreen(
                                           menuOptionModel: menuOptionModel,
                                         ),
                                       ),
                                     );
-                                    if (updatedMenuOptionModel != null && mounted) {
+                                    if (updatedMenuOptionModel != null &&
+                                        mounted) {
                                       setState(() {
-                                        List<MenuOptionModel> menuOptions_ = List.from(menuOptionCategoryModel.menuOptions);
-                                        menuOptions_[index] = updatedMenuOptionModel;
-                                        menuOptionCategoryModel = menuOptionCategoryModel.copyWith(menuOptions: menuOptions_);
+                                        List<MenuOptionModel> menuOptions_ =
+                                            List.from(menuOptionCategoryModel
+                                                .menuOptions);
+                                        menuOptions_[index] =
+                                            updatedMenuOptionModel;
+                                        menuOptionCategoryModel =
+                                            menuOptionCategoryModel.copyWith(
+                                                menuOptions: menuOptions_);
                                       });
                                     }
                                     // showFailDialogWithImage(context: context, mainTitle: "해당 옵션은 삭제된 옵션입니다.", subTitle: "");
                                   },
                                   child: Row(children: [
-                                    SGTypography.body(menuOptionModel.optionContent, size: FontSize.normal, weight: FontWeight.w600),
+                                    SGTypography.body(
+                                        menuOptionModel.optionContent,
+                                        size: FontSize.normal,
+                                        weight: FontWeight.w600),
                                     SizedBox(width: SGSpacing.p1),
-                                    const Icon(Icons.edit, size: FontSize.small),
+                                    const Icon(Icons.edit,
+                                        size: FontSize.small),
                                   ]),
                                 ),
                                 SizedBox(height: SGSpacing.p5),
-                                DataTableRow(left: "가격", right: "${(menuOptionModel.price ?? 0).toKoreanCurrency}원"),
+                                DataTableRow(
+                                    left: "가격",
+                                    right:
+                                        "${(menuOptionModel.price ?? 0).toKoreanCurrency}원"),
                               ],
                             ),
                           ])
@@ -136,9 +175,11 @@ class _UpdateMenuOptionsScreenState extends ConsumerState<UpdateMenuOptionsScree
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => AddOptionScreen(
-                              menuOptionCategoryId: menuOptionCategoryModel.menuOptionCategoryId,
+                                  menuOptionCategoryId: menuOptionCategoryModel
+                                      .menuOptionCategoryId,
                                   onSubmit: (menuOptionModel) {
-                                    logger.d("onSubmit option ${menuOptionModel.toFormattedJson()}");
+                                    logger.d(
+                                        "onSubmit option ${menuOptionModel.toFormattedJson()}");
                                   },
                                 )));
                       },
@@ -148,11 +189,17 @@ class _UpdateMenuOptionsScreenState extends ConsumerState<UpdateMenuOptionsScree
                           borderRadius: BorderRadius.circular(SGSpacing.p2),
                           borderColor: SGColors.primary,
                           child: Center(
-                              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                            Image.asset("assets/images/plus.png", width: SGSpacing.p3, height: SGSpacing.p3),
-                            SizedBox(width: SGSpacing.p2),
-                            SGTypography.body("옵션 추가하기", size: FontSize.small, weight: FontWeight.w500, color: SGColors.primary)
-                          ])))),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                Image.asset("assets/images/plus.png",
+                                    width: SGSpacing.p3, height: SGSpacing.p3),
+                                SizedBox(width: SGSpacing.p2),
+                                SGTypography.body("옵션 추가하기",
+                                    size: FontSize.small,
+                                    weight: FontWeight.w500,
+                                    color: SGColors.primary)
+                              ])))),
                 ]))));
   }
 }

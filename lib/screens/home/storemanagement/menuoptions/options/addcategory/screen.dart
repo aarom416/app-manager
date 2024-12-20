@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scroll_date_picker/scroll_date_picker.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/app_bar_with_step_indicator.dart';
 import 'package:singleeat/core/components/container.dart';
@@ -581,7 +582,8 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
               Expanded(
                   child: GestureDetector(
                 onTap: () {
-                  if (maxChoice > 0 &&
+                  if (((essentialStatus == 0 && maxChoice >= 0) ||
+                          (essentialStatus == 1 && maxChoice > 0)) &&
                       (minChoice <= widget.selectedMenuOptionLength &&
                           minChoice <= maxChoice) &&
                       maxChoice <= widget.selectedMenuOptionLength) {
@@ -592,7 +594,8 @@ class _Page_2_OptionEssentialState extends State<_Page_2_OptionEssential> {
                   }
                 },
                 child: SGContainer(
-                    color: (maxChoice > 0 &&
+                    color: (((essentialStatus == 0 && maxChoice >= 0) ||
+                                (essentialStatus == 1 && maxChoice > 0)) &&
                             (minChoice <= widget.selectedMenuOptionLength &&
                                 minChoice <= maxChoice) &&
                             maxChoice <= widget.selectedMenuOptionLength)
