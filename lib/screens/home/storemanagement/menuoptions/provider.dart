@@ -124,6 +124,7 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
               ))
           .where((category) => category != null) // null 값 제거
           .cast<MenuOptionCategoryModel>() // null-safe 타입으로 캐스팅
+          .toSet()
           .toList();
       return menu.copyWith(menuCategoryOptions: relatedOptionCategories);
     }).toList();
