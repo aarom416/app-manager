@@ -34,12 +34,8 @@ class DeliveryNotifier extends _$DeliveryNotifier {
           maxDeliveryTime: deliveryDataModel.maxDeliveryTime,
           minTakeOutTime: deliveryDataModel.minTakeOutTime,
           maxTakeOutTime: deliveryDataModel.maxTakeOutTime,
-          baseDeliveryTip: deliveryDataModel.baseDeliveryTip,
-          // 기본 배달팁. figma 상 존재하나, api 규격에 존재하지 않음.
-          deliveryTipMax: deliveryDataModel.deliveryTipMax,
-          // 기본 배달팁. figma 상 존재하나, api 규격에 존재하지 않음.
-          minimumOrderPrice: deliveryDataModel.minimumOrderPrice,
-          // 최소 주문 금액. figma 상 존재하나, api 규격에 존재하지 않음.
+          baseDeliveryTip: deliveryDataModel.minDeliveryTip,
+          minimumOrderPrice: deliveryDataModel.minDeliveryPrice,
           storeDeliveryTipDTOList: deliveryDataModel.storeDeliveryTipDTOList,
           deliveryAddress: deliveryDataModel.deliveryAddress,
           error: const ResultFailResponseModel());

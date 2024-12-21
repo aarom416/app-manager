@@ -259,20 +259,28 @@ class _UpdateOptionCategoryScreenState
                 ]),
               ),
               ...state.menuOptionCategoryDTOList
-                  .firstWhere((menuOptionCategory) =>
-                      menuOptionCategory.menuOptionCategoryId ==
-                      optionCategoryModel.menuOptionCategoryId)
+                  .where((menuOptionCategory) =>
+              menuOptionCategory.menuOptionCategoryId ==
+                  optionCategoryModel.menuOptionCategoryId)
+                  .isNotEmpty
+                  ? state.menuOptionCategoryDTOList
+                  .firstWhere(
+                    (menuOptionCategory) =>
+                menuOptionCategory.menuOptionCategoryId ==
+                    optionCategoryModel.menuOptionCategoryId,
+              )
                   .menuOptions
                   .mapIndexed((index, option) => [
-                        if (index == 0)
-                          SizedBox(height: SGSpacing.p5)
-                        else
-                          SizedBox(height: SGSpacing.p4),
-                        OptionDataTableRow(
-                            left: option.optionContent ?? "",
-                            right: "${option.price.toKoreanCurrency}원"),
-                      ])
+                if (index == 0)
+                  SizedBox(height: SGSpacing.p5)
+                else
+                  SizedBox(height: SGSpacing.p4),
+                OptionDataTableRow(
+                    left: option.optionContent ?? "",
+                    right: "${option.price.toKoreanCurrency}원"),
+              ])
                   .flattened
+                  : []
             ],
           ),
           SizedBox(height: SGSpacing.p7 + SGSpacing.p05),
@@ -414,19 +422,27 @@ class _UpdateOptionCategoryScreenState
                             child: GestureDetector(
                               onTap: () {
                                 provider
-                                    .deleteMenuOptionCategory(
-                                        context, optionCategoryModel)
-                                    .then(
-                                  (success) {
-                                    logger.d(
-                                        "deleteMenuOptionCategory success $success");
-                                    if (mounted) {
-                                      showGlobalSnackBar(
-                                          context, "성공적으로 삭제되었습니다.");
+                                    .deleteMenuOptionCategory(context, optionCategoryModel)
+                                    .then((resultFailResponseModel) {
+                                  logger.d("deleteMenuOptionCategory resultFailResponseModel ${resultFailResponseModel.toFormattedJson()}");
+
+                                  if (mounted) {
+                                    if (resultFailResponseModel.errorCode.isEmpty) {
+                                      showGlobalSnackBar(context, "성공적으로 삭제되었습니다.");
                                       Navigator.of(ctx).pop();
+                                    } else {
+                                      Navigator.pop(context);
+                                      showFailDialogWithImage(
+                                        context: context,
+                                        mainTitle: "진행 중인 주문에 선택된 옵션이 있습니다.\n주문 완료 후 삭제가능합니다.",
+                                        onTapFunction: () {
+                                          Navigator.pop(context);
+                                        },
+                                      );
                                     }
-                                  },
-                                );
+                                  }
+                                });
+
                               },
                               child: SGContainer(
                                 color: SGColors.gray3,

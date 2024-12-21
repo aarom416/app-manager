@@ -64,6 +64,16 @@ class LoginNotifier extends _$LoginNotifier {
       UserHive.setBox(key: UserKey.loginId, value: '');
     }
 
+    // 특정 아이디와 비밀번호일 경우 본인 인증을 건너뛰고 바로 메인 홈으로 이동
+    if ((state.loginId == "test1234" && state.password == "testtest1234!") ||
+        (state.loginId == "testtest1234" && state.password == "testtest1234!")) {
+      // 바로 메인 홈으로 이동
+      await ref.read(loginNotifierProvider.notifier).verifyPhone();
+
+      ref.read(goRouterProvider).go(AppRoutes.home, extra: UniqueKey());
+      return;
+    }
+
     // 본인 인증
     ref
         .read(authenticateWithPhoneNumberNotifierProvider.notifier)

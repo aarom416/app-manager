@@ -52,11 +52,13 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
     menuModel = state.menuCategoryList
         .firstWhere(
           (menuCategory) => menuCategory.storeMenuCategoryId == widget.menuCategoryId,
-        )
+      orElse: () => const MenuCategoryModel(storeMenuCategoryId: 0, menuList: []), // 기본값을 반환
+    )
         .menuList
         .firstWhere(
           (menu) => menu.menuId == widget.menuId,
-        );
+      orElse: () => const MenuModel(menuId: 0, menuName: ""), // 기본값을 반환
+    );
 
     return Scaffold(
         appBar: AppBarWithLeftArrow(title: "메뉴 관리"),
@@ -461,18 +463,18 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                 Row(children: [
                                   Expanded(
                                     child: GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
                                         provider.deleteMenu(context, menuModel).then((resultFailResponseModel) {
                                           logger.d("deleteMenu resultFailResponseModel ${resultFailResponseModel.toFormattedJson()}");
                                           if (resultFailResponseModel.errorCode.isEmpty) {
                                             showGlobalSnackBarWithoutContext("성공적으로 삭제되었습니다.");
-                                            Navigator.of(context).pop();
+                                            Navigator.of(ctx).pop();
                                             Navigator.of(context).pop();
                                           } else {
                                             Navigator.of(context).pop();
                                             showFailDialogWithImage(
                                                 context: context,
-                                                mainTitle: resultFailResponseModel.errorMessage,
+                                                mainTitle: "진행 중인 주문에 선택된 메뉴입니다.\n주문 완료 후 삭제가능합니다.",
                                                 onTapFunction: () {
                                                   Navigator.pop(context);
                                                 });

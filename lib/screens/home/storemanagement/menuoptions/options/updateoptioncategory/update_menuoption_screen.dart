@@ -255,7 +255,8 @@ class _UpdateMenuOptionModelScreenState extends ConsumerState<UpdateMenuOptionMo
                                             }
                                           } else {
                                             if (responseStatusCode == 409) {
-                                              showFailDialogWithImage(context: context, mainTitle: "진행 중인 주문에 선택된 옵션입니다.\n주문 완료 후 삭제 가능합니다.", subTitle: "");
+                                              Navigator.pop(context);
+                                              showFailDialogWithImage(context: context, mainTitle: "진행 중인 주문에 선택된 옵션입니다.\n주문 완료 후 삭제가능합니다.", subTitle: "");
                                             }
                                           }
                                         },

@@ -193,6 +193,10 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+  FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+    _firebaseMessagingBackgroundHandler;
+  });
+
   if (Platform.isAndroid) {
     await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
@@ -227,6 +231,8 @@ void main() async {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     _showForegroundNotification(message);
   });
+
+
 
   initializeFCM();
 

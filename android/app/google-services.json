@@ -12,7 +12,28 @@
           "package_name": "com.golgoru.singleat_owner"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "790805366545-18qo6pc87hf0asjv9s505ju9ui9ifglc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.golgoru.singleat_owner",
+            "certificate_hash": "3b9278fc8b438009585498e2b31b696e15d2f00b"
+          }
+        },
+        {
+          "client_id": "790805366545-bl70sj2bef23a5qbfjb7fbuhbc144vsa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.golgoru.singleat_owner",
+            "certificate_hash": "140a6a65ab717d61f9e4bf56bb90b8c58c14468b"
+          }
+        },
+        {
+          "client_id": "790805366545-spaobg8l86da7l52b2nqjdumk0dnkai6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCZnwVR5Z0DX6CAIWSWiXVl8o4vokIZC1E"
@@ -20,7 +41,71 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "790805366545-spaobg8l86da7l52b2nqjdumk0dnkai6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "790805366545-4211ikbd4ua9ill70ud8gdrcor9am5sm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.golgoru.singleatuser"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790805366545:android:ff730469329cc8a1c6eeb0",
+        "android_client_info": {
+          "package_name": "com.golgoru.singleatuser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "790805366545-g02q850k8ckt4o7ld47l8b3e4s40o0aj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.golgoru.singleatuser",
+            "certificate_hash": "e7fa3db7d5bb2cfb064316fecd6c66a0ff8ebfe6"
+          }
+        },
+        {
+          "client_id": "790805366545-pag5k85lqtfjnja7atchj5i8rn8hlini.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.golgoru.singleatuser",
+            "certificate_hash": "b27de8639fda874d9021ab4294a763e7e79ed4f2"
+          }
+        },
+        {
+          "client_id": "790805366545-spaobg8l86da7l52b2nqjdumk0dnkai6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZnwVR5Z0DX6CAIWSWiXVl8o4vokIZC1E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "790805366545-spaobg8l86da7l52b2nqjdumk0dnkai6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "790805366545-4211ikbd4ua9ill70ud8gdrcor9am5sm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.golgoru.singleatuser"
+              }
+            }
+          ]
         }
       }
     }

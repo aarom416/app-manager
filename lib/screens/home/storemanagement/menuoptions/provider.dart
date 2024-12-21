@@ -330,35 +330,42 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   }
 
   /// DELETE - 메뉴 카테고리 삭제
-  void deleteMenuCategory(
+  Future<ResultFailResponseModel> deleteMenuCategory(
       BuildContext context, MenuCategoryModel menuCategoryModel) async {
     try {
       Loading.show(context);
-      final response = await ref
-          .read(menuOptionsServiceProvider)
-          .deleteMenuCategory(
-              storeId: UserHive.getBox(key: UserKey.storeId),
-              menuCategoryModel: menuCategoryModel);
+      final response = await ref.read(menuOptionsServiceProvider).deleteMenuCategory(
+          storeId: UserHive.getBox(key: UserKey.storeId),
+          menuCategoryModel: menuCategoryModel);
+
       if (response.statusCode == 200) {
+        // 메뉴 카테고리 삭제 성공
         MenuOptionsDataModel updatedMenuOptionsDataModel =
-            state.menuOptionsDataModel.copyWith(
-                storeMenuCategoryDTOList: state
-                    .menuOptionsDataModel.storeMenuCategoryDTOList
-                    .where((menuCategory) =>
-                        menuCategory.storeMenuCategoryId !=
-                        menuCategoryModel.storeMenuCategoryId)
-                    .toList());
+        state.menuOptionsDataModel.copyWith(
+          storeMenuCategoryDTOList: state.menuOptionsDataModel.storeMenuCategoryDTOList
+              .where((menuCategory) =>
+          menuCategory.storeMenuCategoryId != menuCategoryModel.storeMenuCategoryId)
+              .toList(),
+        );
         setState(updatedMenuOptionsDataModel);
         state = state.copyWith(error: const ResultFailResponseModel());
+        return const ResultFailResponseModel(); // Success result
       } else {
-        state = state.copyWith(
-            error: ResultFailResponseModel.fromJson(response.data));
+        final error = ResultFailResponseModel.fromJson(response.data as Map<String, dynamic>);
+        state = state.copyWith(error: error);
+        return error; // Return error result
       }
     } catch (e) {
+      // 예외 처리
+      final error = ResultFailResponseModel(errorMessage: "네트워크 오류");
+      state = state.copyWith(error: error);
+      return error; // Return error result
     } finally {
       Loading.hide();
     }
   }
+
+
 
   /// POST - 메뉴 추가
   Future<ResultFailResponseModel> createMenu(
@@ -1062,38 +1069,39 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   }
 
   /// DELETE - 메뉴 옵션 카테고리 삭제
-  Future<bool> deleteMenuOptionCategory(
+  /// DELETE - 메뉴 옵션 카테고리 삭제
+  Future<ResultFailResponseModel> deleteMenuOptionCategory(
       BuildContext context, MenuOptionCategoryModel optionCategoryModel) async {
     try {
       Loading.show(context);
-      final response = await ref
-          .read(menuOptionsServiceProvider)
-          .deleteMenuOptionCategory(
-              storeId: UserHive.getBox(key: UserKey.storeId),
-              optionCategoryModel: optionCategoryModel);
+      final response = await ref.read(menuOptionsServiceProvider).deleteMenuOptionCategory(
+          storeId: UserHive.getBox(key: UserKey.storeId),
+          optionCategoryModel: optionCategoryModel);
+
       if (response.statusCode == 200) {
-        MenuOptionsDataModel updatedMenuOptionsDataModel =
-            state.menuOptionsDataModel.copyWith(
-                menuOptionCategoryDTOList: state
-                    .menuOptionsDataModel.menuOptionCategoryDTOList
-                    .where((optionCategory) =>
-                        optionCategory.menuOptionCategoryId !=
-                        optionCategoryModel.menuOptionCategoryId)
-                    .toList());
+        MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+            menuOptionCategoryDTOList: state.menuOptionsDataModel.menuOptionCategoryDTOList
+                .where((optionCategory) =>
+            optionCategory.menuOptionCategoryId != optionCategoryModel.menuOptionCategoryId)
+                .toList());
         setState(updatedMenuOptionsDataModel);
         state = state.copyWith(error: const ResultFailResponseModel());
-        return true;
+        return const ResultFailResponseModel();
       } else {
-        state = state.copyWith(
-            error: ResultFailResponseModel.fromJson(response.data));
-        return false;
+        final error = ResultFailResponseModel.fromJson(response.data as Map<String, dynamic>);
+        state = state.copyWith(error: error);
+
+        return error;
       }
     } catch (e) {
-      return false;
+      final error = ResultFailResponseModel(errorMessage: "네트워크 오류");
+      state = state.copyWith(error: error);
+      return error;
     } finally {
       Loading.hide();
     }
   }
+
 
   /// POST - 메뉴 옵션 이름 변경
   Future<bool> updateMenuOptionName(
