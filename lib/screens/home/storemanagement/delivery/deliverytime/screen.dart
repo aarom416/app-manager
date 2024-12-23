@@ -31,7 +31,7 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
   late int minDeliveryTime;
   late int maxDeliveryTime;
 
-  List<SelectionOption<int>> minuteOptions = [
+  List<SelectionOption<int>> minMinuteOptions = [
     SelectionOption(label: "30분", value: 30),
     SelectionOption(label: "40분", value: 40),
     SelectionOption(label: "50분", value: 50),
@@ -39,13 +39,28 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
     SelectionOption(label: "70분", value: 70),
   ];
 
+  List<SelectionOption<int>> maxMinuteOptions = [
+    SelectionOption(label: "30분", value: 30),
+    SelectionOption(label: "40분", value: 40),
+    SelectionOption(label: "50분", value: 50),
+    SelectionOption(label: "60분", value: 60),
+    SelectionOption(label: "70분", value: 70),
+    SelectionOption(label: "80분", value: 80),
+  ];
+
   List<SelectionOption<int>> getAvailableMaxOptions(int minDeliveryTime) {
-    int minIndex =
-        minuteOptions.indexWhere((option) => option.value == minDeliveryTime);
-    return (minIndex != -1 && minIndex + 1 < minuteOptions.length)
-        ? minuteOptions.sublist(minIndex + 1)
-        : [];
+    // minMinuteOptions에 해당하는 minDeliveryTime의 인덱스를 찾습니다.
+    int minIndex = minMinuteOptions.indexWhere((option) => option.value == minDeliveryTime);
+
+    // minIndex 이후의 maxMinuteOptions 반환
+    if (minIndex != -1) {
+      return maxMinuteOptions.where((option) => option.value > minDeliveryTime).toList();
+    }
+
+    // 조건에 맞는 값이 없으면 빈 리스트 반환
+    return [];
   }
+
 
   @override
   void initState() {
@@ -178,7 +193,7 @@ class _DeliveryTimeScreenState extends State<DeliveryTimeScreen> {
                           showSelectionBottomSheet<int>(
                               context: context,
                               title: "최소 배달 예상 시간",
-                              options: minuteOptions,
+                              options: minMinuteOptions,
                               onSelect: (minDeliveryTime) {
                                 setState(() {
                                   this.minDeliveryTime = minDeliveryTime;

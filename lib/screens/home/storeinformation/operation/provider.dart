@@ -48,7 +48,7 @@ class StoreInformationNotifier extends _$StoreInformationNotifier {
 
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);
-      print(result);
+      getBusinessInformation();
     }
   }
 

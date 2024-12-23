@@ -174,7 +174,7 @@ class MenuOptionsService {
     required String selectedUserMenuCategoryIdsFlatString,
     required int price,
     required NutritionModel nutrition,
-    required int servingAmount,
+    required double servingAmount,
     required String servingAmountType,
     required String? imagePath,
     required String? menuBriefDescription,

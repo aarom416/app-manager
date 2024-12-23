@@ -130,6 +130,13 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
             onPressed: () {
               FocusScope.of(context).unfocus();
 
+              if (baseDeliveryTip > 5000) {
+                showFailDialogWithImage(
+                  mainTitle: "배달팁 등록 실패",
+                  subTitle: "최소 배달 팁은 5000원보다 클 수 없습니다.",
+                );
+                return;
+              }
               // 첫 번째 최소 주문 금액과 첫 번째 배달팁 유효성 검사
               if (storeDeliveryTipDTOList.isNotEmpty) {
                 // 첫 번째 최소 주문 금액과 최소 주문 금액 비교
@@ -151,20 +158,22 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
                 }
               }
 
-              // 배달팁 유효성 검사 (배달팁 > 5000원, 최소/최대 주문 금액 불일치 등)
-              for (int i = 0; i < storeDeliveryTipDTOList.length; i++) {
-                int minPrice = storeDeliveryTipDTOList[i].minPrice;
-                int maxPrice = storeDeliveryTipDTOList[i].maxPrice;
+              // 배달팁 유효성 검사 (마지막 원소 제외)
+              if (storeDeliveryTipDTOList.length > 1) { // 1개 이상의 원소가 있을 경우에만 검사
+                for (int i = 0; i < storeDeliveryTipDTOList.length - 1; i++) {
+                  int minPrice = storeDeliveryTipDTOList[i].minPrice;
+                  int maxPrice = storeDeliveryTipDTOList[i].maxPrice;
 
-                // 최소 주문 금액이 최대 주문 금액보다 클 수 없음
-                if (minPrice > maxPrice) {
-                  showFailDialogWithImage(
+                  // 최소 주문 금액이 최대 주문 금액보다 클 수 없음
+                  if (minPrice > maxPrice) {
+                    showFailDialogWithImage(
                       mainTitle: "배달팁 등록 실패",
-                      subTitle: "금액을 다시 한 번 확인해주세요.");
-                  return;
+                      subTitle: "금액을 다시 한 번 확인해주세요.",
+                    );
+                    return;
+                  }
                 }
               }
-
 
               if (!(baseDeliveryTip == widget.baseDeliveryTip &&
                   minimumOrderPrice == widget.minimumOrderPrice &&

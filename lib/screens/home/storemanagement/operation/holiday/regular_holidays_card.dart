@@ -12,25 +12,25 @@ import '../../../../../core/components/snackbar.dart';
 import '../model.dart';
 
 const List<String> regularHolidayTypes = [
-  "매주",
   "매월 첫 번째",
   "매월 두 번째",
   "매월 세 번째",
   "매월 네 번째",
   "매월 다섯 번째",
   "매월 마지막",
+  "매주",
 ];
 
 final List<SelectionOption<int>> regularHolidayOptions = [...regularHolidayTypes.mapIndexed((index, regularHolidayType) => SelectionOption(value: index, label: regularHolidayType))];
 
 final List<SelectionOption<String>> daysOfWeekOptions = [
+  SelectionOption(value: "일", label: "일요일"),
   SelectionOption(value: "월", label: "월요일"),
   SelectionOption(value: "화", label: "화요일"),
   SelectionOption(value: "수", label: "수요일"),
   SelectionOption(value: "목", label: "목요일"),
   SelectionOption(value: "금", label: "금요일"),
-  SelectionOption(value: "토", label: "토요일"),
-  SelectionOption(value: "일", label: "일요일"),
+  SelectionOption(value: "토", label: "토요일")
 ];
 
 class RegularHolidayCard extends StatefulWidget {
@@ -70,83 +70,98 @@ class _RegularHolidayCardState extends State<RegularHolidayCard> {
               children: [
                 ...widget.regularHolidays
                     .mapIndexed((index, regularHoliday) => [
-                          Row(children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  showSelectionBottomSheet<int>(
-                                      context: context,
-                                      title: "정기 휴무일의 주기를 설정해주세요.",
-                                      options: regularHolidayOptions,
-                                      onSelect: (cycle) {
-                                        final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
-                                        updatedHolidays[index] = regularHoliday.copyWith(cycle: cycle);
-                                        widget.onEditFunction(updatedHolidays);
-                                      },
-                                      selected: regularHoliday.cycle);
-                                },
-                                child: SGTextFieldWrapper(
-                                    child: SGContainer(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: MediaQuery.of(context).size.width <= 320 ? SGSpacing.p1 : SGSpacing.p3,
-                                      vertical: SGSpacing.p3
-                                  ),
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                    SGTypography.body(regularHolidayTypes[regularHoliday.cycle], color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w500),
-                                    Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16, color: SGColors.gray4),
-                                  ]),
-                                )),
-                              ),
-                            ),
-                            SizedBox(width: SGSpacing.p2),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  showSelectionBottomSheet<String>(
-                                      context: context,
-                                      title: "정기 휴무일의 요일을 설정해주세요.",
-                                      options: daysOfWeekOptions,
-                                      onSelect: (day) {
-                                        final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
-                                        updatedHolidays[index] = regularHoliday.copyWith(day: day);
-                                        widget.onEditFunction(updatedHolidays);
-                                      },
-                                      selected: regularHoliday.day);
-                                },
-                                child: SGTextFieldWrapper(
-                                    child: SGContainer(
-                                  padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
-                                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                    SGTypography.body("${regularHoliday.day}요일", color: SGColors.gray4, size: FontSize.normal, weight: FontWeight.w500),
-                                    Image.asset(
-                                      'assets/images/dropdown-arrow.png',
-                                      width: 16,
-                                      height: 16,
-                                      color: SGColors.gray4,
-                                    ),
-                                  ]),
-                                )),
-                              ),
-                            ),
-                            SizedBox(width: SGSpacing.p3),
-                            GestureDetector(
-                              onTap: () {
+                  Row(children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          showSelectionBottomSheet<int>(
+                              context: context,
+                              title: "정기 휴무일의 주기를 설정해주세요.",
+                              options: regularHolidayOptions,
+                              onSelect: (cycle) {
                                 final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
-                                updatedHolidays.removeAt(index);
+                                updatedHolidays[index] = regularHoliday.copyWith(cycle: cycle + 1); // 선택 후 +1 적용
                                 widget.onEditFunction(updatedHolidays);
                               },
-                              child: SGContainer(
-                                  borderWidth: 0,
-                                  width: SGSpacing.p5,
-                                  height: SGSpacing.p5,
-                                  borderRadius: BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
-                                  color: SGColors.warningRed,
-                                  child: Center(child: Image.asset('assets/images/minus-white.png', width: 16, height: 16))),
-                            ),
-                          ]),
-                          SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-                        ])
+                              selected: (regularHoliday.cycle != null && regularHoliday.cycle > 0)
+                                  ? regularHoliday.cycle - 1 // 조회 시 -1 적용
+                                  : 0 // 기본값 처리
+                          );
+                        },
+                        child: SGTextFieldWrapper(
+                            child: SGContainer(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: MediaQuery.of(context).size.width <= 320 ? SGSpacing.p1 : SGSpacing.p3,
+                                  vertical: SGSpacing.p3),
+                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                SGTypography.body(
+                                  (regularHoliday.cycle != null && regularHoliday.cycle > 0)
+                                      ? regularHolidayTypes[regularHoliday.cycle - 1] // 조회 시 -1 적용
+                                      : "선택되지 않음", // 기본값 처리
+                                  color: SGColors.gray4,
+                                  size: FontSize.normal,
+                                  weight: FontWeight.w500,
+                                ),
+                                Image.asset('assets/images/dropdown-arrow.png', width: 16, height: 16, color: SGColors.gray4),
+                              ]),
+                            )),
+                      ),
+                    ),
+                    SizedBox(width: SGSpacing.p2),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          showSelectionBottomSheet<String>(
+                              context: context,
+                              title: "정기 휴무일의 요일을 설정해주세요.",
+                              options: daysOfWeekOptions,
+                              onSelect: (day) {
+                                final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
+                                updatedHolidays[index] = regularHoliday.copyWith(day: day);
+                                widget.onEditFunction(updatedHolidays);
+                              },
+                              selected: regularHoliday.day);
+                        },
+                        child: SGTextFieldWrapper(
+                            child: SGContainer(
+                              padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
+                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                SGTypography.body(
+                                  "${regularHoliday.day}요일",
+                                  color: SGColors.gray4,
+                                  size: FontSize.normal,
+                                  weight: FontWeight.w500,
+                                ),
+                                Image.asset(
+                                  'assets/images/dropdown-arrow.png',
+                                  width: 16,
+                                  height: 16,
+                                  color: SGColors.gray4,
+                                ),
+                              ]),
+                            )),
+                      ),
+                    ),
+                    SizedBox(width: SGSpacing.p3),
+                    GestureDetector(
+                      onTap: () {
+                        final updatedHolidays = List<OperationTimeDetailModel>.from(widget.regularHolidays);
+                        updatedHolidays.removeAt(index);
+                        widget.onEditFunction(updatedHolidays);
+                      },
+                      child: SGContainer(
+                          borderWidth: 0,
+                          width: SGSpacing.p5,
+                          height: SGSpacing.p5,
+                          borderRadius: BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
+                          color: SGColors.warningRed,
+                          child: Center(child: Image.asset('assets/images/minus-white.png', width: 16, height: 16))),
+                    ),
+                  ]),
+                  SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+                ])
                     .flattened,
+
                 GestureDetector(
                   onTap: () {
                     if (hasDuplicateRegularHolidays(widget.regularHolidays)) {

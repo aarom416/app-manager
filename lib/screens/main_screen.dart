@@ -264,85 +264,89 @@ class _MainScreenState extends ConsumerState<MainScreen> {
                   Container(),
                   SGContainer(
                     padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
-                    child: SGContainer(
-                      color: SGColors.white,
-                      width: double.infinity,
-                      borderRadius: BorderRadius.circular(SGSpacing.p4),
-                      padding: EdgeInsets.all(SGSpacing.p4).copyWith(
-                          top: SGSpacing.p4 + SGSpacing.p05, bottom: 0),
-                      boxShadow: SGBoxShadow.large,
-                      child: Column(children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SGTypography.body("공지사항",
-                                size: FontSize.normal, weight: FontWeight.w600),
-                            GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => NoticeScreen()));
-                                },
-                                child: SGTypography.body("자세히",
-                                    color: SGColors.gray4)),
-                          ],
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => NoticeScreen()));
+                      },
+                      child: SGContainer(
+                        color: SGColors.white,
+                        width: double.infinity,
+                        borderRadius: BorderRadius.circular(SGSpacing.p4),
+                        padding: EdgeInsets.all(SGSpacing.p4).copyWith(
+                            top: SGSpacing.p4 + SGSpacing.p05, bottom: 0),
+                        boxShadow: SGBoxShadow.large,
+                        child: GestureDetector(
+                          child: Column(children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SGTypography.body("공지사항",
+                                    size: FontSize.normal, weight: FontWeight.w600),
+                                SGTypography.body("자세히",
+                                    color: SGColors.gray4),
+                              ],
+                            ),
+                            SizedBox(height: SGSpacing.p4),
+                            ListView.separated(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (ctx, i) => InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(MaterialPageRoute(
+                                            builder: (context) => NoticeScreen()));
+                                      },
+                                      child: SGContainer(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: SGSpacing.p4),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width : 280,
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
+                                                        children: [
+                                                          SGTypography.body(
+                                                              state
+                                                                  .result
+                                                                  .newsDTOList[i]
+                                                                  .title,
+                                                              size: FontSize.small,
+                                                              weight: FontWeight.w500,
+                                                              overflow: TextOverflow
+                                                                  .ellipsis),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )),
+                                              SizedBox(
+                                                  height:
+                                                      SGSpacing.p1 + SGSpacing.p05),
+                                              SGTypography.body(
+                                                  state.result.newsDTOList[i]
+                                                      .createdDate,
+                                                  size: FontSize.tiny,
+                                                  color: SGColors.gray3),
+                                            ],
+                                          )),
+                                    ),
+                                separatorBuilder: (ctx, _i) => Container(
+                                      child: Divider(
+                                          color: SGColors.gray2,
+                                          thickness: 1,
+                                          height: 1),
+                                    ),
+                                itemCount: state.result.newsDTOList.length)
+                          ]),
                         ),
-                        SizedBox(height: SGSpacing.p4),
-                        ListView.separated(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (ctx, i) => InkWell(
-                                  onTap: () {
-                                    //print('tab ' + i.toString());
-                                  },
-                                  child: SGContainer(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: SGSpacing.p4),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            width : 280,
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                      SGTypography.body(
-                                                          state
-                                                              .result
-                                                              .newsDTOList[i]
-                                                              .title,
-                                                          size: FontSize.small,
-                                                          weight: FontWeight.w500,
-                                                          overflow: TextOverflow
-                                                              .ellipsis),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            )),
-                                          SizedBox(
-                                              height:
-                                                  SGSpacing.p1 + SGSpacing.p05),
-                                          SGTypography.body(
-                                              state.result.newsDTOList[i]
-                                                  .createdDate,
-                                              size: FontSize.tiny,
-                                              color: SGColors.gray3),
-                                        ],
-                                      )),
-                                ),
-                            separatorBuilder: (ctx, _i) => Container(
-                                  child: Divider(
-                                      color: SGColors.gray2,
-                                      thickness: 1,
-                                      height: 1),
-                                ),
-                            itemCount: state.result.newsDTOList.length)
-                      ]),
+                      ),
                     ),
                   ),
                   SizedBox(height: SGSpacing.p10),

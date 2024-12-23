@@ -11,7 +11,7 @@ import 'package:singleeat/office/models/notification_model.dart';
 import 'package:singleeat/office/providers/notification_provider.dart';
 
 class NotificationScreen extends ConsumerStatefulWidget {
-  const NotificationScreen({super.key});
+  const  NotificationScreen({super.key});
 
   @override
   ConsumerState<NotificationScreen> createState() => _NotificationScreenState();

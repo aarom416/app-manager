@@ -393,8 +393,10 @@ class _EditBusinessProfileScreenState
               SizedBox(height: SGSpacing.p15),
               SGActionButton(
                 onPressed: () {
-                  provider.updateBusinessInformation(int.parse(businessType));
-                  showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
+                  if (!typeChange) {
+                    provider.updateBusinessInformation(int.parse(businessType));
+                    showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
+                  }
                 },
                 disabled: typeChange,
                 label: "변경하기",
