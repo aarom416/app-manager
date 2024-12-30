@@ -20,7 +20,7 @@ import '../../../../../core/components/snackbar.dart';
 import '../model.dart';
 
 class _DataTable extends StatelessWidget {
-  const _DataTable({super.key, this.children = const []});
+  const _DataTable({super.key, this.children =  const []});
 
   final List<Widget> children;
 
@@ -726,7 +726,7 @@ class _OrderInformation extends StatelessWidget {
         _DataTableRow(left: "가게", right: order.toOwner == 'null' ? '-' : order.toOwner),
         if (order.receiveFoodType == 'DELIVERY') ...[
           SizedBox(height: SGSpacing.p4),
-          _DataTableRow(left: "배달", right: order.toRider),
+          _DataTableRow(left: "배달", right: "${order.toRider}\n(도착하면 문자로 알려주세요)"),
         ]
       ]),
       SizedBox(height: SGSpacing.p3),
