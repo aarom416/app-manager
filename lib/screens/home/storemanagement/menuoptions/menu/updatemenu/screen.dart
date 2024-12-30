@@ -142,7 +142,7 @@ class _UpdateMenuScreenState extends ConsumerState<UpdateMenuScreen> {
                                   buttonText: "변경하기",
                                   onSubmit: (List<String> imagePaths) {
                                     logger.i("imagePaths $imagePaths");
-                                    provider.adminUpdateMenuPicture(widget.menuId, imagePaths[0]);
+                                    provider.updateMenuPicture(widget.menuId, imagePaths[0]);
                                   },
                                 ),
                               ),

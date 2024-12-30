@@ -300,7 +300,7 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 사진 변경 - 관리자 제한 API
-  Future<Response<dynamic>> adminUpdateMenuPicture({
+  Future<Response<dynamic>> updateMenuPicture({
     required String storeId,
     required int menuId,
     required String imagePath,
@@ -314,7 +314,7 @@ class MenuOptionsService {
       });
 
       return await ref.read(requestApiProvider).post(
-            RestApiUri.adminUpdateMenuPicture,
+            RestApiUri.updateMenuPicture,
             data: formData,
             options: Options(
               contentType: 'multipart/form-data',

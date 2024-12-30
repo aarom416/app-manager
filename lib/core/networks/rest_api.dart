@@ -292,7 +292,7 @@ class RestApiUri {
   // POST - 메뉴 인기 상태 변경
   static const String updateMenuPopularity =
       '/api/v1/owner/store-menu/menu-popularity';
-  // POST - 가게 메뉴 사진 등록 및 변경 TODO
+  // POST - 가게 메뉴 사진 등록 및 변경
   static const String updateMenuPicture =
       '/api/v1/owner/store-menu/menu-picture';
   // POST - 메뉴 옵션 품절 상태 변경
@@ -339,9 +339,6 @@ class RestApiUri {
   // POST - 메뉴 베스트 상태 변경
   static const String updateMenuBestStatus =
       '/api/v1/owner/store-menu/menu-best';
-  // POST - 메뉴 사진 변경 - 관리자 제한 API
-  static const String adminUpdateMenuPicture =
-      '/api/v1/owner/admin/menu-picture';
 
   /// OrderReceive
   /// 주문 접수 완료 전 API

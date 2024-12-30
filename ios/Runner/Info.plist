@@ -1,76 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-	<dict>
-		<key>CADisableMinimumFrameDurationOnPhone</key>
-		<true/>
-		<key>CFBundleDevelopmentRegion</key>
-		<string>$(DEVELOPMENT_LANGUAGE)</string>
-		<key>CFBundleDisplayName</key>
-		<string>싱그릿 식단연구소</string>
-		<key>CFBundleExecutable</key>
-		<string>$(EXECUTABLE_NAME)</string>
-		<key>CFBundleIdentifier</key>
-		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-		<key>CFBundleInfoDictionaryVersion</key>
-		<string>6.0</string>
-		<key>CFBundleName</key>
-		<string>singleat</string>
-		<key>CFBundlePackageType</key>
-		<string>APPL</string>
-		<key>CFBundleShortVersionString</key>
-		<string>$(FLUTTER_BUILD_NAME)</string>
-		<key>CFBundleSignature</key>
-		<string>????</string>
-		<key>CFBundleVersion</key>
-		<string>$(FLUTTER_BUILD_NUMBER)</string>
-		<key>LSRequiresIPhoneOS</key>
-		<true/>
-		<key>UIApplicationSupportsIndirectInputEvents</key>
-		<true/>
-		<key>UIBackgroundModes</key>
-		<array>
-			<string>remote-notification</string>
-		</array>
-		<key>FirebaseAppDelegateProxyEnabled</key>
-        <false/>
-		<key>UILaunchStoryboardName</key>
-		<string>LaunchScreen</string>
-		<key>UIMainStoryboardFile</key>
-		<string>Main</string>
-		<key>UIStatusBarHidden</key>
-		<false/>
-		<key>UISupportedInterfaceOrientations</key>
-		<array>
-			<string>UIInterfaceOrientationPortrait</string>
-			<string>UIInterfaceOrientationLandscapeLeft</string>
-			<string>UIInterfaceOrientationLandscapeRight</string>
-		</array>
-		<key>UISupportedInterfaceOrientations~ipad</key>
-		<array>
-			<string>UIInterfaceOrientationPortrait</string>
-			<string>UIInterfaceOrientationPortraitUpsideDown</string>
-			<string>UIInterfaceOrientationLandscapeLeft</string>
-			<string>UIInterfaceOrientationLandscapeRight</string>
-		</array>
-		<key>NSPhotoLibraryUsageDescription</key>
-        <string>사용자가 사진을 선택하고 공유하거나 편집할 수 있도록 사진 라이브러리에 접근합니다. 선택한 사진은 앱 내 기능을 위해 사용됩니다.</string>
-
-        <key>NSCameraUsageDescription</key>
-        <string>카메라를 사용하여 사진을 찍고 이를 앱 내 기능(예: 프로필 이미지 업데이트 또는 콘텐츠 생성)에 활용할 수 있도록 허용합니다.</string>
-
-        <key>NSPhotoLibraryAddUsageDescription</key>
-        <string>사용자가 앱에서 생성한 콘텐츠를 사진 라이브러리에 저장할 수 있도록 접근합니다.</string>
-
-        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-        <string>사용자의 현재 위치 데이터를 사용하여 근처의 서비스를 추천하거나 개인화된 경험을 제공합니다. 이 정보는 앱 사용 중 언제든 사용될 수 있습니다.</string>
-
-        <key>NSLocationWhenInUseUsageDescription</key>
-        <string>사용자가 앱을 사용하는 동안 현재 위치를 기반으로 개인화된 서비스를 제공하기 위해 위치 데이터가 필요합니다.</string>
-
-      <key>LSApplicationQueriesSchemes</key>
-      <array>
-        <string>https</string>
-      </array>
-	</dict>
+<dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>싱그릿 식단연구소</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>singleat</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>카메라를 사용하여 사진을 찍고 이를 앱 내 기능(예: 프로필 이미지 업데이트 또는 콘텐츠 생성)에 활용할 수 있도록 허용합니다.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>사용자의 현재 위치 데이터를 사용하여 근처의 서비스를 추천하거나 개인화된 경험을 제공합니다. 이 정보는 앱 사용 중 언제든 사용될 수 있습니다.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>사용자가 앱을 사용하는 동안 현재 위치를 기반으로 개인화된 서비스를 제공하기 위해 위치 데이터가 필요합니다.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>사용자가 앱에서 생성한 콘텐츠를 사진 라이브러리에 저장할 수 있도록 접근합니다.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>사용자가 사진을 선택하고 공유하거나 편집할 수 있도록 사진 라이브러리에 접근합니다. 선택한 사진은 앱 내 기능을 위해 사용됩니다.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
+</dict>
 </plist>

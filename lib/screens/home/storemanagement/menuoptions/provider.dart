@@ -517,9 +517,9 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   }
 
   /// POST - 메뉴 사진 변경 - 관리자 제한 API
-  void adminUpdateMenuPicture(int menuId, String imagePath) async {
+  void updateMenuPicture(int menuId, String imagePath) async {
     final response =
-        await ref.read(menuOptionsServiceProvider).adminUpdateMenuPicture(
+        await ref.read(menuOptionsServiceProvider).updateMenuPicture(
               storeId: UserHive.getBox(key: UserKey.storeId),
               menuId: menuId,
               imagePath: imagePath,
