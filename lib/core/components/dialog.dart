@@ -109,7 +109,7 @@ void showFailDialogWithImage({
       Center(
         child: SGTypography.body(
           mainTitle,
-          size: FontSize.medium,
+          size: FontSize.normal,
           weight: FontWeight.w700,
           lineHeight: 1.25,
           align: TextAlign.center,
@@ -135,7 +135,7 @@ void showFailDialogWithImage({
           color: SGColors.primary,
           width: double.infinity,
           borderColor: SGColors.primary,
-          padding: EdgeInsets.symmetric(vertical: SGSpacing.p5),
+          padding: EdgeInsets.symmetric(vertical: SGSpacing.p4),
           borderRadius: BorderRadius.circular(SGSpacing.p3),
           child: Center(
             child: SGTypography.body(

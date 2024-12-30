@@ -55,15 +55,15 @@ abstract class MenuModel with _$MenuModel {
 @freezed
 abstract class NutritionModel with _$NutritionModel {
   const factory NutritionModel({
-    @Default(0) int servingAmount,
+    @Default(0) double servingAmount,
     @Default('g') String servingAmountType,
-    @Default(0) int calories,
-    @Default(0) int carbohydrate,
-    @Default(0) int protein,
-    @Default(0) int fat,
-    @Default(0) int sugar,
-    @Default(0) int saturatedFat,
-    @Default(0) int natrium,
+    @Default(0) double calories,
+    @Default(0) double carbohydrate,
+    @Default(0) double protein,
+    @Default(0) double fat,
+    @Default(0) double sugar,
+    @Default(0) double saturatedFat,
+    @Default(0) double natrium,
   }) = _NutritionModel;
 
   factory NutritionModel.fromJson(Map<String, dynamic> json) => _$NutritionModelFromJson(json);

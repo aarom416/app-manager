@@ -56,11 +56,13 @@ class _OperationTimeScreenState extends State<OperationTimeScreen> {
                   .entries
                   .map((entry) {
                     int index = entry.key;
-                    OperationTimeDetailModel operationTimeDetailDTO =
-                        entry.value;
+
+                    OperationTimeDetailModel operationTimeDetailDTO = entry.value;
+
                     var isHoliday = regularHolidays.any((regularHoliday) =>
-                        (regularHoliday.day == operationTimeDetailDTO.day) &&
+                    (regularHoliday.day == operationTimeDetailDTO.day) &&
                         regularHoliday.isWeekCycleHoliday());
+
                     return isHoliday
                         ? [
                             __OperationRegularHolidayCard(

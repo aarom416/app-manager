@@ -121,6 +121,8 @@ class DeliveryService {
           'maxPriceList': storeDeliveryTipDTOList.map((deliveryTipModel) {
             return deliveryTipModel.maxPrice;
           }).toList(),
+          'minDeliveryPrice' : minimumOrderPrice,
+          'minDeliveryTip' : baseDeliveryTip,
           'deliveryTipList': storeDeliveryTipDTOList.map((deliveryTipModel) {
             return deliveryTipModel.deliveryTip;
           }).toList(),

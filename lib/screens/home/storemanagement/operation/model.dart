@@ -126,6 +126,6 @@ extension OperationTimeDetailModelExtensions on OperationTimeDetailModel {
 
   /// 주간 정기 휴무인지의 여부
   bool isWeekCycleHoliday() {
-    return isRegularHoliday() && cycle == 0;
+    return isRegularHoliday() && cycle == 7;
   }
 }

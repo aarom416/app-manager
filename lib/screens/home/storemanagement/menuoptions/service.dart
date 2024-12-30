@@ -174,7 +174,7 @@ class MenuOptionsService {
     required String selectedUserMenuCategoryIdsFlatString,
     required int price,
     required NutritionModel nutrition,
-    required int servingAmount,
+    required double servingAmount,
     required String servingAmountType,
     required String? imagePath,
     required String? menuBriefDescription,
@@ -300,7 +300,7 @@ class MenuOptionsService {
   }
 
   /// POST - 메뉴 사진 변경 - 관리자 제한 API
-  Future<Response<dynamic>> adminUpdateMenuPicture({
+  Future<Response<dynamic>> updateMenuPicture({
     required String storeId,
     required int menuId,
     required String imagePath,
@@ -314,7 +314,7 @@ class MenuOptionsService {
       });
 
       return await ref.read(requestApiProvider).post(
-            RestApiUri.adminUpdateMenuPicture,
+            RestApiUri.updateMenuPicture,
             data: formData,
             options: Options(
               contentType: 'multipart/form-data',
@@ -616,6 +616,7 @@ class MenuOptionsService {
           'storeId': storeId,
           'addMenuIdList': addMenuIdList,
           'removeMenuIdList': removeMenuIdList,
+          'menuOptionCategoryId': menuOptionCategoryId,
         },
       );
     } on DioException catch (e) {

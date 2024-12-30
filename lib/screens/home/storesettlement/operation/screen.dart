@@ -269,151 +269,247 @@ class SettlementCard extends StatelessWidget {
   }
 }
 
-class SettlementDetailScreen extends StatelessWidget {
+class SettlementDetailScreen extends StatefulWidget {
   final ResponseSettlementDTO settlement;
 
   const SettlementDetailScreen({super.key, required this.settlement});
 
   @override
+  State<SettlementDetailScreen> createState() => _SettlementDetailScreenState();
+}
+
+class _SettlementDetailScreenState extends State<SettlementDetailScreen> {
+  bool _isVisible = false;
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWithLeftArrow(title: "정산"),
-      body: SGContainer(
-        color: Color(0xFFFAFAFA),
-        padding: EdgeInsets.symmetric(
-            horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
-        child: ListView(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SGTypography.label("상세 내역"),
-                SGTypography.body(settlement.settlementDate,
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w400),
-              ],
-            ),
-            SizedBox(height: SGSpacing.p3),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Row(children: [
-                SGTypography.body("입금 금액",
-                    color: SGColors.gray4,
-                    size: FontSize.normal,
-                    weight: FontWeight.w400),
-                SizedBox(width: SGSpacing.p2),
-                SGContainer(
-                    color: (settlement.settlementStatus == '입금요청'
-                            ? SGColors.primary
-                            : SGColors.success)
-                        .withOpacity(0.1),
-                    padding: EdgeInsets.all(SGSpacing.p05),
-                    borderRadius:
-                        BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
-                    child: SGTypography.body(
-                        settlement.settlementStatus.characters
-                            .toList()
-                            .sublist(2)
-                            .join(),
-                        weight: FontWeight.w500,
-                        size: FontSize.small,
-                        color: settlement.settlementStatus == '입금요청'
-                            ? SGColors.primary
-                            : SGColors.success))
-              ]),
-              SGTypography.label(
-                  "${settlement.settlementAmount.toKoreanCurrency}원"),
-            ]),
-            SizedBox(height: SGSpacing.p3),
-            MultipleInformationBox(children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                SGTypography.body("1. 주문 중개(주문 금액)",
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w500),
-                SGTypography.body("${settlement.orderAmount.toKoreanCurrency}원",
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w500),
-              ]),
-              SizedBox(height: SGSpacing.p4),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                SGTypography.body("2. 배달 (가게 배달팁)",
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w500),
-                SGTypography.body("${settlement.deliveryTip.toKoreanCurrency}원",
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w500),
-              ]),
-              SizedBox(height: SGSpacing.p4),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                SGTypography.body("3. 중개 이용료",
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w500),
-                SGTypography.body("${(-settlement.agentFee).toKoreanCurrency}원",
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w500),
-              ]),
-              SizedBox(height: SGSpacing.p4),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                SGTypography.body("4. 부가세",
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w500),
-                SGTypography.body(
-                    "${(-settlement.agentFeeTax).toKoreanCurrency}원",
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w500),
-              ]),
-              SizedBox(height: SGSpacing.p4),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                SGTypography.body("5. 가게 할인 쿠폰",
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w500),
-                SGTypography.body(
-                    "${(-settlement.storeCouponDiscount).toKoreanCurrency}원",
-                    color: SGColors.gray4,
-                    size: FontSize.small,
-                    weight: FontWeight.w500),
-              ]),
-              SizedBox(height: SGSpacing.p4),
-              Divider(thickness: 1, color: SGColors.line1),
-              SizedBox(height: SGSpacing.p4),
-              Row(children: [
-                Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _isVisible = false;
+        });
+      },
+      child: Scaffold(
+        appBar: AppBarWithLeftArrow(title: "정산"),
+        body: SGContainer(
+          color: Color(0xFFFAFAFA),
+          padding: EdgeInsets.symmetric(
+              horizontal: SGSpacing.p4, vertical: SGSpacing.p6),
+          child: Stack(
+            children: [
+              ListView(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SGTypography.body(
-                          settlement.settlementStatus == '입금요청'
-                              ? "입금 예정 금액"
-                              : "입금 금액",
-                          color: SGColors.black,
+                      SGTypography.label("상세 내역"),
+                      SGTypography.body(widget.settlement.settlementDate,
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w400),
+                    ],
+                  ),
+                  SizedBox(height: SGSpacing.p3),
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    Row(children: [
+                      SGTypography.body("입금 금액",
+                          color: SGColors.gray4,
                           size: FontSize.normal,
-                          weight: FontWeight.w700),
-                      SizedBox(height: SGSpacing.p2),
-                      SGTypography.body("(1+2+3+4+5)",
-                          color: SGColors.black,
-                          size: FontSize.tiny,
-                          weight: FontWeight.w700),
+                          weight: FontWeight.w400),
+                      SizedBox(width: SGSpacing.p2),
+                      SGContainer(
+                          color: (widget.settlement.settlementStatus == '입금요청'
+                              ? SGColors.primary
+                              : SGColors.success)
+                              .withOpacity(0.1),
+                          padding: EdgeInsets.all(SGSpacing.p05),
+                          borderRadius:
+                          BorderRadius.circular(SGSpacing.p1 + SGSpacing.p05),
+                          child: SGTypography.body(
+                              widget.settlement.settlementStatus.characters
+                                  .toList()
+                                  .sublist(2)
+                                  .join(),
+                              weight: FontWeight.w500,
+                              size: FontSize.small,
+                              color: widget.settlement.settlementStatus == '입금요청'
+                                  ? SGColors.primary
+                                  : SGColors.success))
                     ]),
-                Spacer(),
-                SGTypography.body(
-                    "${settlement.settlementAmount.toKoreanCurrency}원",
-                    color: SGColors.black,
-                    size: FontSize.medium,
-                    weight: FontWeight.w700),
-              ])
-            ])
-          ],
+                    SGTypography.label(
+                        "${widget.settlement.settlementAmount.toKoreanCurrency}원"),
+                  ]),
+                  SizedBox(height: SGSpacing.p3),
+                  MultipleInformationBox(children: [
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      SGTypography.body("1. 주문 중개(주문 금액)",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w500),
+                      SGTypography.body("${widget.settlement.orderAmount.toKoreanCurrency}원",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w500),
+                    ]),
+                    SizedBox(height: SGSpacing.p4),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      SGTypography.body("2. 배달 (가게 배달팁)",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w500),
+                      SGTypography.body("${widget.settlement.deliveryTip.toKoreanCurrency}원",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w500),
+                    ]),
+                    SizedBox(height: SGSpacing.p4),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      Row(
+                        children: [
+                          SGTypography.body("3. 중개 이용료",
+                              color: SGColors.gray4,
+                              size: FontSize.small,
+                              weight: FontWeight.w500),
+                          SizedBox(
+                            width: SGSpacing.p05,
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _isVisible = !_isVisible;
+                                });
+                              },
+                              child: Icon(Icons.help_outline, size: SGSpacing.p4, color: SGColors.gray4)),
+                        ],
+                      ),
+                      SGTypography.body("${(-widget.settlement.agentFee).toKoreanCurrency}원",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w500),
+                    ]),
+                    SizedBox(height: SGSpacing.p4),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      SGTypography.body("4. 부가세",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w500),
+                      SGTypography.body(
+                          "${(-widget.settlement.agentFeeTax).toKoreanCurrency}원",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w500),
+                    ]),
+                    SizedBox(height: SGSpacing.p4),
+                    Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                      SGTypography.body("5. 가게 할인 쿠폰",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w500),
+                      SGTypography.body(
+                          "${(-widget.settlement.storeCouponDiscount).toKoreanCurrency}원",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                          weight: FontWeight.w500),
+                    ]),
+                    SizedBox(height: SGSpacing.p4),
+                    Divider(thickness: 1, color: SGColors.line1),
+                    SizedBox(height: SGSpacing.p4),
+                    Row(children: [
+                      Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SGTypography.body(
+                                widget.settlement.settlementStatus == '입금요청'
+                                    ? "입금 예정 금액"
+                                    : "입금 금액",
+                                color: SGColors.black,
+                                size: FontSize.normal,
+                                weight: FontWeight.w700),
+                            SizedBox(height: SGSpacing.p2),
+                            SGTypography.body("(1+2+3+4+5)",
+                                color: SGColors.black,
+                                size: FontSize.tiny,
+                                weight: FontWeight.w700),
+                          ]),
+                      Spacer(),
+                      SGTypography.body(
+                          "${widget.settlement.settlementAmount.toKoreanCurrency}원",
+                          color: SGColors.black,
+                          size: FontSize.medium,
+                          weight: FontWeight.w700),
+                    ])
+                  ])
+                ],
+              ),
+              Positioned(
+                top: SGSpacing.p32 + SGSpacing.p9,
+                left: SGSpacing.p2,
+                child: AnimatedOpacity(
+                  opacity: _isVisible ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 300),
+                  child: _isVisible
+                      ? Container(
+                        padding: EdgeInsets.all(SGSpacing.p3),
+                        width: 250,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SGTypography.body(
+                              "중개 이용료는 결제 대행 수수료(PG사)와 중개 수수료(싱그릿)를 더한 금액입니다.",
+                              color: SGColors.gray4,
+                              size: FontSize.small,
+                              weight: FontWeight.w500,
+                            ),
+                            SizedBox(height: SGSpacing.p2),
+                            SGTypography.body(
+                              "[결제 대행 수수료(PG) 안내]\n\n"
+                                  " - 신용/체크카드 : 결제금액의 3.2%\n\n"
+                                  " - 카카오페이 : 결제금액의 3.2%\n\n"
+                                  " - 토스페이 : 결제금액의 3.2%\n\n"
+                                  " - 네이버페이 : 결제금액의 3.3%\n",
+                              color: SGColors.gray4,
+                              size: FontSize.small,
+                              weight: FontWeight.w500,
+                            ),
+                            SizedBox(height: SGSpacing.p2),
+                            SGTypography.body(
+                              "[중개 수수료(싱그릿) 안내]\n\n"
+                                  " - 중개 수수료 : 중개 금액의 5.5%",
+                              color: SGColors.gray4,
+                              size: FontSize.small,
+                              weight: FontWeight.w500,
+                            ),
+                          ],
+                        ),
+                      )
+                      : Container(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+
+
+
+
+
+
+
+

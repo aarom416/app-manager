@@ -142,6 +142,7 @@ class OperationNotifier extends _$OperationNotifier {
           error: const ResultFailResponseModel(),
           holidayStatus: holidayStatus,
           holidayDetailDTOList: regularHolidays + temporaryHolidays);
+      getOperationInfo();
     } else {
       state = state.copyWith(
           error: ResultFailResponseModel.fromJson(response.data));

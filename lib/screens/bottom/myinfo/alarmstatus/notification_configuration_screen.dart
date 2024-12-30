@@ -53,7 +53,7 @@ class _NotificationConfigurationScreenState
             SizedBox(height: SGSpacing.p3),
             SGContainer(
                 padding: EdgeInsets.symmetric(
-                    horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
+                    horizontal: SGSpacing.p4, vertical: SGSpacing.p3),
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(SGSpacing.p3),
                 borderColor: SGColors.line3,
@@ -75,40 +75,40 @@ class _NotificationConfigurationScreenState
                         });
                       })
                 ])),
-            SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-            SGContainer(
-                padding: EdgeInsets.symmetric(
-                    horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(SGSpacing.p3),
-                borderColor: SGColors.line3,
-                boxShadow: SGBoxShadow.large,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SGTypography.body("알림 음량",
-                          size: FontSize.normal, weight: FontWeight.w500),
-                      SizedBox(height: SGSpacing.p2),
-                      SliderTheme(
-                        data: SliderThemeData(
-                          inactiveTrackColor: SGColors.line3,
-                          activeTrackColor: SGColors.primary,
-                          valueIndicatorColor: SGColors.primary,
-                          thumbColor: SGColors.white,
-                          trackHeight: 6,
-                          thumbShape:
-                              RoundSliderThumbShape(enabledThumbRadius: 12),
-                          overlayShape:
-                              RoundSliderOverlayShape(overlayRadius: 1),
-                        ),
-                        child: Slider(
-                          value: state.volume,
-                          onChanged: (double value) {
-                            provider.onChangeVolume(volume: value);
-                          },
-                        ),
-                      )
-                    ])),
+            // SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
+            // SGContainer(
+            //     padding: EdgeInsets.symmetric(
+            //         horizontal: SGSpacing.p4, vertical: SGSpacing.p4),
+            //     color: Colors.white,
+            //     borderRadius: BorderRadius.circular(SGSpacing.p3),
+            //     borderColor: SGColors.line3,
+            //     boxShadow: SGBoxShadow.large,
+            //     child: Column(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: [
+            //           SGTypography.body("알림 음량",
+            //               size: FontSize.normal, weight: FontWeight.w500),
+            //           SizedBox(height: SGSpacing.p2),
+            //           SliderTheme(
+            //             data: SliderThemeData(
+            //               inactiveTrackColor: SGColors.line3,
+            //               activeTrackColor: SGColors.primary,
+            //               valueIndicatorColor: SGColors.primary,
+            //               thumbColor: SGColors.white,
+            //               trackHeight: 6,
+            //               thumbShape:
+            //                   RoundSliderThumbShape(enabledThumbRadius: 12),
+            //               overlayShape:
+            //                   RoundSliderOverlayShape(overlayRadius: 1),
+            //             ),
+            //             child: Slider(
+            //               value: state.volume,
+            //               onChanged: (double value) {
+            //                 provider.onChangeVolume(volume: value);
+            //               },
+            //             ),
+            //           )
+            //         ])),
             SizedBox(height: SGSpacing.p4),
             SGTypography.body("사장님 알림 센터",
                 size: FontSize.normal, weight: FontWeight.w700),

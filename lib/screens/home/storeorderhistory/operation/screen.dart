@@ -29,7 +29,13 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
   String currentDateRangeType = "월별";
   List<String> dateRangeType = ["월별", "기간 선택"];
   String filterValue = '처리 중';
-  DateRange dateRange = DateRange(start: DateTime.now(), end: DateTime.now());
+
+// 시작 날짜는 오늘 기준 어제, 종료 날짜는 오늘로 설정
+  DateRange dateRange = DateRange(
+    start: DateTime.now().subtract(const Duration(days: 1)),
+    end: DateTime.now(),
+  );
+
   ScrollController scrollController = ScrollController();
   final throttle = Throttle(
     delay: const Duration(milliseconds: 300),
@@ -45,12 +51,24 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
       final provider = ref.read(storeOrderHistoryNotifierProvider.notifier);
       provider.clear();
 
-      provider.onChangeStartDate(
-          startDate: getFirstDayOfMonthWithDateTime(dateRange.start));
-      provider.onChangeEndDate(
-          endDate: getLastDayOfMonthWithDateTime(dateRange.end));
+      if (currentDateRangeType == '월별') {
+        // 월별 조회: 첫날과 마지막 날 사용
+        provider.onChangeStartDate(
+            startDate: getFirstDayOfMonthWithDateTime(dateRange.start));
+        provider.onChangeEndDate(
+            endDate: getLastDayOfMonthWithDateTime(dateRange.end));
+      } else {
+        // 기간 선택: 어제와 오늘
+        provider.onChangeStartDate(
+            startDate: dateRange.start.toShortDateStringWithZeroPadding);
+        provider.onChangeEndDate(
+            endDate: dateRange.end.toShortDateStringWithZeroPadding);
+      }
     });
   }
+
+
+
 
   void loadMore() {
     if (scrollController.position.pixels ==
@@ -116,10 +134,10 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                         );
                                       } else {
                                         dateRange = DateRange(
-                                          start: DateTime.now(),
-                                          end: DateTime.now().subtract(
+                                          start:  DateTime.now().subtract(
                                             const Duration(days: 1),
                                           ),
+                                          end: DateTime.now(),
                                         );
                                       }
                                     });
@@ -187,7 +205,6 @@ class _OrderHistoryScreenState extends ConsumerState<OrderHistoryScreen> {
                                     endDate: dateRange
                                         .end.toShortDateStringWithZeroPadding);
                               });
-
                               provider.clearFilter();
                               provider.getOrderHistoryByFilter();
                             },

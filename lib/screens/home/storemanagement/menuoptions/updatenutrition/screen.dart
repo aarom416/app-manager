@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:singleeat/core/components/action_button.dart';
 import 'package:singleeat/core/components/container.dart';
 import 'package:singleeat/core/components/selection_bottom_sheet.dart';
@@ -91,13 +92,13 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
               NutritionFormField(
                 label: "칼로리",
                 unit: "kcal",
-                originValue: nutrition.calories,
+                originValue: nutrition.calories.toDouble(),
                 value: nutrition.calories,
                 isNone: isNoneMap['calories']!,
                 onToggleNone: (newValue) => _handleToggleNone('calories', newValue),
                 onChanged: (value) {
                   setState(() {
-                    nutrition = nutrition.copyWith(calories: value.toInt());
+                    nutrition = nutrition.copyWith(calories: value);
                   });
                 },
               ),
@@ -105,13 +106,13 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
               NutritionFormField(
                 label: "제공량",
                 unit: nutrition.servingAmountType,
-                originValue: nutrition.servingAmount,
-                value: nutrition.servingAmount,
+                originValue: nutrition.servingAmount.toDouble(),
+                value: nutrition.servingAmount.toDouble(),
                 isNone: isNoneMap['servingAmount']!,
                 onToggleNone: (newValue) => _handleToggleNone('servingAmount', newValue),
                 onChanged: (value) {
                   setState(() {
-                    nutrition = nutrition.copyWith(servingAmount: value.toInt());
+                    nutrition = nutrition.copyWith(servingAmount: value);
                   });
                 },
                 additionalContent: GestureDetector(
@@ -149,13 +150,13 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
               NutritionFormField(
                   label: "탄수화물",
                   unit: "g",
-                  originValue: nutrition.carbohydrate,
+                  originValue: nutrition.carbohydrate.toDouble(),
                   value: nutrition.carbohydrate,
                   isNone: isNoneMap['carbohydrate']!,
                   onToggleNone: (newValue) => _handleToggleNone('carbohydrate', newValue),
                   onChanged: (value) {
                     setState(() {
-                      nutrition = nutrition.copyWith(carbohydrate: value.toInt());
+                      nutrition = nutrition.copyWith(carbohydrate: value);
                     });
                   }),
               SizedBox(height: SGSpacing.p6),
@@ -169,7 +170,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
                   onToggleNone: (newValue) => _handleToggleNone('protein', newValue),
                   onChanged: (value) {
                     setState(() {
-                      nutrition = nutrition.copyWith(protein: value.toInt());
+                      nutrition = nutrition.copyWith(protein: value);
                     });
                   }),
               SizedBox(height: SGSpacing.p6),
@@ -177,13 +178,13 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
                   key: const ValueKey('fat'),
                   label: "지방",
                   unit: "g",
-                  originValue: nutrition.fat,
+                  originValue: nutrition.fat.toDouble(),
                   value: nutrition.fat,
                   isNone: isNoneMap['fat']!,
                   onToggleNone: (newValue) => _handleToggleNone('fat', newValue),
                   onChanged: (value) {
                     setState(() {
-                      nutrition = nutrition.copyWith(fat: value.toInt());
+                      nutrition = nutrition.copyWith(fat: value);
                     });
                   }),
               SizedBox(height: SGSpacing.p6),
@@ -191,13 +192,13 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
                   key: const ValueKey('sugar'),
                   label: "당",
                   unit: "g",
-                  originValue: nutrition.sugar,
+                  originValue: nutrition.sugar.toDouble(),
                   value: nutrition.sugar,
                   isNone: isNoneMap['sugar']!,
                   onToggleNone: (newValue) => _handleToggleNone('sugar', newValue),
                   onChanged: (value) {
                     setState(() {
-                      nutrition = nutrition.copyWith(sugar: value.toInt());
+                      nutrition = nutrition.copyWith(sugar: value);
                     });
                   }),
               SizedBox(height: SGSpacing.p6),
@@ -205,13 +206,13 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
                   key: const ValueKey('saturatedFat'),
                   label: "포화지방",
                   unit: "g",
-                  originValue: nutrition.saturatedFat,
+                  originValue: nutrition.saturatedFat.toDouble(),
                   value: nutrition.saturatedFat,
                   isNone: isNoneMap['saturatedFat']!,
                   onToggleNone: (newValue) => _handleToggleNone('saturatedFat', newValue),
                   onChanged: (value) {
                     setState(() {
-                      nutrition = nutrition.copyWith(saturatedFat: value.toInt());
+                      nutrition = nutrition.copyWith(saturatedFat: value);
                     });
                   }),
               SizedBox(height: SGSpacing.p6),
@@ -225,7 +226,7 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
                   onToggleNone: (newValue) => _handleToggleNone('natrium', newValue),
                   onChanged: (value) {
                     setState(() {
-                      nutrition = nutrition.copyWith(natrium: value.toInt());
+                      nutrition = nutrition.copyWith(natrium: value);
                     });
                   }),
               SizedBox(height: SGSpacing.p32),
@@ -247,8 +248,8 @@ class _UpdateNutritionScreenState extends State<UpdateNutritionScreen> {
 class NutritionFormField extends StatelessWidget {
   final String label;
   final String unit;
-  final int originValue;
-  final int value;
+  final double originValue;
+  final double value;
   final bool isNone;
   final Function(bool) onToggleNone;
   final Function(double) onChanged;
@@ -268,6 +269,7 @@ class NutritionFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -283,7 +285,7 @@ class NutritionFormField extends StatelessWidget {
             children: [
               Row(children: [
                 SGTypography.body(
-                  "${isNone ? '-- ' : originValue.toKoreanCurrency}${unit}",
+                  "${isNone ? '-- ' : originValue}${unit}",
                   size: FontSize.large,
                   weight: FontWeight.w600,
                   color: isNone ? SGColors.gray3 : SGColors.black,
@@ -314,8 +316,8 @@ class NutritionFormField extends StatelessWidget {
                         child: SGContainer(
                           padding: EdgeInsets.all(SGSpacing.p3 + SGSpacing.p05),
                           width: double.infinity,
-                          child: NumericTextField(
-                            initialValue: value,
+                          child: TextField(
+                            keyboardType: TextInputType.numberWithOptions(decimal: true),
                             decoration: InputDecoration(
                               isDense: true,
                               isCollapsed: true,
@@ -323,8 +325,14 @@ class NutritionFormField extends StatelessWidget {
                               hintText: "수정할 값을 입력해주세요.",
                               border: const OutlineInputBorder(borderRadius: BorderRadius.zero, borderSide: BorderSide.none),
                             ),
-                            onValueChanged: (inputValue) {
-                              onChanged(inputValue.toDouble());
+                            onChanged: (inputValue) {
+                              // 입력값 그대로 처리하여 보여지게 함
+                              if (inputValue.isNotEmpty) {
+                                // 그대로 값 표시 (변환 없이 그대로)
+                                onChanged(double.tryParse(inputValue) ?? 0.0);  // 기본적으로 0.0 처리
+                              } else {
+                                onChanged(0.0); // 값이 비어있으면 0으로 처리
+                              }
                             },
                           ),
                         ),
@@ -344,4 +352,11 @@ class NutritionFormField extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
 

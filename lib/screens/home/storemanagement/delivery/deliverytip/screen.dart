@@ -22,7 +22,6 @@ class DeliveryTipScreen extends StatefulWidget {
   final int deliveryTipMax;
   final int minimumOrderPrice;
   final List<DeliveryTipModel> storeDeliveryTipDTOList;
-  final String deliveryTipInfo;
   final Function(int, int, List<DeliveryTipModel>) onSaveFunction;
 
   const DeliveryTipScreen(
@@ -31,7 +30,6 @@ class DeliveryTipScreen extends StatefulWidget {
       required this.deliveryTipMax,
       required this.minimumOrderPrice,
       required this.storeDeliveryTipDTOList,
-      required this.deliveryTipInfo,
       required this.onSaveFunction});
 
   @override
@@ -132,42 +130,56 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
             onPressed: () {
               FocusScope.of(context).unfocus();
 
-              for (int i = storeDeliveryTipDTOList.length - 1; i > 0; i--) {
-                if (storeDeliveryTipDTOList[i].minPrice !=
-                    storeDeliveryTipDTOList[i - 1].maxPrice) {
+              if (baseDeliveryTip > 5000) {
+                showFailDialogWithImage(
+                  mainTitle: "배달팁 등록 실패",
+                  subTitle: "최소 배달 팁은 5000원보다 클 수 없습니다.",
+                );
+                return;
+              }
+              // 첫 번째 최소 주문 금액과 첫 번째 배달팁 유효성 검사
+              if (storeDeliveryTipDTOList.isNotEmpty) {
+                // 첫 번째 최소 주문 금액과 최소 주문 금액 비교
+                if (storeDeliveryTipDTOList[0].minPrice < minimumOrderPrice) {
                   showFailDialogWithImage(
-                      mainTitle: "배달팁 등록 실패",
-                      subTitle: "현재 최대 주문 금액이 다음\n최소 주문 금액과 같아야 합니다.");
+                    mainTitle: "배달팁 등록 실패",
+                    subTitle: "첫 번째 최소 주문 금액은 최소 주문 금액보다 작을 수 없습니다.",
+                  );
                   return;
                 }
 
-                if (storeDeliveryTipDTOList[i].deliveryTip >
-                    storeDeliveryTipDTOList[i - 1].deliveryTip) {
+                // 첫 번째 배달팁과 최소 배달팁 비교
+                if (storeDeliveryTipDTOList[0].deliveryTip > baseDeliveryTip) {
                   showFailDialogWithImage(
-                      mainTitle: "배달팁 등록 실패",
-                      subTitle: "다음 배달팁은 이전 배달팁보다 작아야합니다.");
+                    mainTitle: "배달팁 등록 실패",
+                    subTitle: "첫 번째 배달팁은 최소 배달팁보다 작을 수 없습니다.",
+                  );
                   return;
                 }
               }
 
-              if (baseDeliveryTip > widget.deliveryTipMax ||
-                  storeDeliveryTipDTOList.any((deliveryTipModel) =>
-                      deliveryTipModel.deliveryTip > widget.deliveryTipMax)) {
-                showFailDialogWithImage(
-                    mainTitle: "배달팁 등록 실패",
-                    subTitle:
-                        "배달팁은 ${widget.deliveryTipMax.toKoreanCurrency}원 이하만 설정 가능합니다.");
-              } else {
-                /*
-                    todo storeDeliveryTipDTOList 의 입력값 validation 필요
-                    가게 배달팁을 변경합니다.
-                    현재 최대 가격 금액이 다음 설정하려는 최소 주문 금액과 같아야 합니다. 예를 들어 '8000원 이상 10000원 이하' -> '10000원 이상 30000원 이하'
-                    '8000원 이상' 인 경우 최소 가격은 8000원, 최대 가격은 null 입니다.
-                    배달팁 내용, 최소 가격, 최대 가겨, 배달 팁 리스트의 크기는 모두 같고 인덱스 순으로 같은 배달팁입니다.
-                    배달팁 변경 페이지에 존재하는 배달팁에 대한 정보를 전송해야 합니다. (기존에 설정되어 있는 배달팁 포함)
-                 */
-                widget.onSaveFunction(baseDeliveryTip, minimumOrderPrice,
-                    storeDeliveryTipDTOList);
+              // 배달팁 유효성 검사 (마지막 원소 제외)
+              if (storeDeliveryTipDTOList.length > 1) { // 1개 이상의 원소가 있을 경우에만 검사
+                for (int i = 0; i < storeDeliveryTipDTOList.length - 1; i++) {
+                  int minPrice = storeDeliveryTipDTOList[i].minPrice;
+                  int maxPrice = storeDeliveryTipDTOList[i].maxPrice;
+
+                  // 최소 주문 금액이 최대 주문 금액보다 클 수 없음
+                  if (minPrice > maxPrice) {
+                    showFailDialogWithImage(
+                      mainTitle: "배달팁 등록 실패",
+                      subTitle: "금액을 다시 한 번 확인해주세요.",
+                    );
+                    return;
+                  }
+                }
+              }
+
+              if (!(baseDeliveryTip == widget.baseDeliveryTip &&
+                  minimumOrderPrice == widget.minimumOrderPrice &&
+                  const DeepCollectionEquality().equals(
+                      widget.storeDeliveryTipDTOList, storeDeliveryTipDTOList))) {
+                widget.onSaveFunction(baseDeliveryTip, minimumOrderPrice, storeDeliveryTipDTOList);
                 showGlobalSnackBar(context, "성공적으로 변경되었습니다.");
               }
             },
@@ -176,7 +188,8 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
                 minimumOrderPrice == widget.minimumOrderPrice &&
                 const DeepCollectionEquality().equals(
                     widget.storeDeliveryTipDTOList, storeDeliveryTipDTOList),
-          )),
+          ),
+      ),
       body: SGContainer(
           color: const Color(0xFFFAFAFA),
           padding: EdgeInsets.symmetric(
@@ -214,12 +227,6 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
                                 setState(() {
                                   minimumOrderPrice = value;
                                 });
-                                if (minimumOrderPrice >= baseDeliveryTip) {
-                                  showFailDialogWithImage(
-                                    mainTitle: "금액 설정 오류",
-                                    subTitle: "최소 금액은 최대 금액보다 작아야 합니다.",
-                                  );
-                                }
                               },
                             ),
                           ),
@@ -255,19 +262,13 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
                                 setState(() {
                                   baseDeliveryTip = value;
                                 });
-                                if (minimumOrderPrice >= baseDeliveryTip) {
-                                  showFailDialogWithImage(
-                                    mainTitle: "금액 설정 오류",
-                                    subTitle: "최대 금액은 최소 금액보다 커야 합니다.",
-                                  );
-                                }
                               },
                             ),
                           ),
                           SGContainer(
                             padding: EdgeInsets.symmetric(horizontal: SGSpacing.p4),
                             child: SGTypography.body(
-                              "원 미만",
+                              "원",
                               color: SGColors.gray4,
                               size: FontSize.small,
                               weight: FontWeight.w500,
@@ -301,7 +302,7 @@ class _DeliveryTipScreenState extends State<DeliveryTipScreen> {
             ),
 
             SizedBox(height: SGSpacing.p2 + SGSpacing.p05),
-            SGTypography.body("* ${widget.deliveryTipInfo}",
+            SGTypography.body("30,000원 이상, 0원 미만으로 설정하시면 30,000원 이상부터는\n동일한 배달팁이 적용돼요!",
                 color: SGColors.gray3, lineHeight: 1.25),
             SizedBox(height: SGSpacing.p20),
           ])),

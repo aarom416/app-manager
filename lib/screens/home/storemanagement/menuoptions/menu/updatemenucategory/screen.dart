@@ -12,6 +12,7 @@ import 'package:singleeat/core/components/text_field_wrapper.dart';
 import 'package:singleeat/core/components/typography.dart';
 import 'package:singleeat/core/constants/colors.dart';
 
+import '../../../../../../main.dart';
 import '../../model.dart';
 import '../../provider.dart';
 
@@ -167,9 +168,23 @@ class _UpdateMenuCategoryScreenState extends ConsumerState<UpdateMenuCategoryScr
                                     provider.deleteMenuCategory(context, MenuCategoryModel(
                                       storeMenuCategoryId: widget.menuCategoryModel.storeMenuCategoryId,
                                       menuCategoryName: menuCategoryName,
-                                    ));
-                                    showGlobalSnackBar(ctx, "성공적으로 삭제되었습니다.");
-                                    Navigator.of(ctx).pop();
+                                    )).then((resultFailResponseModel) {
+                                      if (resultFailResponseModel.errorCode.isEmpty) {
+                                        showGlobalSnackBar(ctx, "성공적으로 삭제되었습니다.");
+                                        Navigator.of(ctx).pop();
+                                      } else {
+                                        Navigator.pop(context);
+                                        // 실패 시 Dialog를 띄우도록 처리
+                                        showFailDialogWithImage(
+                                          context: context,
+                                          mainTitle: resultFailResponseModel.errorMessage,
+                                          onTapFunction: () {
+                                            Navigator.pop(context);
+                                          },
+                                        );
+                                      }
+                                    });
+
                                   },
                                   child: SGContainer(
                                     color: SGColors.gray3,

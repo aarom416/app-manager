@@ -50,60 +50,60 @@ class _ProfileDeleteSessionScreenState
                 showLogOutSGDialog(
                     context: context,
                     childrenBuilder: (ctx) => [
-                          Center(
-                              child: SGTypography.body("로그아웃 하시겠습니까?",
-                                  size: FontSize.large,
-                                  weight: FontWeight.w700)),
-                          SizedBox(height: SGSpacing.p4),
-                          Row(children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.of(ctx).pop();
-                                },
-                                child: SGContainer(
-                                  color: SGColors.gray3,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: SGSpacing.p4),
-                                  borderRadius:
-                                      BorderRadius.circular(SGSpacing.p3),
-                                  child: Center(
-                                    child: SGTypography.body("취소",
-                                        size: FontSize.normal,
-                                        weight: FontWeight.w700,
-                                        color: SGColors.white),
-                                  ),
-                                ),
+                      Center(
+                          child: SGTypography.body("로그아웃 하시겠습니까?",
+                              size: FontSize.large,
+                              weight: FontWeight.w700)),
+                      SizedBox(height: SGSpacing.p4),
+                      Row(children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(ctx).pop();
+                            },
+                            child: SGContainer(
+                              color: SGColors.gray3,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: SGSpacing.p4),
+                              borderRadius:
+                              BorderRadius.circular(SGSpacing.p3),
+                              child: Center(
+                                child: SGTypography.body("취소",
+                                    size: FontSize.normal,
+                                    weight: FontWeight.w700,
+                                    color: SGColors.white),
                               ),
                             ),
-                            SizedBox(width: SGSpacing.p2),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  ref
-                                      .read(loginNotifierProvider.notifier)
-                                      .logout(
-                                    errorCallback: () {
-                                      ref.read(goRouterProvider).pop();
-                                      showFailDialogWithImage(
-                                          context: context,
-                                          mainTitle: '로그아웃 실패',
-                                          subTitle:
-                                              '현재 가게가 영업 중이거나 진행 중인 주문이 있어\n로그아웃을 진행할 수 없습니다.',
-                                          onTapFunction: () {
-                                            // 내정보 이동
-                                            ref
-                                                .read(homeNotifierProvider
-                                                    .notifier)
-                                                .onChangeSelectedIndex(2);
-                                            ref
-                                                .read(goRouterProvider)
-                                                .go(AppRoutes.home);
-                                          });
-                                    },
-                                  );
-                                  // JSS 2024.12.05
-                                  /*then((value) {
+                          ),
+                        ),
+                        SizedBox(width: SGSpacing.p2),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () {
+                              ref
+                                  .read(loginNotifierProvider.notifier)
+                                  .logout(
+                                errorCallback: () {
+                                  ref.read(goRouterProvider).pop();
+                                  showFailDialogWithImage(
+                                      context: context,
+                                      mainTitle: '로그아웃 실패',
+                                      subTitle:
+                                      '현재 가게가 영업 중이거나 진행 중인 주문이 있어\n로그아웃을 진행할 수 없습니다.',
+                                      onTapFunction: () {
+                                        // 내정보 이동
+                                        ref
+                                            .read(homeNotifierProvider
+                                            .notifier)
+                                            .onChangeSelectedIndex(2);
+                                        ref
+                                            .read(goRouterProvider)
+                                            .go(AppRoutes.home);
+                                      });
+                                },
+                              );
+                              // JSS 2024.12.05
+                              /*then((value) {
                                     if (value) {
                                       ref.read(goRouterProvider).go(
                                           AppRoutes.login,
@@ -113,24 +113,24 @@ class _ProfileDeleteSessionScreenState
                                           "현재 가게가 영업 중이거나 진행 중인 주문이 있어\n로그아웃을 진행할 수 없습니다.");
                                     }
                                   }*/
-                                },
-                                child: SGContainer(
-                                  color: SGColors.primary,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: SGSpacing.p4),
-                                  borderRadius:
-                                      BorderRadius.circular(SGSpacing.p3),
-                                  child: Center(
-                                    child: SGTypography.body("로그아웃",
-                                        size: FontSize.normal,
-                                        weight: FontWeight.w700,
-                                        color: SGColors.white),
-                                  ),
-                                ),
+                            },
+                            child: SGContainer(
+                              color: SGColors.primary,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: SGSpacing.p4),
+                              borderRadius:
+                              BorderRadius.circular(SGSpacing.p3),
+                              child: Center(
+                                child: SGTypography.body("로그아웃",
+                                    size: FontSize.normal,
+                                    weight: FontWeight.w700,
+                                    color: SGColors.white),
                               ),
                             ),
-                          ]),
-                        ]);
+                          ),
+                        ),
+                      ]),
+                    ]);
               },
               child: SGContainer(
                   padding: EdgeInsets.symmetric(
@@ -154,46 +154,46 @@ class _ProfileDeleteSessionScreenState
                 showAccountDeleteSGDialog(
                     context: context,
                     childrenBuilder: (ctx) => [
-                          // 로그아웃 하시겠습니까.
-                          Center(
-                              child: SGTypography.body("정말 탈퇴하시겠습니까?",
-                                  size: FontSize.large,
-                                  weight: FontWeight.w700)),
-                          SizedBox(height: SGSpacing.p3),
-                          Center(
-                            child: SGTypography.body(
-                              "계정 탈퇴 시 고객센터로 전화주세요",
-                              color: SGColors.gray4,
-                              size: FontSize.small,
-                            ),
-                          ),
-                          SizedBox(height: SGSpacing.p8),
-                          Row(children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () async {
-                                  Navigator.of(ctx).pop();
-                                  launchUrl(Uri.parse(
-                                    'tel://1600-7723',
-                                  ));
-                                },
-                                child: SGContainer(
-                                  color: SGColors.primary,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: SGSpacing.p4),
-                                  borderRadius:
-                                      BorderRadius.circular(SGSpacing.p3),
-                                  child: Center(
-                                    child: SGTypography.body("확인",
-                                        size: FontSize.normal,
-                                        weight: FontWeight.w700,
-                                        color: SGColors.white),
-                                  ),
-                                ),
+                      // 로그아웃 하시겠습니까.
+                      Center(
+                          child: SGTypography.body("정말 탈퇴하시겠습니까?",
+                              size: FontSize.large,
+                              weight: FontWeight.w700)),
+                      SizedBox(height: SGSpacing.p3),
+                      Center(
+                        child: SGTypography.body(
+                          "계정 탈퇴 시 고객센터로 전화주세요",
+                          color: SGColors.gray4,
+                          size: FontSize.small,
+                        ),
+                      ),
+                      SizedBox(height: SGSpacing.p8),
+                      Row(children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () async {
+                              Navigator.of(ctx).pop();
+                              launchUrl(Uri.parse(
+                                'tel://1600-7723',
+                              ));
+                            },
+                            child: SGContainer(
+                              color: SGColors.primary,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: SGSpacing.p4),
+                              borderRadius:
+                              BorderRadius.circular(SGSpacing.p3),
+                              child: Center(
+                                child: SGTypography.body("확인",
+                                    size: FontSize.normal,
+                                    weight: FontWeight.w700,
+                                    color: SGColors.white),
                               ),
                             ),
-                          ]),
-                        ]);
+                          ),
+                        ),
+                      ]),
+                    ]);
               },
               child: SGContainer(
                   padding: EdgeInsets.symmetric(

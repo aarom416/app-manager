@@ -124,6 +124,7 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
               ))
           .where((category) => category != null) // null 값 제거
           .cast<MenuOptionCategoryModel>() // null-safe 타입으로 캐스팅
+          .toSet()
           .toList();
       return menu.copyWith(menuCategoryOptions: relatedOptionCategories);
     }).toList();
@@ -151,14 +152,35 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
               storeId: UserHive.getBox(key: UserKey.storeId),
               newMenuCategoryModel: newMenuCategoryModel);
       if (response.statusCode == 200) {
+        final result = ResultResponseModel.fromJson(response.data);
+        final storeMenuCategoryDTO =
+            result.data['storeMenuCategoryDTO'] as Map<String, dynamic>;
+
+        final newCategory = MenuCategoryModel(
+          storeId: (storeMenuCategoryDTO['storeId'] ?? -1) as int,
+          storeMenuCategoryId:
+              (storeMenuCategoryDTO['storeMenuCategoryId'] ?? -1) as int,
+          menuCategoryName:
+              (storeMenuCategoryDTO['menuCategoryName'] ?? '') as String,
+          menuIntroduction:
+              (storeMenuCategoryDTO['menuDescription'] ?? '') as String,
+          menuList: newMenuCategoryModel.menuList,
+        );
+
         MenuOptionsDataModel updatedMenuOptionsDataModel =
             state.menuOptionsDataModel.copyWith(storeMenuCategoryDTOList: [
           ...state.menuOptionsDataModel.storeMenuCategoryDTOList,
-          newMenuCategoryModel
+          newCategory,
         ]);
+
+        final menuCategoryList = state.menuCategoryList.toList();
+        menuCategoryList.add(newCategory);
+
         setState(updatedMenuOptionsDataModel);
-        state = state.copyWith(error: const ResultFailResponseModel());
-        // getMenuOptionInfo();
+        state = state.copyWith(
+          menuCategoryList: menuCategoryList,
+          error: const ResultFailResponseModel(),
+        );
         return null;
       } else {
         state = state.copyWith(
@@ -189,15 +211,15 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
           price: (json['menuOptionPrice'] ?? 0) as int,
           soldOutStatus: 0,
           nutrition: NutritionModel(
-            servingAmount: ((json['servingAmount'] ?? 0) as double).toInt(),
+            servingAmount: ((json['servingAmount'] ?? 0) as double),
             servingAmountType: (json['servingAmountType'] ?? 'g') as String,
-            calories: ((json['calories'] ?? 0) as double).toInt(),
-            carbohydrate: ((json['carbohydrate'] ?? 0) as double).toInt(),
-            protein: ((json['protein'] ?? 0) as double).toInt(),
-            fat: ((json['fat'] ?? 0) as double).toInt(),
-            sugar: ((json['sugar'] ?? 0) as double).toInt(),
-            saturatedFat: ((json['saturatedFat'] ?? 0) as double).toInt(),
-            natrium: ((json['natrium'] ?? 0) as double).toInt(),
+            calories: ((json['calories'] ?? 0) as double),
+            carbohydrate: ((json['carbohydrate'] ?? 0) as double),
+            protein: ((json['protein'] ?? 0) as double),
+            fat: ((json['fat'] ?? 0) as double),
+            sugar: ((json['sugar'] ?? 0) as double),
+            saturatedFat: ((json['saturatedFat'] ?? 0) as double),
+            natrium: ((json['natrium'] ?? 0) as double),
           ),
         );
 
@@ -308,35 +330,42 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   }
 
   /// DELETE - 메뉴 카테고리 삭제
-  void deleteMenuCategory(
+  Future<ResultFailResponseModel> deleteMenuCategory(
       BuildContext context, MenuCategoryModel menuCategoryModel) async {
     try {
       Loading.show(context);
-      final response = await ref
-          .read(menuOptionsServiceProvider)
-          .deleteMenuCategory(
-              storeId: UserHive.getBox(key: UserKey.storeId),
-              menuCategoryModel: menuCategoryModel);
+      final response = await ref.read(menuOptionsServiceProvider).deleteMenuCategory(
+          storeId: UserHive.getBox(key: UserKey.storeId),
+          menuCategoryModel: menuCategoryModel);
+
       if (response.statusCode == 200) {
+        // 메뉴 카테고리 삭제 성공
         MenuOptionsDataModel updatedMenuOptionsDataModel =
-            state.menuOptionsDataModel.copyWith(
-                storeMenuCategoryDTOList: state
-                    .menuOptionsDataModel.storeMenuCategoryDTOList
-                    .where((menuCategory) =>
-                        menuCategory.storeMenuCategoryId !=
-                        menuCategoryModel.storeMenuCategoryId)
-                    .toList());
+        state.menuOptionsDataModel.copyWith(
+          storeMenuCategoryDTOList: state.menuOptionsDataModel.storeMenuCategoryDTOList
+              .where((menuCategory) =>
+          menuCategory.storeMenuCategoryId != menuCategoryModel.storeMenuCategoryId)
+              .toList(),
+        );
         setState(updatedMenuOptionsDataModel);
         state = state.copyWith(error: const ResultFailResponseModel());
+        return const ResultFailResponseModel(); // Success result
       } else {
-        state = state.copyWith(
-            error: ResultFailResponseModel.fromJson(response.data));
+        final error = ResultFailResponseModel.fromJson(response.data as Map<String, dynamic>);
+        state = state.copyWith(error: error);
+        return error; // Return error result
       }
     } catch (e) {
+      // 예외 처리
+      final error = ResultFailResponseModel(errorMessage: "네트워크 오류");
+      state = state.copyWith(error: error);
+      return error; // Return error result
     } finally {
       Loading.hide();
     }
   }
+
+
 
   /// POST - 메뉴 추가
   Future<ResultFailResponseModel> createMenu(
@@ -361,7 +390,7 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
                 selectedUserMenuCategoryIdsFlatString,
             price: price,
             nutrition: nutrition,
-            servingAmount: nutrition.servingAmount,
+            servingAmount: nutrition.servingAmount.toDouble(),
             servingAmountType: nutrition.servingAmountType,
             imagePath: imagePath,
             menuBriefDescription: menuBriefDescription,
@@ -369,28 +398,6 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
             selectedMenuOptionCategories: selectedMenuOptionCategories,
           );
       if (response.statusCode == 200) {
-        final result = ResultResponseModel.fromJson(response.data);
-
-        final addedStoreMenuDTOList = [
-          ...state.storeMenuDTOList,
-          MenuModel.fromJson(result.data).copyWith(
-            price: result.data['menuPrice'] as int? ?? 0,
-          )
-        ]..sort((a, b) => a.menuName.compareTo(b.menuName));
-
-        state = state.copyWith(
-          // 조합된 데이타
-          menuCategoryList: createMenuCategoryModels(
-              storeMenuCategoryDTOList: state.storeMenuCategoryDTOList,
-              storeMenuDTOList: addedStoreMenuDTOList,
-              menuOptionCategoryDTOList: state.menuOptionCategoryDTOList,
-              storeMenuOptionDTOList: state.storeMenuOptionDTOList,
-              menuOptionRelationshipDTOList:
-                  state.menuOptionRelationshipDTOList),
-          // 조회 원본
-          storeMenuDTOList: addedStoreMenuDTOList,
-        );
-
         return const ResultFailResponseModel(); // Success
       } else {
         return ResultFailResponseModel.fromJson(
@@ -440,15 +447,15 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
                 madeOf: getMenuDataModel.madeOf,
                 menuIntroduction: getMenuDataModel.menuIntroduction,
                 nutrition: NutritionModel(
-                  servingAmount: getMenuDataModel.servingAmount,
+                  servingAmount: getMenuDataModel.servingAmount.toDouble(),
                   servingAmountType: getMenuDataModel.servingAmountType,
-                  calories: getMenuDataModel.calories,
-                  carbohydrate: getMenuDataModel.carbohydrate,
-                  protein: getMenuDataModel.protein,
-                  fat: getMenuDataModel.fat,
-                  sugar: getMenuDataModel.sugar,
-                  saturatedFat: getMenuDataModel.saturatedFat,
-                  natrium: getMenuDataModel.natrium,
+                  calories: getMenuDataModel.calories.toDouble(),
+                  carbohydrate: getMenuDataModel.carbohydrate.toDouble(),
+                  protein: getMenuDataModel.protein.toDouble(),
+                  fat: getMenuDataModel.fat.toDouble(),
+                  sugar: getMenuDataModel.sugar.toDouble(),
+                  saturatedFat: getMenuDataModel.saturatedFat.toDouble(),
+                  natrium: getMenuDataModel.natrium.toDouble(),
                 ),
               )
             : menu;
@@ -510,9 +517,9 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   }
 
   /// POST - 메뉴 사진 변경 - 관리자 제한 API
-  void adminUpdateMenuPicture(int menuId, String imagePath) async {
+  void updateMenuPicture(int menuId, String imagePath) async {
     final response =
-        await ref.read(menuOptionsServiceProvider).adminUpdateMenuPicture(
+        await ref.read(menuOptionsServiceProvider).updateMenuPicture(
               storeId: UserHive.getBox(key: UserKey.storeId),
               menuId: menuId,
               imagePath: imagePath,
@@ -848,7 +855,84 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
           removeMenuIdList: removeMenuIdList,
         );
     if (response.statusCode == 200) {
-      getMenuOptionInfo();
+      final menuOptionRelationshipDTOList =
+          state.menuOptionRelationshipDTOList.toList();
+
+      final newRelationshipMenus = newAppliedMenus
+          .where((addMenu) => addMenuIdList.contains(addMenu.menuId))
+          .toList();
+
+      for (var newRelationshipMenu in newRelationshipMenus) {
+        final menuOptions = state.menuOptionCategoryDTOList
+            .toList()
+            .firstWhere(
+                (test) => test.menuOptionCategoryId == menuOptionCategoryId)
+            .menuOptions;
+
+        for (var menuOption in menuOptions) {
+          menuOptionRelationshipDTOList.add(MenuOptionRelationshipModel(
+            menuId: newRelationshipMenu.menuId,
+            menuOptionCategoryId: menuOptionCategoryId,
+            menuOptionId: menuOption.menuOptionId,
+          ));
+        }
+      }
+
+      final removeRelationshipMenus = oldAppliedMenus
+          .where((removeMenu) => removeMenuIdList.contains(removeMenu.menuId))
+          .toList();
+
+      for (var removeRelationshipMenu in removeRelationshipMenus) {
+        menuOptionRelationshipDTOList.removeWhere((test) =>
+            test.menuId == removeRelationshipMenu.menuId &&
+            test.menuOptionCategoryId == menuOptionCategoryId);
+      }
+
+      final menuCategoryList = state.menuCategoryList.map((menuCategory) {
+        final updatedMenuList = menuCategory.menuList.map((menu) {
+          final isAddingMenu = newRelationshipMenus
+              .any((newMenu) => newMenu.menuId == menu.menuId);
+          if (isAddingMenu) {
+            final menuOptionCategory =
+                state.menuOptionCategoryDTOList.firstWhere(
+              (category) =>
+                  category.menuOptionCategoryId == menuOptionCategoryId,
+            );
+
+            final menuOptions = menu.menuCategoryOptions.toList();
+            if (!menuOptions.contains(menuOptionCategory)) {
+              menuOptions.add(menuOptionCategory);
+
+              return menu.copyWith(menuCategoryOptions: menuOptions);
+            }
+          }
+
+          final isRemovingMenu = removeRelationshipMenus
+              .any((removeMenu) => removeMenu.menuId == menu.menuId);
+          if (isRemovingMenu) {
+            final menuOptionCategory =
+                state.menuOptionCategoryDTOList.firstWhere(
+              (category) =>
+                  category.menuOptionCategoryId == menuOptionCategoryId,
+            );
+
+            final updatedMenuOptions = menu.menuCategoryOptions.toList();
+            updatedMenuOptions.remove(menuOptionCategory);
+
+            return menu.copyWith(menuCategoryOptions: updatedMenuOptions);
+          }
+
+          return menu;
+        }).toList();
+
+        return menuCategory.copyWith(menuList: updatedMenuList);
+      }).toList();
+
+      state = state.copyWith(
+        menuCategoryList: menuCategoryList,
+        menuOptionRelationshipDTOList: menuOptionRelationshipDTOList,
+      );
+
       return true;
     } else {
       state = state.copyWith(
@@ -893,16 +977,16 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
                 soldOutStatus: 0,
                 nutrition: NutritionModel(
                   servingAmount:
-                      ((json['servingAmount'] ?? 0) as double).toInt(),
+                      ((json['servingAmount'] ?? 0) as double),
                   servingAmountType:
                       (json['servingAmountType'] ?? 'g') as String,
-                  calories: ((json['calories'] ?? 0) as double).toInt(),
-                  carbohydrate: ((json['carbohydrate'] ?? 0) as double).toInt(),
-                  protein: ((json['protein'] ?? 0) as double).toInt(),
-                  fat: ((json['fat'] ?? 0) as double).toInt(),
-                  sugar: ((json['sugar'] ?? 0) as double).toInt(),
-                  saturatedFat: ((json['saturatedFat'] ?? 0) as double).toInt(),
-                  natrium: ((json['natrium'] ?? 0) as double).toInt(),
+                  calories: ((json['calories'] ?? 0) as double),
+                  carbohydrate: ((json['carbohydrate'] ?? 0) as double),
+                  protein: ((json['protein'] ?? 0) as double),
+                  fat: ((json['fat'] ?? 0) as double),
+                  sugar: ((json['sugar'] ?? 0) as double),
+                  saturatedFat: ((json['saturatedFat'] ?? 0) as double),
+                  natrium: ((json['natrium'] ?? 0) as double),
                 ),
               ),
             )
@@ -985,38 +1069,39 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
   }
 
   /// DELETE - 메뉴 옵션 카테고리 삭제
-  Future<bool> deleteMenuOptionCategory(
+  /// DELETE - 메뉴 옵션 카테고리 삭제
+  Future<ResultFailResponseModel> deleteMenuOptionCategory(
       BuildContext context, MenuOptionCategoryModel optionCategoryModel) async {
     try {
       Loading.show(context);
-      final response = await ref
-          .read(menuOptionsServiceProvider)
-          .deleteMenuOptionCategory(
-              storeId: UserHive.getBox(key: UserKey.storeId),
-              optionCategoryModel: optionCategoryModel);
+      final response = await ref.read(menuOptionsServiceProvider).deleteMenuOptionCategory(
+          storeId: UserHive.getBox(key: UserKey.storeId),
+          optionCategoryModel: optionCategoryModel);
+
       if (response.statusCode == 200) {
-        MenuOptionsDataModel updatedMenuOptionsDataModel =
-            state.menuOptionsDataModel.copyWith(
-                menuOptionCategoryDTOList: state
-                    .menuOptionsDataModel.menuOptionCategoryDTOList
-                    .where((optionCategory) =>
-                        optionCategory.menuOptionCategoryId !=
-                        optionCategoryModel.menuOptionCategoryId)
-                    .toList());
+        MenuOptionsDataModel updatedMenuOptionsDataModel = state.menuOptionsDataModel.copyWith(
+            menuOptionCategoryDTOList: state.menuOptionsDataModel.menuOptionCategoryDTOList
+                .where((optionCategory) =>
+            optionCategory.menuOptionCategoryId != optionCategoryModel.menuOptionCategoryId)
+                .toList());
         setState(updatedMenuOptionsDataModel);
         state = state.copyWith(error: const ResultFailResponseModel());
-        return true;
+        return const ResultFailResponseModel();
       } else {
-        state = state.copyWith(
-            error: ResultFailResponseModel.fromJson(response.data));
-        return false;
+        final error = ResultFailResponseModel.fromJson(response.data as Map<String, dynamic>);
+        state = state.copyWith(error: error);
+
+        return error;
       }
     } catch (e) {
-      return false;
+      final error = ResultFailResponseModel(errorMessage: "네트워크 오류");
+      state = state.copyWith(error: error);
+      return error;
     } finally {
       Loading.hide();
     }
   }
+
 
   /// POST - 메뉴 옵션 이름 변경
   Future<bool> updateMenuOptionName(
@@ -1111,7 +1196,6 @@ class MenuOptionsNotifier extends _$MenuOptionsNotifier {
         .getMenuInfo(menuOptionId: menuOptionId);
     if (response.statusCode == 200) {
       final result = ResultResponseModel.fromJson(response.data);
-      logger.i("getMenuInfo result ${result.toFormattedJson()}");
       return NutritionModel.fromJson(result.data);
     } else {
       return const NutritionModel();
