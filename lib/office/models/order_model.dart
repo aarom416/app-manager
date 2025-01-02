@@ -8,7 +8,8 @@ enum OrderStatus {
   completePickup('completePickup', '픽업 완료'),
   completeDelivery('completeDelivery', '배달 완료'),
   completePass('completePass', '전달 완료'),
-  newOrder('newOrder', '신규 접수');
+  newOrder('newOrder', '신규 접수'),
+  disPatchFail('disPatchFail', '배차 실패');
 
   const OrderStatus(this.orderStatus, this.orderStatusName);
   final String orderStatus;
