@@ -242,7 +242,7 @@ class NewOrderDetailScreen extends ConsumerWidget {
                               mainTitle: "해당 주문은 이미 접수된 주문입니다.",
                               subTitle: "새로고침을 통해 다시 한번 확인해주세요."
                             );
-                          } else if (state.error.errorCode == 400) {
+                          } else if (state.error.errorCode == "PAYMENT_CANCEL_EXCEPTION") {
                             showFailDialogWithImage(
                                 context: context,
                                 mainTitle: "시스템 오류",
@@ -344,7 +344,7 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                                   Navigator.of(context).pop();
                                   ref.read(orderNotifierProvider.notifier).getAcceptOrderList(context);
                                 } else {
-                                  if (state.error.errorCode == 400) {
+                                  if (state.error.errorCode == "PAYMENT_CANCEL_EXCEPTION") {
                                     showFailDialogWithImage(
                                       context: context,
                                       mainTitle: "시스템 오류",
@@ -664,23 +664,26 @@ class CompletedOrderDetailScreen extends ConsumerWidget {
                 SizedBox(height: SGSpacing.p4),
                 Row(children: [
                   SGContainer(
-                      color: order.orderStatus !=
-                              OrderStatus.cancelled.orderStatusName
-                          ? SGColors.primary.withOpacity(0.1)
-                          : SGColors.warningRed.withOpacity(0.1),
+                      color: order.orderStatus == OrderStatus.cancelled.orderStatusName
+                          ? SGColors.warningRed.withOpacity(0.1) :
+                      order.orderStatus == OrderStatus.disPatchFail.orderStatusName
+                          ? SGColors.warningRed.withOpacity(0.1)
+                          : SGColors.primary.withOpacity(0.1),
                       padding: EdgeInsets.all(SGSpacing.p1),
                       borderRadius: BorderRadius.circular(SGSpacing.p1),
                       child: SGTypography.body(
-                        order.orderStatus !=
-                                OrderStatus.cancelled.orderStatusName
-                            ? order.receiveFoodType == 'DELIVERY'
-                                ? '배달 접수'
-                                : '포장 접수'
-                            : "주문 취소",
-                        color: order.orderStatus !=
-                                OrderStatus.cancelled.orderStatusName
-                            ? SGColors.primary
-                            : SGColors.warningRed,
+                        order.orderStatus != OrderStatus.cancelled.orderStatusName
+                            ? order.orderStatus == OrderStatus.disPatchFail.orderStatusName
+                            ? '주문 취소' :
+                        order.receiveFoodType == 'DELIVERY'
+                            ? '배달 접수'
+                            : '포장 접수'
+                          : "주문 취소",
+                        color: order.orderStatus == OrderStatus.cancelled.orderStatusName
+                            ? SGColors.warningRed :
+                        order.orderStatus == OrderStatus.disPatchFail.orderStatusName
+                            ? SGColors.warningRed
+                            : SGColors.primary,
                       )),
                   Spacer(),
                   SGTypography.body("${order.orderDate}",
@@ -1080,7 +1083,7 @@ class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
             widget.onReject();
             ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
           } else {
-            if (state.error.errorCode == 400) {
+            if (state.error.errorCode == "PAYMENT_CANCEL_EXCEPTION") {
               showFailDialogWithImage(
                 context: context,
                 mainTitle: "시스템 오류",

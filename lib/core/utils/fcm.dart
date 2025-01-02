@@ -48,9 +48,9 @@ void setupMessageListener() {
         NotificationDetails(
           android: AndroidNotificationDetails(
             message.data['type'] == 'DELIVERY' ?
-                deliveryChannel.id : takeoutChannel.id,
+            deliveryChannel.id : takeoutChannel.id,
             message.data['type'] == "DELIVERY" ?
-                deliveryChannel.name : takeoutChannel.name,
+            deliveryChannel.name : takeoutChannel.name,
             channelDescription: deliveryChannel.description,
             icon: 'launch_background',
           ),

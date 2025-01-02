@@ -769,10 +769,10 @@ class _CompleteOrderListView extends ConsumerWidget {
                         strokeWidth: 3,
                         strokeColor: strokeColor(orders[index]),
                         color: Colors.transparent,
-                        label: orders[index].orderStatus !=
+                        label: orders[index].orderStatus ==
                             OrderStatus.cancelled.orderStatusName
-                            ? "완료"
-                            : "취소")),
+                            ? "취소" : orders[index].orderStatus == OrderStatus.disPatchFail.orderStatusName ? "취소"
+                            : "완료")),
                 Positioned(
                     top: SGSpacing.p4,
                     right: SGSpacing.p2,
@@ -794,6 +794,8 @@ class _CompleteOrderListView extends ConsumerWidget {
 
   Color strokeColor(NewOrderModel order) {
     if (order.orderStatus == OrderStatus.cancelled.orderStatusName) {
+      return SGColors.warningRed;
+    } else if (order.orderStatus == OrderStatus.disPatchFail.orderStatusName) {
       return SGColors.warningRed;
     } else if (order.receiveFoodType == "DELIVERY") {
       return SGColors.warningOrange;
