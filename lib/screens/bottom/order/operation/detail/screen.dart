@@ -87,48 +87,48 @@ class NewOrderDetailScreen extends ConsumerWidget {
     showSGDialogWithCloseButton(
         context: context,
         childrenBuilder: (ctx) => [
-              _RejectDialogBody(
-                  order: order,
-                  orderInformationId: orderInformationId,
-                  onReject: () {
-                    showSGDialog(
-                        context: context,
-                        childrenBuilder: (ctx) => [
-                              Center(
-                                child: Image.asset(
-                                    "assets/images/emoticon-cry.png",
-                                    width: 40,
-                                    height: 40),
-                              ),
-                              SizedBox(height: SGSpacing.p4),
-                              SGTypography.body("주문을 거절하셨어요.",
-                                  size: FontSize.medium,
-                                  weight: FontWeight.w700),
-                              SizedBox(height: SGSpacing.p5),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(ctx).pop();
-                                  Navigator.pop(context);
-                                  ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
-                                },
-                                child: SGContainer(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: SGSpacing.p4),
-                                  borderRadius:
-                                      BorderRadius.circular(SGSpacing.p3),
-                                  color: SGColors.primary,
-                                  child: Center(
-                                    child: SGTypography.body("확인",
-                                        size: FontSize.normal,
-                                        weight: FontWeight.w700,
-                                        color: SGColors.white),
-                                  ),
-                                ),
-                              ),
-                            ]);
-                  })
-            ]);
+          _RejectDialogBody(
+              order: order,
+              orderInformationId: orderInformationId,
+              onReject: () {
+                showSGDialog(
+                    context: context,
+                    childrenBuilder: (ctx) => [
+                      Center(
+                        child: Image.asset(
+                            "assets/images/emoticon-cry.png",
+                            width: 40,
+                            height: 40),
+                      ),
+                      SizedBox(height: SGSpacing.p4),
+                      SGTypography.body("주문을 거절하셨어요.",
+                          size: FontSize.medium,
+                          weight: FontWeight.w700),
+                      SizedBox(height: SGSpacing.p5),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(ctx).pop();
+                          Navigator.pop(context);
+                          ref.read(orderNotifierProvider.notifier).getNewOrderList(context);
+                        },
+                        child: SGContainer(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                              vertical: SGSpacing.p4),
+                          borderRadius:
+                          BorderRadius.circular(SGSpacing.p3),
+                          color: SGColors.primary,
+                          child: Center(
+                            child: SGTypography.body("확인",
+                                size: FontSize.normal,
+                                weight: FontWeight.w700,
+                                color: SGColors.white),
+                          ),
+                        ),
+                      ),
+                    ]);
+              })
+        ]);
   }
 
   @override
@@ -238,9 +238,9 @@ class NewOrderDetailScreen extends ConsumerWidget {
                         } else {
                           if (state.error.errorCode == 409) {
                             showFailDialogWithImage(
-                              context: context,
-                              mainTitle: "해당 주문은 이미 접수된 주문입니다.",
-                              subTitle: "새로고침을 통해 다시 한번 확인해주세요."
+                                context: context,
+                                mainTitle: "해당 주문은 이미 접수된 주문입니다.",
+                                subTitle: "새로고침을 통해 다시 한번 확인해주세요."
                             );
                           } else if (state.error.errorCode == "PAYMENT_CANCEL_EXCEPTION") {
                             showFailDialogWithImage(
@@ -346,9 +346,9 @@ class InProgressOrderDetailScreen extends ConsumerWidget {
                                 } else {
                                   if (state.error.errorCode == "PAYMENT_CANCEL_EXCEPTION") {
                                     showFailDialogWithImage(
-                                      context: context,
-                                      mainTitle: "시스템 오류",
-                                      subTitle: "해당 주문은 현재 취소할 수 없습니다.\n잠시 후 다시 시도해주세요."
+                                        context: context,
+                                        mainTitle: "시스템 오류",
+                                        subTitle: "해당 주문은 현재 취소할 수 없습니다.\n잠시 후 다시 시도해주세요."
                                     );
                                   }
                                 }
@@ -678,7 +678,7 @@ class CompletedOrderDetailScreen extends ConsumerWidget {
                         order.receiveFoodType == 'DELIVERY'
                             ? '배달 접수'
                             : '포장 접수'
-                          : "주문 취소",
+                            : "주문 취소",
                         color: order.orderStatus == OrderStatus.cancelled.orderStatusName
                             ? SGColors.warningRed :
                         order.orderStatus == OrderStatus.disPatchFail.orderStatusName
@@ -761,10 +761,10 @@ class _OrderInformation extends StatelessWidget {
           Divider(height: 1, thickness: 1, color: SGColors.lineDark2),
           SizedBox(height: SGSpacing.p4),
           ...order.orderMenuDTOList.map((e) => OrderMenuList(
-                orderMenuOptionDTOList: order.orderMenuOptionDTOList[0],
-                orderMenu: e,
-                colorType: SGColors.white,
-              )),
+            orderMenuOptionDTOList: order.orderMenuOptionDTOList[0],
+            orderMenu: e,
+            colorType: SGColors.white,
+          )),
           SizedBox(height: SGSpacing.p4),
           Divider(height: 1, thickness: 1, color: SGColors.lineDark2),
           SizedBox(height: SGSpacing.p3),
@@ -857,15 +857,15 @@ class _OrderInformation extends StatelessWidget {
         SizedBox(height: SGSpacing.p3),
         _DataTable(children: [
           SGTypography.body("배달 정보",
-              size: FontSize.normal,
-              color: SGColors.whiteForDarkMode,
-              weight: FontWeight.w600,
-        ),
+            size: FontSize.normal,
+            color: SGColors.whiteForDarkMode,
+            weight: FontWeight.w600,
+          ),
           SizedBox(height: SGSpacing.p4),
           _DataTableRow(left: "배달 주소", right: order.address),
           if (order.receiveFoodType == "DELIVERY" &&
-                  tab == "접수" ||
-               tab == "완료") ...[
+              tab == "접수" ||
+              tab == "완료") ...[
             SizedBox(height: SGSpacing.p3),
             _DataTableRow(
               left: "연락처",
@@ -1085,9 +1085,9 @@ class _RejectDialogBodyState extends ConsumerState<_RejectDialogBody> {
           } else {
             if (state.error.errorCode == "PAYMENT_CANCEL_EXCEPTION") {
               showFailDialogWithImage(
-                context: context,
-                mainTitle: "시스템 오류",
-                subTitle: "해당 주문은 현재 거절할 수 없습니다.\n잠시 후 다시 시도해주세요."
+                  context: context,
+                  mainTitle: "시스템 오류",
+                  subTitle: "해당 주문은 현재 거절할 수 없습니다.\n잠시 후 다시 시도해주세요."
               );
             }
           }
